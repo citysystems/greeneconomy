@@ -93,6 +93,14 @@ summary_mtco2_total <- pge_stockton_proportioned %>% filter(!(CUSTOMERCLASS %in%
 ggplot(summary_mtco2_total, aes(as.factor(YEAR), annual_total)) + geom_bar(stat = "identity", position = "dodge") + labs(x = "Year", y = "MTCO2e", title = "PG&E Territory Annual Energy Usage, 2013 to 2018")
 
 
+summary_kbtu_byclass_average <- pge_stockton_proportioned %>% filter(!(CUSTOMERCLASS %in% c("Elec- Industrial","Elec- Agricultural"))) %>% group_by(CUSTOMERCLASS, YEAR) %>% summarize(annual_average = sum(TOTALKBTU)/sum(TOTALCUSTOMERS)*12)
+ggplot(summary_kbtu_byclass_average, aes(YEAR, annual_average)) + geom_bar(stat = "identity", aes(fill = CUSTOMERCLASS), position = "dodge") + labs(x = "Year", y = "kBTU/customer", title = "PG&E Territory Annual Energy Usage, 2013 to 2018") + scale_fill_discrete(name="Energy Type")
+
+summary_mtco2_byclass_average <- pge_stockton_proportioned %>% filter(!(CUSTOMERCLASS %in% c("Elec- Industrial","Elec- Agricultural"))) %>% group_by(CUSTOMERCLASS, YEAR) %>% summarize(annual_average = sum(TOTALMTCO2)/sum(TOTALCUSTOMERS)*12)
+ggplot(summary_mtco2_byclass_average, aes(YEAR, annual_average)) + geom_bar(stat = "identity", aes(fill = CUSTOMERCLASS), position = "dodge") + labs(x = "Year", y = "MTCO2/customer", title = "PG&E Territory Annual Energy Usage, 2013 to 2018") + scale_fill_discrete(name="Energy Type")
+
+
+
 summary_kbtu_average <- pge_stockton_proportioned %>% filter(!(CUSTOMERCLASS %in% c("Elec- Industrial","Elec- Agricultural"))) %>% mutate(type = substr(CUSTOMERCLASS,1,1)) %>% group_by(type, YEAR) %>% summarize(annual_average = sum(TOTALKBTU)/sum(TOTALCUSTOMERS)*12)
 ggplot(summary_kbtu_average, aes(as.factor(YEAR), annual_average)) + geom_bar(stat = "identity", aes(fill = type), position = "dodge") + labs(x = "Year", y = "kBTU/customer", title = "PG&E Territory Annual Energy Usage, 2013 to 2018") + scale_fill_discrete(name="Energy Type",labels = c("Electricity","Gas"))
 
