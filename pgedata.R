@@ -4,6 +4,7 @@ install.packages("tidyverse")
 #lehdr 
 
 library(tidycensus)
+library(censusapi)
 library(tidyverse)
 library(readr)
 library(stringr)
@@ -19,7 +20,8 @@ library(data.table)
 library(ggplot2)
 library(rgdal)
 options(tigris_use_cache = TRUE)
-census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab")
+options(tigris_class = "sf")
+census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", install = TRUE)
 
 # https://github.com/walkerke/tigris-zip-income/blob/master/prep.R
 # https://journal.r-project.org/archive/2016/RJ-2016-043/RJ-2016-043.pdf
@@ -31,12 +33,13 @@ zips <- zctas(starts_with="95", cb = TRUE)
 # places_stockton <- places[places@data$NAME == 'Stockton',]
 
 stockton_boundary <- readOGR(dsn = "C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\StocktonBoundary", layer = "Boundary")
-stockton_boundary <- spTransform(stockton_boundary,proj4string(zips))
+stockton_boundary <- st_as_sf(stockton_boundary)
+stockton_boundary <- st_transform(stockton_boundary,st_crs(zips))
 # stockton_parcels_dissolve <- unionSpatialPolygons(gBuffer(stockton_parcels, byid=TRUE, width=50),stockton_parcels@data$Shape_STAr)
 
 zips_stockton <- zips[stockton_boundary,]
-zips_stockton@data$proportion <- area(intersect(zips_stockton,stockton_boundary))/area(zips_stockton)
-zips_stockton@data$ZCTA5CE10 <- as.numeric(zips_stockton@data$ZCTA5CE10)
+zips_stockton$proportion <- st_area(intersect(zips_stockton,stockton_boundary))/st_area(zips_stockton)
+zips_stockton$ZCTA5CE10 <- as.numeric(zips_stockton$ZCTA5CE10)
 
 #Manual edits made to PG&E data downloaded from public site:
 #2014_Q3_Gas, fields "Total Therms" and "Average Therms" renamed
@@ -56,7 +59,7 @@ pge_stockton <- do.call(rbind,lapply(2013:2018,function(year){
   })) %>% group_by(ZIPCODE, CUSTOMERCLASS) %>% summarize(TOTALKBTU = sum(TOTALKBTU), TOTALMTCO2 = sum(TOTALMTCO2), TOTALCUSTOMERS = sum(TOTALCUSTOMERS)) %>%  mutate(YEAR = year)
 }))
 
-pge_stockton_proportioned <- pge_stockton %>% left_join(zips_stockton@data[,c("ZCTA5CE10","proportion")],by = c("ZIPCODE" = "ZCTA5CE10")) %>% mutate(TOTALKBTU = TOTALKBTU*proportion, TOTALMTCO2 = TOTALMTCO2*proportion, TOTALCUSTOMERS = TOTALCUSTOMERS*proportion)
+pge_stockton_proportioned <- pge_stockton %>% left_join(zips_stockton[,c("ZCTA5CE10","proportion")],by = c("ZIPCODE" = "ZCTA5CE10")) %>% mutate(TOTALKBTU = TOTALKBTU*proportion, TOTALMTCO2 = TOTALMTCO2*proportion, TOTALCUSTOMERS = TOTALCUSTOMERS*proportion)
 
 
 
@@ -110,7 +113,7 @@ ggplot(summary_mtco2_average, aes(as.factor(YEAR), annual_average)) + geom_bar(s
 
 zips_mtco2_total <- pge_stockton %>% filter((CUSTOMERCLASS %in% c("Gas- Residential")) & (YEAR == 2016)) %>% group_by(ZIPCODE) %>% summarize(TOTALMTCO2 = sum(TOTALMTCO2))
 
-zips_stockton_joined_intersect <- geo_join(intersect(zips_stockton,stockton_boundary), zips_mtco2_total, "ZCTA5CE10","ZIPCODE")
+# zips_stockton_joined_intersect <- geo_join(zips_stockton, zips_mtco2_total, "ZCTA5CE10","ZIPCODE")
 zips_stockton_joined <- geo_join(zips_stockton, zips_mtco2_total, "ZCTA5CE10","ZIPCODE")
 
 mapview(stockton_boundary, alpha.regions = 0, lwd = 3) +
