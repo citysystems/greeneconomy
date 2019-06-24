@@ -7,9 +7,10 @@ library(lehdr)
 library(sf)
 library(osrm)
 library(mapview)
+library(readr)
 options(tigris_use_cache = TRUE)
 options(tigris_class = "sf")
-census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", install = TRUE)
+census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", overwrite = TRUE)
 
 acs5_17 <- load_variables(2017, "acs5")
 
@@ -29,7 +30,7 @@ california_place_medincome %>% top_n(20, populationE) %>%
        y = "",
        x = "ACS estimate (bars represent margin of error)")
 
-compare_medincome <- get_acs(geography = "place", variables = c(medincome = "B19013_001", population = "B01003_001", ), output = "wide") %>% filter(NAME %in% c("Stockton city, California", 
+compare_medincome <- get_acs(geography = "place", variables = c(medincome = "B19013_001", population = "B01003_001", laborforce= "B23025_002"), output = "wide") %>% filter(NAME %in% c("Stockton city, California", 
                                                                                                                   "Fort Collins city, Colorado",
                                                                                                                   "Denver city, Colorado",
                                                                                                                   "St. Louis city, Missouri", 
@@ -40,9 +41,9 @@ compare_medincome <- get_acs(geography = "place", variables = c(medincome = "B19
                                                                                                                   "Corpus Christi city, Texas",
                                                                                                                   "Sacramento city, California",
                                                                                                                   "Jackson city, Mississippi",
-                                                                                                                  "South Bend city, Indiana"))
+                                                                                                                  "South Bend city, Indiana")) 
 
-compare_medincome %>% 
+compare_medincome %>% mutate(perc_laborforce = laborforceE / populationE)
   mutate(NAME = gsub(" city", "", NAME)) %>%
   ggplot(aes(x = estimate, y = reorder(NAME, estimate))) +
   geom_errorbarh(aes(xmin = estimate - moe, xmax = estimate + moe)) +
@@ -77,7 +78,7 @@ stockton_lodes_h <- ca_lodes[which(ca_lodes$h_bg %in% stockton_bgs$GEOID),]
 stockton_rac <- stockton_bgs_full %>% geo_join(ca_rac, "GEOID", "h_bg")
 stockton_wac <- stockton_bgs_full %>% geo_join(ca_wac, "GEOID", "w_bg")
 
-save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, file = "C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
+save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, file = "C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
 
 stockton_lodes_origin_centroids <- st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$h_bg),])
 stockton_lodes_dest_centroids <- st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),])
@@ -105,9 +106,29 @@ prep <- do.call(rbind,lapply(1:nrow(stockton_lodes_h),function(row){
 
 stockton_lodes_h <- cbind(stockton_lodes_h, prep)
 
-stockton_lodes_summary <- stockton_lodes_h %>% mutate(person_miles = S000*as.numeric(distance)/1.60934, person_hours = S000*as.numeric(duration)/60) %>% group_by(h_bg) %>% summarise_at(c("S000","SA01","SA02","SA03","SE01","SE02","SE03","SI01","SI02","SI03","person_miles", "person_hours"), sum)
+stockton_lodes_h <- stockton_lodes_h %>% mutate(COUNTY = substr(w_bg,3,5))
 
-save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, stockton_lodes_summary, prep, file = "C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
+stockton_lodes_w_counties <- stockton_lodes_h %>% mutate(COUNTY = substr(w_bg,3,5), person_miles = S000*as.numeric(distance)/1.60934, person_hours = S000*as.numeric(duration)/60) %>% group_by(COUNTY) %>% summarise_at(c("S000","SA01","SA02","SA03","SE01","SE02","SE03","SI01","SI02","SI03","person_miles", "person_hours"), sum) %>% mutate(avg_distance = person_miles/S000, avg_duration = person_hours/S000, person_miles_rm_excessive = ifelse(avg_duration < 3, person_miles, 0), `Percent High Wage Jobs in County` = SE03/S000, `Percent High Wage Jobs Overall` = SE03/sum(SE03,na.rm = TRUE), `Percent Total Jobs` = S000/sum(S000,na.rm = TRUE), `Percent VMT` = person_miles_rm_excessive/sum(person_miles_rm_excessive,na.rm = TRUE),`GHG Annual` = (person_miles_rm_excessive*0.82*2+person_miles_rm_excessive*.116/2*2)*369.39*0.00035812, `Percent GHG` = `GHG Annual`/sum(`GHG Annual`), `Average GHG` = `GHG Annual`/S000) %>% rename(Jobs = S000, `Average Distance` = avg_distance)
+
+stockton_lodes_w_counties <- ca_counties %>% select(COUNTYFP, NAME) %>% left_join(stockton_lodes_w_counties, by = c("COUNTYFP" = "COUNTY"))
+
+stockton_lodes_w_top_counties <- stockton_lodes_w_counties %>% filter(NAME %in% c("San Joaquin", "Alameda", "Sacramento", "Santa Clara","Stanislaus","Contra Costa","San Francisco","San Mateo","Solano","Fresno","Placer","Yolo","Monterey","Sonoma","Merced")) %>% arrange(desc(Jobs))
+
+m1 <- mapview(stockton_lodes_w_top_counties, zcol=c("Jobs","Percent High Wage Jobs in County","Average Distance","Average GHG","Percent GHG"), map.types = c("OpenStreetMap"), legend = TRUE, hide = TRUE)
+m1
+mapshot(m1, url = "stockton_lodes_w_top_counties.html")
+l1 <- addStaticLabels(m1, label = stockton_lodes_w_top_counties$NAME)
+
+sum(stockton_lodes_w_counties$S000, na.rm = TRUE)
+sum(stockton_lodes_w_counties$person_miles, na.rm = TRUE)
+mapview(stockton_lodes_w_counties, zcol='avg_distance')
+
+stockton_lodes_h_summary <- stockton_lodes_h %>% mutate(person_miles = S000*as.numeric(distance)/1.60934, person_hours = S000*as.numeric(duration)/60) %>% group_by(h_bg) %>% summarise_at(c("S000","SA01","SA02","SA03","SE01","SE02","SE03","SI01","SI02","SI03","person_miles", "person_hours"), sum)
+
+write_csv(stockton_lodes_w_counties, "C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes_w_counties.csv")
+
+# save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, stockton_lodes_summary, prep, file = "C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
+load("C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
 
 stockton_bgs <- stockton_bgs %>% geo_join(stockton_lodes_summary, "GEOID", "h_bg") 
 
