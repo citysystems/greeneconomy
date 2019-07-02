@@ -84,19 +84,21 @@ stockton_lodes_origin_centroids <- st_centroid(ca_bgs[which(ca_bgs$GEOID %in% st
 stockton_lodes_dest_centroids <- st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),])
 stockton_lodes_dest_bg <- ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),]
 
-od_matrix <- do.call(cbind,lapply(1:56,function(x){
-  rbind(osrmTable(src = stockton_lodes_origin_centroids[1:100,],
-                       dst = stockton_lodes_dest_centroids[(x*100-99):(x*100),])$durations,
-                   osrmTable(src = stockton_lodes_origin_centroids[101:161,],
-                             dst = stockton_lodes_dest_centroids[(x*100-99):(x*100),])$durations)}))
-od_matrix <- cbind(od_matrix,
-                   rbind(osrmTable(src = stockton_lodes_origin_centroids[1:100,],
-                                   dst = stockton_lodes_dest_centroids[5601:5691,])$durations,
-                   osrmTable(src = stockton_lodes_origin_centroids[101:161,],
-                             dst = stockton_lodes_dest_centroids[5601:5691,])$durations))
+# below is an alternate method of creating an OD matrix using a specific function in the osrm package, but it's less useful because it doesn't include distance as an output. the osrmRoute below it take longer but it gets both duration and distance.
 
-stockton_lodes_h$duration <- lapply(1:nrow(stockton_lodes_h),function(row){
-  od_matrix[which(stockton_lodes_origin_centroids$GEOID %in% stockton_lodes_h[row,"h_bg"]), which(stockton_lodes_dest_centroids$GEOID %in% stockton_lodes_h[row,"w_bg"])]
+# od_matrix <- do.call(cbind,lapply(1:56,function(x){
+#   rbind(osrmTable(src = stockton_lodes_origin_centroids[1:100,],
+#                        dst = stockton_lodes_dest_centroids[(x*100-99):(x*100),])$durations,
+#                    osrmTable(src = stockton_lodes_origin_centroids[101:161,],
+#                              dst = stockton_lodes_dest_centroids[(x*100-99):(x*100),])$durations)}))
+# od_matrix <- cbind(od_matrix,
+#                    rbind(osrmTable(src = stockton_lodes_origin_centroids[1:100,],
+#                                    dst = stockton_lodes_dest_centroids[5601:5691,])$durations,
+#                    osrmTable(src = stockton_lodes_origin_centroids[101:161,],
+#                              dst = stockton_lodes_dest_centroids[5601:5691,])$durations))
+# 
+# stockton_lodes_h$duration <- lapply(1:nrow(stockton_lodes_h),function(row){
+#   od_matrix[which(stockton_lodes_origin_centroids$GEOID %in% stockton_lodes_h[row,"h_bg"]), which(stockton_lodes_dest_centroids$GEOID %in% stockton_lodes_h[row,"w_bg"])]
 })
 
 prep <- do.call(rbind,lapply(1:nrow(stockton_lodes_h),function(row){
