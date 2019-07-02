@@ -43,8 +43,7 @@ compare_medincome <- get_acs(geography = "place", variables = c(medincome = "B19
                                                                                                                   "Jackson city, Mississippi",
                                                                                                                   "South Bend city, Indiana")) 
 
-compare_medincome %>% mutate(perc_laborforce = laborforceE / populationE)
-  mutate(NAME = gsub(" city", "", NAME)) %>%
+compare_medincome %>% mutate(NAME = gsub(" city", "", NAME)) %>%
   ggplot(aes(x = estimate, y = reorder(NAME, estimate))) +
   geom_errorbarh(aes(xmin = estimate - moe, xmax = estimate + moe)) +
   geom_point(color = "red", size = 3) +
