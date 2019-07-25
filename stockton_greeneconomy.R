@@ -10,6 +10,7 @@ library(mapview)
 library(readr)
 options(tigris_use_cache = TRUE)
 options(tigris_class = "sf")
+options(osrm.server = "http://127.0.0.1:5000/")
 census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", overwrite = TRUE)
 
 acs5_17 <- load_variables(2017, "acs5")
@@ -78,6 +79,7 @@ stockton_rac <- stockton_bgs_full %>% geo_join(ca_rac, "GEOID", "h_bg")
 stockton_wac <- stockton_bgs_full %>% geo_join(ca_wac, "GEOID", "w_bg")
 
 save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, file = "C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
+load("C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
 
 stockton_lodes_origin_centroids <- st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$h_bg),])
 stockton_lodes_dest_centroids <- st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),])
@@ -98,12 +100,12 @@ stockton_lodes_dest_bg <- ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),
 # 
 # stockton_lodes_h$duration <- lapply(1:nrow(stockton_lodes_h),function(row){
 #   od_matrix[which(stockton_lodes_origin_centroids$GEOID %in% stockton_lodes_h[row,"h_bg"]), which(stockton_lodes_dest_centroids$GEOID %in% stockton_lodes_h[row,"w_bg"])]
-})
 
 prep <- do.call(rbind,lapply(1:nrow(stockton_lodes_h),function(row){
   osrmRoute(src = stockton_lodes_origin_centroids[which(stockton_lodes_origin_centroids$GEOID %in% stockton_lodes_h[row,"h_bg"]),],
             dst = stockton_lodes_dest_centroids[which(stockton_lodes_dest_centroids$GEOID %in% stockton_lodes_h[row,"w_bg"]),], overview = FALSE)
 }))
+
 
 stockton_lodes_h <- cbind(stockton_lodes_h, prep)
 
