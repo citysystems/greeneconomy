@@ -23,18 +23,20 @@ options(tigris_class = "sf")
 
 NHTS_df_final <- read.csv(file = "C:/Users/Derek/Desktop/Stockton_R_code/VMT_Calculation_new/df_final.csv", header = TRUE)
 
-source("C:/Users/Derek/Desktop/Stockton_R_code/VMT_Calculation_new/patterns_choice.R")
-source("C:/Users/Derek/Desktop/Stockton_R_code/VMT_Calculation_new/safegraphplaces_cleanse.R")
-source("C:/Users/Derek/Desktop/Stockton_R_code/VMT_Calculation_new/m_patterns_cleanse.R")
-source("C:/Users/Derek/Desktop/Stockton_R_code/VMT_Calculation_new/m_patterns_join_cleanse.R")
-source("C:/Users/Derek/Desktop/Stockton_R_code/VMT_Calculation_new/pop_blockgroup_stockton.R")
-source("C:/Users/Derek/Desktop/Stockton_R_code/VMT_Calculation_new/month_patterns_new.R")
-source("C:/Users/Derek/Desktop/Stockton_R_code/VMT_Calculation_new/home_panel_summary.R")
-source("C:/Users/Derek/Desktop/Stockton_R_code/VMT_Calculation_new/origin_trips.R")
-source("C:/Users/Derek/Desktop/Stockton_R_code/VMT_Calculation_new/dest_trips.R")
-source("C:/Users/Derek/Desktop/Stockton_R_code/VMT_Calculation_new/origin_locations.R")
-source("C:/Users/Derek/Desktop/Stockton_R_code/VMT_Calculation_new/dest_locations.R")
-source("C:/Users/Derek/Desktop/Stockton_R_code/VMT_Calculation_new/geocodeSL.R")
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/patterns_choice.R")
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/safegraphplaces_cleanse.R")
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/m_patterns_cleanse.R")
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/m_patterns_join_cleanse.R")
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/pop_blockgroup_stockton.R")
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/month_patterns_new.R")
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/home_panel_summary.R")
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/origin_trips.R")
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/dest_trips.R")
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/origin_locations.R")
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/dest_locations.R")
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/geocodeSL.R")
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/nudge_MeanMedConv.R")
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/nudge_LinkedTrips.R")
 
 # Using the census API to create block groups and use census information in Stockton.
 census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", overwrite = TRUE)
@@ -64,16 +66,16 @@ m_hps <- home_panel_summary(num)
 # Looping through the data to disaggregate the census blocks from the monthly patterns .csv files.
 m_patterns_new <- month_patterns_new(m_patterns_join, pop_bg_stockton)
 
-  ### Creation of the "m_origins" and "m_dest" variables. 
+  ### Creation of the "m_origins" and "m_dest" variables.
 
 # Origin Points for Trips (for osrmRoute)
 m_origin_sf <- month_origin(m_patterns_new)
 
 # Destination Points for Trips (for osrmRoute)
-m_dest_sf <- month_dest(m_patterns_new)
+m_dest_sf <- month_dest(m_patterns_new, m_origin_sf)
 
 # Origin Points for Locations
-# This includes finding the census population for each block group goint to amenities in Stockton.
+# This includes finding the census population for each block group going to amenities in Stockton.
 m_origin_matrix_sf <- month_origin_matrix(m_patterns_new, m_hps, pop_bg_stockton)
 
 # Destination Points for Location
@@ -86,8 +88,8 @@ m_dest_matrix_sf <- month_dest_matrix(m_patterns_join)
 ##########
 
 OD_time_dist <- do.call(rbind,lapply(1:nrow(m_1_patterns_new),function(row){
-  osrmRoute(src = m_1_origin_sf[row, ],
-            dst = m_1_dest_sf[row, ], overview = FALSE)
+  osrmRoute(src = m_origin_sf[row, ],
+            dst = m_dest_sf[row, ], overview = FALSE)
 }))
 
 ##########
@@ -96,51 +98,13 @@ OD_time_dist <- do.call(rbind,lapply(1:nrow(m_1_patterns_new),function(row){
 
 ##########
 
-### Nudge #1: Peforming the median to mean converison.
+### Nudge: Performing the linked trips conversion factor.
 
-# NHTS_df_final <- NHTS_df_final[NHTS_df_final$trptransfilt == 4, ]
+NHTS_LinkedTripsConv <- nudge_LinkedTrips()
 
-NHTS_wghtAvg <- sum(NHTS_df_final$trpmiles * NHTS_df_final$wttrdfin) / sum(NHTS_df_final$wttrdfin)
-NHTS_medVal <- as.numeric(median(rep(NHTS_df_final$trpmiles, round(NHTS_df_final$wttrdfin))))
-NHTS_MeanMedConv <- NHTS_wghtAvg / NHTS_medVal # Need to filter by "trptransmode" and use of variables for the network distance (e.g., TRPMILES or VMT_MILES).
+### Nudge: Peforming the median to mean converison.
 
-### Nudge #2: Performing the linked trips conversion factor.
-
-NHTS_df_linkedTrips <- NHTS_df_final[NHTS_df_final$trptransfilt == 4, ]
-
-key_num <- c(1, 2, 3, 99)
-key_name <- c("Home", "Work", "SG_Dest", "Other")
-key_matrix <- data.frame(key_num, key_name)
-
-from = length( unique(NHTS_df_linkedTrips$whytofilt) )
-to = length( unique(NHTS_df_linkedTrips$whyfromfilt) )
-
-matrix_tripCount <- data.frame(matrix(data = NA, nrow = to, ncol = from))
-colnames(matrix_tripCount) <- key_name
-rownames(matrix_tripCount) <- key_name
-
-matrix_tripVMT <- data.frame(matrix(data = NA, nrow = to, ncol = from))
-colnames(matrix_tripVMT) <- key_name
-rownames(matrix_tripVMT) <- key_name
-
-for(linkedTo in sort(unique(NHTS_df_linkedTrips$whytofilt))){
-  
-  for(linkedFrom in sort(unique(NHTS_df_linkedTrips$whyfromfilt))){
-    
-    row_name = as.character(key_matrix[key_num == linkedTo, 2])
-    col_name = as.character(key_matrix[key_num == linkedFrom, 2])
-    matrix_tripCount[row_name, col_name] <- nrow(NHTS_df_linkedTrips[NHTS_df_linkedTrips$whytofilt == linkedTo & NHTS_df_linkedTrips$whyfromfilt == linkedFrom, ])
-    matrix_tripVMT[row_name, col_name] <- sum(NHTS_df_linkedTrips[NHTS_df_linkedTrips$whytofilt == linkedTo & NHTS_df_linkedTrips$whyfromfilt == linkedFrom, ]$trpmiles)
-    
-  }
-    
-}
-
-VMT_HomeAmenity_Avg <- 2 * (matrix_tripVMT["Home" ,"SG_Dest"] + matrix_tripVMT["SG_Dest", "Home"]) / (matrix_tripCount["Home" ,"SG_Dest"] + matrix_tripCount["SG_Dest", "Home"])
-model_SGmodel <-  2 * matrix_tripVMT["SG_Dest", "Home"] + (matrix_tripCount["SG_Dest", "SG_Dest"] * VMT_HomeAmenity_Avg)
-# model_SGmodel <- matrix_tripVMT["Home" ,"SG_Dest"] + matrix_tripVMT["SG_Dest", "Home"] + (matrix_tripCount["SG_Dest", "SG_Dest"] * VMT_HomeAmenity_Avg)
-model_realEst <- matrix_tripVMT["Home" ,"SG_Dest"] + matrix_tripVMT["SG_Dest", "Home"] + matrix_tripVMT["SG_Dest", "SG_Dest"]
-NHTS_LinkedTripsConv <- model_realEst / model_SGmodel
+NHTS_MeanMedConv <- nudge_MeanMedConv()
 
 ##########
 
@@ -149,60 +113,93 @@ NHTS_LinkedTripsConv <- model_realEst / model_SGmodel
 
 ##########
 
-dest_amenities_matrix <- data.frame(unique(m_1_origin_matrix_sf$destination_address))
+dest_amenities_matrix <- data.frame(unique(m_origin_matrix_sf$full_address))
 colnames(dest_amenities_matrix) <- "name_address"
 dest_num <- nrow(dest_amenities_matrix)
 
-count_dist_start <- 1
-count_dist_end <- 0
+# count_dist_start <- 1
+# count_dist_end <- 0
 
-distance <- OD_time_dist[, "distance"]
+# distance <- OD_time_dist[, "distance"]
 
-VMT_perOrigin <- data.frame(stringsAsFactors = FALSE)
-VMT_perDest <- data.frame(stringsAsFactors = FALSE)
+VMT_Origin_recorded <- data.frame(stringsAsFactors = FALSE)
+VMT_Origin_non_recorded <- 0
+# VMT_Dest <- data.frame(stringsAsFactors = FALSE)
 
-m_1_dest_matrix_sf$VMT <- NA
+conv_MeterToMile <- 0.000621371
+factor_twoWayTrip <- 2
+
+# m_dest_matrix_sf$VMT <- NA
 
 for(counterVMT in 1:dest_num){
   
-  origin_matrix <- m_1_origin_matrix_sf[m_1_origin_matrix_sf$destination_address == dest_amenities_matrix[counterVMT, ], ]
-  dest_vector <- m_1_dest_matrix_sf[m_1_dest_matrix_sf$name_address == dest_amenities_matrix[counterVMT, ], ]
+  origin_matrix <- m_origin_matrix_sf[m_origin_matrix_sf$full_address == dest_amenities_matrix[counterVMT, ], ]
+  dest_vector <- m_dest_matrix_sf[m_dest_matrix_sf$full_address == dest_amenities_matrix[counterVMT, ], ]
   # dest_matrix_data <- m_1_dest_matrix_sf[m_1_dest_matrix_sf$name_address == dest_amenities_matrix[counterVMT, ], ]
   
-  ACF_safegraph <- as.numeric(dest_vector$distance_from_home)
-  ACF_OD <- as.numeric(median(st_distance(origin_matrix, dest_vector)))
-  # Will need this line of code somewhere around here to take out the 
+  # ACF_safegraph <- as.numeric(dest_vector$distance_from_home)
+  # ACF_OD <- as.numeric(median(st_distance(origin_matrix, dest_vector)))
   
-  count_dist_end <- count_dist_end + nrow(origin_matrix)
+  # count_dist_end <- count_dist_end + nrow(origin_matrix)
   
-  distance_new <- distance[count_dist_start:count_dist_end] * ACF_safegraph / ACF_OD * NHTS_MeanMedConv * NHTS_LinkedTripsConv
+  # distance_new <- distance[count_dist_start:count_dist_end] * ACF_safegraph / ACF_OD * NHTS_MeanMedConv * NHTS_LinkedTripsConv
+  distance_new <- as.numeric(origin_matrix$distance_from_home) * factor_twoWayTrip * conv_MeterToMile * NHTS_MeanMedConv * NHTS_LinkedTripsConv
   
-  VMT_census <- origin_matrix$visit_count * distance_new * as.numeric(origin_matrix$origin_population) / origin_matrix$number_devices_residing
-  VMT_perOrigin <- rbind(VMT_perOrigin, data.frame(VMT_census))
+  VMT_bg <- data.frame(origin_matrix$visit_count * distance_new * as.numeric(origin_matrix$origin_population) / origin_matrix$number_devices_residing)
+  VMT_Origin_recorded <- rbind(VMT_Origin_recorded, VMT_bg)
   
-  VMT_census_sum <- sum(VMT_census)
-  VMT_scaleFullPop <- as.numeric(dest_vector$raw_visit_counts) / sum(origin_matrix$visit_count)
-  VMT_dest <- VMT_scaleFullPop * VMT_census_sum
+  proportion_Stockton <- sum(!is.na(origin_matrix$origin_population)) / nrow(data.frame(origin_matrix$origin_population))
+  VMT_non_recorded <- sum(VMT_bg[!is.na(origin_matrix$origin_population), ]) * proportion_Stockton * factor_twoWayTrip
+  VMT_Origin_non_recorded <- VMT_Origin_non_recorded + VMT_non_recorded
+  # VMT_Origin_non_recorded <- VMT_Origin_non_recorded + (VMT_non_recorded * 1/nrow(pop_bg_stockton))
+  
+  # ??? ... I'm a little skeptical about this analysis. I forget why I included "VMT_scaleFullPop" and "VMT_dest".
+  # VMT_bgSum <- sum(VMT_bg)
+  # VMT_scaleFullPop <- as.numeric(dest_vector$raw_visit_counts) / sum(origin_matrix$visit_count)
+  # VMT_dest <- VMT_scaleFullPop * VMT_bgSum
+  # ???
+  
+  # count_dist_start <- count_dist_start + nrow(origin_matrix)
+  
+  # m_dest_matrix_sf[m_dest_matrix_sf$full_address == dest_amenities_matrix[counterVMT, ], "VMT"] <- VMT_dest
 
-  count_dist_start <- count_dist_start + nrow(origin_matrix)
-  
-  m_1_dest_matrix_sf[m_1_dest_matrix_sf$name_address == dest_amenities_matrix[counterVMT, ], "VMT"] <- VMT_dest
-
-  VMT_perDest <- rbind(VMT_perDest,VMT_dest)
+  # VMT_Dest <- rbind(VMT_Dest,VMT_dest)
     
 }
 
-colnames(VMT_perOrigin) <- "VMT_perOrigin"
-colnames(VMT_perDest) <- "VMT_perDest"
+colnames(VMT_Origin_recorded) <- "VMT_Origin"
+m_origin_matrix_sf <- cbind(m_origin_matrix_sf, VMT_Origin_recorded)
 
-VMT_Avg <- mean(VMT_perDest$VMT_perDest)
-m_1_dest_matrix_sf[is.na(m_1_dest_matrix_sf$VMT), "VMT"] <- VMT_Avg
-VMT_tot <- sum(m_1_dest_matrix_sf$VMT)
+m_origin_Stockton <- m_origin_matrix_sf[!is.na(m_origin_matrix_sf$origin_population), ]
+m_origin_StocktonBG_freq <- count(m_origin_Stockton, vars = "origin")
+m_origin_StocktonBG_VMT <- count(m_origin_Stockton, vars = "origin", wt_var = "VMT_Origin")
+
+VMT_Stockton_bg <- data.frame(pop_bg_stockton$origin); colnames(VMT_Stockton_bg) <- "origin"
+VMT_Stockton_bg <- left_join(VMT_Stockton_bg, m_origin_StocktonBG_freq, by = "origin")
+VMT_Stockton_bg <- left_join(VMT_Stockton_bg, m_origin_StocktonBG_VMT, by = "origin")
+VMT_Stockton_bg <- cbind(VMT_Stockton_bg, (VMT_Origin_non_recorded / nrow(pop_bg_stockton)))
+
+colnames(VMT_Stockton_bg) <- c("origin", "frequency", "VMTs_recorded", "VMTs_unrecorded")
+VMT_Stockton_bg[is.na(VMT_Stockton_bg$frequency), "frequency"] <- 0
+VMT_Stockton_bg[is.na(VMT_Stockton_bg$VMTs_recorded), "VMTs_recorded"] <- 0
+VMT_Stockton_bg$VMT_total <- VMT_Stockton_bg$VMTs_recorded + VMT_Stockton_bg$VMTs_unrecorded
+VMT_Stockton_bg <- cbind(VMT_Stockton_bg, pop_bg_stockton$geometry)
+
+#Outlier
+VMT_Stockton_bg[94, "VMT_total"] <- 0
+
+VMT_Stockton_bg_sf <- st_as_sf(VMT_Stockton_bg)
+mapview(VMT_Stockton_bg_sf, zcol = "VMT_total")
+
+# colnames(VMT_perDest) <- "VMT_perDest"
+
+# VMT_Avg <- mean(VMT_perDest$VMT_perDest)
+# m_dest_matrix_sf[is.na(m_1_dest_matrix_sf$VMT), "VMT"] <- VMT_Avg
+# VMT_tot <- sum(m_dest_matrix_sf$VMT)
 
 # ratio_test <- sum(m_1_origin_matrix_sf[!is.na(m_1_origin_matrix_sf$origin_population),]$visit_count) / sum(m_1_origin_matrix_sf$visit_count)
 
 ##########
-
 
 ##################################################
 

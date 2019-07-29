@@ -1,6 +1,6 @@
 ### Finding the census population for each block group goint to amenities in Stockton.
 
-stockton_boundary_influence <- st_read("C:/Users/Derek/Desktop/Stockton_R_code/VMT_Calculation_new/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(4326))
+stockton_boundary_influence <- st_read("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(4326))
 sjc_bgs <- block_groups("California", "San Joaquin County", cb = TRUE) %>% st_transform(st_crs(4326))
 stockton_bgs <- sjc_bgs[which(sjc_bgs$GEOID %in% st_centroid(sjc_bgs)[stockton_boundary_influence,]$GEOID),]
 stockton_bgs <- stockton_bgs %>% dplyr::select(GEOID)

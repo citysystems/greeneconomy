@@ -16,7 +16,7 @@ home_panel_summary <- function(num){
   else if(num == 12){m_hps <- read.csv("C:/Users/Derek/Desktop/safegraph/home_panel_summary/m_12.csv", header=TRUE, stringsAsFactors = FALSE)}
 
   m_hps <- filter(m_hps, state == "ca")
-  m_hps <- select(m_hps, c("census_block_group", "number_devices_residing"))
+  m_hps <- dplyr::select(m_hps, c("census_block_group", "number_devices_residing"))
   colnames(m_hps) <- c("block_id", "number_devices_residing")
 
   return(m_hps)

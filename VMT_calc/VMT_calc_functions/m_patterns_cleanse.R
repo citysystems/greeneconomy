@@ -1,7 +1,7 @@
 m_patterns_cleanse <- function(p_text){
   
   m_patterns <- read.csv(p_text, header=TRUE, stringsAsFactors = FALSE)
-  m_patterns <- select(m_patterns, c("location_name", "street_address", "city", "state", "zip_code", "distance_from_home", "raw_visit_counts", "raw_visitor_counts", "visitor_home_cbgs", "visit_home_cbgs"))
+  m_patterns <- dplyr::select(m_patterns, c("location_name", "street_address", "city", "state", "zip_code", "distance_from_home", "raw_visit_counts", "raw_visitor_counts", "visitor_home_cbgs", "visit_home_cbgs"))
   # m_patterns <- filter(m_patterns, city == 'stockton')
   
   name_address <- paste(m_patterns$street_address, m_patterns$city, m_patterns$state, m_patterns$zip_code, sep = ", ")
