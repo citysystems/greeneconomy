@@ -27,11 +27,11 @@ nudge_LinkedTrips <- function(){
       col_name = as.character(key_matrix[key_num == linkedFrom, 2])
       matrix_tripCount[row_name, col_name] <- nrow(NHTS_df_linkedTrips[NHTS_df_linkedTrips$whytofilt == linkedTo & NHTS_df_linkedTrips$whyfromfilt == linkedFrom, ])
       matrix_tripVMT[row_name, col_name] <- sum(NHTS_df_linkedTrips[NHTS_df_linkedTrips$whytofilt == linkedTo & NHTS_df_linkedTrips$whyfromfilt == linkedFrom, ]$trpmiles)
-    
+      
     }
-  
+    
   }
-
+  
   VMT_HomeAmenity_Avg <- 2 * (matrix_tripVMT["Home" ,"SG_Dest"] + matrix_tripVMT["SG_Dest", "Home"]) / (matrix_tripCount["Home" ,"SG_Dest"] + matrix_tripCount["SG_Dest", "Home"])
   model_SGmodel <-  2 * matrix_tripVMT["SG_Dest", "Home"] + (matrix_tripCount["SG_Dest", "SG_Dest"] * VMT_HomeAmenity_Avg)
   # model_SGmodel <- matrix_tripVMT["Home" ,"SG_Dest"] + matrix_tripVMT["SG_Dest", "Home"] + (matrix_tripCount["SG_Dest", "SG_Dest"] * VMT_HomeAmenity_Avg)
