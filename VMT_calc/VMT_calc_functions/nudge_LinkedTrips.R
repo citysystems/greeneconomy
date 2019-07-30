@@ -1,9 +1,10 @@
 ### Nudge: Performing the linked trips conversion factor.
 
-nudge_LinkedTrips <- function(){
+nudge_LinkedTrips <- function(NHTS_df_final){
 
   # NHTS_df_linkedTrips <- NHTS_df_final[NHTS_df_final$trptransfilt == 3 && NHTS_df_final$trptransfilt == 4, ]
-
+  NHTS_df_linkedTrips <- NHTS_df_final
+  
   key_num <- c(1, 2, 3, 99)
   key_name <- c("Home", "Work", "SG_Dest", "Other")
   key_matrix <- data.frame(key_num, key_name)
@@ -37,5 +38,7 @@ nudge_LinkedTrips <- function(){
   # model_SGmodel <- matrix_tripVMT["Home" ,"SG_Dest"] + matrix_tripVMT["SG_Dest", "Home"] + (matrix_tripCount["SG_Dest", "SG_Dest"] * VMT_HomeAmenity_Avg)
   model_realEst <- matrix_tripVMT["Home" ,"SG_Dest"] + matrix_tripVMT["SG_Dest", "Home"] + matrix_tripVMT["SG_Dest", "SG_Dest"]
   NHTS_LinkedTripsConv <- model_realEst / model_SGmodel
+  
+  return(NHTS_LinkedTripsConv)
   
 }

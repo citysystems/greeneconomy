@@ -1,6 +1,6 @@
 ### Nudge: Peforming the median to mean converison.
 
-nudge_MeanMedConv <- function(){
+nudge_MeanMedConv <- function(NHTS_df_final){
 
   # NHTS_df_final <- NHTS_df_final[NHTS_df_final$trptransfilt == 3 && NHTS_df_final$trptransfilt == 4, ]
 

@@ -21,7 +21,7 @@ options(tigris_class = "sf")
 
 # Import files.
 
-NHTS_df_final <- read.csv(file = "C:/Users/Derek/Desktop/Stockton_R_code/VMT_Calculation_new/df_final.csv", header = TRUE)
+NHTS_df_final <- read.csv(file = "C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/NHTS_df_final.csv", header = TRUE)
 
 source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/patterns_choice.R")
 source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/safegraphplaces_cleanse.R")
@@ -100,11 +100,11 @@ OD_time_dist <- do.call(rbind,lapply(1:nrow(m_1_patterns_new),function(row){
 
 ### Nudge: Performing the linked trips conversion factor.
 
-NHTS_LinkedTripsConv <- nudge_LinkedTrips()
+NHTS_LinkedTripsConv <- nudge_LinkedTrips(NHTS_df_final)
 
 ### Nudge: Peforming the median to mean converison.
 
-NHTS_MeanMedConv <- nudge_MeanMedConv()
+NHTS_MeanMedConv <- nudge_MeanMedConv(NHTS_df_final)
 
 ##########
 
