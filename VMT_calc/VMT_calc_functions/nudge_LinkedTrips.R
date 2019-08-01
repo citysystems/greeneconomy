@@ -5,6 +5,14 @@ nudge_LinkedTrips <- function(NHTS_df_final){
   # NHTS_df_linkedTrips <- NHTS_df_final[NHTS_df_final$trptransfilt == 3 && NHTS_df_final$trptransfilt == 4, ]
   NHTS_df_linkedTrips <- NHTS_df_final
   
+  ##########
+  
+  # Manual removal of outlier: 304216040202 (TDCASEID) & 322.673 (TRPMILES)
+  
+  NHTS_df_linkedTrips <- subset(NHTS_df_linkedTrips, tdcaseid != 304216040202)
+  
+  ##########
+  
   key_num <- c(1, 2, 3, 99)
   key_name <- c("Home", "Work", "SG_Dest", "Other")
   key_matrix <- data.frame(key_num, key_name)

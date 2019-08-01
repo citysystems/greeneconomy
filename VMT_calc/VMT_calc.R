@@ -37,6 +37,7 @@ source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions
 source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/geocodeSL.R")
 source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/nudge_MeanMedConv.R")
 source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/nudge_LinkedTrips.R")
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/nudge_CarpoolVehicleFilter.R")
 
 # Using the census API to create block groups and use census information in Stockton.
 census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", overwrite = TRUE)
@@ -106,6 +107,10 @@ NHTS_LinkedTripsConv <- nudge_LinkedTrips(NHTS_df_final)
 
 NHTS_MeanMedConv <- nudge_MeanMedConv(NHTS_df_final)
 
+### Nudge: Peforming the carpooling and vehicle vs. other transit mode nudge.
+
+NHTS_carpoolVehicleFilter <- NHTS_carpoolVehicleFilter(NHTS_df_final)
+
 ##########
 
   ### Calculation of the VMTs per origin, per destination, and in total.
@@ -143,7 +148,7 @@ for(counterVMT in 1:dest_num){
   # count_dist_end <- count_dist_end + nrow(origin_matrix)
   
   # distance_new <- distance[count_dist_start:count_dist_end] * ACF_safegraph / ACF_OD * NHTS_MeanMedConv * NHTS_LinkedTripsConv
-  distance_new <- as.numeric(origin_matrix$distance_from_home) * factor_twoWayTrip * conv_MeterToMile * NHTS_MeanMedConv * NHTS_LinkedTripsConv
+  distance_new <- as.numeric(origin_matrix$distance_from_home) * factor_twoWayTrip * conv_MeterToMile * NHTS_MeanMedConv * NHTS_LinkedTripsConv * NHTS_carpoolVehicleFilter
   
   VMT_bg <- data.frame(origin_matrix$visit_count * distance_new * as.numeric(origin_matrix$origin_population) / origin_matrix$number_devices_residing)
   VMT_Origin_recorded <- rbind(VMT_Origin_recorded, VMT_bg)
