@@ -48,54 +48,7 @@ ca_bgs <- block_groups("CA", cb = TRUE)
 safegraphplaces <- read.csv("C:/Users/Derek/Desktop/safegraph/poi/safegraphplaces.csv", header=TRUE, stringsAsFactors = FALSE)
 safegraphplaces <- safegraphplaces_cleanse(safegraphplaces)
 
-##########
-
-# Downloading Safegraph patterns .csv files.
-
-num = 1 # Change this to a for loop once you have figured out how to calculate the nudges.
-
-patterns_text <- patterns_choice(num)
-m_patterns <- m_patterns_cleanse(patterns_text)
-m_patterns_join <- m_patterns_join_cleanse(m_patterns, safegraphplaces)
-
-# Finding the census population for each block group goint to amenities in Stockton.
-pop_bg_stockton <- pop_blockgroup_stockton
-
-# m_hps from "home_panel_summary"
-m_hps <- home_panel_summary(num)
-
-# Looping through the data to disaggregate the census blocks from the monthly patterns .csv files.
-m_patterns_new <- month_patterns_new(m_patterns_join, pop_bg_stockton)
-
-  ### Creation of the "m_origins" and "m_dest" variables.
-
-# Origin Points for Trips (for osrmRoute)
-m_origin_sf <- month_origin(m_patterns_new)
-
-# Destination Points for Trips (for osrmRoute)
-m_dest_sf <- month_dest(m_patterns_new, m_origin_sf)
-
-# Origin Points for Locations
-# This includes finding the census population for each block group going to amenities in Stockton.
-m_origin_matrix_sf <- month_origin_matrix(m_patterns_new, m_hps, pop_bg_stockton)
-
-# Destination Points for Location
-m_dest_matrix_sf <- month_dest_matrix(m_patterns_join)
-
-##########
-
-  ### osrmRoute time & distance prep.
-
-##########
-
-OD_time_dist <- do.call(rbind,lapply(1:nrow(m_1_patterns_new),function(row){
-  osrmRoute(src = m_origin_sf[row, ],
-            dst = m_dest_sf[row, ], overview = FALSE)
-}))
-
-##########
-
-  ### Calculation of NHTS nudge values for the VMT calculations.
+### Calculation of NHTS nudge values for the VMT calculations.
 
 ##########
 
@@ -111,6 +64,60 @@ NHTS_MeanMedConv <- nudge_MeanMedConv(NHTS_df_final)
 
 NHTS_carpoolVehicleFilter <- NHTS_carpoolVehicleFilter(NHTS_df_final)
 
+# Downloading Safegraph patterns .csv files.
+
+for(num in 7:8){
+
+  patterns_text <- patterns_choice(num)
+  m_patterns <- m_patterns_cleanse(patterns_text)
+  m_patterns_join <- m_patterns_join_cleanse(m_patterns, safegraphplaces)
+
+  # m_hps from "home_panel_summary"
+  m_hps <- home_panel_summary(num)
+
+  # Looping through the data to disaggregate the census blocks from the monthly patterns .csv files.
+  m_patterns_new <- month_patterns_new(m_patterns_join, pop_bg_stockton)
+  
+  # Finding the census population for each block group goint to amenities in Stockton.
+  pop_bg_stockton <- pop_blockgroup_stockton(m_hps)
+  
+  # Origin Points for Locations
+  # This includes finding the census population for each block group going to amenities in Stockton.
+  m_origin_matrix_sf <- month_origin_matrix(m_patterns_new, m_hps, pop_bg_stockton)
+  
+  # Destination Points for Location
+  dest_unique <- data.frame(unique(m_origin_matrix_sf$full_address))
+  m_dest_matrix_sf <- month_dest_matrix(m_patterns_join, dest_unique, safegraphplaces)
+ 
+  filename <- paste(substr(patterns_text, 0, 23), "Stockton_R_code/VMT_Calculation_new/", substr(patterns_text, 34, 45), "_new.RData", sep = "")
+  
+  save(m_origin_matrix_sf, m_dest_matrix_sf, m_patterns_new, file = filename)
+   
+  rm(m_origin_matrix_sf, m_dest_matrix_sf, m_patterns_new, file = filename)
+  
+}
+
+##########
+
+  ### Creation of the "m_origins" and "m_dest" variables.
+
+# Origin Points for Trips (for osrmRoute)
+#m_origin_sf <- month_origin(m_patterns_new)
+
+# Destination Points for Trips (for osrmRoute)
+#m_dest_sf <- month_dest(m_patterns_new, m_origin_sf)
+
+##########
+
+  ### osrmRoute time & distance prep.
+
+##########
+
+# OD_time_dist <- do.call(rbind,lapply(1:nrow(m_1_patterns_new),function(row){
+#   osrmRoute(src = m_origin_sf[row, ],
+#             dst = m_dest_sf[row, ], overview = FALSE)
+# }))
+
 ##########
 
   ### Calculation of the VMTs per origin, per destination, and in total.
@@ -118,83 +125,148 @@ NHTS_carpoolVehicleFilter <- NHTS_carpoolVehicleFilter(NHTS_df_final)
 
 ##########
 
-dest_amenities_matrix <- data.frame(unique(m_origin_matrix_sf$full_address))
-colnames(dest_amenities_matrix) <- "name_address"
-dest_num <- nrow(dest_amenities_matrix)
-
-# count_dist_start <- 1
-# count_dist_end <- 0
-
-# distance <- OD_time_dist[, "distance"]
-
-VMT_Origin_recorded <- data.frame(stringsAsFactors = FALSE)
-VMT_Origin_non_recorded <- 0
-# VMT_Dest <- data.frame(stringsAsFactors = FALSE)
+# Constant variables
 
 conv_MeterToMile <- 0.000621371
 factor_twoWayTrip <- 2
 
-# m_dest_matrix_sf$VMT <- NA
+Stockton_longitude <- -121.2908
+Stockton_latitude <- 37.9577
+latlong_mile_conversion <- 69.132
 
-for(counterVMT in 1:dest_num){
-  
-  origin_matrix <- m_origin_matrix_sf[m_origin_matrix_sf$full_address == dest_amenities_matrix[counterVMT, ], ]
-  dest_vector <- m_dest_matrix_sf[m_dest_matrix_sf$full_address == dest_amenities_matrix[counterVMT, ], ]
-  # dest_matrix_data <- m_1_dest_matrix_sf[m_1_dest_matrix_sf$name_address == dest_amenities_matrix[counterVMT, ], ]
-  
-  # ACF_safegraph <- as.numeric(dest_vector$distance_from_home)
-  # ACF_OD <- as.numeric(median(st_distance(origin_matrix, dest_vector)))
-  
-  # count_dist_end <- count_dist_end + nrow(origin_matrix)
-  
-  # distance_new <- distance[count_dist_start:count_dist_end] * ACF_safegraph / ACF_OD * NHTS_MeanMedConv * NHTS_LinkedTripsConv
-  distance_new <- as.numeric(origin_matrix$distance_from_home) * factor_twoWayTrip * conv_MeterToMile * NHTS_MeanMedConv * NHTS_LinkedTripsConv * NHTS_carpoolVehicleFilter
-  
-  VMT_bg <- data.frame(origin_matrix$visit_count * distance_new * as.numeric(origin_matrix$origin_population) / origin_matrix$number_devices_residing)
-  VMT_Origin_recorded <- rbind(VMT_Origin_recorded, VMT_bg)
-  
-  proportion_Stockton <- sum(!is.na(origin_matrix$origin_population)) / nrow(data.frame(origin_matrix$origin_population))
-  VMT_non_recorded <- sum(VMT_bg[!is.na(origin_matrix$origin_population), ]) * proportion_Stockton * factor_twoWayTrip
-  VMT_Origin_non_recorded <- VMT_Origin_non_recorded + VMT_non_recorded
-  # VMT_Origin_non_recorded <- VMT_Origin_non_recorded + (VMT_non_recorded * 1/nrow(pop_bg_stockton))
-  
-  # ??? ... I'm a little skeptical about this analysis. I forget why I included "VMT_scaleFullPop" and "VMT_dest".
-  # VMT_bgSum <- sum(VMT_bg)
-  # VMT_scaleFullPop <- as.numeric(dest_vector$raw_visit_counts) / sum(origin_matrix$visit_count)
-  # VMT_dest <- VMT_scaleFullPop * VMT_bgSum
-  # ???
-  
-  # count_dist_start <- count_dist_start + nrow(origin_matrix)
-  
-  # m_dest_matrix_sf[m_dest_matrix_sf$full_address == dest_amenities_matrix[counterVMT, ], "VMT"] <- VMT_dest
+VMT_Origin_recorded <- data.frame(matrix(0, nrow = nrow(pop_bg_stockton), ncol = 13))
+VMT_Origin_recorded[, 1] <- pop_bg_stockton$origin
+colnames(VMT_Origin_recorded) <- c("origin", "VMTs_m_1", "VMTs_m_2", "VMTs_m_3", "VMTs_m_4", "VMTs_m_5", "VMTs_m_6", "VMTs_m_7", "VMTs_m_8", "VMTs_m_9", "VMTs_m_10", "VMTs_m_11", "VMTs_m_12")
+rownames(VMT_Origin_recorded) <- pop_bg_stockton$origin
 
-  # VMT_Dest <- rbind(VMT_Dest,VMT_dest)
+VMT_Origin_nonrecorded <- data.frame(matrix(0, nrow = nrow(pop_bg_stockton), ncol = 13))
+VMT_Origin_nonrecorded[, 1] <- pop_bg_stockton$origin
+colnames(VMT_Origin_nonrecorded) <- c("origin", "VMTs_m_1", "VMTs_m_2", "VMTs_m_3", "VMTs_m_4", "VMTs_m_5", "VMTs_m_6", "VMTs_m_7", "VMTs_m_8", "VMTs_m_9", "VMTs_m_10", "VMTs_m_11", "VMTs_m_12")
+rownames(VMT_Origin_nonrecorded) <- pop_bg_stockton$origin
+
+VMT_Origin_otherdest_nonrecorded <- data.frame(matrix(0, nrow = nrow(pop_bg_stockton), ncol = 13))
+VMT_Origin_otherdest_nonrecorded[, 1] <- pop_bg_stockton$origin
+colnames(VMT_Origin_otherdest_nonrecorded) <- c("origin", "VMTs_m_1", "VMTs_m_2", "VMTs_m_3", "VMTs_m_4", "VMTs_m_5", "VMTs_m_6", "VMTs_m_7", "VMTs_m_8", "VMTs_m_9", "VMTs_m_10", "VMTs_m_11", "VMTs_m_12")
+rownames(VMT_Origin_otherdest_nonrecorded) <- pop_bg_stockton$origin
+
+months_in_year <- 12
+VMT_considerations <- 3
+months_considerations <- months_in_year * VMT_considerations
+
+##########
+
+for(counterMonth in 1:12){
+  
+  print(counterMonth)
+
+  patterns_text <- patterns_choice(counterMonth)
+  filename <- paste(substr(patterns_text, 0, 23), "Stockton_R_code/VMT_Calculation_new/", substr(patterns_text, 34, 45), "_new.RData", sep = "")
+  load(filename)
+
+  dest_amenities_matrix <- data.frame(unique(m_origin_matrix_sf$full_address))
+  colnames(dest_amenities_matrix) <- "name_address"
+  dest_num <- nrow(dest_amenities_matrix)
+  
+  m_dest_matrix_VMT <- cbind(m_dest_matrix_sf, data.frame(matrix( NA, nrow = nrow(m_dest_matrix_sf), ncol = months_considerations )) )
+  colnames(m_dest_matrix_VMT)[12:47] <- c("VMTs_recorded_m_1", "VMTs_recorded_m_2", "VMTs_recorded_m_3", "VMTs_recorded_m_4", "VMTs_recorded_m_5", "VMTs_recorded_m_6",
+                                          "VMTs_recorded_m_7", "VMTs_recorded_m_8", "VMTs_recorded_m_9", "VMTs_recorded_m_10", "VMTs_recorded_m_11", "VMTs_recorded_m_12",
+                                          "VMTs_nonrecorded_m_1", "VMTs_nonrecorded_m_2", "VMTs_nonrecorded_m_3", "VMTs_nonrecorded_m_4", "VMTs_nonrecorded_m_5", "VMTs_nonrecorded_m_6",
+                                          "VMTs_nonrecorded_m_7", "VMTs_nonrecorded_m_8", "VMTs_nonrecorded_m_9", "VMTs_nonrecorded_m_10", "VMTs_nonrecorded_m_11", "VMTs_nonrecorded_m_12",
+                                          "VMTs_nonrecorded_otherdest_m_1", "VMTs_nonrecorded_otherdest_m_2", "VMTs_nonrecorded_otherdest_m_3", "VMTs_nonrecorded_otherdest_m_4",
+                                          "VMTs_nonrecorded_otherdest_m_5", "VMTs_nonrecorded_otherdest_m_6", "VMTs_nonrecorded_otherdest_m_7", "VMTs_nonrecorded_otherdest_m_8",
+                                          "VMTs_nonrecorded_otherdest_m_9", "VMTs_nonrecorded_otherdest_m_10", "VMTs_nonrecorded_otherdest_m_11","VMTs_nonrecorded_otherdest_m_12")
+  
+  locations_of_consideration <- m_dest_matrix_VMT[!is.na(m_dest_matrix_VMT$longitude), ]
+  locations_of_consideration$distance_to_Stockton <- latlong_mile_conversion * sqrt( (as.numeric(locations_of_consideration$longitude) - Stockton_longitude)^2
+                                                                                     + (as.numeric(locations_of_consideration$latitude) - Stockton_latitude)^2  )
+
+  # count_dist_start <- 1
+  # count_dist_end <- 0
+  # distance <- OD_time_dist[, "distance"]
+
+  distance_recorded <- data.frame( matrix(nrow = dest_num, ncol = 1, NA) )
+  distance_nonrecorded <- data.frame( matrix(nrow = dest_num, ncol = 1, NA) )
+
+  for(counterVMT in 1:dest_num){
+  
+    origin_matrix <- m_origin_matrix_sf[m_origin_matrix_sf$full_address == dest_amenities_matrix[counterVMT, "name_address"], ]
+    dest_vector <- m_dest_matrix_VMT[m_dest_matrix_VMT$full_address == dest_amenities_matrix[counterVMT, "name_address"], ]
+  
+    ##########
+    # ACF_safegraph <- as.numeric(dest_vector$distance_from_home)
+    # ACF_OD <- as.numeric(median(st_distance(origin_matrix, dest_vector)))
+    # count_dist_end <- count_dist_end + nrow(origin_matrix)
+    # distance_new <- distance[count_dist_start:count_dist_end] * ACF_safegraph / ACF_OD * NHTS_MeanMedConv * NHTS_LinkedTripsConv
+    ##########
+  
+    distance_origin <- as.numeric(origin_matrix$distance_from_home) * factor_twoWayTrip * conv_MeterToMile * NHTS_MeanMedConv * NHTS_LinkedTripsConv * NHTS_carpoolVehicleFilter  
+    distance_dest <- as.numeric(dest_vector$distance_from_home) * factor_twoWayTrip * conv_MeterToMile * NHTS_MeanMedConv * NHTS_LinkedTripsConv * NHTS_carpoolVehicleFilter
+
+    proportion_Stockton <- sum(origin_matrix[!is.na(origin_matrix$origin_population), "visit_count"]) / sum(origin_matrix[, "visit_count"])
+  
+    distance_bg_recorded <- data.frame( as.numeric(dest_vector$raw_visit_counts) / as.numeric(dest_vector$raw_visitor_counts) * origin_matrix$unique_visitor_count * distance_origin)
+    distance_bg_recorded_sum <- sum(distance_bg_recorded) 
+    distance_bg_nonrecorded <- ( distance_dest * as.numeric(dest_vector$raw_visit_counts) - sum(distance_bg_recorded) ) * proportion_Stockton
+  
+    # if(nrow(VMT_Origin_recorded) > 205){print(counterVMT)}
+    # print(counterVMT)
+    # print(proportion_Stockton)
+
+    VMT_Origin_recorded_unique_dest <- distance_bg_recorded * as.numeric(origin_matrix$origin_population) / as.numeric(origin_matrix$number_devices_residing)
+    VMT_Origin_recorded[(c(origin_matrix$origin)), (1 + counterMonth)] <- VMT_Origin_recorded[c(origin_matrix$origin), (1 + counterMonth)] + VMT_Origin_recorded_unique_dest
+    VMT_Origin_recorded <- na.omit(VMT_Origin_recorded)
     
+    subset_non_recorded <- subset(VMT_Origin_nonrecorded[, c(1, (1 + counterMonth))], !(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin))
+    VMT_Origin_nonrecorded_unique_dest <- ( matrix(nrow = nrow(subset_non_recorded), ncol = 1, distance_bg_nonrecorded/nrow(subset_non_recorded))
+                                            * as.numeric( pop_bg_stockton[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), "origin_population"][[1]] )
+                                            / as.numeric( pop_bg_stockton[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), "number_devices_residing"][[1]] ) )
+    VMT_Origin_nonrecorded[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), (1 + counterMonth)] <- (VMT_Origin_nonrecorded[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), (1 + counterMonth)]
+                                                                                                       + VMT_Origin_nonrecorded_unique_dest)
+
+    distance_recorded[counterVMT, 1] <- distance_bg_recorded_sum
+    distance_nonrecorded[counterVMT, 1] <- distance_bg_nonrecorded/nrow(subset_non_recorded)
+    
+    m_dest_matrix_VMT[m_dest_matrix_VMT$full_address == dest_vector$full_address, (11 + counterMonth)] <- sum(VMT_Origin_recorded_unique_dest)
+    locations_of_consideration[locations_of_consideration$full_address == dest_vector$full_address, (11 + counterMonth)] <- sum(VMT_Origin_recorded_unique_dest)
+
+    m_dest_matrix_VMT[m_dest_matrix_VMT$full_address == dest_vector$full_address, (23 + counterMonth)] <- sum(VMT_Origin_nonrecorded_unique_dest)
+    locations_of_consideration[locations_of_consideration$full_address == dest_vector$full_address, (23 + counterMonth)] <- sum(VMT_Origin_nonrecorded_unique_dest)
+  
+    ##########
+    # count_dist_start <- count_dist_start + nrow(origin_matrix)
+    ##########
+  
+  }
+
+  # Calculating the VMTs associated with destinations not included within the ("dest_amenities_matrix")
+
+  VMT_unique_dest_avg <- mean(VMT_Origin_nonrecorded[, (1 + counterMonth)])
+  distance_cutoff <- 1 # miles
+
+  otherdest_rows <- length(locations_of_consideration[is.na(locations_of_consideration[, (23 + counterMonth)]) & locations_of_consideration[, "distance_to_Stockton"] <= distance_cutoff, (23 + counterMonth)])
+  locations_of_consideration[is.na(locations_of_consideration[, (23 + counterMonth)]) & locations_of_consideration[, "distance_to_Stockton"] <= distance_cutoff, (23 + counterMonth)] <- VMT_unique_dest_avg
+  VMT_Origin_otherdest_nonrecorded[, (1 + counterMonth)] <- VMT_unique_dest_avg * otherdest_rows / nrow(pop_bg_stockton)
+
+  rm(m_origin_matrix_sf, m_dest_matrix_sf, m_patterns_new)
+  
 }
 
-colnames(VMT_Origin_recorded) <- "VMT_Origin"
-m_origin_matrix_sf <- cbind(m_origin_matrix_sf, VMT_Origin_recorded)
+# Operations for VMT mapping
 
-m_origin_Stockton <- m_origin_matrix_sf[!is.na(m_origin_matrix_sf$origin_population), ]
-m_origin_StocktonBG_freq <- count(m_origin_Stockton, vars = "origin")
-m_origin_StocktonBG_VMT <- count(m_origin_Stockton, vars = "origin", wt_var = "VMT_Origin")
 
-VMT_Stockton_bg <- data.frame(pop_bg_stockton$origin); colnames(VMT_Stockton_bg) <- "origin"
-VMT_Stockton_bg <- left_join(VMT_Stockton_bg, m_origin_StocktonBG_freq, by = "origin")
-VMT_Stockton_bg <- left_join(VMT_Stockton_bg, m_origin_StocktonBG_VMT, by = "origin")
-VMT_Stockton_bg <- cbind(VMT_Stockton_bg, (VMT_Origin_non_recorded / nrow(pop_bg_stockton)))
+pop_bg_stockton$number_devices_residing <- NULL
+VMT_colnames <- c("VMTs_m_1", "VMTs_m_2", "VMTs_m_3", "VMTs_m_4", "VMTs_m_5", "VMTs_m_6",
+                  "VMTs_m_7", "VMTs_m_8", "VMTs_m_9", "VMTs_m_10", "VMTs_m_11", "VMTs_m_12")
 
-colnames(VMT_Stockton_bg) <- c("origin", "frequency", "VMTs_recorded", "VMTs_unrecorded")
-VMT_Stockton_bg[is.na(VMT_Stockton_bg$frequency), "frequency"] <- 0
-VMT_Stockton_bg[is.na(VMT_Stockton_bg$VMTs_recorded), "VMTs_recorded"] <- 0
-VMT_Stockton_bg$VMT_total <- VMT_Stockton_bg$VMTs_recorded + VMT_Stockton_bg$VMTs_unrecorded
-VMT_Stockton_bg <- cbind(VMT_Stockton_bg, pop_bg_stockton$geometry)
+VMT_sum_recorded <- rowSums(VMT_Origin_recorded[, VMT_colnames])
+VMT_sum_nonrecorded <- rowSums(VMT_Origin_nonrecorded[, VMT_colnames])
+VMT_sum_otherdest_nonrecorded <- rowSums(VMT_Origin_otherdest_nonrecorded[, VMT_colnames])
+VMT_sum_all <- VMT_sum_recorded + VMT_sum_nonrecorded + VMT_sum_otherdest_nonrecorded
 
-#Outlier
-VMT_Stockton_bg[94, "VMT_total"] <- 0
+VMT_all <- cbind(pop_bg_stockton, VMT_sum_recorded, VMT_sum_nonrecorded, VMT_sum_otherdest_nonrecorded, VMT_sum_all)
+VMT_all$VMT_norm <- ( VMT_all$VMT_sum_all / as.numeric( as.character( VMT_all$origin_population ) ) )
 
-VMT_Stockton_bg_sf <- st_as_sf(VMT_Stockton_bg)
-mapview(VMT_Stockton_bg_sf, zcol = "VMT_total")
+mapview(VMT_all, zcol = "VMT_norm", legend = TRUE)
 
 # colnames(VMT_perDest) <- "VMT_perDest"
 
@@ -203,111 +275,3 @@ mapview(VMT_Stockton_bg_sf, zcol = "VMT_total")
 # VMT_tot <- sum(m_dest_matrix_sf$VMT)
 
 # ratio_test <- sum(m_1_origin_matrix_sf[!is.na(m_1_origin_matrix_sf$origin_population),]$visit_count) / sum(m_1_origin_matrix_sf$visit_count)
-
-##########
-
-##################################################
-
-# Other inputs into R.
-
-##########
-
-  ### More Safegraph data being input.
-
-### m_2_patterns
-
-m_2_patterns <- read.csv("C:/Users/Derek/Desktop/safegraph/m_2_patterns.csv", header=TRUE, stringsAsFactors = FALSE)
-m_2_patterns <- m_2_patterns[m_2_patterns$city == "stockton", ]
-
-m_3_patterns <- read.csv("C:/Users/Derek/Desktop/safegraph/m_3_patterns.csv", header=TRUE, stringsAsFactors = FALSE)
-m_3_patterns <- m_3_patterns[m_3_patterns$city == "stockton", ]
-
-m_4_patterns <- read.csv("C:/Users/Derek/Desktop/safegraph/m_4_patterns.csv", header=TRUE, stringsAsFactors = FALSE)
-m_4_patterns <- m_4_patterns[m_4_patterns$city == "stockton", ]
-
-m_5_patterns <- read.csv("C:/Users/Derek/Desktop/safegraph/m_5_patterns.csv", header=TRUE, stringsAsFactors = FALSE)
-m_5_patterns <- m_5_patterns[m_5_patterns$city == "stockton", ]
-
-m_6_patterns <- read.csv("C:/Users/Derek/Desktop/safegraph/m_6_patterns.csv", header=TRUE, stringsAsFactors = FALSE)
-m_6_patterns <- m_6_patterns[m_6_patterns$city == "stockton", ]
-
-m_7_patterns <- read.csv("C:/Users/Derek/Desktop/safegraph/m_7_patterns.csv", header=TRUE, stringsAsFactors = FALSE)
-m_7_patterns <- m_7_patterns[m_7_patterns$city == "stockton", ]
-
-m_8_patterns <- read.csv("C:/Users/Derek/Desktop/safegraph/m_8_patterns.csv", header=TRUE, stringsAsFactors = FALSE)
-m_8_patterns <- m_8_patterns[m_8_patterns$city == "stockton", ]
-
-m_9_patterns <- read.csv("C:/Users/Derek/Desktop/safegraph/m_9_patterns.csv", header=TRUE, stringsAsFactors = FALSE)
-m_9_patterns <- m_9_patterns[m_9_patterns$city == "stockton", ]
-
-m_10_patterns <- read.csv("C:/Users/Derek/Desktop/safegraph/m_10_patterns.csv", header=TRUE, stringsAsFactors = FALSE)
-m_10_patterns <- m_10_patterns[m_10_patterns$city == "stockton", ]
-
-m_11_patterns <- read.csv("C:/Users/Derek/Desktop/safegraph/m_11_patterns.csv", header=TRUE, stringsAsFactors = FALSE)
-m_11_patterns <- m_11_patterns[m_11_patterns$city == "stockton", ]
-
-m_12_patterns <- read.csv("C:/Users/Derek/Desktop/safegraph/m_12_patterns.csv", header=TRUE, stringsAsFactors = FALSE)
-m_12_patterns <- m_12_patterns[m_12_patterns$city == "stockton", ]
-
-##########
-
-# Forget about everything under here.
-
-##########
-
-stockton_lodes_h <- cbind(stockton_lodes_h, prep)
-
-stockton_lodes_h <- stockton_lodes_h %>% mutate(COUNTY = substr(w_bg,3,5))
-
-stockton_lodes_w_counties <- stockton_lodes_h %>% mutate(COUNTY = substr(w_bg,3,5), person_miles = S000*as.numeric(distance)/1.60934, person_hours = S000*as.numeric(duration)/60) %>% group_by(COUNTY) %>% summarise_at(c("S000","SA01","SA02","SA03","SE01","SE02","SE03","SI01","SI02","SI03","person_miles", "person_hours"), sum) %>% mutate(avg_distance = person_miles/S000, avg_duration = person_hours/S000, person_miles_rm_excessive = ifelse(avg_duration < 3, person_miles, 0), `Percent High Wage Jobs in County` = SE03/S000, `Percent High Wage Jobs Overall` = SE03/sum(SE03,na.rm = TRUE), `Percent Total Jobs` = S000/sum(S000,na.rm = TRUE), `Percent VMT` = person_miles_rm_excessive/sum(person_miles_rm_excessive,na.rm = TRUE),`GHG Annual` = (person_miles_rm_excessive*0.82*2+person_miles_rm_excessive*.116/2*2)*369.39*0.00035812, `Percent GHG` = `GHG Annual`/sum(`GHG Annual`), `Average GHG` = `GHG Annual`/S000) %>% rename(Jobs = S000, `Average Distance` = avg_distance)
-
-stockton_lodes_w_counties <- ca_counties %>% select(COUNTYFP, NAME) %>% left_join(stockton_lodes_w_counties, by = c("COUNTYFP" = "COUNTY"))
-
-stockton_lodes_w_top_counties <- stockton_lodes_w_counties %>% filter(NAME %in% c("San Joaquin", "Alameda", "Sacramento", "Santa Clara","Stanislaus","Contra Costa","San Francisco","San Mateo","Solano","Fresno","Placer","Yolo","Monterey","Sonoma","Merced")) %>% arrange(desc(Jobs))
-
-m1 <- mapview(stockton_lodes_w_top_counties, zcol=c("Jobs","Percent High Wage Jobs in County","Average Distance","Average GHG","Percent GHG"), map.types = c("OpenStreetMap"), legend = TRUE, hide = TRUE)
-m1
-mapshot(m1, url = "stockton_lodes_w_top_counties.html")
-l1 <- addStaticLabels(m1, label = stockton_lodes_w_top_counties$NAME)
-
-sum(stockton_lodes_w_counties$S000, na.rm = TRUE)
-sum(stockton_lodes_w_counties$person_miles, na.rm = TRUE)
-mapview(stockton_lodes_w_counties, zcol='avg_distance')
-
-stockton_lodes_h_summary <- stockton_lodes_h %>% mutate(person_miles = S000*as.numeric(distance)/1.60934, person_hours = S000*as.numeric(duration)/60) %>% group_by(h_bg) %>% summarise_at(c("S000","SA01","SA02","SA03","SE01","SE02","SE03","SI01","SI02","SI03","person_miles", "person_hours"), sum)
-
-write_csv(stockton_lodes_w_counties, "C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes_w_counties.csv")
-
-# save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, stockton_lodes_summary, prep, file = "C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
-load("C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
-
-stockton_bgs <- stockton_bgs %>% geo_join(stockton_lodes_summary, "GEOID", "h_bg") 
-
-stockton_bgs$rank <- NULL
-
-stockton_bgs$avg_distance <- stockton_bgs$person_miles/stockton_bgs$S000
-stockton_bgs$avg_duration <- stockton_bgs$person_hours/stockton_bgs$S000
-
-mapview(stockton_boundary, alpha.regions = 0, lwd = 2) + mapview(stockton_bgs, zcol='avg_distance') 
-
-mapview(stockton_rac, zcol='C000')
-
-mapview(stockton_wac, zcol='C000')
-
-mapshot(mapview(epa_blocks, alpha.regions = 0, lwd = 2) + mapview(epa_parcels, zcol='HAS_AAL'), url = "epamap.html")
-
-plot(stockton_bgs["S000"])
-
-stockton_rac$perc_low_wage <- stockton_rac$CE01/stockton_rac$C000
-stockton_wac$perc_low_wage <- stockton_wac$CE01/stockton_wac$C000
-
-mapview(stockton_rac, zcol='perc_low_wage')
-mapview(stockton_wac, zcol='perc_low_wage')
-plot(stockton_wac["perc_low_wage"])
-plot(stockton_rac["perc_low_wage"])
-
-stockton_lodes_dest_convert <- stockton_lodes_dest_bg %>% geo_join(stockton_lodes_h, "GEOID", "w_bg") %>% st_set_geometry(NULL) %>% group_by(COUNTYFP) %>% summarize(jobs = sum(S000))
-stockton_lodes_dest_county <- 
-  
-  mapview(stockton_boundary, alpha.regions = 0, lwd = 2) +
-  mapview(stockton_lodes_dest_bg, zcol='S000')
