@@ -12,6 +12,7 @@ patterns_choice <- function(num){
   else if(num == 10){patterns_text <- "C:/Users/Derek/Desktop/safegraph/m_10_patterns.csv"}
   else if(num == 11){patterns_text <- "C:/Users/Derek/Desktop/safegraph/m_11_patterns.csv"}
   else if(num == 12){patterns_text <- "C:/Users/Derek/Desktop/safegraph/m_12_patterns.csv"}
+  else{patterns_text <-"error"}
   
   return(patterns_text)
   

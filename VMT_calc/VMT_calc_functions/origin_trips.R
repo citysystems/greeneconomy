@@ -1,7 +1,7 @@
 # Origin Points for Trips (for osrmRoute)
 
 month_origin <- function(month_patterns_new){
-
+  
   m_origin <- dplyr::select(month_patterns_new, c("safegraph_place_id", "block_id"))
 
   zeroPaste <- paste(matrix(data = '0', nrow = length(m_patterns_new$block_id), ncol = 1))

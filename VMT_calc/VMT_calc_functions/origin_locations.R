@@ -20,8 +20,8 @@ month_origin_matrix <- function(month_patterns_new, month_hps, population_bg_sto
   # population_bg_stockton <- data.frame(cbind(population_bg_stockton$origin, population_bg_stockton$origin_population))
   # colnames(population_bg_stockton) <- c("origin", "origin_population")
 
-  m_origin_matrix <- left_join(m_origin_matrix, population_bg_stockton, by = "origin")
-  m_origin_matrix <- dplyr::select(m_origin_matrix, c("origin", "visit_count", "number_devices_residing","origin_population", "distance_from_home", 
+  m_origin_matrix <- left_join(m_origin_matrix, dplyr::select(population_bg_stockton, c("origin", "origin_population", "origin_numeric")), by = "origin")
+  m_origin_matrix <- dplyr::select(m_origin_matrix, c("origin", "visit_count", "unique_visitor_count", "number_devices_residing","origin_population", "distance_from_home", 
                                                       "destination", "location_name", "destination_address", "full_address", "geometry_origin", "geometry"))
   colnames(m_origin_matrix)[11] <- "geometry_shape"
   
