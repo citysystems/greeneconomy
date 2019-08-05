@@ -66,7 +66,7 @@ NHTS_carpoolVehicleFilter <- NHTS_carpoolVehicleFilter(NHTS_df_final)
 
 # Downloading Safegraph patterns .csv files.
 
-for(num in 7:8){
+for(num in 1:12){
 
   patterns_text <- patterns_choice(num)
   m_patterns <- m_patterns_cleanse(patterns_text)
@@ -153,6 +153,20 @@ months_in_year <- 12
 VMT_considerations <- 3
 months_considerations <- months_in_year * VMT_considerations
 
+dest_VMT <- matrix(0, ncol = 11 )
+m_dest_matrix_VMT <- cbind(dest_VMT, data.frame(matrix( 0, nrow = nrow(dest_VMT), ncol = (months_considerations + 1) ) ) )
+
+colnames(m_dest_matrix_VMT)[1:11] <- c("destination", "location_name", "name_address", "distance_from_home", "raw_visit_counts", "raw_visitor_counts",
+                        "origin_visit_cbgs", "origin_visitor_cbgs", "full_address", "longitude", "latitude")
+
+colnames(m_dest_matrix_VMT)[12:48] <- c("VMTs_recorded_m_1", "VMTs_recorded_m_2", "VMTs_recorded_m_3", "VMTs_recorded_m_4", "VMTs_recorded_m_5", "VMTs_recorded_m_6",
+                                        "VMTs_recorded_m_7", "VMTs_recorded_m_8", "VMTs_recorded_m_9", "VMTs_recorded_m_10", "VMTs_recorded_m_11", "VMTs_recorded_m_12",
+                                        "VMTs_nonrecorded_m_1", "VMTs_nonrecorded_m_2", "VMTs_nonrecorded_m_3", "VMTs_nonrecorded_m_4", "VMTs_nonrecorded_m_5", "VMTs_nonrecorded_m_6",
+                                        "VMTs_nonrecorded_m_7", "VMTs_nonrecorded_m_8", "VMTs_nonrecorded_m_9", "VMTs_nonrecorded_m_10", "VMTs_nonrecorded_m_11", "VMTs_nonrecorded_m_12",
+                                        "VMTs_nonrecorded_otherdest_m_1", "VMTs_nonrecorded_otherdest_m_2", "VMTs_nonrecorded_otherdest_m_3", "VMTs_nonrecorded_otherdest_m_4",
+                                        "VMTs_nonrecorded_otherdest_m_5", "VMTs_nonrecorded_otherdest_m_6", "VMTs_nonrecorded_otherdest_m_7", "VMTs_nonrecorded_otherdest_m_8",
+                                        "VMTs_nonrecorded_otherdest_m_9", "VMTs_nonrecorded_otherdest_m_10", "VMTs_nonrecorded_otherdest_m_11","VMTs_nonrecorded_otherdest_m_12", "distance_to_Stockton")
+
 ##########
 
 for(counterMonth in 1:12){
@@ -162,35 +176,33 @@ for(counterMonth in 1:12){
   patterns_text <- patterns_choice(counterMonth)
   filename <- paste(substr(patterns_text, 0, 23), "Stockton_R_code/VMT_Calculation_new/", substr(patterns_text, 34, 45), "_new.RData", sep = "")
   load(filename)
-
-  dest_amenities_matrix <- data.frame(unique(m_origin_matrix_sf$full_address))
-  colnames(dest_amenities_matrix) <- "name_address"
-  dest_num <- nrow(dest_amenities_matrix)
   
-  m_dest_matrix_VMT <- cbind(m_dest_matrix_sf, data.frame(matrix( NA, nrow = nrow(m_dest_matrix_sf), ncol = months_considerations )) )
-  colnames(m_dest_matrix_VMT)[12:47] <- c("VMTs_recorded_m_1", "VMTs_recorded_m_2", "VMTs_recorded_m_3", "VMTs_recorded_m_4", "VMTs_recorded_m_5", "VMTs_recorded_m_6",
+  m_dest_matrix_sf <- cbind(m_dest_matrix_sf, data.frame(matrix( NA, nrow = nrow(dest_VMT), ncol = (months_considerations + 1) )))
+  colnames(m_dest_matrix_sf)[12:48] <- c("VMTs_recorded_m_1", "VMTs_recorded_m_2", "VMTs_recorded_m_3", "VMTs_recorded_m_4", "VMTs_recorded_m_5", "VMTs_recorded_m_6",
                                           "VMTs_recorded_m_7", "VMTs_recorded_m_8", "VMTs_recorded_m_9", "VMTs_recorded_m_10", "VMTs_recorded_m_11", "VMTs_recorded_m_12",
                                           "VMTs_nonrecorded_m_1", "VMTs_nonrecorded_m_2", "VMTs_nonrecorded_m_3", "VMTs_nonrecorded_m_4", "VMTs_nonrecorded_m_5", "VMTs_nonrecorded_m_6",
                                           "VMTs_nonrecorded_m_7", "VMTs_nonrecorded_m_8", "VMTs_nonrecorded_m_9", "VMTs_nonrecorded_m_10", "VMTs_nonrecorded_m_11", "VMTs_nonrecorded_m_12",
                                           "VMTs_nonrecorded_otherdest_m_1", "VMTs_nonrecorded_otherdest_m_2", "VMTs_nonrecorded_otherdest_m_3", "VMTs_nonrecorded_otherdest_m_4",
                                           "VMTs_nonrecorded_otherdest_m_5", "VMTs_nonrecorded_otherdest_m_6", "VMTs_nonrecorded_otherdest_m_7", "VMTs_nonrecorded_otherdest_m_8",
-                                          "VMTs_nonrecorded_otherdest_m_9", "VMTs_nonrecorded_otherdest_m_10", "VMTs_nonrecorded_otherdest_m_11","VMTs_nonrecorded_otherdest_m_12")
-  
-  locations_of_consideration <- m_dest_matrix_VMT[!is.na(m_dest_matrix_VMT$longitude), ]
-  locations_of_consideration$distance_to_Stockton <- latlong_mile_conversion * sqrt( (as.numeric(locations_of_consideration$longitude) - Stockton_longitude)^2
-                                                                                     + (as.numeric(locations_of_consideration$latitude) - Stockton_latitude)^2  )
+                                          "VMTs_nonrecorded_otherdest_m_9", "VMTs_nonrecorded_otherdest_m_10", "VMTs_nonrecorded_otherdest_m_11","VMTs_nonrecorded_otherdest_m_12", "distance_to_Stockton")
 
+  dest_amenities_matrix <- data.frame(unique(m_origin_matrix_sf$full_address))
+  colnames(dest_amenities_matrix) <- "name_address"
+  dest_num <- nrow(dest_amenities_matrix)
+  
   # count_dist_start <- 1
   # count_dist_end <- 0
   # distance <- OD_time_dist[, "distance"]
 
   distance_recorded <- data.frame( matrix(nrow = dest_num, ncol = 1, NA) )
   distance_nonrecorded <- data.frame( matrix(nrow = dest_num, ncol = 1, NA) )
+  
+  start_counter <- nrow(m_dest_matrix_VMT)
 
   for(counterVMT in 1:dest_num){
   
     origin_matrix <- m_origin_matrix_sf[m_origin_matrix_sf$full_address == dest_amenities_matrix[counterVMT, "name_address"], ]
-    dest_vector <- m_dest_matrix_VMT[m_dest_matrix_VMT$full_address == dest_amenities_matrix[counterVMT, "name_address"], ]
+    dest_vector <- m_dest_matrix_sf[m_dest_matrix_sf$full_address == dest_amenities_matrix[counterVMT, "name_address"], ]
   
     ##########
     # ACF_safegraph <- as.numeric(dest_vector$distance_from_home)
@@ -226,16 +238,18 @@ for(counterMonth in 1:12){
     distance_recorded[counterVMT, 1] <- distance_bg_recorded_sum
     distance_nonrecorded[counterVMT, 1] <- distance_bg_nonrecorded/nrow(subset_non_recorded)
     
-    m_dest_matrix_VMT[m_dest_matrix_VMT$full_address == dest_vector$full_address, (11 + counterMonth)] <- sum(VMT_Origin_recorded_unique_dest)
-    locations_of_consideration[locations_of_consideration$full_address == dest_vector$full_address, (11 + counterMonth)] <- sum(VMT_Origin_recorded_unique_dest)
+    m_dest_matrix_VMT <- rbind(m_dest_matrix_VMT, dest_vector)
+    
+    m_dest_matrix_VMT[(start_counter + counterVMT), (11 + counterMonth)] <- sum(VMT_Origin_recorded_unique_dest)
+    m_dest_matrix_VMT[(start_counter + counterVMT), (23 + counterMonth)] <- sum(VMT_Origin_nonrecorded_unique_dest)
 
-    m_dest_matrix_VMT[m_dest_matrix_VMT$full_address == dest_vector$full_address, (23 + counterMonth)] <- sum(VMT_Origin_nonrecorded_unique_dest)
-    locations_of_consideration[locations_of_consideration$full_address == dest_vector$full_address, (23 + counterMonth)] <- sum(VMT_Origin_nonrecorded_unique_dest)
-  
     ##########
     # count_dist_start <- count_dist_start + nrow(origin_matrix)
     ##########
   
+    locations_of_consideration[locations_of_consideration$full_address == dest_vector$full_address, (11 + counterMonth)] <- sum(VMT_Origin_recorded_unique_dest)
+    locations_of_consideration[locations_of_consideration$full_address == dest_vector$full_address, (23 + counterMonth)] <- sum(VMT_Origin_nonrecorded_unique_dest)
+    
   }
 
   # Calculating the VMTs associated with destinations not included within the ("dest_amenities_matrix")
@@ -243,18 +257,33 @@ for(counterMonth in 1:12){
   VMT_unique_dest_avg <- mean(VMT_Origin_nonrecorded[, (1 + counterMonth)])
   distance_cutoff <- 1 # miles
 
+  locations_of_consideration <- m_dest_matrix_sf[!is.na(m_dest_matrix_sf$longitude), ]
+  locations_of_consideration$distance_to_Stockton <- latlong_mile_conversion * sqrt( (as.numeric(locations_of_consideration[, "longitude"]) - Stockton_longitude)^2
+                                                              + (as.numeric(locations_of_consideration[, "latitude"]) - Stockton_latitude)^2  )
+  
   otherdest_rows <- length(locations_of_consideration[is.na(locations_of_consideration[, (23 + counterMonth)]) & locations_of_consideration[, "distance_to_Stockton"] <= distance_cutoff, (23 + counterMonth)])
-  locations_of_consideration[is.na(locations_of_consideration[, (23 + counterMonth)]) & locations_of_consideration[, "distance_to_Stockton"] <= distance_cutoff, (23 + counterMonth)] <- VMT_unique_dest_avg
+  locations_of_consideration[is.na(locations_of_consideration[, (23 + counterMonth)]) & locations_of_consideration[, "distance_to_Stockton"] <= distance_cutoff, (35 + counterMonth)] <- VMT_unique_dest_avg
   VMT_Origin_otherdest_nonrecorded[, (1 + counterMonth)] <- VMT_unique_dest_avg * otherdest_rows / nrow(pop_bg_stockton)
-
+  
+  # Calculating the VMTs associated with destinations not included within the ("dest_amenities_matrix"), only for those 
+  
+  m_dest_matrix_VMT <- m_dest_matrix_VMT[!is.na(m_dest_matrix_VMT$longitude), ]
+  counterDest <- nrow(m_dest_matrix_VMT)
+  m_dest_matrix_VMT[(start_counter + 1):counterDest, "distance_to_Stockton"] <- latlong_mile_conversion * sqrt( (as.numeric(m_dest_matrix_VMT[(start_counter + 1):(counterDest), "longitude"]) - Stockton_longitude)^2
+                                                                                                                   + (as.numeric(m_dest_matrix_VMT[(start_counter + 1):counterDest, "latitude"]) - Stockton_latitude)^2  )
+  
+  m_dest_matrix_VMT[(is.na(m_dest_matrix_VMT[(start_counter + 1):counterDest, (23 + counterMonth)]) 
+                    & m_dest_matrix_VMT[(start_counter + 1):counterDest, "distance_to_Stockton"] <= distance_cutoff), 
+                    (35 + counterMonth)] <- VMT_unique_dest_avg
+  
   rm(m_origin_matrix_sf, m_dest_matrix_sf, m_patterns_new)
   
 }
 
-# Operations for VMT mapping
+# Operations for VMT mapping of Stockton Block Groups
 
-
-pop_bg_stockton$number_devices_residing <- NULL
+pop_bg_stockton_geospatialVMT <- pop_bg_stockton
+pop_bg_stockton_geospatialVMT$number_devices_residing <- NULL
 VMT_colnames <- c("VMTs_m_1", "VMTs_m_2", "VMTs_m_3", "VMTs_m_4", "VMTs_m_5", "VMTs_m_6",
                   "VMTs_m_7", "VMTs_m_8", "VMTs_m_9", "VMTs_m_10", "VMTs_m_11", "VMTs_m_12")
 
@@ -263,10 +292,30 @@ VMT_sum_nonrecorded <- rowSums(VMT_Origin_nonrecorded[, VMT_colnames])
 VMT_sum_otherdest_nonrecorded <- rowSums(VMT_Origin_otherdest_nonrecorded[, VMT_colnames])
 VMT_sum_all <- VMT_sum_recorded + VMT_sum_nonrecorded + VMT_sum_otherdest_nonrecorded
 
-VMT_all <- cbind(pop_bg_stockton, VMT_sum_recorded, VMT_sum_nonrecorded, VMT_sum_otherdest_nonrecorded, VMT_sum_all)
+VMT_all <- cbind(pop_bg_stockton_geospatialVMT, VMT_sum_recorded, VMT_sum_nonrecorded, VMT_sum_otherdest_nonrecorded, VMT_sum_all)
 VMT_all$VMT_norm <- ( VMT_all$VMT_sum_all / as.numeric( as.character( VMT_all$origin_population ) ) )
 
-mapview(VMT_all, zcol = "VMT_norm", legend = TRUE)
+VMT_all_mapview <- mapview(VMT_all, zcol = c("VMT_sum_all", "VMT_norm"), legend = TRUE)
+
+mapshot(VMT_all_mapview, url = "C:/Users/Derek/Google Drive/Stockton/Stockton_Safegraph_VMT.html")
+
+VMT_lessthan1.25M <- nrow(VMT_all[VMT_all$VMT_sum_all < 1250000, ])
+VMT_1.25Mkto1.5M <- nrow(VMT_all[VMT_all$VMT_sum_all >= 1250000 & VMT_all$VMT_sum_all < 1500000, ])
+VMT_1.5Mto1.75M <- nrow(VMT_all[VMT_all$VMT_sum_all >= 1500000 & VMT_all$VMT_sum_all < 1750000, ])
+VMT_1.75Mto2.0M <- nrow(VMT_all[VMT_all$VMT_sum_all >= 1750000 & VMT_all$VMT_sum_all < 2000000, ])
+VMT_2.0Mplus <- nrow(VMT_all[VMT_all$VMT_sum_all >= 2000000 , ])
+
+VMT_per_person_lessthan10k <- nrow(VMT_all[VMT_all$VMT_norm < 10000, ])
+VMT_per_person_10kto15k <- nrow(VMT_all[VMT_all$VMT_norm >= 10000 & VMT_all$VMT_norm < 15000, ])
+VMT_per_person_15kto20k <- nrow(VMT_all[VMT_all$VMT_norm >= 15000 & VMT_all$VMT_norm < 20000, ])
+VMT_per_person_20kto30k <- nrow(VMT_all[VMT_all$VMT_norm >= 20000 & VMT_all$VMT_norm < 30000, ])
+VMT_per_person_30kplus <- nrow(VMT_all[VMT_all$VMT_norm >= 30000 , ])
+
+# Operations for VMT mapping of Business Destinations
+
+
+
+### Other
 
 # colnames(VMT_perDest) <- "VMT_perDest"
 
