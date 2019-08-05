@@ -89,6 +89,8 @@ mapview(zcta_bldg_stockton_joined, zcol= c("ER_MTCO2perSQFT", "GR_MTCO2perSQFT",
 
 zcta_bldg_stockton_summary <- zcta_bldg_stockton_joined %>% st_set_geometry(NULL) %>% 
   summarise(NUMBLDG = sum(NUMBLDG), 
+            R_NUMBLDG = sum(R_NUMBLDG),
+            C_NUMBLDG = sum(C_NUMBLDG),
             TOTSQFTGROUND = sum(TOTSQFTGROUND), 
             TOTSQFT = sum(TOTSQFT),
             R_TOTSQFT = sum(R_TOTSQFT),
