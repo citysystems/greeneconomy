@@ -13,31 +13,44 @@ library(tidyverse)
 library(magrittr)
 options(tigris_use_cache = TRUE)
 options(tigris_class = "sf")
-options(osrm.server = "http://127.0.0.1:5000/")
-census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", overwrite = TRUE)
-Sys.setenv(CENSUS_KEY="c8aa67e4086b4b5ce3a8717f59faa9a28f611dab")
+options(osrm.server = "http://127.0.0.1:5000/") #This is using Max's new local instance of OSRM setup. See https://github.com/maxo16/osrm_stuff/blob/master/Install%20and%20Run%20Notes.md
+census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", overwrite = TRUE) #this sets up the API for tidycensus
+Sys.setenv(CENSUS_KEY="c8aa67e4086b4b5ce3a8717f59faa9a28f611dab") #this sets up the API for censusapi. the two are useful for slightly different things.
 readRenviron("~/.Renviron")
 
-acs5_17 <- load_variables(2017, "acs5")
+# acs5_17 <- load_variables(2017, "acs5")
+
+
+#next few steps are for PG&E analysis. first getting zip code tabulation areas, treating those as roughly the sam as zip codes, and then using them to pair PG&E zip code energy data with zip code level building summaries.
 
 zcta <- zctas(starts_with="95", cb = TRUE) %>% mutate(ZCTA5CE10 = as.numeric(ZCTA5CE10))
-zips_stockton <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ZipCodes/ZipCodes.shp") %>% st_transform(st_crs(zcta))
+# zips_stockton <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ZipCodes/ZipCodes.shp") %>% st_transform(st_crs(zcta)) #this was downloaded from Stockton GIS site to do a quick visual check of the difference between ZCTA and zip code. you can read up on it if you want. i determined they were pretty much the same. you don't need to use zips_stockton for anything.
 stockton_boundary <- places("CA", cb = TRUE) %>% filter(NAME == "Stockton")
-stockton_boundary_influence <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(zcta))
-stockton_boundary_influence <- stockton_boundary_influence[1,]
-zcta_stockton <- zcta[stockton_boundary_influence,] %>% filter(!ZCTA5CE10 %in% c("95242","95240","95336","95330"))
-# zcta_stockton <- zcta[which(zcta$ZCTA5CE10 %in% st_centroid(zcta)[stockton_boundary_influence,]$ZCTA5CE10),]
+stockton_boundary_influence <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(zcta)) #stockton boundary is legit but really spotty, so i prefer using sphere of influence from the County GIS page.
+stockton_boundary_influence <- stockton_boundary_influence[1,] #two other tiny little triangles to get rid of.
+zcta_stockton <- zcta[stockton_boundary_influence,] %>% filter(!ZCTA5CE10 %in% c("95242","95240","95336","95330")) #these are some extraneous zip codes that just barely touch the sphere of influence that i manually decided to remove.
+# zcta_stockton <- zcta[which(zcta$ZCTA5CE10 %in% st_centroid(zcta)[stockton_boundary_influence,]$ZCTA5CE10),] #this would be the go-to script to do a location by centroid within, but it's not as useful in this specific case.
 
 
 
-pge_elec_emissions_factor <- data.frame(year = 2013:2018, factor = c(427,434.92,404.51,293.67,210,210))
+pge_elec_emissions_factor <- data.frame(year = 2013:2018, factor = c(427,434.92,404.51,293.67,210,210)) #these emissions factors come from ICLEI: https://docs.google.com/spreadsheets/d/1y3WfMLRzeINdGEtOVI0S2jgXVkJHWpID8vxT86JwdGM/edit#gid=0. read more about them at https://www.ca-ilg.org/sites/main/files/file-attachments/ghg_emission_factor_guidance.pdf 
+
+
+
+#the following pulls all the downloaded PG&E zip code datasets from S drive and does various processing. some notes:
+
+#Manual edits made to PG&E data downloaded from public site:
+#2014_Q3_Gas, fields "Total Therms" and "Average Therms" renamed
+#2017_Q4_Electricity and 2017_Q4_Gas, remove duplicate m=9 values
+
+#Elec- Industrial mostly 0's, 95206 suddenly shows up with ~70 customers in 2014 Q3/Q4, 2015 Q1, 2016 M2/M3, 2018 M6/M9
 
 pge_stockton <- do.call(rbind,lapply(2013:2018,function(year){
   factor <- pge_elec_emissions_factor[match(year,pge_elec_emissions_factor$year),2]
   df_year <- do.call(rbind,lapply(1:4,function(quarter){
     df_quarter <- do.call(rbind,lapply(c("Electric","Gas"),function(type){
       filename <- paste("S:\\Data Library\\PG&E\\PGE_",year,"_Q",quarter,"_",type,"UsageByZip.csv",sep = "")
-      df_type <- read_csv(filename) %>% rename_all(toupper) %>% filter(ZIPCODE %in% zcta_stockton$ZCTA5CE10) %>% mutate(ZIPCODE = as.numeric(ZIPCODE)) %>% group_by(ZIPCODE, CUSTOMERCLASS) %>% summarize(TOTALKBTU = ifelse(type == "Electric",sum(TOTALKWH)*3.4121416331,sum(TOTALTHM)*99.9761), TOTALMTCO2 = ifelse(type == "Electric",sum(TOTALKWH)*factor/1000*0.000453592,sum(TOTALTHM)*0.00531), TOTALCUSTOMERS = sum(TOTALCUSTOMERS)) %>%  dplyr::select(ZIPCODE, CUSTOMERCLASS, TOTALKBTU, TOTALMTCO2, TOTALCUSTOMERS)
+      df_type <- read_csv(filename) %>% rename_all(toupper) %>% filter(ZIPCODE %in% zcta_stockton$ZCTA5CE10) %>% mutate(ZIPCODE = as.numeric(ZIPCODE)) %>% group_by(ZIPCODE, CUSTOMERCLASS) %>% summarize(TOTALKBTU = ifelse(type == "Electric",sum(TOTALKWH)*3.4121416331,sum(TOTALTHM)*99.9761), TOTALMTCO2 = ifelse(type == "Electric",sum(TOTALKWH)*factor/1000*0.000453592,sum(TOTALTHM)*0.00531), TOTALCUSTOMERS = sum(TOTALCUSTOMERS)) %>%  dplyr::select(ZIPCODE, CUSTOMERCLASS, TOTALKBTU, TOTALMTCO2, TOTALCUSTOMERS) # note the numbers here are mostly unit conversions. 
     }))
   })) %>% group_by(ZIPCODE, CUSTOMERCLASS) %>% summarize(TOTALKBTU = sum(TOTALKBTU), TOTALMTCO2 = sum(TOTALMTCO2), TOTALCUSTOMERS = sum(TOTALCUSTOMERS)) %>%  mutate(YEAR = year, KBTUPERCUST = TOTALKBTU/TOTALCUSTOMERS, MTCO2PERCUST = TOTALMTCO2/TOTALCUSTOMERS) %>% mutate(CUSTOMERCLASS = ifelse(CUSTOMERCLASS == "Elec- Residential","ER",ifelse(CUSTOMERCLASS == "Gas- Residential","GR",ifelse(CUSTOMERCLASS == "Elec- Commercial","EC",ifelse(CUSTOMERCLASS == "Elec- Industrial","EI",ifelse(CUSTOMERCLASS == "Elec- Agricultural","EA","GC"))))))
 }))
