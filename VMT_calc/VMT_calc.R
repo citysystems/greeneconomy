@@ -294,10 +294,12 @@ VMT_sum_all <- VMT_sum_recorded + VMT_sum_nonrecorded + VMT_sum_otherdest_nonrec
 
 VMT_all <- cbind(pop_bg_stockton_geospatialVMT, VMT_sum_recorded, VMT_sum_nonrecorded, VMT_sum_otherdest_nonrecorded, VMT_sum_all)
 VMT_all$VMT_norm <- ( VMT_all$VMT_sum_all / as.numeric( as.character( VMT_all$origin_population ) ) )
+save(VMT_all, file = "C:/Users/Derek/Desktop/VMT_all.RData")
 
 VMT_all_mapview <- mapview(VMT_all, zcol = c("VMT_sum_all", "VMT_norm"), legend = TRUE)
 
-mapshot(VMT_all_mapview, url = "C:/Users/Derek/Google Drive/Stockton/Stockton_Safegraph_VMT.html")
+mapshot(VMT_all_mapview, url = "C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/Stockton_Safegraph_VMT.html")
+# mapshot(VMT_all_mapview, url = "C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/Stockton_Safegraph_VMT.html")
 
 VMT_lessthan1.25M <- nrow(VMT_all[VMT_all$VMT_sum_all < 1250000, ])
 VMT_1.25Mkto1.5M <- nrow(VMT_all[VMT_all$VMT_sum_all >= 1250000 & VMT_all$VMT_sum_all < 1500000, ])
