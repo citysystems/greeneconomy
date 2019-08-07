@@ -347,7 +347,9 @@ zcta_bldg_stockton_summary <- zcta_bldg_stockton_joined %>%
 
 write.csv(zcta_bldg_stockton_summary, file = "bldg_stockton_summary.csv")
 
+save(zcta_bldg_stockton_joined, zcta_bldg_stockton_summary, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/zcta_bldg_stockton_joined.Rdata")
 
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/zcta_bldg_stockton_joined.Rdata")
 
 #the following lines are used to create the pop + jobs time series from 2010 to 2016. the jobs data is based on the selection of zctas, which is a larger set than Stockton geography, while the pop data is using the Stockton place geography from ACS, so they aren't an exact geographic comparison, but close enough in my opinion.
 
