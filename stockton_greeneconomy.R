@@ -318,7 +318,9 @@ zcta_bldg_stockton_joined <- zcta_stockton_joined %>%
          G_MTCO2perSQFT = G_TOTALMTCO2/TOTSQFT, 
          MTCO2perSQFT = TOTALMTCO2/TOTSQFT)
 
-mapview(zcta_bldg_stockton_joined, zcol= c("ER_MTCO2perSQFT", "GR_MTCO2perSQFT", "EC_MTCO2perSQFT", "GC_MTCO2perSQFT", "R_MTCO2perSQFT","C_MTCO2perSQFT","E_MTCO2perSQFT","G_MTCO2perSQFT","MTCO2perSQFT"), map.types = c("OpenStreetMap"), legend = TRUE, hide = TRUE)
+map <- mapview(zcta_bldg_stockton_joined, zcol= c("ER_MTCO2perSQFT", "GR_MTCO2perSQFT", "EC_MTCO2perSQFT", "GC_MTCO2perSQFT", "R_MTCO2perSQFT","C_MTCO2perSQFT","E_MTCO2perSQFT","G_MTCO2perSQFT","MTCO2perSQFT"), map.types = c("OpenStreetMap"), legend = TRUE, hide = TRUE)
+
+mapshot(map, url = "stockton_bldg_energy.html")
 
 #the next is just to get full summaries without zip code aggregation for stockton. there is almost certainly a more efficient way to run this. also note that this is used specifically to create the summary table at https://docs.google.com/spreadsheets/d/1X-cEwK-G53NMp3BqQ9encnjceU0dVsSmopQeeecffqM/edit#gid=152068039, but i manually reorganized the wide output into the matrix on Google Sheets. It'd be great if the direct output of the R script is the table in the right format, since that is the most useful format for visualization in discussion, but i didn't have the time to figure out how to set that up in R. help would be appreciated.
 zcta_bldg_stockton_summary <- zcta_bldg_stockton_joined %>% 
