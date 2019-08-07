@@ -11,67 +11,300 @@ library(mapview)
 library(readr)
 library(tidyverse)
 library(magrittr)
+library(lwgeom)
 options(tigris_use_cache = TRUE)
 options(tigris_class = "sf")
-options(osrm.server = "http://127.0.0.1:5000/")
-census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", overwrite = TRUE)
-Sys.setenv(CENSUS_KEY="c8aa67e4086b4b5ce3a8717f59faa9a28f611dab")
+options(osrm.server = "http://127.0.0.1:5000/") #This is using Max's new local instance of OSRM setup. See https://github.com/maxo16/osrm_stuff/blob/master/Install%20and%20Run%20Notes.md
+census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", overwrite = TRUE) #this sets up the API for tidycensus
+Sys.setenv(CENSUS_KEY="c8aa67e4086b4b5ce3a8717f59faa9a28f611dab") #this sets up the API for censusapi. the two are useful for slightly different things.
 readRenviron("~/.Renviron")
 
-acs5_17 <- load_variables(2017, "acs5")
 
-zcta <- zctas(starts_with="95", cb = TRUE) %>% mutate(ZCTA5CE10 = as.numeric(ZCTA5CE10))
-zips_stockton <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ZipCodes/ZipCodes.shp") %>% st_transform(st_crs(zcta))
-stockton_boundary <- places("CA", cb = TRUE) %>% filter(NAME == "Stockton")
-stockton_boundary_influence <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(zcta))
-stockton_boundary_influence <- stockton_boundary_influence[1,]
-zcta_stockton <- zcta[stockton_boundary_influence,] %>% filter(!ZCTA5CE10 %in% c("95242","95240","95336","95330"))
-# zcta_stockton <- zcta[which(zcta$ZCTA5CE10 %in% st_centroid(zcta)[stockton_boundary_influence,]$ZCTA5CE10),]
+
+# acs5_17 <- load_variables(2017, "acs5") #this is only useful if you want to search for specific ACS variables, but i tend to find it easier to use factfinder online.
 
 
 
-pge_elec_emissions_factor <- data.frame(year = 2013:2018, factor = c(427,434.92,404.51,293.67,210,210))
+#next few steps are for PG&E analysis. first getting zip code tabulation areas, treating those as roughly the sam as zip codes, and then using them to pair PG&E zip code energy data with zip code level building summaries.
+
+zcta <- zctas(starts_with="95", cb = TRUE) %>% 
+  mutate(ZCTA5CE10 = as.numeric(ZCTA5CE10))
+# zips_stockton <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ZipCodes/ZipCodes.shp") %>% st_transform(st_crs(zcta)) #this was downloaded from Stockton GIS site to do a quick visual check of the difference between ZCTA and zip code. you can read up on it if you want. i determined they were pretty much the same. you don't need to use zips_stockton for anything.
+
+stockton_boundary <- places("CA", cb = TRUE) %>% 
+  filter(NAME == "Stockton")
+
+stockton_boundary_influence <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/SpheresOfInfluence/SpheresOfInfluence.shp") %>% 
+  filter(SPHERE == "STOCKTON") %>% 
+  st_transform(st_crs(zcta)) #stockton boundary is legit but really spotty, so i prefer using sphere of influence from the County GIS page.
+
+#2 of the 3 shapes are tiny little triangles to get rid of.
+stockton_boundary_influence <- stockton_boundary_influence[1,] 
+
+zcta_stockton <- zcta[stockton_boundary_influence,] %>% 
+  filter(!ZCTA5CE10 %in% c("95242","95240","95336","95330")) %>% 
+  select(ZCTA5CE10) %>% 
+  rename(ZIPCODE = ZCTA5CE10) %>% 
+  mutate(ZIPCODE = as.numeric(ZIPCODE))
+  #these are some extraneous zip codes that just barely touch the sphere of influence that i manually decided to remove.
+# zcta_stockton <- zcta[which(zcta$ZCTA5CE10 %in% st_centroid(zcta)[stockton_boundary_influence,]$ZCTA5CE10),] #this would be the go-to script to do a location by centroid within, but it's not as useful in this specific case.
+
+
+
+#the following pulls all the downloaded PG&E zip code datasets from S drive and does various processing at the zip code level. You can skip to load() zcta_stockton_joined.Rdata. some notes:
+
+#Manual edits made to PG&E data downloaded from public site:
+#2014_Q3_Gas, fields "Total Therms" and "Average Therms" renamed
+#2017_Q4_Electricity and 2017_Q4_Gas, remove duplicate m=9 values
+
+#Elec- Industrial mostly 0's, 95206 suddenly shows up with ~70 customers in 2014 Q3/Q4, 2015 Q1, 2016 M2/M3, 2018 M6/M9
+
+pge_elec_emissions_factor <- data.frame(year = 2013:2018, factor = c(427,434.92,404.51,293.67,210,210)) #these emissions factors come from ICLEI: https://docs.google.com/spreadsheets/d/1y3WfMLRzeINdGEtOVI0S2jgXVkJHWpID8vxT86JwdGM/edit#gid=0. read more about them at https://www.ca-ilg.org/sites/main/files/file-attachments/ghg_emission_factor_guidance.pdf 
 
 pge_stockton <- do.call(rbind,lapply(2013:2018,function(year){
+  
   factor <- pge_elec_emissions_factor[match(year,pge_elec_emissions_factor$year),2]
+  
   df_year <- do.call(rbind,lapply(1:4,function(quarter){
+    
     df_quarter <- do.call(rbind,lapply(c("Electric","Gas"),function(type){
+      
       filename <- paste("S:\\Data Library\\PG&E\\PGE_",year,"_Q",quarter,"_",type,"UsageByZip.csv",sep = "")
-      df_type <- read_csv(filename) %>% rename_all(toupper) %>% filter(ZIPCODE %in% zcta_stockton$ZCTA5CE10) %>% mutate(ZIPCODE = as.numeric(ZIPCODE)) %>% group_by(ZIPCODE, CUSTOMERCLASS) %>% summarize(TOTALKBTU = ifelse(type == "Electric",sum(TOTALKWH)*3.4121416331,sum(TOTALTHM)*99.9761), TOTALMTCO2 = ifelse(type == "Electric",sum(TOTALKWH)*factor/1000*0.000453592,sum(TOTALTHM)*0.00531), TOTALCUSTOMERS = sum(TOTALCUSTOMERS)) %>%  dplyr::select(ZIPCODE, CUSTOMERCLASS, TOTALKBTU, TOTALMTCO2, TOTALCUSTOMERS)
+      
+      df_type <- read_csv(filename) %>% 
+        rename_all(toupper) %>% 
+        filter(ZIPCODE %in% zcta_stockton$ZCTA5CE10) %>% 
+        mutate(ZIPCODE = as.numeric(ZIPCODE)) %>% 
+        group_by(ZIPCODE, CUSTOMERCLASS) %>% 
+        summarize(TOTALKBTU = ifelse(type == "Electric",sum(TOTALKWH)*3.4121416331,sum(TOTALTHM)*99.9761), 
+                  TOTALMTCO2 = ifelse(type == "Electric",sum(TOTALKWH)*factor/1000*0.000453592,sum(TOTALTHM)*0.00531), 
+                  TOTALCUSTOMERS = sum(TOTALCUSTOMERS)) %>%  
+        dplyr::select(ZIPCODE, CUSTOMERCLASS, TOTALKBTU, TOTALMTCO2, TOTALCUSTOMERS) # note the numbers here are mostly unit conversions. 
+      
     }))
-  })) %>% group_by(ZIPCODE, CUSTOMERCLASS) %>% summarize(TOTALKBTU = sum(TOTALKBTU), TOTALMTCO2 = sum(TOTALMTCO2), TOTALCUSTOMERS = sum(TOTALCUSTOMERS)) %>%  mutate(YEAR = year, KBTUPERCUST = TOTALKBTU/TOTALCUSTOMERS, MTCO2PERCUST = TOTALMTCO2/TOTALCUSTOMERS) %>% mutate(CUSTOMERCLASS = ifelse(CUSTOMERCLASS == "Elec- Residential","ER",ifelse(CUSTOMERCLASS == "Gas- Residential","GR",ifelse(CUSTOMERCLASS == "Elec- Commercial","EC",ifelse(CUSTOMERCLASS == "Elec- Industrial","EI",ifelse(CUSTOMERCLASS == "Elec- Agricultural","EA","GC"))))))
+    
+  })) %>% 
+    group_by(ZIPCODE, CUSTOMERCLASS) %>% 
+    summarize(TOTALKBTU = sum(TOTALKBTU), 
+              TOTALMTCO2 = sum(TOTALMTCO2), 
+              TOTALCUSTOMERS = sum(TOTALCUSTOMERS)) %>%  
+    mutate(YEAR = year, 
+           KBTUPERCUST = TOTALKBTU/TOTALCUSTOMERS, 
+           MTCO2PERCUST = TOTALMTCO2/TOTALCUSTOMERS,
+           CUSTOMERCLASS = ifelse(CUSTOMERCLASS == "Elec- Residential","ER",ifelse(CUSTOMERCLASS == "Gas- Residential","GR",ifelse(CUSTOMERCLASS == "Elec- Commercial","EC",ifelse(CUSTOMERCLASS == "Elec- Industrial","EI",ifelse(CUSTOMERCLASS == "Elec- Agricultural","EA","GC"))))))
+  
 }))
 
-summary_mtco2_average <- pge_stockton %>% filter(!(CUSTOMERCLASS %in% c("Elec- Industrial","Elec- Agricultural"))) %>% mutate(type = substr(CUSTOMERCLASS,1,1)) %>% group_by(type, YEAR) %>% summarize(annual_average = sum(TOTALMTCO2)/sum(TOTALCUSTOMERS)*12)
-
-ggplot(summary_mtco2_average, aes(as.factor(YEAR), annual_average)) + geom_bar(stat = "identity", aes(fill = type), position = "dodge") + labs(x = "Year", y = "MTCO2e/customer", title = "PG&E Territory Annual Energy Usage, 2013 to 2018") + scale_fill_discrete(name="Energy Type",labels = c("Electricity","Gas"))
-
-zips_spread <- pge_stockton %>% filter(!CUSTOMERCLASS %in% c("EI","EA") & (YEAR == 2016)) %>% select(-YEAR) %>% gather(key = "type", value, TOTALKBTU:MTCO2PERCUST) %>% unite(temp,CUSTOMERCLASS,type) %>% spread(temp,value)
-
-zips_mtco2_total <- pge_stockton %>% mutate(TYPE = substr(CUSTOMERCLASS,1,1), E_TOTALKBTU = ifelse(TYPE == "E",TOTALKBTU,0), E_TOTALMTCO2 = ifelse(TYPE == "E",TOTALMTCO2,0), E_TOTALCUSTOMERS = ifelse(TYPE == "E",TOTALCUSTOMERS,0), G_TOTALKBTU = ifelse(TYPE == "G",TOTALKBTU,0), G_TOTALMTCO2 = ifelse(TYPE == "G",TOTALMTCO2,0), G_TOTALCUSTOMERS = ifelse(TYPE == "G",TOTALCUSTOMERS,0)) %>% filter(YEAR == 2016) %>% group_by(ZIPCODE) %>% summarize(TOTALKBTU = sum(TOTALKBTU), TOTALMTCO2 = sum(TOTALMTCO2), TOTALCUSTOMERS = max(TOTALCUSTOMERS), E_TOTALKBTU = sum(E_TOTALKBTU), E_TOTALMTCO2 = sum(E_TOTALMTCO2), E_TOTALCUSTOMERS = max(E_TOTALCUSTOMERS), G_TOTALKBTU = sum(G_TOTALKBTU), G_TOTALMTCO2 = sum(G_TOTALMTCO2), G_TOTALCUSTOMERS = max(G_TOTALCUSTOMERS)) %>% left_join(zips_spread, by = "ZIPCODE")
-
-zcta_stockton_joined <- zcta_stockton %>% left_join(zips_mtco2_total, by=c("ZCTA5CE10"="ZIPCODE")) %>% rename(ZIPCODE = ZCTA5CE10) %>% mutate(ZIPCODE = as.numeric(ZIPCODE))
 
 
+#the next two lines are just to create a summary graph showing electricity vs. gas over the years. this was an earlier analysis. 
+summary_mtco2_average <- pge_stockton %>% 
+  filter(!(CUSTOMERCLASS %in% c("Elec- Industrial","Elec- Agricultural"))) %>% 
+  mutate(ENERGYTYPE = substr(CUSTOMERCLASS,1,1)) %>% 
+  group_by(ENERGYTYPE, YEAR) %>% 
+  summarize(annual_average = sum(TOTALMTCO2)/sum(TOTALCUSTOMERS)*12)
 
-# sjc_bldg <- read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/ca_06077_footprints.csv") %>% st_as_sf(wkt = "WKT") %>% st_set_crs(4326) %>% st_transform(st_crs(zcta)) %>% mutate(id = row_number())
-# stockton_bldg <- sjc_bldg[which(sjc_bldg$id %in% st_centroid(sjc_bldg)[stockton_boundary_influence,]$id),]
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")  
-stockton_bldg_final %<>% st_transform(st_crs(zcta)) %>% mutate(ZIPCODE = substr(`SITUS ZIP CODE`,1,5)) #do spatial join in the future for zipcodes
+ggplot(summary_mtco2_average, aes(as.factor(YEAR), annual_average)) + 
+  geom_bar(stat = "identity", aes(fill = ENERGYTYPE), position = "dodge") + 
+  labs(x = "Year", y = "MTCO2e/customer", title = "PG&E Territory Annual Energy Usage, 2013 to 2018") + 
+  scale_fill_discrete(name="Energy Type",labels = c("Electricity","Gas"))
 
-zcta_bldg_summary <- stockton_bldg_final %>% mutate(bldgground = as.numeric(st_area(WKT))*10.7639,bldgtot = ifelse(is.na(`STORIES NUMBER`), bldgground, bldgground * `STORIES NUMBER`), ZIPCODE = as.numeric(ZIPCODE), ZONING = ifelse(substr(ZONE,1,1)=="R","R", ifelse(substr(ZONE,1,1)=="C","C","O"))) %>% st_set_geometry(NULL)
 
-zcta_bldg_spread <- zcta_bldg_summary %>% group_by(ZIPCODE, ZONING) %>% summarise(NUMBLDG = n(), TOTSQFTGROUND = sum(bldgground), TOTSQFT = sum(bldgtot)) %>% filter(!is.na(ZIPCODE) & !is.na(ZONING)) %>% gather(key, value, NUMBLDG:TOTSQFT) %>% unite(temp,ZONING,key) %>% spread(temp,value)
 
-zcta_bldg_summary %<>% group_by(ZIPCODE) %>% summarise(NUMBLDG = n(), TOTSQFTGROUND = sum(bldgground), TOTSQFT = sum(bldgtot)) %>% left_join(zcta_bldg_spread, by = "ZIPCODE")
+#here's the newer tidyverse work to better disaggregate energy type (gas vs. electric), class (residential vs. commercial), and output (kbtu vs. mtco2), in every potential meaningful combination. the use of gather/unite/spread is to turn individual outputs of kbtu, mtco2, kbtu/cust, mtco2/cust for every combination of type and class into separate "wide" columns which helps for easy leaflet mapping later on. however i don't have lots of familiarity with best practice here so if the next few steps can be achieved much more elegantly, please make changes!
 
-zcta_bldg_stockton_joined <- zcta_stockton_joined %>% filter(ZIPCODE != 95211) %>% left_join(zcta_bldg_summary, by = "ZIPCODE") %>% 
+#note at this point i've been mostly removing industrial because it's "compromised" by having a lot of missing data because of privacy rules, and agricultural because it's a more negligible amount unrelated to our work. if we were to get better PG&E industrial data, then we'd want to include it as a meaningful category in the subsequent steps.
+#only viewing one year at a time, in this case 2016. there could have been even further disaggregation by year but then there'd be hundreds of columns.
+pge_stockton_filtered <- pge_stockton %>% 
+  filter(!CUSTOMERCLASS %in% c("EI","EA") & (YEAR == 2016)) %>%
+  select(-YEAR)
+
+zips_spread <- pge_stockton_filtered %>% 
+  gather(key = "type", value, TOTALKBTU:MTCO2PERCUST) %>% 
+  unite(temp,CUSTOMERCLASS,type) %>% 
+  spread(temp,value) 
+
+#next, since the previous line fully disaggregates by type AND class, but i also consider it valuable to disaggregate by type OR class individually on their own, i do a second and third spread. all of these "spreads" will be joined back to an original in the final step.
+zips_spread_2 <- pge_stockton_filtered %>% 
+  mutate(ENERGYTYPE = substr(CUSTOMERCLASS,1,1)) %>% 
+  select(-CUSTOMERCLASS) %>% 
+  group_by(ZIPCODE, ENERGYTYPE) %>% 
+  summarise(TOTALKBTU = sum(TOTALKBTU),
+            TOTALMTCO2 = sum(TOTALMTCO2),
+            TOTALCUSTOMERS = sum(TOTALCUSTOMERS)) %>% 
+  mutate(KBTUPERCUST = TOTALKBTU/TOTALCUSTOMERS,
+         MTCO2PERCUST = TOTALMTCO2/TOTALCUSTOMERS) %>% 
+  gather(key = "type", value, TOTALKBTU:MTCO2PERCUST) %>% 
+  unite(temp,ENERGYTYPE,type) %>% 
+  spread(temp,value)
+
+#note that when combining into SECTOR, say electricity and gas for commercial, the summary function for TOTALCUSTOMERS switches to max(), with the reasoning that many of these commercial customers have both electricity and gas, so we would assume that the correct total # of customers is closer to the max of either, than to add them together (which presumes that there are no overlapping electricity and gas customers).
+zips_spread_3 <- pge_stockton_filtered %>%
+  mutate(SECTOR = substr(CUSTOMERCLASS,2,2)) %>% 
+  select(-CUSTOMERCLASS) %>% 
+  group_by(ZIPCODE, SECTOR) %>% 
+  summarise(TOTALKBTU = sum(TOTALKBTU),
+            TOTALMTCO2 = sum(TOTALMTCO2),
+            TOTALCUSTOMERS = max(TOTALCUSTOMERS)) %>% 
+  mutate(KBTUPERCUST = TOTALKBTU/TOTALCUSTOMERS,
+         MTCO2PERCUST = TOTALMTCO2/TOTALCUSTOMERS) %>% 
+  gather(key = "type", value, TOTALKBTU:MTCO2PERCUST) %>% 
+  unite(temp,SECTOR,type) %>% 
+  spread(temp,value)
+
+#the final step here is to get the actual total totals for kbtu and mtco2 indicators, and then join all the "subtotals" from the previous 3 spreads.
+zips_mtco2_total <- pge_stockton_filtered %>% 
+  group_by(ZIPCODE) %>% 
+  summarize(TOTALKBTU = sum(TOTALKBTU), 
+            TOTALMTCO2 = sum(TOTALMTCO2)) %>% 
+  left_join(zips_spread_3, by = "ZIPCODE") %>% 
+  mutate(TOTALCUSTOMERS = R_TOTALCUSTOMERS + C_TOTALCUSTOMERS) %>% 
+  left_join(zips_spread_2, by = "ZIPCODE") %>% 
+  left_join(zips_spread, by = "ZIPCODE")
+
+#join this massive summary back to the zcta geometries
+zcta_stockton_joined <- zcta_stockton %>% 
+  left_join(zips_mtco2_total, by="ZIPCODE")
+
+save(zcta_stockton_joined, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/zcta_stockton_joined.Rdata")
+
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/zcta_stockton_joined.Rdata")
+
+
+
+
+
+#below I've brought in all the code from stockton_bldg.R, but it can all be skipped by going to the load() of stockton_bldg.Rdata at the bottom. Kevin, whatever refinements you've made, go ahead and make them here.
+
+sjc_bldg <- read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/ca_06077_footprints.csv") %>% 
+  st_as_sf(wkt = "WKT") %>% 
+  st_set_crs(4326) %>% 
+  mutate(id = row_number())
+
+stockton_boundary_influence %<>% 
+  st_transform(st_crs(4326))
+
+stockton_bldg <- sjc_bldg[which(sjc_bldg$id %in% st_centroid(sjc_bldg)[stockton_boundary_influence,]$id),]
+
+sjc_parcels <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Parcels/Parcels.shp") %>% 
+  st_transform(st_crs(4326))
+
+sjc_parcels_valid <- st_make_valid(sjc_parcels)
+
+stockton_parcels <- sjc_parcels_valid[stockton_boundary_influence,]
+
+bldg_parcel_join <- st_join(st_centroid(stockton_bldg), stockton_parcels) %>% 
+  select(APN, id, STAREA__) %>% 
+  rename(area = STAREA__) %>% 
+  st_set_geometry(NULL)
+
+sjc_zoning <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Zoning/Zoning.shp") %>% st_transform(st_crs(4326)) %>% 
+  filter(ZNLABEL != "STOCKTON")
+
+stockton_zoning <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Stockton_Zoning/Zoning.shp") %>% 
+  st_transform(st_crs(4326))
+
+bldg_zoning_join <- st_join(st_centroid(stockton_bldg), stockton_zoning) %>% 
+  select(ZONE, id) %>% 
+  st_set_geometry(NULL)
+
+bldg_zoning_join_uninc <- st_join(st_centroid(stockton_bldg), sjc_zoning) %>% 
+  select(ZNCODE, id) %>% 
+  st_set_geometry(NULL)
+
+bldg_zoning_join %<>% merge(bldg_zoning_join_uninc) %>% 
+  mutate(ZONE = ifelse(is.na(ZONE),as.character(ZNCODE),as.character(ZONE))) %>% 
+  select(ZONE, id)
+
+sjc_bgs <- block_groups("California", "San Joaquin County", cb = TRUE) %>% 
+  st_transform(st_crs(4326))
+
+stockton_bgs <- sjc_bgs[stockton_boundary_influence,]
+
+bldg_bg_join <- st_join(st_centroid(stockton_bldg), stockton_bgs) %>% 
+  select(GEOID, id) %>% 
+  st_set_geometry(NULL)
+
+zcta_stockton %<>% st_transform(st_crs(4326))
+
+bldg_zcta_join <- st_join(st_centroid(stockton_bldg), zcta_stockton) %>% 
+  select(ZIPCODE, id) %>% 
+  st_set_geometry(NULL)
+
+zcta_stockton %<>% st_transform(st_crs(zcta))
+
+# the reading of assessor data takes a long time, so you can load sjc_assessor.Rdata instead
+tax_col_specs <- read_csv("S:/Restricted Data Library/CoreLogic/Stanford_University_TAX_06_CALIFORNIA/tax_cols.csv")
+
+col_specs_list <- as.list(tax_col_specs$col_spec)
+
+names(col_specs_list) <- tax_col_specs$Field
+
+f <- function(x, pos) filter(x, `FIPS CODE` %in% c("06077"))
+
+sjc_assessor <- read_delim_chunked( "S:/Restricted Data Library/CoreLogic/Stanford_University_Tax_06_CALIFORNIA/Stanford_University_Tax_06_CALIFORNIA.TXT", col_types = do.call(cols, col_specs_list), DataFrameCallback$new(f), chunk_size = 1000000, delim = "|")
+
+# save(sjc_assessor, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/sjc_assessor.Rdata")
+
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/sjc_assessor.Rdata")
+
+sjc_assessor <- sjc_assessor %>% 
+  mutate(APN = as.numeric(`UNFORMATTED APN`))
+
+stockton_bldg_final <- stockton_bldg %>% 
+  left_join(bldg_parcel_join, by="id") %>% 
+  left_join(bldg_zoning_join, by="id") %>% 
+  left_join(bldg_bg_join, by="id") %>% 
+  left_join(bldg_zcta_join, by="id") %>% 
+  left_join(sjc_assessor, by="APN") %>% 
+  st_transform(st_crs(zcta))
+
+stockton_boundary_influence %<>% st_transform(st_crs(zcta))
+
+save(stockton_bldg_final, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
+
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")  
+
+
+
+  
+
+# the following takes the bldg data, computes bldgground (ground footprint, where the factor conversion is sqm to sqft) and bldgtot (total sqft). O is "Other" zoning, though we may want to disaggregate more.
+zcta_bldg_summary <- stockton_bldg_final %>% 
+  mutate(bldgground = as.numeric(st_area(WKT))*10.7639,
+         bldgtot = ifelse(is.na(`STORIES NUMBER`), bldgground, bldgground * `STORIES NUMBER`), 
+         ZIPCODE = as.numeric(ZIPCODE), 
+         ZONING = ifelse(substr(ZONE,1,1)=="R","R", ifelse(substr(ZONE,1,1)=="C","C","O"))) %>% 
+  st_set_geometry(NULL)
+
+#disaggregating by zipcode and zoning type of the buildings to get summaries of # of buildings, total ground footprint, and total bldg sqft. the filter removes NAs in the data, which could be missing zones in specific zipcodes.
+zcta_bldg_spread <- zcta_bldg_summary %>% 
+  group_by(ZIPCODE, ZONING) %>% 
+  summarise(NUMBLDG = n(), 
+            TOTSQFTGROUND = sum(bldgground), 
+            TOTSQFT = sum(bldgtot)) %>% 
+  filter(!is.na(ZIPCODE) & !is.na(ZONING)) %>% 
+  gather(key, value, NUMBLDG:TOTSQFT) %>% 
+  unite(temp,ZONING,key) %>% 
+  spread(temp,value)
+
+#summarize totals by zipcode (without breaking down to zoning type), then join the zoning-specific subtotals to it.
+zcta_bldg_summary %<>% group_by(ZIPCODE) %>% 
+  summarise(NUMBLDG = n(), 
+            TOTSQFTGROUND = sum(bldgground), 
+            TOTSQFT = sum(bldgtot)) %>% 
+  left_join(zcta_bldg_spread, by = "ZIPCODE")
+
+#the following gets quite messy, basically normalizing everything by sqft, where before we normalized by customer. there is probably a more elegant way to do this which requires getting the sqft data in much earlier, basically right at the beginning, and then creating sqft-normalized values BEFORE doing the first spreads earlier in the script. One would just need to be careful about how R_TOTSQFT and C_TOTSQFT are used in the right cases. Any attempt to better organize this would be appreciated.
+zcta_bldg_stockton_joined <- zcta_stockton_joined %>% 
+  filter(ZIPCODE != 95211) %>% 
+  left_join(zcta_bldg_summary, by = "ZIPCODE") %>% 
   mutate(ER_KBTUperSQFT = ER_TOTALKBTU/R_TOTSQFT, 
          GR_KBTUperSQFT = GR_TOTALKBTU/R_TOTSQFT, 
          EC_KBTUperSQFT = EC_TOTALKBTU/C_TOTSQFT, 
          GC_KBTUperSQFT = GC_TOTALKBTU/C_TOTSQFT, 
-         R_KBTUperSQFT = (ER_TOTALKBTU+GR_TOTALKBTU)/R_TOTSQFT, 
-         C_KBTUperSQFT = (EC_TOTALKBTU+GC_TOTALKBTU)/C_TOTSQFT, 
+         R_KBTUperSQFT = R_TOTALKBTU/R_TOTSQFT, 
+         C_KBTUperSQFT = C_TOTALKBTU/C_TOTSQFT, 
          E_KBTUperSQFT = E_TOTALKBTU/TOTSQFT, 
          G_KBTUperSQFT = G_TOTALKBTU/TOTSQFT, 
          KBTUperSQFT = TOTALKBTU/TOTSQFT,
@@ -79,48 +312,24 @@ zcta_bldg_stockton_joined <- zcta_stockton_joined %>% filter(ZIPCODE != 95211) %
          GR_MTCO2perSQFT = GR_TOTALMTCO2/R_TOTSQFT, 
          EC_MTCO2perSQFT = EC_TOTALMTCO2/C_TOTSQFT, 
          GC_MTCO2perSQFT = GC_TOTALMTCO2/C_TOTSQFT, 
-         R_MTCO2perSQFT = (ER_TOTALMTCO2+GR_TOTALMTCO2)/R_TOTSQFT, 
-         C_MTCO2perSQFT = (EC_TOTALMTCO2+GC_TOTALMTCO2)/C_TOTSQFT, 
+         R_MTCO2perSQFT = R_TOTALMTCO2/R_TOTSQFT, 
+         C_MTCO2perSQFT = C_TOTALMTCO2/C_TOTSQFT, 
          E_MTCO2perSQFT = E_TOTALMTCO2/TOTSQFT, 
          G_MTCO2perSQFT = G_TOTALMTCO2/TOTSQFT, 
          MTCO2perSQFT = TOTALMTCO2/TOTSQFT)
 
 mapview(zcta_bldg_stockton_joined, zcol= c("ER_MTCO2perSQFT", "GR_MTCO2perSQFT", "EC_MTCO2perSQFT", "GC_MTCO2perSQFT", "R_MTCO2perSQFT","C_MTCO2perSQFT","E_MTCO2perSQFT","G_MTCO2perSQFT","MTCO2perSQFT"), map.types = c("OpenStreetMap"), legend = TRUE, hide = TRUE)
 
-zcta_bldg_stockton_summary <- zcta_bldg_stockton_joined %>% st_set_geometry(NULL) %>% 
-  summarise(NUMBLDG = sum(NUMBLDG), 
-            R_NUMBLDG = sum(R_NUMBLDG),
-            C_NUMBLDG = sum(C_NUMBLDG),
-            TOTSQFTGROUND = sum(TOTSQFTGROUND), 
-            TOTSQFT = sum(TOTSQFT),
-            R_TOTSQFT = sum(R_TOTSQFT),
-            C_TOTSQFT = sum(C_TOTSQFT),
-            R_TOTSQFTGROUND = sum(R_TOTSQFTGROUND),
-            C_TOTSQFTGROUND = sum(C_TOTSQFTGROUND),
-            TOTALKBTU = sum(TOTALKBTU),
-            E_TOTALKBTU = sum(E_TOTALKBTU),
-            G_TOTALKBTU = sum(G_TOTALKBTU),
-            R_TOTALKBTU = sum(ER_TOTALKBTU)+sum(GR_TOTALKBTU),
-            C_TOTALKBTU = sum(EC_TOTALKBTU)+sum(GC_TOTALKBTU),
-            ER_TOTALKBTU = sum(ER_TOTALKBTU),
-            GR_TOTALKBTU = sum(GR_TOTALKBTU),
-            EC_TOTALKBTU = sum(EC_TOTALKBTU),
-            GC_TOTALKBTU = sum(GC_TOTALKBTU),
-            TOTALMTCO2 = sum(TOTALMTCO2),
-            E_TOTALMTCO2 = sum(E_TOTALMTCO2),
-            G_TOTALMTCO2 = sum(G_TOTALMTCO2),
-            R_TOTALMTCO2 = sum(ER_TOTALMTCO2)+sum(GR_TOTALMTCO2),
-            C_TOTALMTCO2 = sum(EC_TOTALMTCO2)+sum(GC_TOTALMTCO2),
-            ER_TOTALMTCO2 = sum(ER_TOTALMTCO2),
-            GR_TOTALMTCO2 = sum(GR_TOTALMTCO2),
-            EC_TOTALMTCO2 = sum(EC_TOTALMTCO2),
-            GC_TOTALMTCO2 = sum(GC_TOTALMTCO2)) %>% 
+#the next is just to get full summaries without zip code aggregation for stockton. there is almost certainly a more efficient way to run this. also note that this is used specifically to create the summary table at https://docs.google.com/spreadsheets/d/1X-cEwK-G53NMp3BqQ9encnjceU0dVsSmopQeeecffqM/edit#gid=152068039, but i manually reorganized the wide output into the matrix on Google Sheets. It'd be great if the direct output of the R script is the table in the right format, since that is the most useful format for visualization in discussion, but i didn't have the time to figure out how to set that up in R. help would be appreciated.
+zcta_bldg_stockton_summary <- zcta_bldg_stockton_joined %>% 
+  st_set_geometry(NULL) %>% 
+  summarise_at(c("NUMBLDG", "R_NUMBLDG", "C_NUMBLDG","TOTSQFTGROUND","TOTSQFT","R_TOTSQFT","C_TOTSQFT","R_TOTSQFTGROUND","C_TOTSQFTGROUND","TOTALKBTU","E_TOTALKBTU","G_TOTALKBTU","R_TOTALKBTU","C_TOTALKBTU", "ER_TOTALKBTU", "GR_TOTALKBTU", "EC_TOTALKBTU", "GC_TOTALKBTU", "TOTALMTCO2", "E_TOTALMTCO2", "G_TOTALMTCO2", "R_TOTALMTCO2", "C_TOTALMTCO2", "ER_TOTALMTCO2", "GR_TOTALMTCO2", "EC_TOTALMTCO2", "GC_TOTALMTCO2"), sum) %>% 
   mutate(ER_KBTUperSQFT = ER_TOTALKBTU/R_TOTSQFT, 
          GR_KBTUperSQFT = GR_TOTALKBTU/R_TOTSQFT, 
          EC_KBTUperSQFT = EC_TOTALKBTU/C_TOTSQFT, 
          GC_KBTUperSQFT = GC_TOTALKBTU/C_TOTSQFT, 
-         R_KBTUperSQFT = (ER_TOTALKBTU+GR_TOTALKBTU)/R_TOTSQFT, 
-         C_KBTUperSQFT = (EC_TOTALKBTU+GC_TOTALKBTU)/C_TOTSQFT, 
+         R_KBTUperSQFT = R_TOTALKBTU/R_TOTSQFT, 
+         C_KBTUperSQFT = C_TOTALKBTU/C_TOTSQFT, 
          E_KBTUperSQFT = E_TOTALKBTU/TOTSQFT, 
          G_KBTUperSQFT = G_TOTALKBTU/TOTSQFT, 
          KBTUperSQFT = TOTALKBTU/TOTSQFT,
@@ -128,8 +337,8 @@ zcta_bldg_stockton_summary <- zcta_bldg_stockton_joined %>% st_set_geometry(NULL
          GR_MTCO2perSQFT = GR_TOTALMTCO2/R_TOTSQFT, 
          EC_MTCO2perSQFT = EC_TOTALMTCO2/C_TOTSQFT, 
          GC_MTCO2perSQFT = GC_TOTALMTCO2/C_TOTSQFT, 
-         R_MTCO2perSQFT = (ER_TOTALMTCO2+GR_TOTALMTCO2)/R_TOTSQFT, 
-         C_MTCO2perSQFT = (EC_TOTALMTCO2+GC_TOTALMTCO2)/C_TOTSQFT, 
+         R_MTCO2perSQFT = R_TOTALMTCO2/R_TOTSQFT, 
+         C_MTCO2perSQFT = C_TOTALMTCO2/C_TOTSQFT, 
          E_MTCO2perSQFT = E_TOTALMTCO2/TOTSQFT, 
          G_MTCO2perSQFT = G_TOTALMTCO2/TOTSQFT, 
          MTCO2perSQFT = TOTALMTCO2/TOTSQFT)
@@ -138,44 +347,67 @@ write.csv(zcta_bldg_stockton_summary, file = "bldg_stockton_summary.csv")
 
 
 
-
+#the following lines are used to create the pop + jobs time series from 2010 to 2016. the jobs data is based on the selection of zctas, which is a larger set than Stockton geography, while the pop data is using the Stockton place geography from ACS, so they aren't an exact geographic comparison, but close enough in my opinion.
 
 zbp_stockton <- data.frame(matrix(ncol=5,nrow=0))
 colnames(zbp_stockton) <- c("zipcode","EMP","ESTAB","PAYANN","year")
 
 for(year in 2010:2016){
+  
   temp <- getCensus(name = "zbp",
                     vintage = year,
                     region = "zipcode:*",
-                    vars = c("EMP","ESTAB","PAYANN")) %>% filter(zipcode %in% zcta_stockton$ZCTA5CE10) %>% mutate(year = year)
+                    vars = c("EMP","ESTAB","PAYANN")) %>% 
+    filter(zipcode %in% zcta_stockton$ZCTA5CE10) %>% 
+    mutate(year = year)
   
   zbp_stockton<- rbind(zbp_stockton,temp)
+  
 }
 
 pop_stockton <- data.frame(matrix(ncol=2,nrow=0))
+
 colnames(pop_stockton) <- c("POP","year")
 
 for(year in 2010:2016){
+  
   temp <- getCensus(name = "acs/acs1",
                   vintage = year,
                   vars = c("B01003_001E"),
                   region = "place:75000",
-                  regionin = "state:06") %>% mutate(POP = B01003_001E, year = year) %>% select(POP,year)
+                  regionin = "state:06") %>% 
+    mutate(POP = B01003_001E, year = year) %>% 
+    select(POP,year)
+  
   pop_stockton<- rbind(pop_stockton,temp)
+  
 }
 
-pop_jobs_stockton <- zbp_stockton %>% group_by(year) %>% summarize(EMP=sum(as.numeric(EMP)),ESTAB=sum(as.numeric(ESTAB)),PAYANN=sum(as.numeric(PAYANN))) %>% left_join(pop_stockton, by="year")
+pop_jobs_stockton <- zbp_stockton %>% 
+  group_by(year) %>% 
+  summarize(EMP=sum(as.numeric(EMP)),
+            ESTAB=sum(as.numeric(ESTAB)),
+            PAYANN=sum(as.numeric(PAYANN))) %>% 
+  left_join(pop_stockton, by="year")
 
-ggplot(pop_jobs_stockton, aes(x = year)) + geom_line(aes(y = POP, colour = "Population")) + geom_line(aes(y = EMP*3, colour = "Employment")) + scale_y_continuous(sec.axis = sec_axis(~./3, name = "Employment")) + scale_colour_manual(values = c("blue","red")) + labs(title = "Stockton, CA", y = "Population", x = "Year", colour = "Parameter")
+ggplot(pop_jobs_stockton, aes(x = year)) + 
+  geom_line(aes(y = POP, colour = "Population")) + 
+  geom_line(aes(y = EMP*3, colour = "Employment")) + 
+  scale_y_continuous(sec.axis = sec_axis(~./3, name = "Employment")) + 
+  scale_colour_manual(values = c("blue","red")) + 
+  labs(title = "Stockton, CA", y = "Population", x = "Year", colour = "Parameter")
 
 
 
-#add projections
+#next step: add future year projections
 
 
 
 
 
+
+
+#the rest is old stuff i'm not using anymore.
 
 qwi_2005 <- getCensus(name = "timeseries/qwi/sa",
             region = "county:077",
@@ -285,8 +517,8 @@ stockton_lodes_h <- ca_lodes[which(ca_lodes$h_bg %in% stockton_bgs$GEOID),]
 stockton_rac <- stockton_bgs_full %>% geo_join(ca_rac, "GEOID", "h_bg")
 stockton_wac <- stockton_bgs_full %>% geo_join(ca_wac, "GEOID", "w_bg")
 
-save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, file = "C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
-load("C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
+save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, file = "C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
+load("C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
 
 stockton_lodes_origin_centroids <- st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$h_bg),])
 stockton_lodes_dest_centroids <- st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),])
@@ -335,10 +567,10 @@ mapview(stockton_lodes_w_counties, zcol='avg_distance')
 
 stockton_lodes_h_summary <- stockton_lodes_h %>% mutate(person_miles = S000*as.numeric(distance)/1.60934, person_hours = S000*as.numeric(duration)/60) %>% group_by(h_bg) %>% summarise_at(c("S000","SA01","SA02","SA03","SE01","SE02","SE03","SI01","SI02","SI03","person_miles", "person_hours"), sum)
 
-write_csv(stockton_lodes_w_counties, "C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes_w_counties.csv")
+write_csv(stockton_lodes_w_counties, "C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes_w_counties.csv")
 
-# save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, stockton_lodes_summary, prep, file = "C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
-load("C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
+# save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, stockton_lodes_summary, prep, file = "C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
+load("C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
 
 stockton_bgs <- stockton_bgs %>% geo_join(stockton_lodes_summary, "GEOID", "h_bg") 
 
