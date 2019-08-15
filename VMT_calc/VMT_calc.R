@@ -157,7 +157,7 @@ dest_VMT <- matrix(0, ncol = 11 )
 m_dest_matrix_VMT <- cbind(dest_VMT, data.frame(matrix( 0, nrow = nrow(dest_VMT), ncol = (months_considerations + 1) ) ) )
 
 colnames(m_dest_matrix_VMT)[1:11] <- c("destination", "location_name", "name_address", "distance_from_home", "raw_visit_counts", "raw_visitor_counts",
-                        "origin_visit_cbgs", "origin_visitor_cbgs", "full_address", "longitude", "latitude")
+                                       "origin_visit_cbgs", "origin_visitor_cbgs", "full_address", "longitude", "latitude")
 
 colnames(m_dest_matrix_VMT)[12:48] <- c("VMTs_recorded_m_1", "VMTs_recorded_m_2", "VMTs_recorded_m_3", "VMTs_recorded_m_4", "VMTs_recorded_m_5", "VMTs_recorded_m_6",
                                         "VMTs_recorded_m_7", "VMTs_recorded_m_8", "VMTs_recorded_m_9", "VMTs_recorded_m_10", "VMTs_recorded_m_11", "VMTs_recorded_m_12",
@@ -265,7 +265,7 @@ for(counterMonth in 1:12){
   locations_of_consideration[is.na(locations_of_consideration[, (23 + counterMonth)]) & locations_of_consideration[, "distance_to_Stockton"] <= distance_cutoff, (35 + counterMonth)] <- VMT_unique_dest_avg
   VMT_Origin_otherdest_nonrecorded[, (1 + counterMonth)] <- VMT_unique_dest_avg * otherdest_rows / nrow(pop_bg_stockton)
   
-  # Calculating the VMTs associated with destinations not included within the ("dest_amenities_matrix"), only for those 
+  # Calculating the VMTs associated with destinations not included within the ("dest_amenities_matrix").
   
   m_dest_matrix_VMT <- m_dest_matrix_VMT[!is.na(m_dest_matrix_VMT$longitude), ]
   counterDest <- nrow(m_dest_matrix_VMT)
