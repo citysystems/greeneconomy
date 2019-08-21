@@ -21,7 +21,7 @@ options(tigris_class = "sf")
 
 # Import files.
 
-NHTS_df_final <- read.csv(file = "C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/NHTS_df_final.csv", header = TRUE)
+NHTS_df_final <- read.csv(file = "S:/CCF/data_files/NHTS_df_final.csv", header = TRUE)
 
 source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/patterns_choice.R")
 source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/safegraphplaces_cleanse.R")
@@ -89,7 +89,7 @@ for(num in 1:12){
   dest_unique <- data.frame(unique(m_origin_matrix_sf$full_address))
   m_dest_matrix_sf <- month_dest_matrix(m_patterns_join, dest_unique, safegraphplaces)
  
-  filename <- paste(substr(patterns_text, 0, 23), "Stockton_R_code/VMT_Calculation_new/", substr(patterns_text, 34, 46), "_new.RData", sep = "")
+  filename <- paste("S:/CCF/m_patterns_new/", substr(patterns_text, 45, 57), "_new.RData", sep = "")
   
   save(m_origin_matrix_sf, m_dest_matrix_sf, m_patterns_new, file = filename)
    
@@ -174,7 +174,7 @@ for(counterMonth in 1){ # :12){
   print(counterMonth)
 
   patterns_text <- patterns_choice(counterMonth)
-  filename <- paste(substr(patterns_text, 0, 23), "Stockton_R_code/VMT_Calculation_new/", substr(patterns_text, 34, 45), "_new.RData", sep = "")
+  filename <- paste("S:/CCF/m_patterns_new/", substr(patterns_text, 45, 57), "_new.RData", sep = "")
   load(filename)
   
   m_dest_matrix_sf <- cbind(m_dest_matrix_sf, data.frame(matrix( NA, nrow = nrow(dest_VMT), ncol = (months_considerations + 1) )))
