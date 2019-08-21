@@ -75,11 +75,11 @@ for(num in 1:12){
   # m_hps from "home_panel_summary"
   m_hps <- home_panel_summary(num)
 
-  # Looping through the data to disaggregate the census blocks from the monthly patterns .csv files.
-  m_patterns_new <- month_patterns_new(m_patterns_join, pop_bg_stockton)
-  
   # Finding the census population for each block group goint to amenities in Stockton.
   pop_bg_stockton <- pop_blockgroup_stockton(m_hps)
+  
+  # Looping through the data to disaggregate the census blocks from the monthly patterns .csv files.
+  m_patterns_new <- month_patterns_new(m_patterns_join, pop_bg_stockton)
   
   # Origin Points for Locations
   # This includes finding the census population for each block group going to amenities in Stockton.
@@ -89,7 +89,7 @@ for(num in 1:12){
   dest_unique <- data.frame(unique(m_origin_matrix_sf$full_address))
   m_dest_matrix_sf <- month_dest_matrix(m_patterns_join, dest_unique, safegraphplaces)
  
-  filename <- paste(substr(patterns_text, 0, 23), "Stockton_R_code/VMT_Calculation_new/", substr(patterns_text, 34, 45), "_new.RData", sep = "")
+  filename <- paste(substr(patterns_text, 0, 23), "Stockton_R_code/VMT_Calculation_new/", substr(patterns_text, 34, 46), "_new.RData", sep = "")
   
   save(m_origin_matrix_sf, m_dest_matrix_sf, m_patterns_new, file = filename)
    
@@ -153,7 +153,7 @@ months_in_year <- 12
 VMT_considerations <- 3
 months_considerations <- months_in_year * VMT_considerations
 
-dest_VMT <- matrix(0, ncol = 11 )
+dest_VMT <- matrix(0, ncol = 11)
 m_dest_matrix_VMT <- cbind(dest_VMT, data.frame(matrix( 0, nrow = nrow(dest_VMT), ncol = (months_considerations + 1) ) ) )
 
 colnames(m_dest_matrix_VMT)[1:11] <- c("destination", "location_name", "name_address", "distance_from_home", "raw_visit_counts", "raw_visitor_counts",
@@ -169,7 +169,7 @@ colnames(m_dest_matrix_VMT)[12:48] <- c("VMTs_recorded_m_1", "VMTs_recorded_m_2"
 
 ##########
 
-for(counterMonth in 1:12){
+for(counterMonth in 1){ # :12){
   
   print(counterMonth)
 
