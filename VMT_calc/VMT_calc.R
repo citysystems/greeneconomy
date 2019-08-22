@@ -45,7 +45,7 @@ acs5_17 <- load_variables(2017, "acs5")
 ca_bgs <- block_groups("CA", cb = TRUE)
 
 # Uploading safegraph Places .csv file & data cleansing.
-safegraphplaces <- read.csv("C:/Users/Derek/Desktop/safegraph/poi/safegraphplaces.csv", header=TRUE, stringsAsFactors = FALSE)
+safegraphplaces <- read.csv("S:/Restricted Data Library/Safegraph/poi/safegraphplaces.csv", header=TRUE, stringsAsFactors = FALSE)
 safegraphplaces <- safegraphplaces_cleanse(safegraphplaces)
 
 ### Calculation of NHTS nudge values for the VMT calculations.
@@ -160,6 +160,18 @@ colnames(m_dest_matrix_VMT)[1:11] <- c("destination", "location_name", "name_add
                                        "origin_visit_cbgs", "origin_visitor_cbgs", "full_address", "longitude", "latitude")
 
 colnames(m_dest_matrix_VMT)[12:48] <- c("VMTs_recorded_m_1", "VMTs_recorded_m_2", "VMTs_recorded_m_3", "VMTs_recorded_m_4", "VMTs_recorded_m_5", "VMTs_recorded_m_6",
+                                        "VMTs_recorded_m_7", "VMTs_recorded_m_8", "VMTs_recorded_m_9", "VMTs_recorded_m_10", "VMTs_recorded_m_11", "VMTs_recorded_m_12",
+                                        "VMTs_nonrecorded_m_1", "VMTs_nonrecorded_m_2", "VMTs_nonrecorded_m_3", "VMTs_nonrecorded_m_4", "VMTs_nonrecorded_m_5", "VMTs_nonrecorded_m_6",
+                                        "VMTs_nonrecorded_m_7", "VMTs_nonrecorded_m_8", "VMTs_nonrecorded_m_9", "VMTs_nonrecorded_m_10", "VMTs_nonrecorded_m_11", "VMTs_nonrecorded_m_12",
+                                        "VMTs_nonrecorded_otherdest_m_1", "VMTs_nonrecorded_otherdest_m_2", "VMTs_nonrecorded_otherdest_m_3", "VMTs_nonrecorded_otherdest_m_4",
+                                        "VMTs_nonrecorded_otherdest_m_5", "VMTs_nonrecorded_otherdest_m_6", "VMTs_nonrecorded_otherdest_m_7", "VMTs_nonrecorded_otherdest_m_8",
+                                        "VMTs_nonrecorded_otherdest_m_9", "VMTs_nonrecorded_otherdest_m_10", "VMTs_nonrecorded_otherdest_m_11","VMTs_nonrecorded_otherdest_m_12", "distance_to_Stockton")
+
+locations_of_consideration <- data.frame(matrix( NA, nrow = nrow(dest_VMT), ncol = 48 ) )
+
+colnames(m_dest_matrix_VMT)[1:48] <- c("destination", "location_name", "name_address", "distance_from_home", "raw_visit_counts", "raw_visitor_counts",
+                                        "origin_visit_cbgs", "origin_visitor_cbgs", "full_address", "longitude", "latitude",
+                                        "VMTs_recorded_m_1", "VMTs_recorded_m_2", "VMTs_recorded_m_3", "VMTs_recorded_m_4", "VMTs_recorded_m_5", "VMTs_recorded_m_6",
                                         "VMTs_recorded_m_7", "VMTs_recorded_m_8", "VMTs_recorded_m_9", "VMTs_recorded_m_10", "VMTs_recorded_m_11", "VMTs_recorded_m_12",
                                         "VMTs_nonrecorded_m_1", "VMTs_nonrecorded_m_2", "VMTs_nonrecorded_m_3", "VMTs_nonrecorded_m_4", "VMTs_nonrecorded_m_5", "VMTs_nonrecorded_m_6",
                                         "VMTs_nonrecorded_m_7", "VMTs_nonrecorded_m_8", "VMTs_nonrecorded_m_9", "VMTs_nonrecorded_m_10", "VMTs_nonrecorded_m_11", "VMTs_nonrecorded_m_12",
@@ -298,8 +310,8 @@ save(VMT_all, file = "C:/Users/Derek/Desktop/VMT_all.RData")
 
 VMT_all_mapview <- mapview(VMT_all, zcol = c("VMT_sum_all", "VMT_norm"), legend = TRUE)
 
-mapshot(VMT_all_mapview, url = "C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/Stockton_Safegraph_VMT.html")
-# mapshot(VMT_all_mapview, url = "C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/Stockton_Safegraph_VMT.html")
+mapshot(VMT_all_mapview, url = "S:/CCF/dashboard/Stockton_Safegraph_VMT.html")
+# mapshot(VMT_all_mapview, url = "S:/CCF/dashboard/Stockton_Safegraph_VMT.html")
 
 VMT_lessthan1.25M <- nrow(VMT_all[VMT_all$VMT_sum_all < 1250000, ])
 VMT_1.25Mkto1.5M <- nrow(VMT_all[VMT_all$VMT_sum_all >= 1250000 & VMT_all$VMT_sum_all < 1500000, ])
