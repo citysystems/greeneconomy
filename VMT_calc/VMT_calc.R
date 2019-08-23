@@ -153,35 +153,11 @@ months_in_year <- 12
 VMT_considerations <- 3
 months_considerations <- months_in_year * VMT_considerations
 
-dest_VMT <- matrix(0, ncol = 11)
-m_dest_matrix_VMT <- cbind(dest_VMT, data.frame(matrix( 0, nrow = nrow(dest_VMT), ncol = (months_considerations + 1) ) ) )
-
-colnames(m_dest_matrix_VMT)[1:11] <- c("destination", "location_name", "name_address", "distance_from_home", "raw_visit_counts", "raw_visitor_counts",
-                                       "origin_visit_cbgs", "origin_visitor_cbgs", "full_address", "longitude", "latitude")
-
-colnames(m_dest_matrix_VMT)[12:48] <- c("VMTs_recorded_m_1", "VMTs_recorded_m_2", "VMTs_recorded_m_3", "VMTs_recorded_m_4", "VMTs_recorded_m_5", "VMTs_recorded_m_6",
-                                        "VMTs_recorded_m_7", "VMTs_recorded_m_8", "VMTs_recorded_m_9", "VMTs_recorded_m_10", "VMTs_recorded_m_11", "VMTs_recorded_m_12",
-                                        "VMTs_nonrecorded_m_1", "VMTs_nonrecorded_m_2", "VMTs_nonrecorded_m_3", "VMTs_nonrecorded_m_4", "VMTs_nonrecorded_m_5", "VMTs_nonrecorded_m_6",
-                                        "VMTs_nonrecorded_m_7", "VMTs_nonrecorded_m_8", "VMTs_nonrecorded_m_9", "VMTs_nonrecorded_m_10", "VMTs_nonrecorded_m_11", "VMTs_nonrecorded_m_12",
-                                        "VMTs_nonrecorded_otherdest_m_1", "VMTs_nonrecorded_otherdest_m_2", "VMTs_nonrecorded_otherdest_m_3", "VMTs_nonrecorded_otherdest_m_4",
-                                        "VMTs_nonrecorded_otherdest_m_5", "VMTs_nonrecorded_otherdest_m_6", "VMTs_nonrecorded_otherdest_m_7", "VMTs_nonrecorded_otherdest_m_8",
-                                        "VMTs_nonrecorded_otherdest_m_9", "VMTs_nonrecorded_otherdest_m_10", "VMTs_nonrecorded_otherdest_m_11","VMTs_nonrecorded_otherdest_m_12", "distance_to_Stockton")
-
-locations_of_consideration <- data.frame(matrix( NA, nrow = nrow(dest_VMT), ncol = 48 ) )
-
-colnames(m_dest_matrix_VMT)[1:48] <- c("destination", "location_name", "name_address", "distance_from_home", "raw_visit_counts", "raw_visitor_counts",
-                                        "origin_visit_cbgs", "origin_visitor_cbgs", "full_address", "longitude", "latitude",
-                                        "VMTs_recorded_m_1", "VMTs_recorded_m_2", "VMTs_recorded_m_3", "VMTs_recorded_m_4", "VMTs_recorded_m_5", "VMTs_recorded_m_6",
-                                        "VMTs_recorded_m_7", "VMTs_recorded_m_8", "VMTs_recorded_m_9", "VMTs_recorded_m_10", "VMTs_recorded_m_11", "VMTs_recorded_m_12",
-                                        "VMTs_nonrecorded_m_1", "VMTs_nonrecorded_m_2", "VMTs_nonrecorded_m_3", "VMTs_nonrecorded_m_4", "VMTs_nonrecorded_m_5", "VMTs_nonrecorded_m_6",
-                                        "VMTs_nonrecorded_m_7", "VMTs_nonrecorded_m_8", "VMTs_nonrecorded_m_9", "VMTs_nonrecorded_m_10", "VMTs_nonrecorded_m_11", "VMTs_nonrecorded_m_12",
-                                        "VMTs_nonrecorded_otherdest_m_1", "VMTs_nonrecorded_otherdest_m_2", "VMTs_nonrecorded_otherdest_m_3", "VMTs_nonrecorded_otherdest_m_4",
-                                        "VMTs_nonrecorded_otherdest_m_5", "VMTs_nonrecorded_otherdest_m_6", "VMTs_nonrecorded_otherdest_m_7", "VMTs_nonrecorded_otherdest_m_8",
-                                        "VMTs_nonrecorded_otherdest_m_9", "VMTs_nonrecorded_otherdest_m_10", "VMTs_nonrecorded_otherdest_m_11","VMTs_nonrecorded_otherdest_m_12", "distance_to_Stockton")
+locations_of_consideration <- data.frame()
 
 ##########
 
-for(counterMonth in 1){ # :12){
+for(counterMonth in 1:12){
   
   print(counterMonth)
 
@@ -209,7 +185,11 @@ for(counterMonth in 1){ # :12){
   distance_recorded <- data.frame( matrix(nrow = dest_num, ncol = 1, NA) )
   distance_nonrecorded <- data.frame( matrix(nrow = dest_num, ncol = 1, NA) )
   
-  start_counter <- nrow(m_dest_matrix_VMT)
+  start_counter <- nrow(locations_of_consideration)
+  
+  locations_of_consideration <- rbind(locations_of_consideration, m_dest_matrix_sf[!is.na(m_dest_matrix_sf$longitude), ])
+  
+  end_counter <- nrow(locations_of_consideration)
 
   for(counterVMT in 1:dest_num){
   
@@ -227,15 +207,11 @@ for(counterMonth in 1){ # :12){
     distance_dest <- as.numeric(dest_vector$distance_from_home) * factor_twoWayTrip * conv_MeterToMile * NHTS_MeanMedConv * NHTS_LinkedTripsConv * NHTS_carpoolVehicleFilter
 
     proportion_Stockton <- sum(origin_matrix[!is.na(origin_matrix$origin_population), "visit_count"]) / sum(origin_matrix[, "visit_count"])
-  
+    
     distance_bg_recorded <- data.frame( as.numeric(dest_vector$raw_visit_counts) / as.numeric(dest_vector$raw_visitor_counts) * origin_matrix$unique_visitor_count * distance_origin)
     distance_bg_recorded_sum <- sum(distance_bg_recorded) 
     distance_bg_nonrecorded <- ( distance_dest * as.numeric(dest_vector$raw_visit_counts) - sum(distance_bg_recorded) ) * proportion_Stockton
-  
-    # if(nrow(VMT_Origin_recorded) > 205){print(counterVMT)}
-    # print(counterVMT)
-    # print(proportion_Stockton)
-
+    
     VMT_Origin_recorded_unique_dest <- distance_bg_recorded * as.numeric(origin_matrix$origin_population) / as.numeric(origin_matrix$number_devices_residing)
     VMT_Origin_recorded[(c(origin_matrix$origin)), (1 + counterMonth)] <- VMT_Origin_recorded[c(origin_matrix$origin), (1 + counterMonth)] + VMT_Origin_recorded_unique_dest
     VMT_Origin_recorded <- na.omit(VMT_Origin_recorded)
@@ -243,50 +219,43 @@ for(counterMonth in 1){ # :12){
     subset_non_recorded <- subset(VMT_Origin_nonrecorded[, c(1, (1 + counterMonth))], !(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin))
     VMT_Origin_nonrecorded_unique_dest <- ( matrix(nrow = nrow(subset_non_recorded), ncol = 1, distance_bg_nonrecorded/nrow(subset_non_recorded))
                                             * as.numeric( pop_bg_stockton[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), "origin_population"][[1]] )
-                                            / as.numeric( pop_bg_stockton[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), "number_devices_residing"][[1]] ) )
+                                            / as.numeric( pop_bg_stockton[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), "number_devices_residing"][[1]] )
+                                           )
     VMT_Origin_nonrecorded[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), (1 + counterMonth)] <- (VMT_Origin_nonrecorded[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), (1 + counterMonth)]
-                                                                                                       + VMT_Origin_nonrecorded_unique_dest)
+                                                                                                               + VMT_Origin_nonrecorded_unique_dest)
 
     distance_recorded[counterVMT, 1] <- distance_bg_recorded_sum
     distance_nonrecorded[counterVMT, 1] <- distance_bg_nonrecorded/nrow(subset_non_recorded)
-    
-    m_dest_matrix_VMT <- rbind(m_dest_matrix_VMT, dest_vector)
-    
-    m_dest_matrix_VMT[(start_counter + counterVMT), (11 + counterMonth)] <- sum(VMT_Origin_recorded_unique_dest)
-    m_dest_matrix_VMT[(start_counter + counterVMT), (23 + counterMonth)] <- sum(VMT_Origin_nonrecorded_unique_dest)
 
     ##########
     # count_dist_start <- count_dist_start + nrow(origin_matrix)
     ##########
-  
+    
     locations_of_consideration[locations_of_consideration$full_address == dest_vector$full_address, (11 + counterMonth)] <- sum(VMT_Origin_recorded_unique_dest)
     locations_of_consideration[locations_of_consideration$full_address == dest_vector$full_address, (23 + counterMonth)] <- sum(VMT_Origin_nonrecorded_unique_dest)
     
   }
 
   # Calculating the VMTs associated with destinations not included within the ("dest_amenities_matrix")
-
+  
   VMT_unique_dest_avg <- mean(VMT_Origin_nonrecorded[, (1 + counterMonth)])
   distance_cutoff <- 1 # miles
 
-  locations_of_consideration <- m_dest_matrix_sf[!is.na(m_dest_matrix_sf$longitude), ]
-  locations_of_consideration$distance_to_Stockton <- latlong_mile_conversion * sqrt( (as.numeric(locations_of_consideration[, "longitude"]) - Stockton_longitude)^2
-                                                              + (as.numeric(locations_of_consideration[, "latitude"]) - Stockton_latitude)^2  )
+  locations_of_consideration[(start_counter + 1):end_counter, "distance_to_Stockton"] <- latlong_mile_conversion * sqrt( (as.numeric(locations_of_consideration[(start_counter + 1):end_counter, "longitude"]) - Stockton_longitude)^2
+                                                                                                                       + (as.numeric(locations_of_consideration[(start_counter + 1):end_counter, "latitude"]) - Stockton_latitude)^2 )
   
-  otherdest_rows <- length(locations_of_consideration[is.na(locations_of_consideration[, (23 + counterMonth)]) & locations_of_consideration[, "distance_to_Stockton"] <= distance_cutoff, (23 + counterMonth)])
-  locations_of_consideration[is.na(locations_of_consideration[, (23 + counterMonth)]) & locations_of_consideration[, "distance_to_Stockton"] <= distance_cutoff, (35 + counterMonth)] <- VMT_unique_dest_avg
+  ### Fix: 
+  
+  rows_of_consideration <- locations_of_consideration[(start_counter + 1):end_counter, ]
+  otherdest_rows <- length(rows_of_consideration[is.na(rows_of_consideration[(start_counter + 1):end_counter, (23 + counterMonth)]) & rows_of_consideration[(start_counter + 1):end_counter, "distance_to_Stockton"] <= distance_cutoff, (23 + counterMonth)])
+  
+  otherdest_rows <- length(rows_of_consideration[is.na(rows_of_consideration[(start_counter + 1):end_counter, (23 + counterMonth)]) & (rows_of_consideration[(start_counter + 1):end_counter, "distance_to_Stockton"] <= distance_cutoff), (23 + counterMonth)])
+  
+  otherdest_rows <- length(locations_of_consideration[is.na(locations_of_consideration[(start_counter + 1):end_counter, (23 + counterMonth)]) & locations_of_consideration[(start_counter + 1):end_counter, "distance_to_Stockton"] <= distance_cutoff, (23 + counterMonth)])
+  locations_of_consideration[is.na(locations_of_consideration[(start_counter + 1):end_counter, (23 + counterMonth)]) & (locations_of_consideration[(start_counter + 1):end_counter, "distance_to_Stockton"] <= distance_cutoff), (35 + counterMonth)] <- VMT_unique_dest_avg
   VMT_Origin_otherdest_nonrecorded[, (1 + counterMonth)] <- VMT_unique_dest_avg * otherdest_rows / nrow(pop_bg_stockton)
   
-  # Calculating the VMTs associated with destinations not included within the ("dest_amenities_matrix").
-  
-  m_dest_matrix_VMT <- m_dest_matrix_VMT[!is.na(m_dest_matrix_VMT$longitude), ]
-  counterDest <- nrow(m_dest_matrix_VMT)
-  m_dest_matrix_VMT[(start_counter + 1):counterDest, "distance_to_Stockton"] <- latlong_mile_conversion * sqrt( (as.numeric(m_dest_matrix_VMT[(start_counter + 1):(counterDest), "longitude"]) - Stockton_longitude)^2
-                                                                                                                   + (as.numeric(m_dest_matrix_VMT[(start_counter + 1):counterDest, "latitude"]) - Stockton_latitude)^2  )
-  
-  m_dest_matrix_VMT[(is.na(m_dest_matrix_VMT[(start_counter + 1):counterDest, (23 + counterMonth)]) 
-                    & m_dest_matrix_VMT[(start_counter + 1):counterDest, "distance_to_Stockton"] <= distance_cutoff), 
-                    (35 + counterMonth)] <- VMT_unique_dest_avg
+  ###
   
   rm(m_origin_matrix_sf, m_dest_matrix_sf, m_patterns_new)
   
