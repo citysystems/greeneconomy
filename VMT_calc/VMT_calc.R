@@ -255,6 +255,7 @@ colnames(nonStocktonDest_proportion_recorded) <- c("locations", "nonStocktonDest
 for(counterMonth in 1:12){
 
   # Loading the m_patterns_new data. This includes "m_origin_matrix_sf", "m_dest_matrix_sf" and "m_patterns_new".
+  # This is done for each of the 12 months of the year.
   
   patterns_text <- patterns_choice(counterMonth)
   filename <- paste("S:/CCF/m_patterns_new/", substr(patterns_text, 45, 57), "_new.RData", sep = "")
@@ -300,10 +301,8 @@ for(counterMonth in 1:12){
   locations_of_consideration[(start_counter + 1):end_counter, ][withinStocktonBuffer_rownum, "within_StocktonBuffer"] <- TRUE
   locations_of_consideration[(start_counter + 1):end_counter, ][is.na(locations_of_consideration[(start_counter + 1):end_counter, ]$within_StocktonBuffer), "within_StocktonBuffer"] <- FALSE
   
-  # m_hps from "home_panel_summary"
+  # m_hps from "home_panel_summary" and finding the census population for each block group goint to amenities in Stockton.
   m_hps <- home_panel_summary(counterMonth)
-  
-  # Finding the census population for each block group goint to amenities in Stockton.
   pop_bg_stockton <- pop_blockgroup_stockton(m_hps)
   
   # This for loop performs the VMT analysis for each of Stockton's block groups.
@@ -329,17 +328,23 @@ for(counterMonth in 1:12){
     distance_origin <- as.numeric(origin_matrix$distance_from_home) * factor_twoWayTrip * conv_MeterToMile * NHTS_MeanMedConv * NHTS_LinkedTripsConv * NHTS_carpoolVehicleFilter  
     distance_dest <- as.numeric(dest_vector$distance_from_home) * factor_twoWayTrip * conv_MeterToMile * NHTS_MeanMedConv * NHTS_LinkedTripsConv * NHTS_carpoolVehicleFilter
 
-    # This vector computes the proportion of the origins coming from Stockton to ...
+    # This vector computes the proportion of the origins coming from Stockton that go to the safegraph place destination being analyzed.
     
     proportion_Stockton <- sum(origin_matrix[!is.na(origin_matrix$origin_population), "visit_count"]) / sum(origin_matrix[, "visit_count"])
+    
+    # The following code computes the distances being driven by the origins recorded ("recorded") and those that have not been recorded "non-recorded".
     
     distance_bg_recorded <- data.frame( as.numeric(dest_vector$raw_visit_counts) / as.numeric(dest_vector$raw_visitor_counts) * origin_matrix$unique_visitor_count * distance_origin )
     distance_bg_recorded_sum <- sum( distance_bg_recorded )
     distance_bg_nonrecorded <- ( distance_dest * as.numeric(dest_vector$raw_visit_counts) - sum(distance_bg_recorded) ) * proportion_Stockton
     
+    # The following code computes the "recorded" VMTs from the "distance_bg_recorded" feature previously calculated. 
+    
     VMT_Origin_recorded_unique_dest <- distance_bg_recorded * as.numeric(origin_matrix$origin_population) / as.numeric(origin_matrix$number_devices_residing)
     VMT_Origin_recorded[(c(origin_matrix$origin)), (1 + counterMonth)] <- VMT_Origin_recorded[c(origin_matrix$origin), (1 + counterMonth)] + VMT_Origin_recorded_unique_dest
     VMT_Origin_recorded <- na.omit(VMT_Origin_recorded)
+    
+    # The following code computes the "non-recorded" VMTs from the "distance_bg_nonrecorded" feature previously calculated.
     
     subset_non_recorded <- subset( VMT_Origin_nonrecorded[, c(1, (1 + counterMonth))], !(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin) )
     VMT_Origin_nonrecorded_unique_dest <- ( matrix(nrow = nrow(subset_non_recorded), ncol = 1, distance_bg_nonrecorded/nrow(subset_non_recorded))
@@ -348,7 +353,7 @@ for(counterMonth in 1:12){
     VMT_Origin_nonrecorded[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), (1 + counterMonth)] <-
     (VMT_Origin_nonrecorded[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), (1 + counterMonth)] + VMT_Origin_nonrecorded_unique_dest)
 
-    # This code takes the proportion of those coming from Stockton and inputs it into one of two vectors.
+    # This code takes the proportion of those coming from Stockton and inputs that value into one of two vectors.
     # The proportion of those coming from Stockton will be inserted into the first vector if the destination is within Stockton.
     # The proportion of those coming from Stockton will be inserted into the second vector if the destination is outside of Stockton.
     
@@ -368,12 +373,18 @@ for(counterMonth in 1:12){
     # count_dist_start <- count_dist_start + nrow(origin_matrix)
     ##########
     
+    # The following code passes the sum of "VMT_Origin_recorded_unique_dest" and "VMT_Origin_nonrecorded_unique_dest" to the "locations_of_consideration" feature.
+    # The "locations_of_consideration" feature is used to store the VMT data associated with the "recorded", "non-recorded" and "unique-dest non-recorded" data.
+    
     locations_of_consideration[(start_counter + 1):end_counter, ][locations_of_consideration[(start_counter + 1):end_counter, ]$full_address == dest_vector$full_address, (9 + counterMonth)] <- sum(VMT_Origin_recorded_unique_dest)
     locations_of_consideration[(start_counter + 1):end_counter, ][locations_of_consideration[(start_counter + 1):end_counter, ]$full_address == dest_vector$full_address, (21 + counterMonth)] <- sum(VMT_Origin_nonrecorded_unique_dest)
     
-    print("---")
+    # I just printed out '---' so that I knew this code was working at every loop. This can be deleted in the future.
+    print('---')
     
   }
+  
+  # Calculating the VMTs associated with destinations not included within the ("dest_amenities_matrix")
   
   ##########
   # distance_cutoff <- 1 # miles
@@ -381,23 +392,46 @@ for(counterMonth in 1:12){
   #                                                                                                                      + (as.numeric(locations_of_consideration[(start_counter + 1):end_counter, "latitude"]) - Stockton_latitude)^2 )
   ##########
 
-  # Calculating the VMTs associated with destinations not included within the ("dest_amenities_matrix")
-  
+  ##########
   ### VMT_unique_dest_avg <- mean(VMT_Origin_nonrecorded[, (1 + counterMonth)]) # Comment #1: I need to change this soon.
+  ##########
+  
+  # The following code first computes two conditionals to understand if there is a destination that has not been allocated VMTs to. This analysis is done on a monthly basis.
+  # The first conditional checks to see whether any of the destinations have had VMTs allocated to them. If not, TRUE. Otherwise, FALSE. 
+  # The second conditional checks to see whether the destinations are within 1 mile of the Stockton buffer zone. If so, TRUE. Otherwise, FALSE.
   
   VMT_unique_dest_conditional_1 <- is.na(locations_of_consideration[(start_counter + 1):end_counter, ][locations_of_consideration[(start_counter + 1):end_counter,(21 + counterMonth)], (21 + counterMonth)])[, 1]
   VMT_unique_dest_conditional_2 <- (locations_of_consideration[(start_counter + 1):end_counter, ]$within_StocktonBuffer == TRUE)
-  
+
+  # The following code computes the number of rows in which the following two conditionals hold true (TRUE).
+    
   otherdest_rows <- nrow(locations_of_consideration[(start_counter + 1):end_counter, ][VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, (21 + counterMonth)])
-  
+
+  # The following code 
+    
   locations_of_consideration[(start_counter + 1):end_counter, ][VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, (33 + counterMonth)] <- 
-  as.numeric(locations_of_consideration[(start_counter + 1):end_counter, ][VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, ]$distance_from_home) * 
-  as.numeric(locations_of_consideration[(start_counter + 1):end_counter, ][VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, ]$raw_visit_counts) *
-  factor_twoWayTrip * conv_MeterToMile * NHTS_MeanMedConv * NHTS_LinkedTripsConv * NHTS_carpoolVehicleFilter
+    as.numeric(locations_of_consideration[(start_counter + 1):end_counter, ][VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, ]$distance_from_home) * 
+    as.numeric(locations_of_consideration[(start_counter + 1):end_counter, ][VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, ]$raw_visit_counts) *
+    factor_twoWayTrip * conv_MeterToMile * NHTS_MeanMedConv * NHTS_LinkedTripsConv * NHTS_carpoolVehicleFilter
+  
+  ##########
+  # I would not call the above complete. Based on this analysis, I am assuming that the ratio of the origin population to the number of devices residing is 1:1.
+  # This is however not the case. I would recommend implementing code such as the following:
+  # 
+  # * as.numeric( pop_bg_stockton[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), "origin_population"][[1]] )
+  # / as.numeric( pop_bg_stockton[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), "number_devices_residing"][[1]] )
+  # 
+  # This would make it so that the ratio mentioned previously woud not be 1:1.
+  ##########
+  
+  # I then take these same values that were stored in the previous column, I find the mean and I evenly distribute these values across all of Stockton's origins.
   
   VMT_unique_dest_avg <- (locations_of_consideration[(start_counter + 1):end_counter, ][VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, (33 + counterMonth)])
   VMT_unique_dest_avg <- mean(VMT_unique_dest_avg[[1]], na.rm = TRUE)
   VMT_Origin_otherdest_nonrecorded[, (1 + counterMonth)] <- VMT_unique_dest_avg * otherdest_rows / nrow(pop_bg_stockton)
+  
+  # At the end of each loop, I delete the m_patterns_new data. This includes "m_origin_matrix_sf", "m_dest_matrix_sf" and "m_patterns_new".
+  # This is done so that the next month's data can be loaded in a clean manner.
   
   rm(m_origin_matrix_sf, m_dest_matrix_sf, m_patterns_new)
   
