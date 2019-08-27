@@ -22,8 +22,9 @@
 geocodeSL <- function(address, geocoder = "USA_Comp", postal = TRUE){
   require(httr)
   
-  # This token was acquired on July 19th, 2019 and will expire within a year from that date.
-  token <- "knSPxKIEjqjOvvrkzYGwu9h7DHH3Ne2Yn2huwDwjPLoHGa_PrKda1QBnCij3LTjW"
+  # The following is the link that provides one with the token: http://locator.stanford.edu/arcgis/tokens/
+  # The token expires very quickly.
+  token <- "JmvbKtygmwkerTQhEwcRlEgT9B9TAfO3ZjTmUzgHAyocr4F_XjWwyaadHNNmjeP1"
   
   if (geocoder == "USA_Str"){
     # Stanford geolocator

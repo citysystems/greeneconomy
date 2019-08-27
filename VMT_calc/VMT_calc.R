@@ -45,23 +45,22 @@ acs5_17 <- load_variables(2017, "acs5")
 ca_bgs <- block_groups("CA", cb = TRUE)
 
 # Uploading safegraph Places .csv file & data cleansing.
-safegraphplaces <- read.csv("S:/Restricted Data Library/Safegraph/poi/safegraphplaces.csv", header=TRUE, stringsAsFactors = FALSE)
-safegraphplaces <- safegraphplaces_cleanse(safegraphplaces)
-
-### Calculation of NHTS nudge values for the VMT calculations.
+safegraphplaces_SJ <- read.csv("S:/Restricted Data Library/Safegraph/poi/safegraphplaces.csv", header=TRUE, stringsAsFactors = FALSE)
+safegraphplaces_CA <- read.csv("S:/Restricted Data Library/Safegraph/poi/safegraphplaces_CA.csv", header=TRUE, stringsAsFactors = FALSE)
+safegraphplaces_tot <- rbind(safegraphplaces_SJ, safegraphplaces_CA)
+safegraphplaces <- safegraphplaces_cleanse(safegraphplaces_tot)
 
 ##########
 
-### Nudge: Performing the linked trips conversion factor.
+### Calculation of NHTS nudge values for the VMT calculations.
 
+### Nudge: Performing the linked trips conversion factor.
 NHTS_LinkedTripsConv <- nudge_LinkedTrips(NHTS_df_final)
 
 ### Nudge: Peforming the median to mean converison.
-
 NHTS_MeanMedConv <- nudge_MeanMedConv(NHTS_df_final)
 
 ### Nudge: Peforming the carpooling and vehicle vs. other transit mode nudge.
-
 NHTS_carpoolVehicleFilter <- NHTS_carpoolVehicleFilter(NHTS_df_final)
 
 # Downloading Safegraph patterns .csv files.
@@ -93,7 +92,7 @@ for(num in 1:12){
   
   save(m_origin_matrix_sf, m_dest_matrix_sf, m_patterns_new, file = filename)
    
-  rm(m_origin_matrix_sf, m_dest_matrix_sf, m_patterns_new, file = filename)
+  rm(m_origin_matrix_sf, m_dest_matrix_sf, m_patterns_new, filename)
   
 }
 
@@ -400,14 +399,15 @@ for(counterMonth in 1:12){
   # The first conditional checks to see whether any of the destinations have had VMTs allocated to them. If not, TRUE. Otherwise, FALSE. 
   # The second conditional checks to see whether the destinations are within 1 mile of the Stockton buffer zone. If so, TRUE. Otherwise, FALSE.
   
-  VMT_unique_dest_conditional_1 <- is.na(locations_of_consideration[(start_counter + 1):end_counter, ][locations_of_consideration[(start_counter + 1):end_counter,(21 + counterMonth)], (21 + counterMonth)])[, 1]
+  VMT_unique_dest_conditional_1 <- is.na(locations_of_consideration[(start_counter + 1):end_counter, ][locations_of_consideration[(start_counter + 1):end_counter, (21 + counterMonth)], (21 + counterMonth)])[, 1]
   VMT_unique_dest_conditional_2 <- (locations_of_consideration[(start_counter + 1):end_counter, ]$within_StocktonBuffer == TRUE)
 
   # The following code computes the number of rows in which the following two conditionals hold true (TRUE).
     
   otherdest_rows <- nrow(locations_of_consideration[(start_counter + 1):end_counter, ][VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, (21 + counterMonth)])
 
-  # The following code 
+  # The following code uses the "distance_from_home" and "raw_visit_counts" values for each of the rows in which
+  # the conditonals are true to estimate the VMTs associated with the locations with no allocated VMTs.
     
   locations_of_consideration[(start_counter + 1):end_counter, ][VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, (33 + counterMonth)] <- 
     as.numeric(locations_of_consideration[(start_counter + 1):end_counter, ][VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, ]$distance_from_home) * 
