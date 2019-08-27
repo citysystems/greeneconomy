@@ -358,14 +358,22 @@ colnames(zbp_stockton) <- c("zipcode","EMP","ESTAB","PAYANN","year")
 
 for(year in 2010:2016){
   
-  temp <- getCensus(name = "zbp",
-                    vintage = year,
-                    region = "zipcode:*",
-                    vars = c("EMP","ESTAB","PAYANN")) %>% 
-    filter(zipcode %in% zcta_stockton$ZCTA5CE10) %>% 
+  temp <- 
+    getCensus(
+      name = "zbp",
+      vintage = year,
+      region = "zipcode:*",
+      vars = c(
+        "EMP",
+        "ESTAB",
+        "PAYANN"
+      )
+    ) %>% 
+    filter(zipcode %in% zcta_stockton$ZIPCODE) %>% 
     mutate(year = year)
   
-  zbp_stockton<- rbind(zbp_stockton,temp)
+  zbp_stockton<- 
+    rbind(zbp_stockton,temp)
   
 }
 
@@ -373,7 +381,8 @@ pop_stockton <- data.frame(matrix(ncol=2,nrow=0))
 
 colnames(pop_stockton) <- c("POP","year")
 
-for(year in 2010:2016){
+#try this with a matching sample of block groups, compare results
+for(year in 2010:2016){ 
   
   temp <- getCensus(name = "acs/acs1",
                   vintage = year,
@@ -401,10 +410,22 @@ ggplot(pop_jobs_stockton, aes(x = year)) +
   scale_colour_manual(values = c("blue","red")) + 
   labs(title = "Stockton, CA", y = "Population", x = "Year", colour = "Parameter")
 
+nonemp_sjc <-
+  getCensus(
+    name = "nonemp",
+    vintage = 2010,
+    region = "county:077",
+    regionin = "state:06",
+    vars = c(
+      "NESTAB",
+      "NRCPTOT"
+    )
+  )
+
 
 
 #next step: add future year projections
-
+#add LODES for multiple years
 
 
 
