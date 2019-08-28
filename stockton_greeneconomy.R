@@ -27,14 +27,14 @@ readRenviron("~/.Renviron")
 
 #next few steps are for PG&E analysis. first getting zip code tabulation areas, treating those as roughly the sam as zip codes, and then using them to pair PG&E zip code energy data with zip code level building summaries.
 
-zcta <- zctas(starts_with="95", cb = TRUE) %>% 
+zcta <- zctas(starts_with="95") %>% 
   mutate(ZCTA5CE10 = as.numeric(ZCTA5CE10))
-# zips_stockton <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ZipCodes/ZipCodes.shp") %>% st_transform(st_crs(zcta)) #this was downloaded from Stockton GIS site to do a quick visual check of the difference between ZCTA and zip code. you can read up on it if you want. i determined they were pretty much the same. you don't need to use zips_stockton for anything.
+# zips_stockton <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ZipCodes/ZipCodes.shp") %>% st_transform(st_crs(zcta)) #this was downloaded from Stockton GIS site to do a quick visual check of the difference between ZCTA and zip code. you can read up on it if you want. i determined they were pretty much the same. you don't need to use zips_stockton for anything.
 
-stockton_boundary <- places("CA", cb = TRUE) %>% 
+stockton_boundary <- places("CA") %>% 
   filter(NAME == "Stockton")
 
-stockton_boundary_influence <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/SpheresOfInfluence/SpheresOfInfluence.shp") %>% 
+stockton_boundary_influence <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/SpheresOfInfluence/SpheresOfInfluence.shp") %>% 
   filter(SPHERE == "STOCKTON") %>% 
   st_transform(st_crs(zcta)) #stockton boundary is legit but really spotty, so i prefer using sphere of influence from the County GIS page.
 
@@ -166,9 +166,9 @@ zips_mtco2_total <- pge_stockton_filtered %>%
 zcta_stockton_joined <- zcta_stockton %>% 
   left_join(zips_mtco2_total, by="ZIPCODE")
 
-save(zcta_stockton_joined, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/zcta_stockton_joined.Rdata")
+save(zcta_stockton_joined, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/zcta_stockton_joined.Rdata")
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/zcta_stockton_joined.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/zcta_stockton_joined.Rdata")
 
 
 
@@ -176,7 +176,7 @@ load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/zct
 
 #below I've brought in all the code from stockton_bldg.R, but it can all be skipped by going to the load() of stockton_bldg.Rdata at the bottom. Kevin, whatever refinements you've made, go ahead and make them here.
 
-sjc_bldg <- read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/ca_06077_footprints.csv") %>% 
+sjc_bldg <- read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/ca_06077_footprints.csv") %>% 
   st_as_sf(wkt = "WKT") %>% 
   st_set_crs(4326) %>% 
   mutate(id = row_number())
@@ -186,7 +186,7 @@ stockton_boundary_influence %<>%
 
 stockton_bldg <- sjc_bldg[which(sjc_bldg$id %in% st_centroid(sjc_bldg)[stockton_boundary_influence,]$id),]
 
-sjc_parcels <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Parcels/Parcels.shp") %>% 
+sjc_parcels <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Parcels/Parcels.shp") %>% 
   st_transform(st_crs(4326))
 
 sjc_parcels_valid <- st_make_valid(sjc_parcels)
@@ -198,10 +198,10 @@ bldg_parcel_join <- st_join(st_centroid(stockton_bldg), stockton_parcels) %>%
   rename(area = STAREA__) %>% 
   st_set_geometry(NULL)
 
-sjc_zoning <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Zoning/Zoning.shp") %>% st_transform(st_crs(4326)) %>% 
+sjc_zoning <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Zoning/Zoning.shp") %>% st_transform(st_crs(4326)) %>% 
   filter(ZNLABEL != "STOCKTON")
 
-stockton_zoning <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Stockton_Zoning/Zoning.shp") %>% 
+stockton_zoning <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Stockton_Zoning/Zoning.shp") %>% 
   st_transform(st_crs(4326))
 
 bldg_zoning_join <- st_join(st_centroid(stockton_bldg), stockton_zoning) %>% 
@@ -216,7 +216,7 @@ bldg_zoning_join %<>% merge(bldg_zoning_join_uninc) %>%
   mutate(ZONE = ifelse(is.na(ZONE),as.character(ZNCODE),as.character(ZONE))) %>% 
   select(ZONE, id)
 
-sjc_bgs <- block_groups("California", "San Joaquin County", cb = TRUE) %>% 
+sjc_bgs <- block_groups("California", "San Joaquin County") %>% 
   st_transform(st_crs(4326))
 
 stockton_bgs <- sjc_bgs[stockton_boundary_influence,]
@@ -244,9 +244,9 @@ f <- function(x, pos) filter(x, `FIPS CODE` %in% c("06077"))
 
 sjc_assessor <- read_delim_chunked( "S:/Restricted Data Library/CoreLogic/Stanford_University_Tax_06_CALIFORNIA/Stanford_University_Tax_06_CALIFORNIA.TXT", col_types = do.call(cols, col_specs_list), DataFrameCallback$new(f), chunk_size = 1000000, delim = "|")
 
-# save(sjc_assessor, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/sjc_assessor.Rdata")
+# save(sjc_assessor, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/sjc_assessor.Rdata")
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/sjc_assessor.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/sjc_assessor.Rdata")
 
 sjc_assessor <- sjc_assessor %>% 
   mutate(APN = as.numeric(`UNFORMATTED APN`))
@@ -261,9 +261,9 @@ stockton_bldg_final <- stockton_bldg %>%
 
 stockton_boundary_influence %<>% st_transform(st_crs(zcta))
 
-save(stockton_bldg_final, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
+save(stockton_bldg_final, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")  
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")  
 
 
 
@@ -347,9 +347,9 @@ zcta_bldg_stockton_summary <- zcta_bldg_stockton_joined %>%
 
 write.csv(zcta_bldg_stockton_summary, file = "bldg_stockton_summary.csv")
 
-save(zcta_bldg_stockton_joined, zcta_bldg_stockton_summary, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/zcta_bldg_stockton_joined.Rdata")
+save(zcta_bldg_stockton_joined, zcta_bldg_stockton_summary, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/zcta_bldg_stockton_joined.Rdata")
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/zcta_bldg_stockton_joined.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/zcta_bldg_stockton_joined.Rdata")
 
 #the following lines are used to create the pop + jobs time series from 2010 to 2016. the jobs data is based on the selection of zctas, which is a larger set than Stockton geography, while the pop data is using the Stockton place geography from ACS, so they aren't an exact geographic comparison, but close enough in my opinion.
 
@@ -377,20 +377,56 @@ for(year in 2010:2016){
   
 }
 
+
+
+sjc_boundary <- 
+  counties("CA") %>% 
+  filter(NAME == "San Joaquin")
+
+sjc_bgs %<>%
+  st_transform(st_crs(zcta_stockton))
+
+#matching county subdivision for zctas
+county_subdivision <- 
+  county_subdivisions("CA", "San Joaquin County") %>% 
+  filter(NAME == "Stockton")
+
+#matching sample of block groups for zctas
+zcta_bgs <- 
+  sjc_bgs[which(sjc_bgs$GEOID %in% st_centroid(sjc_bgs)[zcta_stockton,]$GEOID),]
+
+temp <- 
+  getCensus(
+    name = "acs/acs1",
+    vintage = year,
+    vars = c("B01003_001E"),
+    region = "place:75000",
+    regionin = "state:06"
+  )
+
+
 pop_stockton <- data.frame(matrix(ncol=2,nrow=0))
 
 colnames(pop_stockton) <- c("POP","year")
 
-#try this with a matching sample of block groups, compare results
 for(year in 2010:2016){ 
   
-  temp <- getCensus(name = "acs/acs1",
-                  vintage = year,
-                  vars = c("B01003_001E"),
-                  region = "place:75000",
-                  regionin = "state:06") %>% 
-    mutate(POP = B01003_001E, year = year) %>% 
-    select(POP,year)
+  temp <- 
+    getCensus(
+      name = "acs/acs1",
+      vintage = year,
+      vars = c("B01003_001E"),
+      region = "place:75000",
+      regionin = "state:06"
+    ) %>% 
+    mutate(
+      POP = B01003_001E, 
+      year = year
+    ) %>% 
+    select(
+      POP,
+      year
+    )
   
   pop_stockton<- rbind(pop_stockton,temp)
   
@@ -423,9 +459,229 @@ nonemp_sjc <-
   )
 
 
+#change to county scale for consistency for now
+
+sjc_boundary <- 
+  counties("CA") %>% 
+  filter(NAME == "San Joaquin")
+
+cbp_sjc <- data.frame(matrix(ncol=6,nrow=0))
+colnames(cbp_sjc) <- c("EMP","ESTAB","PAYANN","NESTAB","NRCPTOT","year")
+
+for(year in 2010:2017){
+  
+  temp <- 
+    getCensus(
+      name = "cbp",
+      vintage = year,
+      region = "county:077",
+      regionin = "state:06",
+      vars = c(
+        "EMP",
+        "ESTAB",
+        "PAYANN"
+      )
+    ) %>% 
+    select(-c(state,county))
+  
+  nonemp <-
+    getCensus(
+      name = "nonemp",
+      vintage = year,
+      region = "county:077",
+      regionin = "state:06",
+      vars = c(
+        "NESTAB",
+        "NRCPTOT"
+      )
+    ) %>%
+    mutate(year = year) %>% 
+    select(-c(state,county))
+  
+  cbp_sjc<- 
+    rbind(cbp_sjc,cbind(temp,nonemp))
+  
+}
+
+
+label_industry <- 
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/label_industry.csv")
+
+qwi_sjc <- data.frame(matrix(ncol=5,nrow=0))
+colnames(qwi_sjc) <- c("year","industry","label","EmpS","EarnS")
+
+for(years in 2010:2018){
+  qwi<- 
+    getCensus(
+      name = "timeseries/qwi/sa",
+      region = "county:077",
+      regionin = "state:06",
+      vars = c("EmpS","EarnS","industry","ind_level"),
+      time = years
+    ) %>% 
+    filter(ind_level == 4) %>% 
+    mutate(
+      year = substr(time,1,4)
+    ) %>% 
+    left_join(label_industry, by= "industry") %>% 
+    group_by(year,industry,label) %>% 
+    summarize(
+      EmpS = round(mean(as.numeric(EmpS), na.rm = TRUE),0),
+      EarnS = round(mean(as.numeric(EarnS), na.rm = TRUE),0)
+    ) %>% 
+    filter(!is.na(EmpS) & EmpS != 0)
+  
+  qwi_sjc<- 
+    bind_rows(qwi_sjc,qwi)
+}
+
+write_csv(qwi_sjc, "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/qwi_sjc.csv")
+
+
+
+
+pop_sjc <- data.frame(matrix(ncol=2,nrow=0))
+colnames(pop_sjc) <- c("POP","year")
+
+for(year in 2010:2017){ 
+  
+  temp <- 
+    getCensus(
+      name = "acs/acs1",
+      vintage = year,
+      vars = c("B01003_001E"),
+      region = "county:077",
+      regionin = "state:06"
+    ) %>% 
+    mutate(
+      POP = B01003_001E, 
+      year = year
+    ) %>% 
+    select(
+      POP,
+      year
+    )
+  
+  pop_sjc<- rbind(pop_sjc,temp)
+  
+}
+
+pop_jobs_sjc <- cbp_sjc %>% 
+  group_by(year) %>% 
+  summarize(
+    EMP=sum(as.numeric(EMP)),
+    ESTAB=sum(as.numeric(ESTAB)),
+    PAYANN=sum(as.numeric(PAYANN)),
+    NESTAB=sum(as.numeric(NESTAB)),
+    NRCPTOT=sum(as.numeric(NRCPTOT))
+  ) %>% 
+  mutate(
+    totaljobs = EMP + NESTAB
+  ) %>% 
+  left_join(pop_sjc, by="year")
+
+ggplot(pop_jobs_sjc, aes(x = year)) + 
+  geom_line(aes(y = POP, colour = "Population")) + 
+  geom_line(aes(y = totaljobs*3, colour = "Employment")) + 
+  scale_y_continuous(sec.axis = sec_axis(~./3, name = "Jobs")) + 
+  scale_colour_manual(values = c("blue","red")) + 
+  labs(title = "San Joaquin County, CA", y = "Population", x = "Year", colour = "Parameter")
+
+
 
 #next step: add future year projections
+
+sjc_projection <- 
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/SSP_asrc_STATEfiles/DATA-PROCESSED/SPLITPROJECTIONS/CA.csv") %>% 
+  filter(COUNTY == "077") %>% 
+  group_by(YEAR) %>% 
+  summarize(
+    population = sum(SSP2)
+  ) %>% 
+  filter(YEAR %in% c(2020,2025,2030,2035,2040)) %>% 
+  select(POP = population, year = YEAR)
+
+pop_sjc_w_projection <-
+  bind_rows(pop_sjc,sjc_projection)
+
+jobs_sjc <- cbp_sjc %>% 
+  group_by(year) %>% 
+  summarize(
+    EMP=sum(as.numeric(EMP)),
+    ESTAB=sum(as.numeric(ESTAB)),
+    PAYANN=sum(as.numeric(PAYANN)),
+    NESTAB=sum(as.numeric(NESTAB)),
+    NRCPTOT=sum(as.numeric(NRCPTOT))
+  ) %>% 
+  mutate(
+    totaljobs = EMP + NESTAB
+  )
+
+
+nonemp_sjc <- data.frame(matrix(ncol=3,nrow=0))
+colnames(nonemp_sjc) <- c("NESTAB","NRCPTOT","year")
+
+for(year in 2010:2017){
+  
+  nonemp <-
+    getCensus(
+      name = "nonemp",
+      vintage = year,
+      region = "county:077",
+      regionin = "state:06",
+      vars = c(
+        "NESTAB",
+        "NRCPTOT"
+      )
+    ) %>%
+    mutate(year = as.numeric(year)) %>% 
+    select(-c(state,county))
+  
+  nonemp_sjc<- 
+    rbind(nonemp_sjc,nonemp)
+  
+}
+
+jobs_sjc <- qwi_sjc %>% 
+  mutate(year = as.numeric(year)) %>% 
+  group_by(year) %>% 
+  summarize(
+    EmpS=sum(as.numeric(EmpS))
+  ) %>% 
+  left_join(nonemp_sjc, by = "year") %>% 
+  mutate(
+    totaljobs = EmpS + as.numeric(NESTAB)
+  )
+
+pop_jobs_sjc_w_projection <-
+  pop_sjc_w_projection %>% 
+  left_join(jobs_sjc, by = "year") %>% 
+  mutate(
+    ratio = POP/EmpS
+  )
+
+pop_jobs_sjc_w_projection <-
+  pop_sjc_w_projection %>% 
+  left_join(jobs_sjc, by = "year") %>% 
+  mutate(
+    ratio = POP/EmpS,
+    EmpS = ifelse(!is.na(EmpS),EmpS,POP/3.5)
+  )
+
+ggplot(pop_jobs_sjc_w_projection, aes(x = year)) + 
+  geom_line(aes(y = POP, colour = "Population")) + 
+  geom_line(aes(y = EmpS*3, colour = "Jobs")) +
+  scale_y_continuous(sec.axis = sec_axis(~./3, name = "Jobs")) + 
+  scale_colour_manual(values = c("blue","red")) + 
+  labs(title = "San Joaquin County, CA", y = "Population", x = "Year", colour = "Parameter")
+
+
+
 #add LODES for multiple years
+
+
+
+
 
 
 
@@ -437,7 +693,7 @@ nonemp_sjc <-
 qwi_2005 <- getCensus(name = "timeseries/qwi/sa",
             region = "county:077",
             regionin = "state:06",
-            vars = c("Emp"),
+            vars = c("EmpS","EarnS","industry"),
             time = "2005") 
 
 jobs_2005 <- qwi_2005 %>% mutate(year = substr(time,1,4), Emp = as.numeric(Emp)) %>% group_by(year) %>% summarise(Emp = sum(Emp))
@@ -542,8 +798,8 @@ stockton_lodes_h <- ca_lodes[which(ca_lodes$h_bg %in% stockton_bgs$GEOID),]
 stockton_rac <- stockton_bgs_full %>% geo_join(ca_rac, "GEOID", "h_bg")
 stockton_wac <- stockton_bgs_full %>% geo_join(ca_wac, "GEOID", "w_bg")
 
-save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, file = "C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
-load("C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
+save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, file = "C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
+load("C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
 
 stockton_lodes_origin_centroids <- st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$h_bg),])
 stockton_lodes_dest_centroids <- st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),])
@@ -575,13 +831,60 @@ stockton_lodes_h <- cbind(stockton_lodes_h, prep)
 
 stockton_lodes_h <- stockton_lodes_h %>% mutate(COUNTY = substr(w_bg,3,5))
 
-stockton_lodes_w_counties <- stockton_lodes_h %>% mutate(COUNTY = substr(w_bg,3,5), person_miles = S000*as.numeric(distance)/1.60934, person_hours = S000*as.numeric(duration)/60) %>% group_by(COUNTY) %>% summarise_at(c("S000","SA01","SA02","SA03","SE01","SE02","SE03","SI01","SI02","SI03","person_miles", "person_hours"), sum) %>% mutate(avg_distance = person_miles/S000, avg_duration = person_hours/S000, person_miles_rm_excessive = ifelse(avg_duration < 3, person_miles, 0), `Percent High Wage Jobs in County` = SE03/S000, `Percent High Wage Jobs Overall` = SE03/sum(SE03,na.rm = TRUE), `Percent Total Jobs` = S000/sum(S000,na.rm = TRUE), `Percent VMT` = person_miles_rm_excessive/sum(person_miles_rm_excessive,na.rm = TRUE),`GHG Annual` = (person_miles_rm_excessive*0.82*2+person_miles_rm_excessive*.116/2*2)*369.39*0.00035812, `Percent GHG` = `GHG Annual`/sum(`GHG Annual`), `Average GHG` = `GHG Annual`/S000) %>% rename(Jobs = S000, `Average Distance` = avg_distance)
+stockton_lodes_w_counties <- 
+  stockton_lodes_h %>% 
+  mutate(
+    COUNTY = substr(w_bg,3,5), 
+    person_miles = S000*as.numeric(distance)/1.60934, 
+    person_hours = S000*as.numeric(duration)/60
+  ) %>% 
+  group_by(COUNTY) %>% 
+  summarise_at(
+    c("S000","SA01","SA02","SA03","SE01","SE02","SE03","SI01","SI02","SI03","person_miles", "person_hours"), 
+    sum
+  ) %>% 
+  mutate(
+    avg_distance = person_miles/S000, 
+    avg_duration = person_hours/S000, 
+    person_miles_rm_excessive = ifelse(
+      avg_duration < 3, 
+      person_miles, 
+      0
+    ), 
+    `Percent Low Wage Jobs in County` = SE01/S000, 
+    `Percent Low Wage Jobs Overall` = SE01/sum(SE01,na.rm = TRUE), 
+    `Percent High Wage Jobs in County` = SE03/S000, 
+    `Percent High Wage Jobs Overall` = SE03/sum(SE03,na.rm = TRUE),
+    `Percent Goods Jobs in County` = SI01/S000, 
+    `Percent Goods Jobs Overall` = SI01/sum(SI01,na.rm = TRUE), 
+    `Percent Trade Transport Utility Jobs in County` = SI02/S000, 
+    `Percent Trade Transport Utility Jobs Overall` = SI02/sum(SI02,na.rm = TRUE), 
+    `Percent Service Jobs in County` = SI03/S000, 
+    `Percent Service Jobs Overall` = SI03/sum(SI03,na.rm = TRUE), 
+    `Percent Total Jobs` = S000/sum(S000,na.rm = TRUE), 
+    `Percent VMT` = person_miles_rm_excessive/sum(person_miles_rm_excessive,na.rm = TRUE),
+    `GHG Annual` = (person_miles_rm_excessive*0.82*2+person_miles_rm_excessive*.116/2*2)*369.39*0.00035812, 
+    `Percent GHG` = `GHG Annual`/sum(`GHG Annual`), 
+    `Average GHG` = `GHG Annual`/S000
+  ) %>% 
+  rename(
+    Jobs = S000,
+    `Number of jobs of workers age 29 or younger` = SA01,
+    `Number of jobs for workers age 30 to 54` = SA02,
+    `Number of jobs for workers age 55 or older` = SA03,
+    `Number of jobs with earnings $1250/month or less` = SE01,
+    `Number of jobs with earnings $1251/month to $3333/month` = SE02,
+    `Number of jobs with earnings greater than $3333/month` = SE03,
+    `Number of jobs in Goods Producing industry sectors` = SI01,
+    `Number of jobs in Trade, Transportation, and Utilities industry sectors` = SI02,
+    `Number of jobs in All Other Services industry sectors` = SI03,
+    `Average Distance` = avg_distance)
 
 stockton_lodes_w_counties <- ca_counties %>% select(COUNTYFP, NAME) %>% left_join(stockton_lodes_w_counties, by = c("COUNTYFP" = "COUNTY"))
 
 stockton_lodes_w_top_counties <- stockton_lodes_w_counties %>% filter(NAME %in% c("San Joaquin", "Alameda", "Sacramento", "Santa Clara","Stanislaus","Contra Costa","San Francisco","San Mateo","Solano","Fresno","Placer","Yolo","Monterey","Sonoma","Merced")) %>% arrange(desc(Jobs))
 
-m1 <- mapview(stockton_lodes_w_top_counties, zcol=c("Jobs","Percent High Wage Jobs in County","Average Distance","Average GHG","Percent GHG"), map.types = c("OpenStreetMap"), legend = TRUE, hide = TRUE)
+m1 <- mapview(stockton_lodes_w_top_counties, zcol=c("Jobs","Percent Low Wage Jobs in County","Percent High Wage Jobs in County","Percent Goods Jobs in County","Percent Trade Transport Utility Jobs in County","Percent Service Jobs in County","Average Distance","Average GHG","Percent GHG"), map.types = c("OpenStreetMap"), legend = TRUE, hide = TRUE)
 m1
 mapshot(m1, url = "stockton_lodes_w_top_counties.html")
 l1 <- addStaticLabels(m1, label = stockton_lodes_w_top_counties$NAME)
@@ -592,10 +895,10 @@ mapview(stockton_lodes_w_counties, zcol='avg_distance')
 
 stockton_lodes_h_summary <- stockton_lodes_h %>% mutate(person_miles = S000*as.numeric(distance)/1.60934, person_hours = S000*as.numeric(duration)/60) %>% group_by(h_bg) %>% summarise_at(c("S000","SA01","SA02","SA03","SE01","SE02","SE03","SI01","SI02","SI03","person_miles", "person_hours"), sum)
 
-write_csv(stockton_lodes_w_counties, "C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes_w_counties.csv")
+write_csv(stockton_lodes_w_counties, "C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes_w_counties.csv")
 
-# save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, stockton_lodes_summary, prep, file = "C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
-load("C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
+# save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, stockton_lodes_summary, prep, file = "C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
+load("C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
 
 stockton_bgs <- stockton_bgs %>% geo_join(stockton_lodes_summary, "GEOID", "h_bg") 
 
