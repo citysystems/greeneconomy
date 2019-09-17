@@ -27,9 +27,9 @@ source("S:/CCF/VMT_calc_functions/patterns_choice.R")
 source("S:/CCF/VMT_calc_functions/safegraphplaces_cleanse.R")
 source("S:/CCF/VMT_calc_functions/m_patterns_cleanse.R")
 source("S:/CCF/VMT_calc_functions/m_patterns_join_cleanse.R")
+source("S:/CCF/VMT_calc_functions/home_panel_summary.R")
 source("S:/CCF/VMT_calc_functions/pop_blockgroup_stockton.R")
 source("S:/CCF/VMT_calc_functions/month_patterns_new.R")
-source("S:/CCF/VMT_calc_functions/home_panel_summary.R")
 source("S:/CCF/VMT_calc_functions/origin_trips.R")
 source("S:/CCF/VMT_calc_functions/dest_trips.R")
 source("S:/CCF/VMT_calc_functions/origin_locations.R")
@@ -41,7 +41,6 @@ source("S:/CCF/VMT_calc_functions/nudge_CarpoolVehicleFilter.R")
 
 # Using the census API to create block groups and use census information in Stockton.
 census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", overwrite = TRUE)
-acs5_17 <- load_variables(2017, "acs5")
 ca_bgs <- block_groups("CA", cb = TRUE)
 
 # Uploading safegraph Places .csv file & data cleansing.
@@ -146,6 +145,12 @@ deci_degree_mile_conversion <- ( (deci_km_45 - deci_km_23)/(latitude_45 - latitu
 conv_MeterToMile <- 0.000621371
 factor_twoWayTrip <- 2
 
+# Constants to evaluate number of categories necessary for the VMT calculations.
+
+months_in_year <- 12
+VMT_considerations <- 3
+months_considerations <- months_in_year * VMT_considerations
+
 # Creation of the origin matrices for all of Stockton's 205 origins.
 
 VMT_Origin_recorded <- data.frame(matrix(0, nrow = nrow(pop_bg_stockton), ncol = 13))
@@ -179,20 +184,25 @@ rownames(VMT_Origin_recorded) <- pop_bg_stockton$origin
 rownames(VMT_Origin_nonrecorded) <- pop_bg_stockton$origin
 rownames(VMT_Origin_otherdest_nonrecorded) <- pop_bg_stockton$origin
 
-# Constants to evaluate number of categories necessary for the VMT calculations.
-
-months_in_year <- 12
-VMT_considerations <- 3
-months_considerations <- months_in_year * VMT_considerations
-
 # Creating shapefiles that include (1) the Stockton boundary and (2) the Stockton boundary with a 1-mile buffer.
 
 stockton_boundary_influence <- (st_read("S:/CCF/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(4326)))[1,]
 stockton_boundary_influence_milebuffer <- st_buffer(stockton_boundary_influence, 1/deci_degree_mile_conversion)
 
-# Creating a blank shapefile dataframe for thr destinations of consideration.
+# Creating a blank shapefile data frame for the destinations of consideration.
 
 locations_of_consideration <- st_sf(data.frame(matrix(data = NA, nrow = 0, ncol = 47), geom = st_sfc()), crs = 4326)
+
+# Creating two vectors that allow for inputs of the proportion of origins to a destination being from Stockton.
+# The first vector is used for destinations within Stockton.
+# The second vector is used for destinations outside of Stockton.
+# A counterDest scalar was created to count the number of previous destinations that have been used from the previous month's analysis.
+
+StocktonDest_proportion_recorded <- data.frame( matrix( ncol = 2, NA ) )
+nonStocktonDest_proportion_recorded <- data.frame( matrix( ncol = 2, NA ) )
+
+colnames(StocktonDest_proportion_recorded) <- c("locations", "StocktonDest_proportion_recorded")
+colnames(nonStocktonDest_proportion_recorded) <- c("locations", "nonStocktonDest_proportion_recorded")
 
 # This is a matrix of the column names for the VMT types being calculated.
 
@@ -234,18 +244,7 @@ dest_col_names <- c("VMTs_recorded_m_1",
                     "VMTs_nonrecorded_otherdest_m_12",
                     "within_Stockton",
                     "within_StocktonBuffer"
-                    )
-
-# Creating two vectors that allow for inputs of the proportion of origins to a destination being from Stockton.
-# The first vector is used for destinations within Stockton.
-# The second vector is used for destinations outside of Stockton.
-# A counterDest scalar was created to count the number of previous destinations that have been used from the previous month's analysis.
-
-StocktonDest_proportion_recorded <- data.frame( matrix( ncol = 2, NA ) )
-nonStocktonDest_proportion_recorded <- data.frame( matrix( ncol = 2, NA ) )
-
-colnames(StocktonDest_proportion_recorded) <- c("locations", "StocktonDest_proportion_recorded")
-colnames(nonStocktonDest_proportion_recorded) <- c("locations", "nonStocktonDest_proportion_recorded")
+)
 
 ##########
 
@@ -300,7 +299,7 @@ for(counterMonth in 1:12){
   locations_of_consideration[(start_counter + 1):end_counter, ][withinStocktonBuffer_rownum, "within_StocktonBuffer"] <- TRUE
   locations_of_consideration[(start_counter + 1):end_counter, ][is.na(locations_of_consideration[(start_counter + 1):end_counter, ]$within_StocktonBuffer), "within_StocktonBuffer"] <- FALSE
   
-  # m_hps from "home_panel_summary" and finding the census population for each block group goint to amenities in Stockton.
+  # m_hps from "home_panel_summary" and finding the census population for each block group going to amenities in Stockton.
   m_hps <- home_panel_summary(counterMonth)
   pop_bg_stockton <- pop_blockgroup_stockton(m_hps)
   
@@ -308,7 +307,7 @@ for(counterMonth in 1:12){
 
   for(counterVMT in 1:dest_num){
   
-    # For each destination, I'm creating a list of the origins and a vector with the destination. These data structures have visit and vistor count information.
+    # For each destination, I'm creating a list of the origins and a vector with the destination. These data structures have visit and visitor count information.
     
     origin_matrix <- m_origin_matrix_sf[m_origin_matrix_sf$full_address == dest_amenities_matrix[counterVMT, "name_address"], ]
     dest_vector <- m_dest_matrix_sf[m_dest_matrix_sf$full_address == dest_amenities_matrix[counterVMT, "name_address"], ]
