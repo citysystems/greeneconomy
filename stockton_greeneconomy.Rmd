@@ -1,0 +1,231 @@
+---
+title: "Stockton Green Economy Report"
+author: "City Systems"
+date: "9/20/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, results = 'hide')
+```
+
+```{r}
+library(tidycensus)
+library(censusapi)
+library(tigris)
+library(units)
+library(lehdr)
+library(sf)
+library(osrm)
+library(mapview)
+library(tidyverse)
+library(magrittr)
+library(lwgeom)
+options(tigris_use_cache = TRUE)
+options(tigris_class = "sf")
+options(osrm.server = "http://127.0.0.1:5000/")
+census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", overwrite = TRUE)
+Sys.setenv(CENSUS_KEY="c8aa67e4086b4b5ce3a8717f59faa9a28f611dab")
+```
+
+## Population and Jobs
+
+```{r}
+sjc_boundary <- 
+  counties("CA") %>% 
+  filter(NAME == "San Joaquin")
+
+cbp_sjc <- data.frame(matrix(ncol=6,nrow=0))
+colnames(cbp_sjc) <- c("EMP","ESTAB","PAYANN","NESTAB","NRCPTOT","year")
+
+for(year in 2010:2016){
+  
+  temp <- 
+    getCensus(
+      name = "cbp",
+      vintage = year,
+      region = "county:077",
+      regionin = "state:06",
+      vars = c(
+        "EMP",
+        "ESTAB",
+        "PAYANN"
+      )
+    ) %>% 
+    select(-c(state,county))
+  
+  nonemp <-
+    getCensus(
+      name = "nonemp",
+      vintage = year,
+      region = "county:077",
+      regionin = "state:06",
+      vars = c(
+        "NESTAB",
+        "NRCPTOT"
+      )
+    ) %>%
+    mutate(year = year) %>% 
+    select(-c(state,county))
+  
+  cbp_sjc<- 
+    rbind(cbp_sjc,cbind(temp,nonemp))
+  
+}
+
+label_industry <- 
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/label_industry.csv")
+
+qwi_sjc <- data.frame(matrix(ncol=5,nrow=0))
+colnames(qwi_sjc) <- c("year","industry","label","EmpS","EarnS")
+
+for(years in 2010:2018){
+  qwi<- 
+    getCensus(
+      name = "timeseries/qwi/sa",
+      region = "county:077",
+      regionin = "state:06",
+      vars = c("EmpS","EarnS","industry","ind_level"),
+      time = years
+    ) %>% 
+    filter(ind_level == 4) %>% 
+    mutate(
+      year = substr(time,1,4)
+    ) %>% 
+    left_join(label_industry, by= "industry") %>% 
+    group_by(year,industry,label) %>% 
+    summarize(
+      EmpS = round(mean(as.numeric(EmpS), na.rm = TRUE),0),
+      EarnS = round(mean(as.numeric(EarnS), na.rm = TRUE),0)
+    ) %>% 
+    filter(!is.na(EmpS) & EmpS != 0)
+  
+  qwi_sjc<- 
+    bind_rows(qwi_sjc,qwi)
+}
+
+pop_sjc <- data.frame(matrix(ncol=2,nrow=0))
+colnames(pop_sjc) <- c("POP","year")
+
+for(year in 2010:2017){ 
+  
+  temp <- 
+    getCensus(
+      name = "acs/acs1",
+      vintage = year,
+      vars = c("B01003_001E"),
+      region = "county:077",
+      regionin = "state:06"
+    ) %>% 
+    mutate(
+      POP = B01003_001E, 
+      year = year
+    ) %>% 
+    select(
+      POP,
+      year
+    )
+  
+  pop_sjc<- rbind(pop_sjc,temp)
+  
+}
+
+pop_jobs_sjc <- cbp_sjc %>% 
+  group_by(year) %>% 
+  summarize(
+    EMP=sum(as.numeric(EMP)),
+    ESTAB=sum(as.numeric(ESTAB)),
+    PAYANN=sum(as.numeric(PAYANN)),
+    NESTAB=sum(as.numeric(NESTAB)),
+    NRCPTOT=sum(as.numeric(NRCPTOT))
+  ) %>% 
+  mutate(
+    totaljobs = EMP + NESTAB
+  ) %>% 
+  left_join(pop_sjc, by="year")
+
+sjc_projection <- 
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/SSP_asrc_STATEfiles/DATA-PROCESSED/SPLITPROJECTIONS/CA.csv") %>% 
+  filter(COUNTY == "077") %>% 
+  group_by(YEAR) %>% 
+  summarize(
+    population = sum(SSP2)
+  ) %>% 
+  filter(YEAR %in% c(2020,2025,2030,2035,2040)) %>% 
+  select(POP = population, year = YEAR)
+
+pop_sjc_w_projection <-
+  bind_rows(pop_sjc,sjc_projection)
+
+jobs_sjc <- cbp_sjc %>% 
+  group_by(year) %>% 
+  summarize(
+    EMP=sum(as.numeric(EMP)),
+    ESTAB=sum(as.numeric(ESTAB)),
+    PAYANN=sum(as.numeric(PAYANN)),
+    NESTAB=sum(as.numeric(NESTAB)),
+    NRCPTOT=sum(as.numeric(NRCPTOT))
+  ) %>% 
+  mutate(
+    totaljobs = EMP + NESTAB
+  )
+
+nonemp_sjc <- data.frame(matrix(ncol=3,nrow=0))
+colnames(nonemp_sjc) <- c("NESTAB","NRCPTOT","year")
+
+for(year in 2010:2017){
+  
+  nonemp <-
+    getCensus(
+      name = "nonemp",
+      vintage = year,
+      region = "county:077",
+      regionin = "state:06",
+      vars = c(
+        "NESTAB",
+        "NRCPTOT"
+      )
+    ) %>%
+    mutate(year = as.numeric(year)) %>% 
+    select(-c(state,county))
+  
+  nonemp_sjc<- 
+    rbind(nonemp_sjc,nonemp)
+  
+}
+
+jobs_sjc <- qwi_sjc %>% 
+  mutate(year = as.numeric(year)) %>% 
+  group_by(year) %>% 
+  summarize(
+    EmpS=sum(as.numeric(EmpS))
+  ) %>% 
+  left_join(nonemp_sjc, by = "year") %>% 
+  mutate(
+    totaljobs = EmpS + as.numeric(NESTAB)
+  )
+
+pop_jobs_sjc_w_projection <-
+  pop_sjc_w_projection %>% 
+  left_join(jobs_sjc, by = "year") %>% 
+  mutate(
+    ratio = POP/EmpS
+  )
+
+pop_jobs_sjc_w_projection <-
+  pop_sjc_w_projection %>% 
+  left_join(jobs_sjc, by = "year") %>% 
+  mutate(
+    ratio = POP/EmpS,
+    EmpS = ifelse(!is.na(EmpS),EmpS,POP/3.5)
+  )
+
+ggplot(pop_jobs_sjc_w_projection, aes(x = year)) + 
+  geom_line(aes(y = POP, colour = "Population")) + 
+  geom_line(aes(y = EmpS*3, colour = "Jobs")) +
+  scale_y_continuous(sec.axis = sec_axis(~./3, name = "Jobs")) + 
+  scale_colour_manual(values = c("blue","red")) + 
+  labs(title = "San Joaquin County, CA", y = "Population", x = "Year", colour = "Parameter")
+```
+
+End
