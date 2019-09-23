@@ -304,5 +304,7 @@ ggplot(pop_jobs_sjc_w_projection, aes(x = Year)) +
 ```
 *Figure 2. Historical Population, Employed Residents, and Jobs for San Joaquin County 2010-2017, followed by projections to 2040.*
 
+facet_wrap
+
 Industry class
 Green jobs
