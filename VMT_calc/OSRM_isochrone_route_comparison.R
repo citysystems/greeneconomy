@@ -48,8 +48,15 @@ source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions
 sspzboundary <- st_read("S:/CCF/sspzboundary/sspzboundary.shp") %>% st_transform(st_crs(4326))
 stockton_boundary_influence <- (st_read("S:/CCF/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(4326)))[1,]
 
-# Taking the block groups within Stockton and filtering them by those within SSPZ.
+# Taking the block groups within Stockton and filtering them by those within the following:
+# (1) Stockton Boundary of Influence (SBOI)
+# (2) Stockton South Promise Zone (SSPZ)
+
 sjc_bgs <- block_groups("California", "San Joaquin County", cb = TRUE) %>% st_transform(st_crs(4326))
+
+sboi_bgs <- sjc_bgs[which(sjc_bgs$GEOID %in% st_centroid(sjc_bgs)[stockton_boundary_influence,]$GEOID),]
+sboi_centroid <- st_centroid(sboi_bgs)
+
 sspz_bgs <- sjc_bgs[which(sjc_bgs$GEOID %in% st_centroid(sjc_bgs)[sspzboundary,]$GEOID),]
 sspz_centroid <- st_centroid(sspz_bgs)
 # 13284 - Row number with block group in the center.
@@ -69,11 +76,12 @@ function_OSRMisochrone <- function(blocks_amount_for_testing){
   count <- 0
   
   # Creation of the "break" times used for the iscochrone creation.
-  # break_times <- c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 40, 50, 60)
-  break_times <- c(0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 
-                   11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 40, 50, 60)
+  # break_times <- c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+  #                  22.5, 25, 27.5, 30, 32.5, 40, 50, 60)
   # break_times <- c(0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 
-  #                  10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 16, 17, 18, 19, 20, 25, 30, 40, 50, 60)
+  #                  11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 40, 50, 60)
+  break_times <- c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+                   22.5, 25, 27.5, 30, 32.5)
   
   # Creation of a data frame that holds in all block group isochrone - safegraphplaces points intersections.
   isochrone_block_Stockton <- data.frame(stringsAsFactors = FALSE)
@@ -203,14 +211,14 @@ function_OSRMrouting <- function(blocks_amount_for_testing){
   }
 
 }
-  
+
 ##########
 
 # Evaluation of the time it takes to run OSRM isochrone and OSRM routing for the above two functions.
 # I will run these functions for both "function_OSRMisochrone" and "function_OSRMrouting".
 # I have chosen to run these functions for the first 20 blocks in the sspz.
 
-blocks_amount_for_testing <- 1
+blocks_amount_for_testing <- 3
 
 res_OSRMisochrone <- microbenchmark(function_OSRMisochrone(blocks_amount_for_testing), times = 1L, unit = "s")
 print(res_OSRMisochrone)
@@ -220,15 +228,12 @@ res_OSRMrouting <- microbenchmark(function_OSRMrouting(blocks_amount_for_testing
 print(res_OSRMrouting)
 boxplot(res_OSRMrouting)
 
-# OSRM Approach #3: OSRM Table
-
-# test_osrm <- data.frame( osrmTable(src = sspz_centroid[, c("GEOID", "geometry")], dst = safegraphplaces[, c("safegraph_place_id", "longitude", "latitude")]) )
-# I stopped using this approach because the "osrmTable" command would not work with such a large data set.
+##########
 
 test <- left_join(isochrone_block_Stockton, route_OD_Stockton[, c("safegraph_place_id", "duration")], by = "safegraph_place_id")
-test_cutoff <- test[test$max < 30, ]
+test_cutoff <- test[test$max <= 35, ]
 test_cutoff$error_min <- (test_cutoff$center - test_cutoff$duration)
-test_cutoff$error_perc <- abs( (test_cutoff$center - test_cutoff$duration) / test_cutoff$center) * 100
+test_cutoff$error_perc <- (test_cutoff$center - test_cutoff$duration) / test_cutoff$center * 100
 View(test_cutoff)
 
 hist(test_cutoff$error_min, col = "blue", breaks = 50)
@@ -236,6 +241,9 @@ hist(test_cutoff[test_cutoff$max <= 20, "error_min"], col = "red", breaks = 50)
 
 hist(test_cutoff$error_perc, col = "orange", breaks = 50)
 hist(test_cutoff[test_cutoff$max <= 20, "error_perc"], col = "yellow", breaks = 50)
+
+mean(test_cutoff$error_perc)
+sd(test_cutoff$error_perc)
 
 mean(test_cutoff$error_min)
 mean(test_cutoff[test_cutoff$max <= 20, "error_min"])
@@ -246,3 +254,122 @@ sd(test_cutoff$error_min)
 sd(test_cutoff[test_cutoff$max <= 20, "error_min"])
 sd(test_cutoff$error_perc)
 sd(test_cutoff[test_cutoff$max <= 20, "error_perc"])
+
+##########
+
+# Revisit OSRM Approach #3 with a for loop!
+
+##########
+
+# click <- proc.time()
+# proc.time()-click
+# safegraphplaces[biggestisochrone,]
+
+# OSRM Approach #3: OSRM Table
+
+save_bg <- c("060770007003", "060770001004", "060770022023") 
+
+osrmTable_dataframe_testRoute <- data.frame()
+
+  ### Change into a "functional" (e.g., use lapply instead of for).
+
+for(bg in save_bg){
+
+  print(bg)
+  
+  for(counterTable in 1:nrow(safegraphplaces)){
+      
+    safegraph_osrm <- data.frame( osrmTable(dst = sspz_centroid[sspz_centroid$GEOID == bg, c("GEOID", "geometry")], src = safegraphplaces[counterTable, c("safegraph_place_id", "longitude", "latitude")]) )
+    # I stopped using this approach because the "osrmTable" command would not work with such a large data set.
+    
+    # test_dst <- dst[ , "GEOID"]
+    # test_src <- src[ , "safegraph_place_id"]
+  
+    safegraph_osrm <- data.frame( cbind(bg, safegraphplaces[counterTable, "safegraph_place_id"], safegraph_osrm) )
+    colnames(safegraph_osrm) <- c("source_GEOID", "safegraph_place_id", "time_minutes", "sources.lon", "sources.lat", "destination.lon", "destination.lat")
+  
+    osrmTable_dataframe_testRoute <- rbind(osrmTable_dataframe_testRoute, safegraph_osrm)
+  
+    # print(counterTable)
+  
+  }
+
+}
+
+test <- left_join(osrmTable_dataframe_testRoute, route_OD_Stockton[, c("counter_block", "safegraph_place_id", "duration")], by = c("source_GEOID" ="counter_block", "safegraph_place_id"))
+test_cutoff <- test[test$time_minutes <= 35, ]
+test_cutoff$error_min <- (test_cutoff$time_minutes - test_cutoff$duration)
+test_cutoff$error_perc <- (test_cutoff$time_minutes - test_cutoff$duration) / test_cutoff$time_minutes * 100
+
+hist(test_cutoff$error_min, col = "blue", breaks = 50)
+hist(test_cutoff[test_cutoff$error_perc > -100, ]$error_perc, col = "orange", breaks = 50)
+hist(test_cutoff[test_cutoff$time_minutes <= 20, "error_min"], col = "red", breaks = 50)
+hist(test_cutoff[test_cutoff$time_minutes <= 20, "error_perc"], col = "yellow", breaks = 50)
+
+mean(test_cutoff[test_cutoff$error_perc > -100, ]$error_perc)
+sd(test_cutoff[test_cutoff$error_perc > -100, ]$error_perc)
+
+# mean(test_cutoff$error_perc)
+# sd(test_cutoff$error_perc)
+
+##########
+
+# OSRM Approach #3: OSRM Table - Actual Execution
+
+### Change into a "functional" (e.g., use lapply instead of for).
+### Make sure to use the isochrone analysis to see if this will save on computation time: safegraphplaces[biggestisochrone,]
+
+# click <- proc.time()
+# proc.time()-click
+
+function_OSRM_table_forloop <- function(){
+  
+  osrmTable_dataframe_testRoute <- data.frame()
+  
+  for(counterTable in 1:nrow(safegraphplaces)){
+    
+    safegraph_osrm <- data.frame( osrmTable(src = sspz_centroid[, c("GEOID", "geometry")], dst = safegraphplaces[counterTable, c("safegraph_place_id", "longitude", "latitude")]) )
+    # I stopped using this approach because the "osrmTable" command would not work with such a large data set.
+    
+    safegraph_osrm <- data.frame( cbind(bg, safegraphplaces[counterTable, "safegraph_place_id"], safegraph_osrm) )
+    colnames(safegraph_osrm) <- c("source_GEOID", "safegraph_place_id", "time_minutes", "sources.lon", "sources.lat", "destination.lon", "destination.lat")
+    
+    osrmTable_dataframe_testRoute <- rbind(osrmTable_dataframe_testRoute, safegraph_osrm)
+    
+    # print(counterTable)
+    
+  }
+  
+}
+
+profiles <- c("driving", "cycle", "foot")
+options(osrm.profile = "foot")
+
+# OD_time_dist <- do.call(rbind,lapply(1:nrow(m_1_patterns_new),function(row){
+#   osrmRoute(src = m_origin_sf[row, ],
+#             dst = m_dest_sf[row, ], overview = FALSE)
+# }))
+
+function_OSRM_table_lapply <- function(){
+  
+  osrmTable_dataframe_testRoute <- do.call(rbind, lapply( 1:nrow(safegraphplaces[1:100,]), function(counterTable){
+    
+    safegraph_osrm <- data.frame( osrmTable(src = sboi_centroid[, c("GEOID", "geometry")], dst = safegraphplaces[counterTable, c("safegraph_place_id", "longitude", "latitude")]) )
+
+    safegraph_osrm <- data.frame( cbind(sboi_centroid$GEOID, safegraphplaces[counterTable, "safegraph_place_id"], safegraph_osrm) )
+    colnames(safegraph_osrm) <- c("source_GEOID", "safegraph_place_id", "time_minutes", "sources.lon", "sources.lat", "destination.lon", "destination.lat")
+    
+    return(safegraph_osrm)
+    
+  }))
+  
+}
+
+res_OSRM_table_forloop <- microbenchmark(function_OSRM_table_forloop(), times = 10L, unit = "s")
+res_OSRM_table_lapply <- microbenchmark(function_OSRM_table_lapply(), times = 10L, unit = "s")
+
+print(res_OSRM_table_forloop)
+print(res_OSRM_table_lapply)
+
+boxplot(res_OSRM_table_forloop)
+boxplot(res_OSRM_table_lapply)
