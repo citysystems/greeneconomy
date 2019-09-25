@@ -1,14 +1,11 @@
 library(tidycensus)
 library(censusapi)
 library(tigris)
-library(dplyr)
 library(units)
-library(ggplot2)
 library(lehdr)
 library(sf)
 library(osrm)
 library(mapview)
-library(readr)
 library(tidyverse)
 library(magrittr)
 library(lwgeom)
@@ -17,7 +14,6 @@ options(tigris_class = "sf")
 options(osrm.server = "http://127.0.0.1:5000/") #This is using Max's new local instance of OSRM setup. See https://github.com/maxo16/osrm_stuff/blob/master/Install%20and%20Run%20Notes.md
 census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", overwrite = TRUE) #this sets up the API for tidycensus
 Sys.setenv(CENSUS_KEY="c8aa67e4086b4b5ce3a8717f59faa9a28f611dab") #this sets up the API for censusapi. the two are useful for slightly different things.
-readRenviron("~/.Renviron")
 
 
 
@@ -69,12 +65,11 @@ pge_stockton <- do.call(rbind,lapply(2013:2018,function(year){
     
     df_quarter <- do.call(rbind,lapply(c("Electric","Gas"),function(type){
       
-      filename <- paste("S:\\Data Library\\PG&E\\PGE_",year,"_Q",quarter,"_",type,"UsageByZip.csv",sep = "")
+      filename <- paste("S:/Data Library/PG&E/PGE_",year,"_Q",quarter,"_",type,"UsageByZip.csv",sep = "")
       
       df_type <- read_csv(filename) %>% 
         rename_all(toupper) %>% 
-        filter(ZIPCODE %in% zcta_stockton$ZCTA5CE10) %>% 
-        mutate(ZIPCODE = as.numeric(ZIPCODE)) %>% 
+        filter(ZIPCODE %in% zcta_stockton$ZIPCODE) %>% 
         group_by(ZIPCODE, CUSTOMERCLASS) %>% 
         summarize(TOTALKBTU = ifelse(type == "Electric",sum(TOTALKWH)*3.4121416331,sum(TOTALTHM)*99.9761), 
                   TOTALMTCO2 = ifelse(type == "Electric",sum(TOTALKWH)*factor/1000*0.000453592,sum(TOTALTHM)*0.00531), 
@@ -194,7 +189,7 @@ sjc_parcels_valid <- st_make_valid(sjc_parcels)
 stockton_parcels <- sjc_parcels_valid[stockton_boundary_influence,]
 
 bldg_parcel_join <- st_join(st_centroid(stockton_bldg), stockton_parcels) %>% 
-  select(APN, id, STAREA__) %>% 
+  dplyr::select(APN, id, STAREA__) %>% 
   rename(area = STAREA__) %>% 
   st_set_geometry(NULL)
 
@@ -205,16 +200,16 @@ stockton_zoning <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Gr
   st_transform(st_crs(4326))
 
 bldg_zoning_join <- st_join(st_centroid(stockton_bldg), stockton_zoning) %>% 
-  select(ZONE, id) %>% 
+  dplyr::select(ZONE, id) %>% 
   st_set_geometry(NULL)
 
 bldg_zoning_join_uninc <- st_join(st_centroid(stockton_bldg), sjc_zoning) %>% 
-  select(ZNCODE, id) %>% 
+  dplyr::select(ZNCODE, id) %>% 
   st_set_geometry(NULL)
 
 bldg_zoning_join %<>% merge(bldg_zoning_join_uninc) %>% 
   mutate(ZONE = ifelse(is.na(ZONE),as.character(ZNCODE),as.character(ZONE))) %>% 
-  select(ZONE, id)
+  dplyr::select(ZONE, id)
 
 sjc_bgs <- block_groups("California", "San Joaquin County") %>% 
   st_transform(st_crs(4326))
@@ -222,13 +217,13 @@ sjc_bgs <- block_groups("California", "San Joaquin County") %>%
 stockton_bgs <- sjc_bgs[stockton_boundary_influence,]
 
 bldg_bg_join <- st_join(st_centroid(stockton_bldg), stockton_bgs) %>% 
-  select(GEOID, id) %>% 
+  dplyr::select(GEOID, id) %>% 
   st_set_geometry(NULL)
 
 zcta_stockton %<>% st_transform(st_crs(4326))
 
 bldg_zcta_join <- st_join(st_centroid(stockton_bldg), zcta_stockton) %>% 
-  select(ZIPCODE, id) %>% 
+  dplyr::select(ZIPCODE, id) %>% 
   st_set_geometry(NULL)
 
 zcta_stockton %<>% st_transform(st_crs(zcta))
@@ -323,7 +318,8 @@ map <- mapview(zcta_bldg_stockton_joined, zcol= c("ER_MTCO2perSQFT", "GR_MTCO2pe
 mapshot(map, url = "stockton_bldg_energy.html")
 
 #the next is just to get full summaries without zip code aggregation for stockton. there is almost certainly a more efficient way to run this. also note that this is used specifically to create the summary table at https://docs.google.com/spreadsheets/d/1X-cEwK-G53NMp3BqQ9encnjceU0dVsSmopQeeecffqM/edit#gid=152068039, but i manually reorganized the wide output into the matrix on Google Sheets. It'd be great if the direct output of the R script is the table in the right format, since that is the most useful format for visualization in discussion, but i didn't have the time to figure out how to set that up in R. help would be appreciated.
-zcta_bldg_stockton_summary <- zcta_bldg_stockton_joined %>% 
+zcta_bldg_stockton_summary <- 
+  zcta_bldg_stockton_joined %>% 
   st_set_geometry(NULL) %>% 
   summarise_at(c("NUMBLDG", "R_NUMBLDG", "C_NUMBLDG","TOTSQFTGROUND","TOTSQFT","R_TOTSQFT","C_TOTSQFT","R_TOTSQFTGROUND","C_TOTSQFTGROUND","TOTALKBTU","E_TOTALKBTU","G_TOTALKBTU","R_TOTALKBTU","C_TOTALKBTU", "ER_TOTALKBTU", "GR_TOTALKBTU", "EC_TOTALKBTU", "GC_TOTALKBTU", "TOTALMTCO2", "E_TOTALMTCO2", "G_TOTALMTCO2", "R_TOTALMTCO2", "C_TOTALMTCO2", "ER_TOTALMTCO2", "GR_TOTALMTCO2", "EC_TOTALMTCO2", "GC_TOTALMTCO2"), sum) %>% 
   mutate(ER_KBTUperSQFT = ER_TOTALKBTU/R_TOTSQFT, 
@@ -353,110 +349,110 @@ load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/zcta_bldg_
 
 #the following lines are used to create the pop + jobs time series from 2010 to 2016. the jobs data is based on the selection of zctas, which is a larger set than Stockton geography, while the pop data is using the Stockton place geography from ACS, so they aren't an exact geographic comparison, but close enough in my opinion.
 
-zbp_stockton <- data.frame(matrix(ncol=5,nrow=0))
-colnames(zbp_stockton) <- c("zipcode","EMP","ESTAB","PAYANN","year")
-
-for(year in 2010:2016){
-  
-  temp <- 
-    getCensus(
-      name = "zbp",
-      vintage = year,
-      region = "zipcode:*",
-      vars = c(
-        "EMP",
-        "ESTAB",
-        "PAYANN"
-      )
-    ) %>% 
-    filter(zipcode %in% zcta_stockton$ZIPCODE) %>% 
-    mutate(year = year)
-  
-  zbp_stockton<- 
-    rbind(zbp_stockton,temp)
-  
-}
-
-
-
-sjc_boundary <- 
-  counties("CA") %>% 
-  filter(NAME == "San Joaquin")
-
-sjc_bgs %<>%
-  st_transform(st_crs(zcta_stockton))
-
-#matching county subdivision for zctas
-county_subdivision <- 
-  county_subdivisions("CA", "San Joaquin County") %>% 
-  filter(NAME == "Stockton")
-
-#matching sample of block groups for zctas
-zcta_bgs <- 
-  sjc_bgs[which(sjc_bgs$GEOID %in% st_centroid(sjc_bgs)[zcta_stockton,]$GEOID),]
-
-temp <- 
-  getCensus(
-    name = "acs/acs1",
-    vintage = year,
-    vars = c("B01003_001E"),
-    region = "place:75000",
-    regionin = "state:06"
-  )
-
-
-pop_stockton <- data.frame(matrix(ncol=2,nrow=0))
-
-colnames(pop_stockton) <- c("POP","year")
-
-for(year in 2010:2016){ 
-  
-  temp <- 
-    getCensus(
-      name = "acs/acs1",
-      vintage = year,
-      vars = c("B01003_001E"),
-      region = "place:75000",
-      regionin = "state:06"
-    ) %>% 
-    mutate(
-      POP = B01003_001E, 
-      year = year
-    ) %>% 
-    select(
-      POP,
-      year
-    )
-  
-  pop_stockton<- rbind(pop_stockton,temp)
-  
-}
-
-pop_jobs_stockton <- zbp_stockton %>% 
-  group_by(year) %>% 
-  summarize(EMP=sum(as.numeric(EMP)),
-            ESTAB=sum(as.numeric(ESTAB)),
-            PAYANN=sum(as.numeric(PAYANN))) %>% 
-  left_join(pop_stockton, by="year")
-
-ggplot(pop_jobs_stockton, aes(x = year)) + 
-  geom_line(aes(y = POP, colour = "Population")) + 
-  geom_line(aes(y = EMP*3, colour = "Employment")) + 
-  scale_y_continuous(sec.axis = sec_axis(~./3, name = "Employment")) + 
-  scale_colour_manual(values = c("blue","red")) + 
-  labs(title = "Stockton, CA", y = "Population", x = "Year", colour = "Parameter")
-
-nonemp_sjc <-
-  getCensus(
-    name = "nonemp",
-    vintage = 2010,
-    region = "county:077",
-    regionin = "state:06",
-    vars = c(
-      "NESTAB",
-      "NRCPTOT"
-    )
-  )
+# zbp_stockton <- data.frame(matrix(ncol=5,nrow=0))
+# colnames(zbp_stockton) <- c("zipcode","EMP","ESTAB","PAYANN","year")
+# 
+# for(year in 2010:2016){
+#   
+#   temp <- 
+#     getCensus(
+#       name = "zbp",
+#       vintage = year,
+#       region = "zipcode:*",
+#       vars = c(
+#         "EMP",
+#         "ESTAB",
+#         "PAYANN"
+#       )
+#     ) %>% 
+#     filter(zipcode %in% zcta_stockton$ZIPCODE) %>% 
+#     mutate(year = year)
+#   
+#   zbp_stockton<- 
+#     rbind(zbp_stockton,temp)
+#   
+# }
+# 
+# 
+# 
+# sjc_boundary <- 
+#   counties("CA") %>% 
+#   filter(NAME == "San Joaquin")
+# 
+# sjc_bgs %<>%
+#   st_transform(st_crs(zcta_stockton))
+# 
+# #matching county subdivision for zctas
+# county_subdivision <- 
+#   county_subdivisions("CA", "San Joaquin County") %>% 
+#   filter(NAME == "Stockton")
+# 
+# #matching sample of block groups for zctas
+# zcta_bgs <- 
+#   sjc_bgs[which(sjc_bgs$GEOID %in% st_centroid(sjc_bgs)[zcta_stockton,]$GEOID),]
+# 
+# temp <- 
+#   getCensus(
+#     name = "acs/acs1",
+#     vintage = year,
+#     vars = c("B01003_001E"),
+#     region = "place:75000",
+#     regionin = "state:06"
+#   )
+# 
+# 
+# pop_stockton <- data.frame(matrix(ncol=2,nrow=0))
+# 
+# colnames(pop_stockton) <- c("POP","year")
+# 
+# for(year in 2010:2016){ 
+#   
+#   temp <- 
+#     getCensus(
+#       name = "acs/acs1",
+#       vintage = year,
+#       vars = c("B01003_001E"),
+#       region = "place:75000",
+#       regionin = "state:06"
+#     ) %>% 
+#     mutate(
+#       POP = B01003_001E, 
+#       year = year
+#     ) %>% 
+#     select(
+#       POP,
+#       year
+#     )
+#   
+#   pop_stockton<- rbind(pop_stockton,temp)
+#   
+# }
+# 
+# pop_jobs_stockton <- zbp_stockton %>% 
+#   group_by(year) %>% 
+#   summarize(EMP=sum(as.numeric(EMP)),
+#             ESTAB=sum(as.numeric(ESTAB)),
+#             PAYANN=sum(as.numeric(PAYANN))) %>% 
+#   left_join(pop_stockton, by="year")
+# 
+# ggplot(pop_jobs_stockton, aes(x = year)) + 
+#   geom_line(aes(y = POP, colour = "Population")) + 
+#   geom_line(aes(y = EMP*3, colour = "Employment")) + 
+#   scale_y_continuous(sec.axis = sec_axis(~./3, name = "Employment")) + 
+#   scale_colour_manual(values = c("blue","red")) + 
+#   labs(title = "Stockton, CA", y = "Population", x = "Year", colour = "Parameter")
+# 
+# nonemp_sjc <-
+#   getCensus(
+#     name = "nonemp",
+#     vintage = 2010,
+#     region = "county:077",
+#     regionin = "state:06",
+#     vars = c(
+#       "NESTAB",
+#       "NRCPTOT"
+#     )
+#   )
 
 
 #change to county scale for consistency for now
@@ -468,7 +464,7 @@ sjc_boundary <-
 cbp_sjc <- data.frame(matrix(ncol=6,nrow=0))
 colnames(cbp_sjc) <- c("EMP","ESTAB","PAYANN","NESTAB","NRCPTOT","year")
 
-for(year in 2010:2017){
+for(year in 2010:2016){
   
   temp <- 
     getCensus(
