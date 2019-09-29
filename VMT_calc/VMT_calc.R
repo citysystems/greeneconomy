@@ -13,8 +13,12 @@ library(ggmap)
 library(censusr)
 library(maptools)
 library(rgeos)
+library(microbenchmark)
 
 # Using the "tigris" package for use of shape files.
+
+# Local server to run the st_intersects package at a faster rate.
+options(osrm.server = "http://127.0.0.1:5000/")
 
 options(tigris_use_cache = TRUE)
 options(tigris_class = "sf")
@@ -48,6 +52,60 @@ safegraphplaces_SJ <- read.csv("S:/Restricted Data Library/Safegraph/poi/safegra
 safegraphplaces_CA <- read.csv("S:/Restricted Data Library/Safegraph/poi/safegraphplaces_CA.csv", header=TRUE, stringsAsFactors = FALSE)
 safegraphplaces_tot <- rbind(safegraphplaces_SJ, safegraphplaces_CA)
 safegraphplaces <- safegraphplaces_cleanse(safegraphplaces_tot)
+
+##########
+
+# Computation of the "drive" O-D matrix for all of Stockton's 205 block groups
+# (within the boundary of indluence) to all possible safegraph destinations.  
+
+# The following code uploads the data from the CCF package and uses this data to answer the questions below.
+load("G:/My Drive/Stanford City Systems - Greg's Summer Work/00 Complete Communities Framework (CCF)/03 CCF Survey/month_patterns_join_all.RData")
+load("G:/My Drive/Stanford City Systems - Greg's Summer Work/00 Complete Communities Framework (CCF)/03 CCF Survey/pre_survey.RData")
+load("G:/My Drive/Stanford City Systems - Greg's Summer Work/00 Complete Communities Framework (CCF)/03 CCF Survey/amenities_persubcat_perblockgroup.RData")
+load("G:/My Drive/Stanford City Systems - Greg's Summer Work/00 Complete Communities Framework (CCF)/03 CCF Survey/ca_blockgroups_pop.RData")
+
+# The following code uploads scripts from the CCF survey project.
+source("C:/Users/Derek/Documents/GitHub/Stockton/CCF_survey/month_patterns_new_CCF_survey.R")
+source("C:/Users/Derek/Documents/GitHub/Stockton/CCF_survey/NAICS_NHTS_Lookup.R")
+
+# The following code uploads scripts from the Stockton Green Economt Project - VMT Analysis.
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/home_panel_summary.R")
+source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/pop_blockgroup_stockton.R")
+
+# Testing of the two possible OSRM approaches: (1) OSRM Isochrones and (2) OSRM Routing
+
+# Uploading the South Stockton Promise Zone (SSPZ) and the Stockton Spheres of Influence. 
+sspzboundary <- st_read("S:/CCF/sspzboundary/sspzboundary.shp") %>% st_transform(st_crs(4326))
+stockton_boundary_influence <- (st_read("S:/CCF/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(4326)))[1,]
+
+# Taking the block groups within Stockton and filtering them by those within the following:
+# (1) Stockton Boundary of Influence (SBOI)
+# (2) Stockton South Promise Zone (SSPZ)
+
+sjc_bgs <- block_groups("California", "San Joaquin County", cb = TRUE) %>% st_transform(st_crs(4326))
+
+sboi_bgs <- sjc_bgs[which(sjc_bgs$GEOID %in% st_centroid(sjc_bgs)[stockton_boundary_influence,]$GEOID),]
+sboi_centroid <- st_centroid(sboi_bgs)
+
+# Use only for when analyzing the South Stockton Promise Zone.
+
+# sspz_bgs <- sjc_bgs[which(sjc_bgs$GEOID %in% st_centroid(sjc_bgs)[sspzboundary,]$GEOID),]
+# sspz_centroid <- st_centroid(sspz_bgs)
+
+# Uploading the San Joaquin safegraphplaces dataset.
+safegraphplaces <- read.csv("S:/Restricted Data Library/Safegraph/poi/safegraphplaces.csv", header=TRUE, stringsAsFactors = FALSE)
+safegraphplaces <- safegraphplaces[!is.na(safegraphplaces$sub_category), ]
+
+osrmTable_Stockton_VMT <- do.call(rbind, lapply( 1:nrow(safegraphplaces), function(counterTable){
+  
+  safegraph_osrm <- data.frame( osrmTable(src = sboi_centroid[, c("GEOID", "geometry")], dst = safegraphplaces[counterTable, c("safegraph_place_id", "longitude", "latitude")]) )
+  
+  safegraph_osrm <- data.frame( cbind(sboi_centroid$GEOID, safegraphplaces[counterTable, "safegraph_place_id"], safegraph_osrm) )
+  colnames(safegraph_osrm) <- c("source_GEOID", "safegraph_place_id", "time_minutes", "sources.lon", "sources.lat", "destination.lon", "destination.lat")
+  
+  return(safegraph_osrm)
+  
+}))
 
 ##########
 
