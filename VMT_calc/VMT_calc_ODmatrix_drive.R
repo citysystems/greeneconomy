@@ -69,6 +69,8 @@ sboi_centroid <- st_centroid(sboi_bgs)
 # Uploading the San Joaquin safegraphplaces dataset.
 safegraphplaces <- read.csv("S:/Restricted Data Library/Safegraph/poi/safegraphplaces.csv", header=TRUE, stringsAsFactors = FALSE)
 safegraphplaces <- safegraphplaces[!is.na(safegraphplaces$sub_category), ]
+safegraphplaces$full_address <- paste(safegraphplaces$location_name, safegraphplaces$street_address,
+                                      safegraphplaces$city, safegraphplaces$state, safegraphplaces$zip_code, sep = ", ")
 
 ##########
 
@@ -76,9 +78,13 @@ osrmTable_Stockton_VMT <- do.call(rbind, lapply( 1:nrow(safegraphplaces), functi
   
   safegraph_osrm <- data.frame( osrmTable(src = sboi_centroid[, c("GEOID", "geometry")], dst = safegraphplaces[counterTable, c("safegraph_place_id", "longitude", "latitude")]) )
   
-  safegraph_osrm <- data.frame( cbind(sboi_centroid$GEOID, safegraphplaces[counterTable, "safegraph_place_id"], safegraph_osrm) )
-  colnames(safegraph_osrm) <- c("source_GEOID", "safegraph_place_id", "time_minutes", "sources.lon", "sources.lat", "destination.lon", "destination.lat")
+  safegraph_osrm <- data.frame( cbind(sboi_centroid$GEOID, safegraphplaces[counterTable, c("safegraph_place_id", "full_address")], safegraph_osrm) )
+  colnames(safegraph_osrm) <- c("source_GEOID", "safegraph_place_id", "full_address", "time_minutes", "sources.lon", "sources.lat", "destination.lon", "destination.lat")
   
   return(safegraph_osrm)
   
 }))
+
+saveRDS(osrmTable_Stockton_VMT, "C:/Users/Derek/Desktop/osrmTable_Stockton_VMT")
+
+# osrmTable_Stockton_VMT <- left_join(osrmTable_Stockton_VMT, safegraphplaces[ , c("safegraph_place_id", "full_address")], by = "safegraph_place_id")

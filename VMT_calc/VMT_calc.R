@@ -95,17 +95,21 @@ sboi_centroid <- st_centroid(sboi_bgs)
 # Uploading the San Joaquin safegraphplaces dataset.
 safegraphplaces <- read.csv("S:/Restricted Data Library/Safegraph/poi/safegraphplaces.csv", header=TRUE, stringsAsFactors = FALSE)
 safegraphplaces <- safegraphplaces[!is.na(safegraphplaces$sub_category), ]
+safegraphplaces$full_address <- paste(safegraphplaces$location_name, safegraphplaces$street_address,
+                                      safegraphplaces$city, safegraphplaces$state, safegraphplaces$zip_code, sep = ", ")
 
 osrmTable_Stockton_VMT <- do.call(rbind, lapply( 1:nrow(safegraphplaces), function(counterTable){
   
   safegraph_osrm <- data.frame( osrmTable(src = sboi_centroid[, c("GEOID", "geometry")], dst = safegraphplaces[counterTable, c("safegraph_place_id", "longitude", "latitude")]) )
   
-  safegraph_osrm <- data.frame( cbind(sboi_centroid$GEOID, safegraphplaces[counterTable, "safegraph_place_id"], safegraph_osrm) )
-  colnames(safegraph_osrm) <- c("source_GEOID", "safegraph_place_id", "time_minutes", "sources.lon", "sources.lat", "destination.lon", "destination.lat")
+  safegraph_osrm <- data.frame( cbind(sboi_centroid$GEOID, safegraphplaces[counterTable, c("safegraph_place_id", "full_address")], safegraph_osrm) )
+  colnames(safegraph_osrm) <- c("source_GEOID", "safegraph_place_id", "full_address", "time_minutes", "sources.lon", "sources.lat", "destination.lon", "destination.lat")
   
   return(safegraph_osrm)
   
 }))
+
+saveRDS(osrmTable_Stockton_VMT, "C:/Users/Derek/Desktop/osrmTable_Stockton_VMT")
 
 ##########
 
@@ -118,7 +122,7 @@ NHTS_LinkedTripsConv <- nudge_LinkedTrips(NHTS_df_final)
 NHTS_MeanMedConv <- nudge_MeanMedConv(NHTS_df_final)
 
 ### Nudge: Peforming the carpooling and vehicle vs. other transit mode nudge.
-NHTS_carpoolVehicleFilter <- NHTS_carpoolVehicleFilter(NHTS_df_final)
+NHTS_carpoolVehicleFilter <- nudge_carpoolVehicleFilter(NHTS_df_final)
 
 # Downloading Safegraph patterns .csv files.
 
@@ -181,23 +185,6 @@ for(num in 1:12){
 
 ##########
 
-# Calculation of decimal degree to mile conversion.
-
-Stockton_longitude <- -121.2908
-Stockton_latitude <- 37.9577
-
-latitude_45 <- 45
-latitude_23 <- 23
-
-deci_km_45 <- 78.71
-deci_km_23 <- 102.47
-
-km_to_mile_conv <- 0.621371
-deci_degree_mile_conversion <- ( (deci_km_45 - deci_km_23)/(latitude_45 - latitude_23) *
-                               (Stockton_latitude - latitude_23) + deci_km_23 ) * km_to_mile_conv
-
-### Wiki Link: https://en.wikipedia.org/wiki/Decimal_degrees
-
 # Conversion factors
 
 conv_MeterToMile <- 0.000621371
@@ -210,6 +197,9 @@ VMT_considerations <- 3
 months_considerations <- months_in_year * VMT_considerations
 
 # Creation of the origin matrices for all of Stockton's 205 origins.
+
+m_hps <- home_panel_summary(1)
+pop_bg_stockton <- pop_blockgroup_stockton(m_hps)
 
 VMT_Origin_recorded <- data.frame(matrix(0, nrow = nrow(pop_bg_stockton), ncol = 13))
 VMT_Origin_nonrecorded <- data.frame(matrix(0, nrow = nrow(pop_bg_stockton), ncol = 13))
@@ -244,12 +234,19 @@ rownames(VMT_Origin_otherdest_nonrecorded) <- pop_bg_stockton$origin
 
 # Creating shapefiles that include (1) the Stockton boundary and (2) the Stockton boundary with a 1-mile buffer.
 
+meters_to_miles <- 1609.34
 stockton_boundary_influence <- (st_read("S:/CCF/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(4326)))[1,]
-stockton_boundary_influence_milebuffer <- st_buffer(stockton_boundary_influence, 1/deci_degree_mile_conversion)
+stockton_boundary_influence <- st_transform(stockton_boundary_influence, crs = "+proj=utm +zone=10 +datum=NAD83 +units=m +no_defs")
+stockton_boundary_influence_milebuffer <- st_buffer(stockton_boundary_influence, meters_to_miles)
+
+# Converting the coordinates reference system ("crs") back into its original form (the 4326 default) for the sake of the future analysis.
+
+stockton_boundary_influence <- st_transform(stockton_boundary_influence, crs = 4326)
+stockton_boundary_influence_milebuffer <- st_transform(stockton_boundary_influence_milebuffer, crs = 4326)
 
 # Creating a blank shapefile data frame for the destinations of consideration.
 
-locations_of_consideration <- st_sf(data.frame(matrix(data = NA, nrow = 0, ncol = 47), geom = st_sfc()), crs = 4326)
+locations_of_consideration <- st_sf(data.frame(matrix(data = NA, nrow = 0, ncol = 47), geom = st_sfc()), crs = 4326) # "+proj=utm +zone=10 +datum=NAD83 +units=m +no_defs"
 
 # Creating two vectors that allow for inputs of the proportion of origins to a destination being from Stockton.
 # The first vector is used for destinations within Stockton.
@@ -347,7 +344,7 @@ for(counterMonth in 1:12){
   end_counter <- nrow( locations_of_consideration )
 
   # Creation of the column values that disclose whether a destination is within Stockton and/or its 1-mile buffer.
-    
+  
   withinStockton_rownum <- st_intersects(stockton_boundary_influence, locations_of_consideration[(start_counter + 1):end_counter, "geometry"], sparce = TRUE)[[1]] 
   withinStocktonBuffer_rownum <- st_intersects(stockton_boundary_influence_milebuffer, locations_of_consideration[(start_counter + 1):end_counter, "geometry"], sparce = TRUE)[[1]]
   
@@ -400,15 +397,30 @@ for(counterMonth in 1:12){
     VMT_Origin_recorded[(c(origin_matrix$origin)), (1 + counterMonth)] <- VMT_Origin_recorded[c(origin_matrix$origin), (1 + counterMonth)] + VMT_Origin_recorded_unique_dest
     VMT_Origin_recorded <- na.omit(VMT_Origin_recorded)
     
+    ####################
+    
     # The following code computes the "non-recorded" VMTs from the "distance_bg_nonrecorded" feature previously calculated.
     
     subset_non_recorded <- subset( VMT_Origin_nonrecorded[, c(1, (1 + counterMonth))], !(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin) )
-    VMT_Origin_nonrecorded_unique_dest <- ( matrix(nrow = nrow(subset_non_recorded), ncol = 1, distance_bg_nonrecorded/nrow(subset_non_recorded))
+    
+    osrmTable_Stockton_VMT_unique_dest <-
+      osrmTable_Stockton_VMT[osrmTable_Stockton_VMT$full_address == dest_vector$full_address, ][
+      !(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), c("source_GEOID", "full_address", "safegraph_place_id", "time_minutes")]
+    osrmTable_Stockton_VMT_unique_dest$VMT_proportion <- osrmTable_Stockton_VMT_unique_dest$time_minutes / sum(osrmTable_Stockton_VMT_unique_dest$time_minutes)
+    
+    VMT_Origin_nonrecorded_unique_dest <- ( matrix(nrow = nrow(subset_non_recorded), ncol = 1, distance_bg_nonrecorded * osrmTable_Stockton_VMT_unique_dest$VMT_proportion)
                                             * as.numeric( pop_bg_stockton[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), "origin_population"][[1]] )
                                             / as.numeric( pop_bg_stockton[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), "number_devices_residing"][[1]] ) )
-    VMT_Origin_nonrecorded[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), (1 + counterMonth)] <-
-    (VMT_Origin_nonrecorded[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), (1 + counterMonth)] + VMT_Origin_nonrecorded_unique_dest)
+    
+    # These "non-recorded" VMTs are then allocated to the block group origins that did not have have any "recorded" VMTs associated to them.
 
+    print(as.numeric(VMT_Origin_nonrecorded_unique_dest))
+        
+    VMT_Origin_nonrecorded[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), (1 + counterMonth)] <-
+    (VMT_Origin_nonrecorded[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), (1 + counterMonth)] + as.numeric(VMT_Origin_nonrecorded_unique_dest) )
+
+    ####################
+    
     # This code takes the proportion of those coming from Stockton and inputs that value into one of two vectors.
     # The proportion of those coming from Stockton will be inserted into the first vector if the destination is within Stockton.
     # The proportion of those coming from Stockton will be inserted into the second vector if the destination is outside of Stockton.
@@ -419,11 +431,10 @@ for(counterMonth in 1:12){
     if(withinStockton_conditional == TRUE){
       StocktonDest_proportion_recorded <- rbind(StocktonDest_proportion_recorded, c(dest_vector$full_address, proportion_Stockton))
       nonStocktonDest_proportion_recorded <- rbind(nonStocktonDest_proportion_recorded, c(NA, NA))
-      }
-    else{
+    } else {
       nonStocktonDest_proportion_recorded <- rbind(nonStocktonDest_proportion_recorded, c(dest_vector$full_address, proportion_Stockton) )
-      StocktonDest_proportion_recorded <- rbind(StocktonDest_proportion_recorded, c(NA, NA))
-      }
+      StocktonDest_proportion_recorded <- rbind(StocktonDest_proportion_recorded, c(NA, NA) )
+    }
 
     ##########
     # count_dist_start <- count_dist_start + nrow(origin_matrix)
@@ -572,5 +583,16 @@ location_VMT <-
                                      VMTs_nonrecorded_otherdest_m_10,
                                      VMTs_nonrecorded_otherdest_m_11,
                                      VMTs_nonrecorded_otherdest_m_12,
-                                     na.rm = TRUE)
+                                     na.rm = TRUE),
+     VMT_total = VMT_recorded + VMT_nonrecorded + VMT_nonrecorded_otherdest
      )
+
+colnames(location_VMT) <- c("full_address", "location_name", "VMT_recorded", "VMT_nonrecorded", "VMT_nonrecorded_otherdest", "VMT_total", "geometry")
+location_VMT <- location_VMT[location_VMT$VMT_total != 0,]
+
+# Mapping Attempts
+
+mapview(stockton_boundary_influence_milebuffer) + mapview(location_VMT, zcol = "VMT_total", at = c(seq(0, 1000000, 10000), 5000000), legend = TRUE)
+mapview(stockton_boundary_influence_milebuffer) + mapview(location_VMT, cex = "VMT_total")
+mapview(location_VMT, cex = "VMT_total")
+mapview(VMT_all, zcol = c("VMT_sum_recorded"), legend = TRUE) + mapview(location_VMT, cex = "VMT_total", legend = TRUE)
