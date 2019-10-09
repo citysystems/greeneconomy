@@ -9,6 +9,7 @@ library(mapview)
 library(tidyverse)
 library(magrittr)
 library(lwgeom)
+library(data.table)
 options(tigris_use_cache = TRUE)
 options(tigris_class = "sf")
 options(osrm.server = "http://127.0.0.1:5000/") #This is using Max's new local instance of OSRM setup. See https://github.com/maxo16/osrm_stuff/blob/master/Install%20and%20Run%20Notes.md
@@ -677,16 +678,32 @@ ggplot(pop_jobs_sjc_w_projection, aes(x = year)) +
 
 #LODES
 
-ca_lodes <- grab_lodes(state = "ca", year = 2015, lodes_type = "od", job_type = "JT01", 
-                       segment = "S000", state_part = "main", agg_geo = "bg")
+ca_lodes <- 
+  grab_lodes(
+    state = "ca", 
+    year = 2017, 
+    lodes_type = "od", 
+    job_type = "JT01",
+    segment = "S000", 
+    state_part = "main", 
+    agg_geo = "bg"
+  )
 
-ca_rac <- grab_lodes(state = "ca", year = 2015, lodes_type = "rac", job_type = "JT01", 
-                     segment = "S000", state_part = "main", agg_geo = "bg")
+ca_rac <- 
+  grab_lodes(
+    state = "ca", 
+    year = 2017, 
+    lodes_type = "rac", 
+    job_type = "JT01",
+    segment = "S000", 
+    state_part = "main", 
+    agg_geo = "bg"
+  )
 
 ca_wac <- 
   grab_lodes(
     state = "ca", 
-    year = 2015, 
+    year = 2017, 
     lodes_type = "wac", 
     job_type = "JT01", 
     segment = "S000", 
@@ -696,21 +713,51 @@ ca_wac <-
 
 ca_bgs <- block_groups("CA", cb = TRUE)
 ca_counties <- counties("CA", cb = TRUE)
-stockton_boundary <- places("CA", cb = TRUE) %>% filter(NAME == "Stockton")
-stockton_bgs <- ca_bgs[which(ca_bgs$GEOID %in% st_centroid(ca_bgs)[stockton_boundary,]$GEOID),c("GEOID")]
-stockton_bgs_full <- ca_bgs[stockton_boundary,c("GEOID")] %>% filter(!(GEOID %in% c("060770040011","060770039001","060770041061","060770039001","060770039002","060770051311","060770051351","060770041022")))
 
-stockton_lodes_w <- ca_lodes[which(ca_lodes$w_bg %in% stockton_bgs$GEOID),]
-stockton_lodes_h <- ca_lodes[which(ca_lodes$h_bg %in% stockton_bgs$GEOID),]
-stockton_rac <- stockton_bgs_full %>% geo_join(ca_rac, "GEOID", "h_bg")
-stockton_wac <- stockton_bgs_full %>% geo_join(ca_wac, "GEOID", "w_bg")
+# bbox_ca <- st_as_sfc(st_bbox(ca_counties))
 
-save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, file = "C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
-load("C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
+#grab OSRM map from 
+# https://download.geofabrik.de/north-america/us/california-latest.osm.pbf
 
-stockton_lodes_origin_centroids <- st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$h_bg),])
-stockton_lodes_dest_centroids <- st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),])
-stockton_lodes_dest_bg <- ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),]
+stockton_boundary <- 
+  places("CA", cb = TRUE) %>% 
+  filter(NAME == "Stockton")
+
+stockton_bgs <- 
+  ca_bgs[which(ca_bgs$GEOID %in% st_centroid(ca_bgs)[stockton_boundary,]$GEOID),c("GEOID")]
+
+stockton_bgs_full <- 
+  ca_bgs[stockton_boundary,c("GEOID")] %>% 
+  filter(!(GEOID %in% c("060770040011","060770039001","060770041061","060770039001","060770039002","060770051311","060770051351","060770041022")))
+
+stockton_lodes_w <- 
+  ca_lodes[which(ca_lodes$w_bg %in% stockton_bgs_full$GEOID),]
+
+stockton_lodes_h <- 
+  ca_lodes[which(ca_lodes$h_bg %in% stockton_bgs_full$GEOID),]
+
+stockton_rac <- 
+  stockton_bgs_full %>% geo_join(ca_rac, "GEOID", "h_bg")
+
+stockton_wac <- 
+  stockton_bgs_full %>% geo_join(ca_wac, "GEOID", "w_bg")
+
+save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_prep.R")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_prep.R")
+
+stockton_lodes_origin_centroids <- 
+  st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$h_bg),])
+
+stockton_lodes_dest_centroids <- 
+  st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),])
+
+# bbox <- st_as_sfc(st_bbox(c(xmin = -122.870447, xmax = -119.975740, ymax = 38.949398, ymin = 36.642453), crs = st_crs(ca_bgs)))
+
+# stockton_lodes_dest_centroids_subset <-
+#   stockton_lodes_dest_centroids[bbox,]
+
+stockton_lodes_dest_bg <- 
+  ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),]
 
 # below is an alternate method of creating an OD matrix using a specific function in the osrm package, but it's less useful because it doesn't include distance as an output. the osrmRoute below it take longer but it gets both duration and distance.
 
@@ -728,23 +775,46 @@ stockton_lodes_dest_bg <- ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),
 # stockton_lodes_h$duration <- lapply(1:nrow(stockton_lodes_h),function(row){
 #   od_matrix[which(stockton_lodes_origin_centroids$GEOID %in% stockton_lodes_h[row,"h_bg"]), which(stockton_lodes_dest_centroids$GEOID %in% stockton_lodes_h[row,"w_bg"])]
 
-prep <- do.call(rbind,lapply(1:nrow(stockton_lodes_h),function(row){
-  osrmRoute(src = stockton_lodes_origin_centroids[which(stockton_lodes_origin_centroids$GEOID %in% stockton_lodes_h[row,"h_bg"]),],
-            dst = stockton_lodes_dest_centroids[which(stockton_lodes_dest_centroids$GEOID %in% stockton_lodes_h[row,"w_bg"]),], overview = FALSE)
-}))
+# 1:nrow(stockton_lodes_h)
 
+timer <- proc.time()
+prep <- 
+  lapply(
+    1:nrow(stockton_lodes_h),
+    function(row){
+      osrmRoute(
+        src = stockton_lodes_origin_centroids[which(stockton_lodes_origin_centroids$GEOID %in% stockton_lodes_h[row,"h_bg"]),],
+        dst = stockton_lodes_dest_centroids[which(stockton_lodes_dest_centroids$GEOID %in% stockton_lodes_h[row,"w_bg"]),], 
+        overview = FALSE
+      )
+    }
+  )
+elapsed <- proc.time() - timer
+#25 minutes
+
+# test <- osrmRoute(
+#   src = stockton_lodes_origin_centroids[which(stockton_lodes_origin_centroids$GEOID %in% stockton_lodes_h[13485,"h_bg"]),],
+#   dst = stockton_lodes_dest_centroids[which(stockton_lodes_dest_centroids$GEOID %in% stockton_lodes_h[13485,"w_bg"]),], 
+#   overview = "full",
+#   returnclass = "sf"
+# )
+
+save(prep, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_osrm.R")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_osrm.R")
+
+# for(row in 1:length(prep)) {
+#   if(length(prep[row][[1]])==0)
+#     prep[[row]] <- c(duration = NA, distance = NA)
+# }
+
+prep <- do.call(rbind,prep)
 
 stockton_lodes_h <- cbind(stockton_lodes_h, prep)
-
-
-
-
 
 stockton_lodes_h_join_wac <- 
   stockton_lodes_h %>% 
   select(-c(year,state)) %>% 
   left_join(ca_wac, by = "w_bg")
-
 
 stockton_lodes_h_join_wac_normalize <-
   stockton_lodes_h_join_wac %>% 
@@ -778,126 +848,124 @@ stockton_lodes_h_join_wac_normalize <-
   filter(value > 0) %>% 
   select(-value)
 
-
-
 stockton_lodes_w_counties <-
-  stockton_lodes_h_join_wac_normalize %>% 
+  stockton_lodes_h_join_wac_normalize %>%
   mutate(
-    COUNTY = substr(w_bg,3,5), 
-    person_miles = S000*as.numeric(distance)/1.60934, 
+    COUNTY = substr(w_bg,3,5),
+    person_miles = S000*as.numeric(distance)/1.60934,
     person_hours = S000*as.numeric(duration)/60
-  ) %>% 
-  group_by(COUNTY) %>% 
+  ) %>%
+  group_by(COUNTY) %>%
   summarise_at(
-    vars(S000,SE01,SE02,SE03,person_miles,person_hours,high_CNS01:mid_CNS20), 
+    vars(S000,SE01,SE02,SE03,person_miles,person_hours,high_CNS01:mid_CNS20),
     sum, na.rm=T
-  ) %>% 
+  ) %>%
   mutate_at(
     .vars = vars(person_miles:mid_CNS20),
     .funs = list(~ round(.,0))
-  ) %>% 
+  ) %>%
   mutate(
-    avg_distance = person_miles/S000, 
-    avg_duration = person_hours/S000, 
+    avg_distance = person_miles/S000,
+    avg_duration = person_hours/S000,
     person_miles_rm_excessive = ifelse(
-      avg_duration < 3, 
-      person_miles, 
+      avg_duration < 3,
+      person_miles,
       0
-    ), 
-    `Percent Low Wage Jobs in County` = SE01/S000, 
-    `Percent Low Wage Jobs Overall` = SE01/sum(SE01,na.rm = TRUE), 
-    `Percent High Wage Jobs in County` = SE03/S000, 
+    ),
+    `Percent Low Wage Jobs in County` = SE01/S000,
+    `Percent Low Wage Jobs Overall` = SE01/sum(SE01,na.rm = TRUE),
+    `Percent High Wage Jobs in County` = SE03/S000,
     `Percent High Wage Jobs Overall` = SE03/sum(SE03,na.rm = TRUE),
-    `Percent Total Jobs` = S000/sum(S000,na.rm = TRUE), 
+    `Percent Total Jobs` = S000/sum(S000,na.rm = TRUE),
     `Percent VMT` = person_miles_rm_excessive/sum(person_miles_rm_excessive,na.rm = TRUE),
-    `GHG Annual` = (person_miles_rm_excessive*0.82*2+person_miles_rm_excessive*.116/2*2)*369.39*0.00035812, 
-    `Percent GHG` = `GHG Annual`/sum(`GHG Annual`), 
+    `GHG Annual` = (person_miles_rm_excessive*0.82*2+person_miles_rm_excessive*.116/2*2)*369.39*0.00035812,
+    `Percent GHG` = `GHG Annual`/sum(`GHG Annual`),
     `Average GHG` = `GHG Annual`/S000
-  ) %>% 
+  ) %>%
   rename(
     Jobs = S000,
-    `Average Distance` = avg_distance)
-
-
-stockton_lodes_w_counties <- 
-  stockton_lodes_h %>% 
-  mutate(
-    COUNTY = substr(w_bg,3,5), 
-    person_miles = S000*as.numeric(distance)/1.60934, 
-    person_hours = S000*as.numeric(duration)/60
-  ) %>% 
-  group_by(COUNTY) %>% 
-  summarise_at(
-    c("S000","SA01","SA02","SA03","SE01","SE02","SE03","SI01","SI02","SI03","person_miles", "person_hours"), 
-    sum
-  ) %>% 
-  mutate(
-    avg_distance = person_miles/S000, 
-    avg_duration = person_hours/S000, 
-    person_miles_rm_excessive = ifelse(
-      avg_duration < 3, 
-      person_miles, 
-      0
-    ), 
-    `Percent Low Wage Jobs in County` = SE01/S000, 
-    `Percent Low Wage Jobs Overall` = SE01/sum(SE01,na.rm = TRUE), 
-    `Percent High Wage Jobs in County` = SE03/S000, 
-    `Percent High Wage Jobs Overall` = SE03/sum(SE03,na.rm = TRUE),
-    `Percent Goods Jobs in County` = SI01/S000, 
-    `Percent Goods Jobs Overall` = SI01/sum(SI01,na.rm = TRUE), 
-    `Percent Trade Transport Utility Jobs in County` = SI02/S000, 
-    `Percent Trade Transport Utility Jobs Overall` = SI02/sum(SI02,na.rm = TRUE), 
-    `Percent Service Jobs in County` = SI03/S000, 
-    `Percent Service Jobs Overall` = SI03/sum(SI03,na.rm = TRUE), 
-    `Percent Total Jobs` = S000/sum(S000,na.rm = TRUE), 
-    `Percent VMT` = person_miles_rm_excessive/sum(person_miles_rm_excessive,na.rm = TRUE),
-    `GHG Annual` = (person_miles_rm_excessive*0.82*2+person_miles_rm_excessive*.116/2*2)*369.39*0.00035812, 
-    `Percent GHG` = `GHG Annual`/sum(`GHG Annual`), 
-    `Average GHG` = `GHG Annual`/S000
-  ) %>% 
-  rename(
-    Jobs = S000,
-    `Number of jobs of workers age 29 or younger` = SA01,
-    `Number of jobs for workers age 30 to 54` = SA02,
-    `Number of jobs for workers age 55 or older` = SA03,
     `Number of jobs with earnings $1250/month or less` = SE01,
     `Number of jobs with earnings $1251/month to $3333/month` = SE02,
     `Number of jobs with earnings greater than $3333/month` = SE03,
-    `Number of jobs in Goods Producing industry sectors` = SI01,
-    `Number of jobs in Trade, Transportation, and Utilities industry sectors` = SI02,
-    `Number of jobs in All Other Services industry sectors` = SI03,
-    `Average Distance` = avg_distance)
+    `Average Distance` = avg_distance,
+    `Average Duration` = avg_duration)
 
-stockton_lodes_w_counties <- ca_counties %>% select(COUNTYFP, NAME) %>% left_join(stockton_lodes_w_counties, by = c("COUNTYFP" = "COUNTY"))
+# stockton_lodes_w_counties <- 
+#   stockton_lodes_h %>% 
+#   mutate(
+#     COUNTY = substr(w_bg,3,5), 
+#     person_miles = S000*as.numeric(distance)/1.60934, 
+#     person_hours = S000*as.numeric(duration)/60
+#   ) %>% 
+#   group_by(COUNTY) %>% 
+#   summarise_at(
+#     c("S000","SA01","SA02","SA03","SE01","SE02","SE03","SI01","SI02","SI03","person_miles", "person_hours"), 
+#     sum
+#   ) %>% 
+#   mutate(
+#     avg_distance = person_miles/S000, 
+#     avg_duration = person_hours/S000, 
+#     person_miles_rm_excessive = ifelse(
+#       avg_duration < 3, 
+#       person_miles, 
+#       0
+#     ), 
+#     `Percent Low Wage Jobs in County` = SE01/S000, 
+#     `Percent Low Wage Jobs Overall` = SE01/sum(SE01,na.rm = TRUE), 
+#     `Percent High Wage Jobs in County` = SE03/S000, 
+#     `Percent High Wage Jobs Overall` = SE03/sum(SE03,na.rm = TRUE),
+#     `Percent Goods Jobs in County` = SI01/S000, 
+#     `Percent Goods Jobs Overall` = SI01/sum(SI01,na.rm = TRUE), 
+#     `Percent Trade Transport Utility Jobs in County` = SI02/S000, 
+#     `Percent Trade Transport Utility Jobs Overall` = SI02/sum(SI02,na.rm = TRUE), 
+#     `Percent Service Jobs in County` = SI03/S000, 
+#     `Percent Service Jobs Overall` = SI03/sum(SI03,na.rm = TRUE), 
+#     `Percent Total Jobs` = S000/sum(S000,na.rm = TRUE), 
+#     `Percent VMT` = person_miles_rm_excessive/sum(person_miles_rm_excessive,na.rm = TRUE),
+#     `GHG Annual` = (person_miles_rm_excessive*0.82*2+person_miles_rm_excessive*.116/2*2)*369.39*0.00035812, 
+#     `Percent GHG` = `GHG Annual`/sum(`GHG Annual`, na.rm = TRUE), 
+#     `Average GHG` = `GHG Annual`/S000
+#   ) %>% 
+#   rename(
+#     Jobs = S000,
+#     `Number of jobs of workers age 29 or younger` = SA01,
+#     `Number of jobs for workers age 30 to 54` = SA02,
+#     `Number of jobs for workers age 55 or older` = SA03,
+#     `Number of jobs with earnings $1250/month or less` = SE01,
+#     `Number of jobs with earnings $1251/month to $3333/month` = SE02,
+#     `Number of jobs with earnings greater than $3333/month` = SE03,
+#     `Number of jobs in Goods Producing industry sectors` = SI01,
+#     `Number of jobs in Trade, Transportation, and Utilities industry sectors` = SI02,
+#     `Number of jobs in All Other Services industry sectors` = SI03,
+#     `Average Distance` = avg_distance)
 
-stockton_lodes_w_top_counties <- 
-  stockton_lodes_w_counties %>% 
+stockton_lodes_w_counties_filter <- 
+  ca_counties %>% 
+  select(COUNTYFP, NAME) %>% 
+  left_join(stockton_lodes_w_counties, by = c("COUNTYFP" = "COUNTY")) %>% 
+  filter(person_miles_rm_excessive > 0) %>% 
   arrange(desc(Jobs))
 
 stockton_lodes_w_top_counties <-
-  stockton_lodes_w_top_counties[1:8,]
+  stockton_lodes_w_counties_filter[1:15,]
 
-sum(stockton_lodes_w_top_counties$Jobs)/
+percJobsintopcounties <- sum(stockton_lodes_w_top_counties$Jobs)/
   sum(stockton_lodes_w_counties$Jobs, na.rm=t)
-
-# stockton_lodes_w_top_counties <- stockton_lodes_w_counties %>% filter(NAME %in% c("San Joaquin", "Alameda", "Sacramento", "Santa Clara","Stanislaus","Contra Costa","San Francisco","San Mateo","Solano","Fresno","Placer","Yolo","Monterey","Sonoma","Merced")) %>% arrange(desc(Jobs))
 
 m1 <- mapview(stockton_lodes_w_top_counties, burst = TRUE, map.types = c("OpenStreetMap"), legend = TRUE, hide = TRUE)
 
-m1 <- mapview(stockton_lodes_w_top_counties, zcol=c("Jobs","Percent Low Wage Jobs in County","Percent High Wage Jobs in County","Average Distance","Average GHG","Percent GHG"), map.types = c("OpenStreetMap"), legend = TRUE, hide = TRUE)
+# m1 <- mapview(stockton_lodes_w_top_counties, zcol=c("Jobs","Percent Low Wage Jobs in County","Percent High Wage Jobs in County","Average Distance","Average GHG","Percent GHG"), map.types = c("OpenStreetMap"), legend = TRUE, hide = TRUE)
+
 m1
-mapshot(m1, url = "stockton_lodes_w_top_counties.html")
-l1 <- addStaticLabels(m1, label = stockton_lodes_w_top_counties$NAME)
 
-sum(stockton_lodes_w_counties$S000, na.rm = TRUE)
-sum(stockton_lodes_w_counties$person_miles, na.rm = TRUE)
-mapview(stockton_lodes_w_counties, zcol='avg_distance')
+# mapshot(m1, url = "stockton_lodes_w_top_counties.html")
+# l1 <- addStaticLabels(m1, label = stockton_lodes_w_top_counties$NAME)
 
-stockton_lodes_h_summary <- stockton_lodes_h %>% mutate(person_miles = S000*as.numeric(distance)/1.60934, person_hours = S000*as.numeric(duration)/60) %>% group_by(h_bg) %>% summarise_at(c("S000","SA01","SA02","SA03","SE01","SE02","SE03","SI01","SI02","SI03","person_miles", "person_hours"), sum)
+# mapview(stockton_lodes_w_counties, zcol='avg_distance')
 
 write_csv(stockton_lodes_w_counties, "C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes_w_counties.csv")
 
-# save(stockton_lodes_w, stockton_lodes_h, stockton_rac, stockton_wac, stockton_lodes_summary, prep, file = "C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
+save(stockton_lodes_w, stockton_lodes_h, stockton_rac, ca_wac, stockton_wac, stockton_lodes_w_counties, stockton_lodes_w_counties_filter, stockton_lodes_w_top_counties, prep, file = "C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
 load("C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
 
 stockton_bgs <- stockton_bgs %>% geo_join(stockton_lodes_summary, "GEOID", "h_bg") 
@@ -928,7 +996,7 @@ plot(stockton_rac["perc_low_wage"])
 stockton_lodes_dest_convert <- stockton_lodes_dest_bg %>% geo_join(stockton_lodes_h, "GEOID", "w_bg") %>% st_set_geometry(NULL) %>% group_by(COUNTYFP) %>% summarize(jobs = sum(S000))
 stockton_lodes_dest_county <- 
   
-  mapview(stockton_boundary, alpha.regions = 0, lwd = 2) +
+mapview(stockton_boundary, alpha.regions = 0, lwd = 2) +
   mapview(stockton_lodes_dest_bg, zcol='S000')
 
 
