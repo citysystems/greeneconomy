@@ -42,12 +42,6 @@ source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions
 
 ##########
 
-# Testing of the two possible OSRM approaches: (1) OSRM Isochrones and (2) OSRM Routing
-
-# Uploading the South Stockton Promise Zone (SSPZ) and the Stockton Spheres of Influence. 
-sspzboundary <- st_read("S:/CCF/sspzboundary/sspzboundary.shp") %>% st_transform(st_crs(4326))
-stockton_boundary_influence <- (st_read("S:/CCF/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(4326)))[1,]
-
 # Taking the block groups within Stockton and filtering them by those within the following:
 # (1) Stockton Boundary of Influence (SBOI)
 # (2) Stockton South Promise Zone (SSPZ)
@@ -56,6 +50,8 @@ sjc_bgs <- block_groups("California", "San Joaquin County", cb = TRUE) %>% st_tr
 
 sboi_bgs <- sjc_bgs[which(sjc_bgs$GEOID %in% st_centroid(sjc_bgs)[stockton_boundary_influence,]$GEOID),]
 sboi_centroid <- st_centroid(sboi_bgs)
+
+##########
 
 ##########
 
@@ -74,12 +70,13 @@ safegraphplaces$full_address <- paste(safegraphplaces$location_name, safegraphpl
 
 ##########
 
-osrmTable_Stockton_VMT <- do.call(rbind, lapply( 1:nrow(safegraphplaces), function(counterTable){
+osrmTable_Stockton_VMT <- do.call(rbind, lapply(1:nrow(safegraphplaces), function(counterTable){
   
   safegraph_osrm <- data.frame( osrmTable(src = sboi_centroid[, c("GEOID", "geometry")], dst = safegraphplaces[counterTable, c("safegraph_place_id", "longitude", "latitude")]) )
   
-  safegraph_osrm <- data.frame( cbind(sboi_centroid$GEOID, safegraphplaces[counterTable, c("safegraph_place_id", "full_address")], safegraph_osrm) )
-  colnames(safegraph_osrm) <- c("source_GEOID", "safegraph_place_id", "full_address", "time_minutes", "sources.lon", "sources.lat", "destination.lon", "destination.lat")
+  safegraph_osrm <- data.frame( cbind(sboi_centroid$GEOID, safegraphplaces[counterTable, c("safegraph_place_id", "top_category", "sub_category", "full_address", "location_name", "street_address", "city", "state", "zip_code")], safegraph_osrm) )
+  colnames(safegraph_osrm) <- c("source_GEOID", "safegraph_place_id", "top_category", "sub_category", "full_address", "location_name", "street_address",
+                                "city", "state", "zip_code", "time_minutes", "sources.lon", "sources.lat", "destination.lon", "destination.lat")
   
   return(safegraph_osrm)
   
