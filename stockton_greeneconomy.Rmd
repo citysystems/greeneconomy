@@ -26,7 +26,8 @@ library(magrittr)
 library(lwgeom)
 library(knitr)
 library(DT)
-opts_chunk$set(echo = TRUE, message = FALSE)
+opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+mapviewOptions(basemaps = "OpenStreetMap")
 options(tigris_use_cache = TRUE)
 options(tigris_class = "sf")
 options(osrm.server = "http://127.0.0.1:5000/")
@@ -66,58 +67,58 @@ The first step to our research is to conduct a baseline assessment of Stockton's
 
 The following analysis first processes population and jobs data at the County (SJC) level, where it is more readily available, followed by estimations at the city level. 
 
-The following datasets were collected for San Joaquin County:
+### County-level Analysis
+
+The following datasets were collected for SJC:
 
 - [Total Population, American Communities Survey, 1-Yr Estimates, 2010-2017](https://www.census.gov/programs-surveys/acs)
 - [Population projections for US counties, 2020-2100](https://osf.io/9ynfc/)
-- [Quarterly Workforce Indicators, 2010-2018](https://www.census.gov/data/developers/data-sets/qwi.html)
-- [Nonemployer Statistics, 2010-2017](https://www.census.gov/data/developers/data-sets/cbp-nonemp-zbp/nonemp-api.2017.html)
-
+- [Longitudinal Employer-Household Dynamics Origin-Destination Employment Statistics, 2010-2017](https://lehd.ces.census.gov/data/), available at the block level
 
 A few notes on methodology and assumptions:
 
 1. From the ACS, we collected Total Population, Total Population 16 and Older, Total Employed Residents (16+), and Unemployment Rate (for 16+). In order to forecast the future number of employed residents, which would then be used to forecast the future number of jobs, we chose to perform a linear regression on employment rate projecting to 2040, given that the unemployment rate was significantly more variable from 2010-2017.
 2. Population projections come from a [study](https://www.nature.com/articles/sdata20195) published in Nature in 2019. The specific methodology is beyond the scope of this project to unpack. What's notable is that five different projections were made by the author based on diferent "potential futures involving various growth policies, fossil-fuel usage, mitigation policies (ie emission reductions), adaptation policies (ie deployment of flood defenses), and population change". We used the "Middle of the road" projection.
 3. Projections from the above study were available in 5-year age groups. While the total population projection is directly used in the final table below for SJC, Population of 15+ was also collected which was multiplied by the previously projected Employment Rate (#1) to forecast total Employed Residents. Note that given data limitations we have a discontinuity between Population 16+ data from 2010-2017 and Population 15+ data from 2020-2040. We assume this difference is negligible for the purposes of our analysis, but it would have the effect of overestimating job count.
-4. From the Quarterly Workforce Indicators, we collected NAICS Industry Sector, Employee Count, and Total Earnings. From the Nonemployer Statistics, we collected Total Establishments and Total Revenue. Nonemployer Establishments include Sole Proprietorships and LLCs. We chose to estimate total Jobs by adding Employee Count and Total Nonemployer Establishments. Total Nonemployer Establishments is likely an overestimate of "jobs" in this sector if individuals own multiple establishments, but we assume this difference to be negligible.
+4. From LODES we collected "Primary Jobs" at the block group level and aggregated all jobs for block groups in SJC. These are meant to match the number of individual workers in a lation. We also compared this number to the number of employees provided by the [Quarterly Workforce Indicators](https://www.census.gov/data/developers/data-sets/qwi.html) dataset and the number of nonemployer establishments in the [Nonemployer Statistics](https://www.census.gov/data/developers/data-sets/cbp-nonemp-zbp/nonemp-api.2017.html) dataset. The LODES Primary Jobs number was higher than the QWI Employee count but lower than the QWI Employee count plus Nonemployer Establishments count, which seems to make sense (since an individual could operate multiple nonemployer establishments).
 5. We calculated J/ER for 2010-2017 by dividing total Jobs by Employed Residents. Then, we chose to perform a linear regression on J/ER ratio projecting to 2040, and multiplied this by our projected Employed Residents (#3) to forecast total Jobs.
 
 ```{r population and jobs data}
 pop_sjc <- data.frame(matrix(ncol=3,nrow=0))
-colnames(pop_sjc) <- c("POP","Population15andolder","year")
+colnames(pop_sjc) <- c("Population","Population15andolder","year")
 
-for(year in 2010:2017){ 
-  
-  temp <- 
+for(year in 2010:2017){ #adjust to 2018 on 10/17
+
+  temp <-
     getCensus(
       name = "acs/acs1",
       vintage = year,
       vars = c("B01003_001E"),
       region = "county:077",
       regionin = "state:06"
-    ) %>% 
+    ) %>%
     mutate(
-      Population = B01003_001E, 
+      Population = B01003_001E,
       year = year
-    ) %>% 
+    ) %>%
     select(
       Population,
       year
     )
-  
+
   pop_sjc<- rbind(pop_sjc,temp)
-  
+
 }
 
-sjc_projection <- 
-  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/SSP_asrc_STATEfiles/DATA-PROCESSED/SPLITPROJECTIONS/CA.csv") %>% 
-  filter(COUNTY == "077") %>% 
-  group_by(YEAR) %>% 
+sjc_projection <-
+  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/SSP_asrc_STATEfiles/DATA-PROCESSED/SPLITPROJECTIONS/CA.csv") %>%
+  filter(COUNTY == "077") %>%
+  group_by(YEAR) %>%
   summarize(
     Population = sum(SSP2),
     Population15andOlder = sum(SSP2[which(AGE > 3)])
-  ) %>% 
-  filter(YEAR %in% c(2020,2025,2030,2035,2040)) %>% 
+  ) %>%
+  filter(YEAR %in% c(2020,2025,2030,2035,2040)) %>%
   select(Population, Population15andOlder, year = YEAR)
 
 pop_sjc_w_projection <-
@@ -126,23 +127,23 @@ pop_sjc_w_projection <-
 emp_sjc <- data.frame(matrix(ncol=2,nrow=0))
 colnames(emp_sjc) <- c("EmployedResidents","year")
 
-for(year in 2010:2017){ 
-  
-  temp <- 
+for(year in 2010:2017){ # 2018 to be released 10/17
+
+  temp <-
     getCensus(
       name = "acs/acs1/subject",
       vintage = year,
       vars = c("S2301_C01_001E","S2301_C03_001E","S2301_C04_001E"),
       region = "county:077",
       regionin = "state:06"
-    ) %>% 
+    ) %>%
     mutate(
       Population16andOlder = S2301_C01_001E,
       PercEmployedResidents = S2301_C03_001E,
       EmployedResidents = PercEmployedResidents/100*Population16andOlder,
       UnemploymentRate = S2301_C04_001E,
       year = year
-    ) %>% 
+    ) %>%
     select(
       Population16andOlder,
       PercEmployedResidents,
@@ -150,14 +151,14 @@ for(year in 2010:2017){
       UnemploymentRate,
       year
     )
-  
+
   emp_sjc<- rbind(emp_sjc,temp)
-  
+
 }
 
 pop_emp_sjc_w_projection <-
-  pop_sjc_w_projection %>% 
-  left_join(emp_sjc, by = "year") %>% 
+  pop_sjc_w_projection %>%
+  left_join(emp_sjc, by = "year") %>%
   mutate(
     PercEmployedResidents = ifelse(
       !is.na(PercEmployedResidents),
@@ -172,120 +173,81 @@ pop_emp_sjc_w_projection <-
     EmployedResidents = ifelse(!is.na(EmployedResidents),EmployedResidents,Population15andOlder*PercEmployedResidents/100)
   )
 
-label_industry <- 
-  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/label_industry.csv")
+# sjc_wac <-
+#   2010:2017 %>%
+#   map(function(year){
+#     ca_wac <-
+#       grab_lodes(
+#         state = "ca",
+#         year = year,
+#         lodes_type = "wac",
+#         job_type = "JT01",
+#         segment = "S000",
+#         state_part = "main",
+#         agg_geo = "bg"
+#       )
+# 
+#     temp <-
+#       ca_wac %>%
+#       filter(substr(w_bg,1,5) == "06077")
+# 
+#     return(temp)
+#   }) %>%
+#   rbindlist()
+# 
+# save(sjc_wac, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata")
 
-qwi_sjc <- data.frame(matrix(ncol=5,nrow=0))
-colnames(qwi_sjc) <- c("year","industry","label","EmpS","EarnS")
-
-for(years in 2010:2018){
-  qwi<- 
-    getCensus(
-      name = "timeseries/qwi/sa",
-      region = "county:077",
-      regionin = "state:06",
-      vars = c("EmpS","EarnS","industry","ind_level"),
-      time = years
-    ) %>% 
-    filter(ind_level == 4) %>% 
-    mutate(
-      year = substr(time,1,4)
-    ) %>% 
-    left_join(label_industry, by= "industry") %>% 
-    group_by(year,industry,label) %>% 
-    summarize(
-      EmpS = round(mean(as.numeric(EmpS), na.rm = TRUE),0),
-      EarnS = round(mean(as.numeric(EarnS), na.rm = TRUE),0)
-    ) %>% 
-    filter(!is.na(EmpS) & EmpS != 0)
-  
-  qwi_sjc<- 
-    bind_rows(qwi_sjc,qwi)
-}
-
-nonemp_sjc <- data.frame(matrix(ncol=3,nrow=0))
-colnames(nonemp_sjc) <- c("NESTAB","NRCPTOT","year")
-
-for(year in 2010:2017){
-  
-  nonemp <-
-    getCensus(
-      name = "nonemp",
-      vintage = year,
-      region = "county:077",
-      regionin = "state:06",
-      vars = c(
-        "NESTAB",
-        "NRCPTOT"
-      )
-    ) %>%
-    mutate(year = as.numeric(year)) %>% 
-    select(-c(state,county))
-  
-  nonemp_sjc<- 
-    rbind(nonemp_sjc,nonemp)
-  
-}
-
-jobs_sjc <- 
-  qwi_sjc %>% 
-  mutate(year = as.numeric(year)) %>% 
+jobs_sjc <-
+  sjc_wac %>%
   group_by(year) %>% 
-  summarize(
-    EmpS=sum(as.numeric(EmpS))
-  ) %>% 
-  left_join(nonemp_sjc, by = "year") %>% 
-  mutate(
-    totaljobs = EmpS + as.numeric(NESTAB)
-  )
+  summarize(Jobs = sum(C000))
 
 pop_jobs_sjc_w_projection <-
-  pop_emp_sjc_w_projection %>% 
+  pop_emp_sjc_w_projection %>%
   left_join(jobs_sjc, by = "year") %>%
   mutate(
     ratio = ifelse(
-      !is.na(totaljobs),
-      totaljobs/EmployedResidents,
+      !is.na(Jobs),
+      Jobs/EmployedResidents,
       lm(
-        formula = totaljobs[1:8]/EmployedResidents[1:8] ~ year[1:8]
+        formula = Jobs[1:8]/EmployedResidents[1:8] ~ year[1:8]
       )$coefficients[1]+
         lm(
-          formula = totaljobs[1:8]/EmployedResidents[1:8] ~ year[1:8]
+          formula = Jobs[1:8]/EmployedResidents[1:8] ~ year[1:8]
         )$coefficients[2]*year
     ),
-    totaljobs = ifelse(!is.na(totaljobs),totaljobs,EmployedResidents*ratio)
-  ) %>% 
+    Jobs = ifelse(!is.na(Jobs),Jobs,EmployedResidents*ratio)
+  ) %>%
   transmute(
     Year = year,
     Population = Population,
-    Jobs = totaljobs,
+    Jobs = Jobs,
     `Employed Residents` = EmployedResidents,
     `J/ER Ratio` = ratio,
-    Employees = EmpS,
-    `Nonemployer Establishments` = NESTAB,
     `Percent Employed Residents` = PercEmployedResidents,
     `Percent Unemployment` = UnemploymentRate
   )
 
 pop_jobs_sjc_w_projection_table <-
-  pop_jobs_sjc_w_projection %>% 
+  pop_jobs_sjc_w_projection %>%
   transmute(
     Year = Year,
     Population = prettyNum(round(Population,0),big.mark=","),
     Jobs = prettyNum(round(Jobs,0),big.mark=","),
     `Employed Residents` = prettyNum(round(`Employed Residents`,0),big.mark=","),
     `J/ER Ratio` = round(`J/ER Ratio`,2),
-    Employees = prettyNum(Employees,big.mark=","),
-    `Nonemployer Establishments` = prettyNum(`Nonemployer Establishments`,big.mark=","),
     `Percent Employed Residents` = paste0(round(`Percent Employed Residents`,2),"%"),
     `Percent Unemployment` = ifelse(is.na(`Percent Unemployment`),"NA",paste0(`Percent Unemployment`,"%"))
   )
+
+save(pop_jobs_sjc_w_projection, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/pop_jobs_sjc_w_projection.Rdata")
 
 datatable(pop_jobs_sjc_w_projection_table, rownames = FALSE, options = list(pageLength = 13))
 ```
 *Table 1. Historical Population and Job counts for San Joaquin County 2010-2017, followed by projections to 2040.*
 
-The following graph shows the J/ER ratio projected out to 2040, reaching a high of 0.85. This is not particularly high (given our goal of surpassing 1), though we would expect Stockton's city-specific J/ER ratio to be higher. There is certainly room for improvement through proactive economic development strategies.
+The following graph shows the J/ER ratio projected out to 2040, reaching a high of 0.81. This is not particularly high (given our goal of surpassing 1). There is certainly room for improvement through proactive economic development strategies.
 
 ```{r}
 ggplot(pop_jobs_sjc_w_projection, aes(x = Year)) + 
@@ -312,12 +274,47 @@ ggplot(pop_jobs_sjc_w_projection, aes(x = Year)) +
 ```
 *Figure 2. Historical Population, Employed Residents, and Jobs for San Joaquin County 2010-2017, followed by projections to 2040.*
 
-The Quarterly Workforce Indicators dataset also illustrates the number and average earnings of jobs in different NAICS industry sectors. 
+The [Quarterly Workforce Indicators](https://www.census.gov/data/developers/data-sets/qwi.html) dataset also illustrates the number and average earnings of jobs in different NAICS industry sectors. 
 
 ```{r}
-qwi_sjc_17 <-
+# label_industry <-
+#   read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/label_industry.csv")
+# 
+# qwi_sjc <- data.frame(matrix(ncol=5,nrow=0))
+# colnames(qwi_sjc) <- c("year","industry","label","EmpS","EarnS")
+# 
+# for(years in 2010:2018){ # missing from API as of 10/9
+#   qwi<-
+#     getCensus(
+#       name = "timeseries/qwi/sa",
+#       region = "county:077",
+#       regionin = "state:06",
+#       vars = c("EmpS","EarnS","industry","ind_level"),
+#       time = years
+#     ) %>%
+#     filter(ind_level == 4) %>%
+#     mutate(
+#       year = substr(time,1,4)
+#     ) %>%
+#     left_join(label_industry, by= "industry") %>%
+#     group_by(year,industry,label) %>%
+#     summarize(
+#       EmpS = round(mean(as.numeric(EmpS), na.rm = TRUE),0),
+#       EarnS = round(mean(as.numeric(EarnS), na.rm = TRUE),0)
+#     ) %>%
+#     filter(!is.na(EmpS) & EmpS != 0)
+# 
+#   qwi_sjc<-
+#     bind_rows(qwi_sjc,qwi)
+# }
+# 
+# save(qwi_sjc, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/qwi_sjc.Rdata")
+# 
+qwi_sjc <- read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/qwi_sjc.csv")
+
+qwi_sjc_18 <-
   qwi_sjc %>% 
-  filter(year == 2017) %>% 
+  filter(year == 2018) %>% 
   arrange(desc(EmpS)) %>% 
   transmute(
     Label = label, 
@@ -325,9 +322,226 @@ qwi_sjc_17 <-
     `Average Earnings` = paste0("$",prettyNum(EarnS,big.mark=","))
   ) 
 
-datatable(qwi_sjc_17, rownames = FALSE, options = list(pageLength = 20))
+datatable(qwi_sjc_18, rownames = FALSE, options = list(pageLength = 20))
 ```
 *Table 2. Job counts and earnings by NAICS Industry Sector for San Joaquin County 2017.*
+
+### City-level Analysis
+
+Some of the data used in the previous analysis is not available at the city level; in those cases we chose to assume that Stockton's missing data was proportional to the related data we had at the County level. The following blockgroups were used to represent Stockton.
+
+```{r}
+stockton_boundary <- 
+  places("CA", cb = TRUE) %>% 
+  filter(NAME == "Stockton")
+
+stockton_bgs_full <- 
+  block_groups("CA", cb = TRUE)[stockton_boundary,c("GEOID")] %>% 
+  filter(!(GEOID %in% c("060770040011","060770039001","060770041061","060770039001","060770039002","060770051311","060770051351","060770041022")))
+
+mapview(stockton_bgs_full$geometry) + mapview(stockton_boundary, alpha.regions = 0, color = "red", lwd = 4)
+```
+*Figure 3. Block groups used to represent Stockton population estimates. The red outline is the official city boundary.*
+
+```{r}
+pop_stockton <- data.frame(matrix(ncol=3,nrow=0))
+colnames(pop_stockton) <- c("PopulationStockton","Population15andolder","year")
+
+for(year in 2010:2017){ #adjust to 2018 on 10/16
+
+  temp <-
+    getCensus(
+      name = "acs/acs1",
+      vintage = year,
+      vars = c("B01003_001E"),
+      region = "place:75000",
+      regionin = "state:06"
+    ) %>%
+    mutate(
+      PopulationStockton = B01003_001E,
+      year = year
+    ) %>%
+    select(
+      PopulationStockton,
+      year
+    )
+
+  pop_stockton<- rbind(pop_stockton,temp)
+
+}
+
+emp_stockton <- data.frame(matrix(ncol=2,nrow=0))
+colnames(emp_stockton) <- c("EmployedResidents","year")
+
+for(year in 2010:2017){ # 2018 to be released 10/17
+
+  temp <-
+    getCensus(
+      name = "acs/acs1/subject",
+      vintage = year,
+      vars = c("S2301_C01_001E","S2301_C03_001E","S2301_C04_001E"),
+      region = "place:75000",
+      regionin = "state:06"
+    ) %>%
+    mutate(
+      Population16andOlder = S2301_C01_001E,
+      PercEmployedResidents = S2301_C03_001E,
+      EmployedResidents = PercEmployedResidents/100*Population16andOlder,
+      UnemploymentRate = S2301_C04_001E,
+      year = year
+    ) %>%
+    select(
+      Population16andOlder,
+      PercEmployedResidents,
+      EmployedResidents,
+      UnemploymentRate,
+      year
+    )
+
+  emp_stockton<- rbind(emp_stockton,temp)
+
+}
+
+pop_emp_stockton_w_projection <-
+  pop_sjc_w_projection %>%
+  left_join(pop_stockton, by = "year") %>% 
+  left_join(emp_stockton, by = "year") %>%
+  mutate(
+    PercStockton = PopulationStockton/Population,
+    PercStocktonAdult = Population16andOlder/PopulationStockton,
+    PercStockton = ifelse(
+      !is.na(PercStockton),
+      PercStockton,
+      lm(
+        formula = `PercStockton`[1:8] ~ year[1:8]
+      )$coefficients[1]+
+        lm(
+          formula = `PercStockton`[1:8] ~ year[1:8]
+        )$coefficients[2]*year
+    ),
+    PopulationStockton = Population * PercStockton,
+    PopulationStockton15andOlder = Population15andOlder * PercStockton,
+    PercEmployedResidents = ifelse(
+      !is.na(PercEmployedResidents),
+      PercEmployedResidents,
+      lm(
+        formula = `PercEmployedResidents`[1:8] ~ year[1:8]
+      )$coefficients[1]+
+        lm(
+          formula = `PercEmployedResidents`[1:8] ~ year[1:8]
+        )$coefficients[2]*year
+    ),
+    EmployedResidents = ifelse(
+      !is.na(EmployedResidents),
+      EmployedResidents,
+      PopulationStockton15andOlder*PercEmployedResidents/100
+    )
+  )
+
+# stockton_wac <- 
+#   2010:2017 %>% 
+#   map(function(year){
+#     ca_wac <- 
+#       grab_lodes(
+#         state = "ca", 
+#         year = year, 
+#         lodes_type = "wac", 
+#         job_type = "JT01", 
+#         segment = "S000", 
+#         state_part = "main", 
+#         agg_geo = "bg"
+#       )
+#     
+#     temp <-
+#       stockton_bgs_full %>% 
+#       geo_join(ca_wac, "GEOID", "w_bg")
+#     
+#     return(temp)
+#   }) %>% 
+#   rbindlist()
+# 
+# save(stockton_wac, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_wac.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_wac.Rdata")
+
+jobs_stockton <-
+  stockton_wac %>% 
+  group_by(year) %>% 
+  summarize(Jobs = sum(C000))
+
+pop_jobs_stockton_w_projection <-
+  pop_emp_stockton_w_projection %>%
+  left_join(jobs_stockton, by = "year") %>%
+  mutate(
+    ratio = ifelse(
+      !is.na(Jobs),
+      Jobs/EmployedResidents,
+      lm(
+        formula = Jobs[1:8]/EmployedResidents[1:8] ~ year[1:8]
+      )$coefficients[1]+
+        lm(
+          formula = Jobs[1:8]/EmployedResidents[1:8] ~ year[1:8]
+        )$coefficients[2]*year
+    ),
+    Jobs = ifelse(!is.na(Jobs),Jobs,EmployedResidents*ratio)
+  ) %>%
+  transmute(
+    Year = year,
+    Population = PopulationStockton,
+    Jobs = Jobs,
+    `Employed Residents` = EmployedResidents,
+    `J/ER Ratio` = ratio,
+    `Percent Employed Residents` = PercEmployedResidents,
+    `Percent Unemployment` = UnemploymentRate
+  )
+
+pop_jobs_stockton_w_projection_table <-
+  pop_jobs_stockton_w_projection %>%
+  transmute(
+    Year = Year,
+    Population = prettyNum(round(Population,0),big.mark=","),
+    Jobs = prettyNum(round(Jobs,0),big.mark=","),
+    `Employed Residents` = prettyNum(round(`Employed Residents`,0),big.mark=","),
+    `J/ER Ratio` = round(`J/ER Ratio`,2),
+    `Percent Employed Residents` = paste0(round(`Percent Employed Residents`,2),"%"),
+    `Percent Unemployment` = ifelse(is.na(`Percent Unemployment`),"NA",paste0(`Percent Unemployment`,"%"))
+  )
+
+save(pop_jobs_stockton_w_projection, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/pop_jobs_stockton_w_projection.Rdata")
+
+datatable(pop_jobs_stockton_w_projection_table, rownames = FALSE, options = list(pageLength = 13))
+```
+*Table 3. Historical Population and Job counts for Stockton 2010-2017, followed by projections to 2040.*
+
+Stockton's jobs to employed residents ratio trend for 2010-2017 is notable; while it has been higher overall than the County's J/ER ratio this decade, it has been trending slightly downwards where the County's has been trending upwards. One possible explanation would be that Stockton has received an influx of residents who are working outside of Stockton; perhaps such residents have been displaced further from their place of work, and have moved to Stockton where they could find more affordable housing. Further analysis would be necessary to test this explanation and others. It's also important to acknowledge that many good jobs held by Stockton residents may be just outside of official Stockton borders, in the industrial zones and neighboring cities, which still contribute to the local economy; that is why it's useful to look at both the city and county levels. But if this preliminary analysis is indicative of a growing imbalance, then Stockton should focus on aggressive strategies to reverse the trend and bring more quality jobs within its borders. 
+
+To-do: 
+
+- Explore explanations for declining J/ER ratio
+
+```{r}
+ggplot(pop_jobs_stockton_w_projection, aes(x = Year)) + 
+  geom_line(aes(y = `J/ER Ratio`), size=2, colour = "forest green") +
+  geom_vline(aes(xintercept = 2017), color = "dark grey") +
+  annotate("text",label= "Data Available\n", color = "dark grey", x=2017, y=.83, angle = 90, size=4) +
+  annotate("text",label= "\nForecast", color = "dark grey", x=2017, y=.83, angle = 90, size=4) +
+  labs(title = "Stockton, CA")
+```
+*Figure 4. Historical Jobs to Employed Residents Ratio for Stockton 2010-2017, followed by projections to 2040.*
+
+The following graph shows Population, Employed Residents, and Jobs projections to 2040. 
+
+```{r}
+ggplot(pop_jobs_stockton_w_projection, aes(x = Year)) + 
+  geom_line(aes(y = `Employed Residents`, colour = "Employed Residents"), size = 2) +
+  geom_line(aes(y = Jobs, colour = "Jobs"), size = 2) +
+  geom_line(aes(y = Population, colour = "Population"), size = 2) + 
+  geom_vline(aes(xintercept = 2017), color = "dark grey") +
+  annotate("text",label= "Data Available\n", color = "dark grey", x=2017, y=2e05, angle = 90, size=4) +
+  annotate("text",label= "\nForecast", color = "dark grey", x=2017, y=2e05, angle = 90, size=4) +
+  scale_colour_manual(values = c("purple","blue","red")) + 
+  labs(title = "Stockton, CA", y = "Count", colour = "")
+```
+*Figure 5. Historical Population, Employed Residents, and Jobs for Stockton 2010-2017, followed by projections to 2040.*
 
 ## Green Jobs
 
@@ -344,7 +558,7 @@ Specifically, those 333 potential industries were classified into the following 
 - 75 in "Natural resource conservation"
 - 45 in "Environmental compliance, education and training, and public awareness"
 
-The following six tables filter the full QWI dataset to just the BLS-classified sectors, as well as further filtering in these five sub-categories. The top green job sectors span agriculture, building trades, and scientific research.
+The following six tables filter the full Quarterly Workforce Indicators dataset to just the BLS-classified sectors, as well as further filtering in these five sub-categories. The top green job sectors span agriculture, building trades, and scientific research. This analysis is at the County level because the QWI data is only available at that scale.
 
 ```{r}
 green_jobs_classification <- 
@@ -369,9 +583,9 @@ green_jobs_summary <-
   mutate_at(vars("green","green1","green2","green3","green4","green5"), function(x){x/green_jobs_summary$total}) %>% 
   filter(green > 0.5)
 
-green_jobs_sjc_17 <-
+green_jobs_sjc_18 <-
   qwi_sjc %>% 
-  filter(year == 2017, industry %in% green_jobs_summary$naics4digit) %>% 
+  filter(year == 2018, industry %in% green_jobs_summary$naics4digit) %>% 
   arrange(desc(EmpS)) %>% 
   transmute(
     `Green job category` = label, 
@@ -379,14 +593,14 @@ green_jobs_sjc_17 <-
     `Average Earnings` = paste0("$",prettyNum(EarnS,big.mark=","))
   ) 
 
-datatable(green_jobs_sjc_17, rownames = FALSE, options = list(pageLength = 20))
+datatable(green_jobs_sjc_18, rownames = FALSE, options = list(pageLength = 20))
 ```
-*Table 3. Job counts and earnings by NAICS Industry Sector classified by BLS to contain green jobs and services for San Joaquin County 2017.*
+*Table 4. Job counts and earnings by NAICS Industry Sector classified by BLS to contain green jobs and services for San Joaquin County 2018.*
 
 ```{r}
-green1_jobs_sjc_17 <-
+green1_jobs_sjc_18 <-
   qwi_sjc %>% 
-  filter(year == 2017, industry %in% green_jobs_summary[which(green_jobs_summary$green1>0.5),]$naics4digit) %>%
+  filter(year == 2018, industry %in% green_jobs_summary[which(green_jobs_summary$green1>0.5),]$naics4digit) %>%
   arrange(desc(EmpS)) %>% 
   transmute(
     `Green jobs related to Energy from renewable sources` = label, 
@@ -394,14 +608,14 @@ green1_jobs_sjc_17 <-
     `Average Earnings` = paste0("$",prettyNum(EarnS,big.mark=","))
   ) 
 
-datatable(green1_jobs_sjc_17, rownames = FALSE, options = list(pageLength = 20))
+datatable(green1_jobs_sjc_18, rownames = FALSE, options = list(pageLength = 20))
 ```
-*Table 4. Job counts and earnings by NAICS Industry Sector classified by BLS to contain green jobs and services related to "Energy from renewable sources" for San Joaquin County 2017.*
+*Table 5. Job counts and earnings by NAICS Industry Sector classified by BLS to contain green jobs and services related to "Energy from renewable sources" for San Joaquin County 2018.*
 
 ```{r}
-green2_jobs_sjc_17 <-
+green2_jobs_sjc_18 <-
   qwi_sjc %>% 
-  filter(year == 2017, industry %in% green_jobs_summary[which(green_jobs_summary$green2>0.5),]$naics4digit) %>%
+  filter(year == 2018, industry %in% green_jobs_summary[which(green_jobs_summary$green2>0.5),]$naics4digit) %>%
   arrange(desc(EmpS)) %>% 
   transmute(
     `Green jobs related to Energy Efficiency` = label, 
@@ -409,14 +623,14 @@ green2_jobs_sjc_17 <-
     `Average Earnings` = paste0("$",prettyNum(EarnS,big.mark=","))
   ) 
 
-datatable(green2_jobs_sjc_17, rownames = FALSE, options = list(pageLength = 20))
+datatable(green2_jobs_sjc_18, rownames = FALSE, options = list(pageLength = 20))
 ```
-*Table 5. Job counts and earnings by NAICS Industry Sector classified by BLS to contain green jobs and services related to "Energy efficiency" for San Joaquin County 2017.*
+*Table 6. Job counts and earnings by NAICS Industry Sector classified by BLS to contain green jobs and services related to "Energy efficiency" for San Joaquin County 2018.*
 
 ```{r}
-green3_jobs_sjc_17 <-
+green3_jobs_sjc_18 <-
   qwi_sjc %>% 
-  filter(year == 2017, industry %in% green_jobs_summary[which(green_jobs_summary$green3>0.5),]$naics4digit) %>%
+  filter(year == 2018, industry %in% green_jobs_summary[which(green_jobs_summary$green3>0.5),]$naics4digit) %>%
   arrange(desc(EmpS)) %>% 
   transmute(
     `Green jobs related to Pollution reduction and removal, greenhouse gas reduction, and recycling and reuse` = label, 
@@ -424,14 +638,14 @@ green3_jobs_sjc_17 <-
     `Average Earnings` = paste0("$",prettyNum(EarnS,big.mark=","))
   ) 
 
-datatable(green3_jobs_sjc_17, rownames = FALSE, options = list(pageLength = 20))
+datatable(green3_jobs_sjc_18, rownames = FALSE, options = list(pageLength = 20))
 ```
-*Table 6. Job counts and earnings by NAICS Industry Sector classified by BLS to contain green jobs and services related to "Pollution reduction and removal, greenhouse gas reduction, and recycling and reuse" for San Joaquin County 2017.*
+*Table 7. Job counts and earnings by NAICS Industry Sector classified by BLS to contain green jobs and services related to "Pollution reduction and removal, greenhouse gas reduction, and recycling and reuse" for San Joaquin County 2018.*
 
 ```{r}
-green4_jobs_sjc_17 <-
+green4_jobs_sjc_18 <-
   qwi_sjc %>% 
-  filter(year == 2017, industry %in% green_jobs_summary[which(green_jobs_summary$green4>0.5),]$naics4digit) %>%
+  filter(year == 2018, industry %in% green_jobs_summary[which(green_jobs_summary$green4>0.5),]$naics4digit) %>%
   arrange(desc(EmpS)) %>% 
   transmute(
     `Green jobs related to Natural resource conservation` = label, 
@@ -439,14 +653,14 @@ green4_jobs_sjc_17 <-
     `Average Earnings` = paste0("$",prettyNum(EarnS,big.mark=","))
   ) 
 
-datatable(green4_jobs_sjc_17, rownames = FALSE, options = list(pageLength = 20))
+datatable(green4_jobs_sjc_18, rownames = FALSE, options = list(pageLength = 20))
 ```
-*Table 7. Job counts and earnings by NAICS Industry Sector classified by BLS to contain green jobs and services related to "Natural resource conservation" for San Joaquin County 2017.*
+*Table 8. Job counts and earnings by NAICS Industry Sector classified by BLS to contain green jobs and services related to "Natural resource conservation" for San Joaquin County 2018.*
 
 ```{r}
-green5_jobs_sjc_17 <-
+green5_jobs_sjc_18 <-
   qwi_sjc %>% 
-  filter(year == 2017, industry %in% green_jobs_summary[which(green_jobs_summary$green5>0.5),]$naics4digit) %>%
+  filter(year == 2018, industry %in% green_jobs_summary[which(green_jobs_summary$green5>0.5),]$naics4digit) %>%
   arrange(desc(EmpS)) %>% 
   transmute(
     `Green jobs related to Environmental compliance, education and training, and public awareness` = label, 
@@ -454,9 +668,9 @@ green5_jobs_sjc_17 <-
     `Average Earnings` = paste0("$",prettyNum(EarnS,big.mark=","))
   ) 
 
-datatable(green5_jobs_sjc_17, rownames = FALSE, options = list(pageLength = 20))
+datatable(green5_jobs_sjc_18, rownames = FALSE, options = list(pageLength = 20))
 ```
-*Table 8. Job counts and earnings by NAICS Industry Sector classified by BLS to contain green jobs and services related to "Environmental compliance, education and training, and public awareness" for San Joaquin County 2017.*
+*Table 9. Job counts and earnings by NAICS Industry Sector classified by BLS to contain green jobs and services related to "Environmental compliance, education and training, and public awareness" for San Joaquin County 2017.*
 
 To do:
 
@@ -490,35 +704,74 @@ iclei_2005_2016 <-
     `Fugitive Emissions` = Fugitive.Emissions
   )
 
-datatable(iclei_2005_2016, rownames = FALSE, options = list(pageLength = 2))
-```
-*Table 9. Inventory Comparisons Stockton 2005-2016, from ICLEI.*
-
-```{r}
 iclei_2005_2016_plot <-
   iclei_2005_2016 %>% 
   gather(
     key = "Type",
-    value = "CO2e (MT)",
+    value = "tCO2e",
     -Year
   ) %>% 
-  arrange(Year,desc(`CO2e (MT)`))
+  arrange(Year,desc(tCO2e))
 
-ggplot() +
+iclei_2005_2016_table <-
+  iclei_2005_2016 %>% 
+  transmute(
+    Year = Year,
+    Transportation = prettyNum(round(Transportation,0),big.mark = ","),
+    `Solid Waste` = prettyNum(round(`Solid Waste`,0),big.mark = ","),
+    `Water/Wastewater` = prettyNum(round(`Water/Wastewater`,0),big.mark = ","),
+    Agriculture = prettyNum(round(Agriculture,0),big.mark = ","),
+    `Commercial Energy` = prettyNum(round(`Commercial Energy`,0),big.mark = ","),
+    `Industrial Energy` = prettyNum(round(`Industrial Energy`,0),big.mark = ","),
+    `Residential Energy` = prettyNum(round(`Residential Energy`,0),big.mark = ","),
+    `Fugitive Emissions` = prettyNum(round(`Fugitive Emissions`,0),big.mark = ",")
+  )
+
+datatable(iclei_2005_2016_table, rownames = FALSE, options = list(pageLength = 2))
+```
+*Table 10. Inventory Comparisons Stockton 2005-2016, from ICLEI. All units are in tCO2e*
+
+```{r}
+iclei_2005_2016_plot %>% 
+  mutate(
+    Year = factor(
+      as.character(Year), 
+      levels = 
+        c(
+          "2016",
+          "2005"
+        )
+      ),
+    Type = factor(
+      Type,
+      levels = 
+        c(
+          "Transportation",
+          "Solid Waste",
+          "Water/Wastewater",
+          "Agriculture",
+          "Commercial Energy",
+          "Industrial Energy",
+          "Residential Energy",
+          "Fugitive Emissions"
+        )
+    )
+  ) %>% 
+  ggplot() +
   geom_bar(
-    data = iclei_2005_2016_plot,
     aes(
       fill = Type, 
-      x = as.character(Year), 
-      weight = `CO2e (MT)`
+      x = Year, 
+      weight = `tCO2e`
     ),
     position = "stack"
   ) +
   coord_flip() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  labs(title = "GHG Inventory Comparisons for Stockton, 2005-2016", x = "Year", y = "tCO2e")
 					
 ```
-*Figure 3. Inventory Comparisons Stockton 2005-2016, from ICLEI.*
+*Figure 6. Inventory Comparisons Stockton 2005-2016, from ICLEI.*
 
 To-do:
 
@@ -527,9 +780,314 @@ To-do:
 - Normalize by jobs and population
 - Projections
 
+It is not within the scope of this project to formally update the 2016 ICLEI GHG Inventory for 2018, which is best completed by ICLEI or another similar organization. In fact, many of the significant components of ICLEI's formal GHG analysis, like "Water Energy" for example, are simply based off of an interpolation of population changes, given the lack of official data -- in other words, it is similar to what we have already done to project GHGs to 2040. We believe the following three focus areas are essential:
+
+1. Normalization of the emissions by the incremental unit of activity, which is usually population, to understand the baseline rate of GHG emissions per actor. Unless we intend to directly limit the number of actors, these activity emission rates are fundamentally the factors that determine how large Stockton's footprint is. The reduction of activity emissions rates therefore becomes the critical problem to solve, either through behavior change, technology, or other means. We have already normalized overall emission sectors by jobs and population, but to get to the level of concrete green economy strategies, we will need to disaggregate further by specific key activities. The next few sections pursue this goal, focusing on some of the largest emitting activities: passenger vehicle driving and building energy.
+2. Focusing on activity emissions rates also requires having direct measurement data in those same activity sectors to be able to calibrate our rates. For the two sectors we will focus on in the subsequent sections, passenger vehicle driving and building energy, there are fortunately recent public data sources we can use to calibrate our baseline rates, and we can expect these data sources to be available in the future so we can check whether rates have fallen in the ways we will have been hoping for, given our various strategic interventions. Part of our contribution through this project is to prepare scripts that can more easily update measurements in the future as soon as new public data is available, so that feedback can be obtained as efficiently as possible. These scripts also essentially help to update the most significant components of an overall GHG inventory analysis.
+3. Since the availability of direct measurement data is critical to both the updating of GHG inventories and the understanding of the efficacy of our investments, we should also seek to increase the availability of direct measurement data in the sectors in which it is less readily available. These areas include industrial energy consumption (which is often restricted because of the California Public Utilities Commission's 15/15 rule, which means that utilities cannot provide data at aggregations with fewer than 15 customers or one customer greater than 15% of usage), water consumption (given the existence of private water providers), and waste production specific to Stockton residents (given that data is collected at the landfill but isn't disaggregated by truck routes or individual properties). These are all areas with opportunity for novel data sharing agreements to be negotiated by the City (e.g. the [PG&E Green Communities Program](https://www.pge.com/includes/docs/pdfs/mybusiness/environment/whatyoucando/greencommunities/GreenCommunities_SummaryPlanningReports.pdf), which effectively will enlist PG&E to directly complete the 3 steps outlined here for Stockton's building energy sector), and these efforts will improve the overall green economy initiative.
+
+The following table shows a preliminary normalization of the 2005 and 2016 GHG emissions by residents and jobs, using the following allocation:
+
+- Residential Energy and Transportation were allocated entirely to residents
+- Commercial Energy, Agriculture, and Fugitive Emissions were allocated entirely to jobs
+- Solid Waste and Water/Wastewater were distributed proportionally between residents and jobs
+- Industrial Energy was not included, given the significant difference in methodology between 2005 and 2016 as documented by ICLEI
+
+```{r}
+ca_wac_2005 <- 
+  grab_lodes(
+    state = "ca",
+    year = 2005,
+    lodes_type = "wac",
+    job_type = "JT01",
+    segment = "S000",
+    state_part = "main",
+    agg_geo = "bg"
+  )
+
+stockton_jobs_2005 <-
+  stockton_bgs_full %>%
+  geo_join(ca_wac_2005, "GEOID", "w_bg") %>% 
+  pull(C000) %>% 
+  sum(na.rm = TRUE)
+
+iclei_2005_2016_normalized <- 
+  iclei_2005_2016 %>% 
+  transmute(
+    Year = Year,
+    `Total tCO2e` = `Residential Energy` + `Commercial Energy` + Agriculture + `Fugitive Emissions` + `Solid Waste` + `Water/Wastewater` + Transportation,
+    Population = unlist(c(
+      278515,
+      pop_stockton[which(pop_stockton$year == 2016),"PopulationStockton"]
+    )),
+    Jobs = unlist(c(
+      stockton_jobs_2005,
+      jobs_stockton[which(jobs_stockton$year == 2016),"Jobs"]
+    )),
+    PercResident = Population/(Population + Jobs),
+    PercJob = Jobs/(Population + Jobs),
+    `tCO2e per Resident` = (`Residential Energy` + Transportation + PercResident*(`Solid Waste` + `Water/Wastewater`))/Population,
+    `tCO2e per Job` = (`Commercial Energy` + Agriculture + `Fugitive Emissions` + PercJob*(`Solid Waste` + `Water/Wastewater`))/Population
+  ) %>% 
+  select(-PercResident,-PercJob)
+
+iclei_2005_2016_normalized_table <-
+  iclei_2005_2016_normalized %>% 
+  mutate(
+    `Total tCO2e` = prettyNum(round(`Total tCO2e`,0),big.mark = ","),
+    Population = prettyNum(round(Population,0),big.mark = ","),
+    Jobs = prettyNum(round(Jobs,0),big.mark = ","),
+    `tCO2e per Resident` = round(`tCO2e per Resident`,2),
+    `tCO2e per Job` = round(`tCO2e per Job`,2)
+  )
+
+datatable(iclei_2005_2016_normalized_table, rownames = FALSE, options = list(pageLength = 2))
+```
+*Table 11. Inventory Comparisons Stockton 2005-2016, normalized by residents and jobs. Industrial emissions were removed for this table because of the differences in methodology between 2005 and 2016.*
+
+Based on the allocation assumptions, it appears that emissions per resident has decreased by 3.8% between 2005-2016, while emissions per job has decreased by 22.7%. These are both good signs, though there are gaps in the GHG inventories. It is also useful to drill down into the sub-sectors to reveal deeper insights.
+
+## Vehicle Miles Traveled
+
+As seen in the previous section, transportation is the largest single contributor of GHG emissions in Stockton, [as is true for all of California](https://ww2.arb.ca.gov/ghg-inventory-data). Within this sector, passenger vehicle emissions are by far the largest portion, and these are relatively easy to relate to their direct proxy, vehicle miles traveled (VMT), and normalize by drivers to understand current driving behavior. Specifically, commutes (driving to work) are the largest share of passenger vehicle emissions (other driving to/from amenities will be analyzed separately), and we can access data as recent as 2015 to understand commute patterns of Stockton residents to different job destinations in and around SJC. What we find is that VMT is significant, and significantly locked in to the nature of job opportunity in faraway locations like the Bay Area. This means that VMT reduction is a crucial component in any overall green economy strategy, and it can be tackled directly through transportation strategies like public transit and EV deployment, but also indirectly by attracting high-quality jobs to Stockton, which on average will shift workers from faraway jobs to local jobs, thereby reducing VMTs. A comprehensive origin-destination commute analysis, as performed below, helps us quantify total VMTs attributable to commuting as well as model the specific impacts of different direct or indirect VMT reduction strategies.
+
+Our key dataset is from [Longitudinal Employer-Household Dynamics Origin-Destination Employment Statistics](https://lehd.ces.census.gov/data/) (LODES), which can be downloaded by state and is available up to 2017. We isolated every pair of Stockton home blockgroups and work blockgroups and used the [Open Source Routing Machine](http://project-osrm.org/) to compute a distance (in miles) and duration (and hours) for a one-way trip. The following graph shows the distribution of workplaces by distance from home for Stockton residents.
+
+```{r}
+load("C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
+
+ggplot(stockton_lodes_h, aes(x = duration, weight = S000)) +
+  geom_histogram(binwidth = 5) +
+  labs(title = "Workplace Commute Time from Home for Stockton Employed Residents", x = "Commute Time from Home, Minutes", y = "Number of Residents")
+```
+*Figure 7. Distribution of workplaces by distance from home for Stockton employed residents. Data from LODES, 2017.*
+
+Some reported workplaces in LODES are as far away as Los Angeles County (see right side of graph) and are likely data errors (e.g. the company headquarters is in Los Angeles but the actual workplace is much closer, or the employee works from home). Our subsequent analysis focuses on counties with average commute times of less than 3 hours, which eliminates the unrealistic commutes while preserving over 90% of reported commutes.
+
+The LODES dataset also disaggregates jobs by three age groups:
+
+- Number of jobs of workers age 29 or younger
+- Number of jobs for workers age 30 to 54
+- Number of jobs for workers age 55 or older
+
+It also disaggregates jobs by three wage tiers:
+
+- Number of jobs with earnings $1250/month or less
+- Number of jobs with earnings \$1251/month to $3333/month
+- Number of jobs with earnings greater than $3333/month 
+
+It also disaggregates jobs by three broad sectors:
+
+- Number of jobs in Goods Producing industry sectors
+- Number of jobs in Trade, Transportation, and Utilities industry sectors
+- Number of jobs in All Other Services industry sectors
+
+The following table shows the counts of jobs in these subcategories for the top 15 contiguous neighboring counties to Stockton, including SJC.
+
+```{r}
+stockton_lodes_w_counties <- 
+  stockton_lodes_h %>% 
+  mutate(
+    COUNTY = substr(w_bg,3,5), 
+    person_miles = S000*as.numeric(distance)/1.60934, 
+    person_hours = S000*as.numeric(duration)/60
+  ) %>% 
+  group_by(COUNTY) %>% 
+  summarise_at(
+    c("S000","SA01","SA02","SA03","SE01","SE02","SE03","SI01","SI02","SI03","person_miles", "person_hours"), 
+    sum
+  ) %>% 
+  transmute(
+    County = COUNTY,
+    Jobs = S000,
+    `Average Commute Distance, Miles` = person_miles/S000, 
+    `Average Commute Time, Hours` = person_hours/S000, 
+    `Number of jobs of workers age 29 or younger` = SA01,
+    `Number of jobs for workers age 30 to 54` = SA02,
+    `Number of jobs for workers age 55 or older` = SA03,
+    `Number of jobs with earnings $1250/month or less` = SE01,
+    `Number of jobs with earnings $1251/month to $3333/month` = SE02,
+    `Number of jobs with earnings greater than $3333/month` = SE03,
+    `Number of jobs in Goods Producing industry sectors` = SI01,
+    `Number of jobs in Trade, Transportation, and Utilities industry sectors` = SI02,
+    `Number of jobs in All Other Services industry sectors` = SI03) %>% 
+  filter(`Average Commute Time, Hours` < 3) %>% 
+  arrange(desc(Jobs))
+
+ca_counties <- counties("CA", cb = TRUE)
+
+stockton_lodes_w_top_counties <- 
+  ca_counties %>% 
+  dplyr::select(COUNTYFP, NAME) %>% 
+  left_join(stockton_lodes_w_counties[1:15,], by = c("COUNTYFP" = "County")) %>% 
+  filter(!is.na(`Average Commute Time, Hours`)) %>%
+  select(-COUNTYFP) %>% 
+  rename(County = NAME) %>% 
+  arrange(desc(Jobs))
+
+stockton_lodes_w_top_counties_table <- 
+  stockton_lodes_w_top_counties %>% 
+  st_set_geometry(NULL) %>% 
+  mutate(
+    `Average Commute Distance, Miles` = round(`Average Commute Distance, Miles`,2),
+    `Average Commute Time, Hours` = round(`Average Commute Time, Hours`,2)
+  )
+
+datatable(stockton_lodes_w_top_counties_table, rownames = FALSE, options = list(pageLength = 15))
+```
+*Table 12. Top 15 Counties where Stockton Residents Work. Data from LODES, 2017.*
+
+```{r}
+mapview(stockton_lodes_w_top_counties, zcol = "Average Commute Time, Hours", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Average Commute Time, Hours')
+```
+*Figure 8. Top 15 Counties where Stockton Residents Work - Average Commute Time, in Hours. Data from LODES, 2017.*
+
+```{r}
+stockton_lodes_w_top_counties_perc <-
+  stockton_lodes_w_top_counties %>% 
+  mutate(
+    `Percent of jobs of workers age 29 or younger in County` = `Number of jobs of workers age 29 or younger`/Jobs,
+    `Percent of jobs for workers age 30 to 54`=`Number of jobs for workers age 30 to 54`/Jobs,
+    `Percent of jobs for workers age 55 or older`=`Number of jobs for workers age 55 or older`/Jobs,
+    `Percent of jobs with earnings $1250/month or less`=`Number of jobs with earnings $1250/month or less`/Jobs,
+    `Percent of jobs with earnings $1251/month to $3333/month`=`Number of jobs with earnings $1251/month to $3333/month`/Jobs,
+    `Percent of jobs with earnings greater than $3333/month`=`Number of jobs with earnings greater than $3333/month`/Jobs,
+    `Percent of jobs in Goods Producing industry sectors`=`Number of jobs in Goods Producing industry sectors`/Jobs,
+    `Percent of jobs in Trade, Transportation, and Utilities industry sectors`=`Number of jobs in Trade, Transportation, and Utilities industry sectors`/Jobs,
+    `Percent of jobs in All Other Services industry sectors`=`Number of jobs in All Other Services industry sectors`/Jobs
+  )
+
+mapview(stockton_lodes_w_top_counties_perc, zcol = "Percent of jobs of workers age 29 or younger in County", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs of workers age 29 or younger in County')
+```
+*Figure 9. Top 15 Counties where Stockton Residents Work - Percent of jobs of workers age 29 or younger in County. Data from LODES, 2017.*
+
+```{r}
+mapview(stockton_lodes_w_top_counties_perc, zcol = "Percent of jobs with earnings $1250/month or less", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs with earnings $1250/month or less')
+```
+*Figure 10. Top 15 Counties where Stockton Residents Work - Percent of jobs with earnings $1250/month or less. Data from LODES, 2017.*
+
+```{r}
+mapview(stockton_lodes_w_top_counties_perc, zcol = "Percent of jobs with earnings greater than $3333/month", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs with earnings greater than $3333/month')
+```
+*Figure 11. Top 15 Counties where Stockton Residents Work - Percent of jobs with earnings greater than $3333/month. Data from LODES, 2017.*
+
+```{r}
+mapview(stockton_lodes_w_top_counties_perc, zcol = "Percent of jobs in Goods Producing industry sectors", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs in Goods Producing industry sectors')
+```
+*Figure 12. Top 15 Counties where Stockton Residents Work - Percent of jobs in Goods Producing industry sectors. Data from LODES, 2017.*
+
+```{r}
+mapview(stockton_lodes_w_top_counties_perc, zcol = "Percent of jobs in Trade, Transportation, and Utilities industry sectors", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs in Trade, Transportation, and Utilities industry sectors')
+```
+*Figure 13. Top 15 Counties where Stockton Residents Work - Percent of jobs in Trade, Transportation, and Utilities industry sectors. Data from LODES, 2017.*
+
+```{r}
+mapview(stockton_lodes_w_top_counties_perc, zcol = "Percent of jobs in All Other Services industry sectors", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs in All Other Services industry sectors')
+```
+*Figure 14. Top 15 Counties where Stockton Residents Work - Percent of jobs in All Other Services industry sectors. Data from LODES, 2017.*
+
+To-do: Detailed job types
+
+```{r}
+stockton_lodes_h_join_wac <- 
+  stockton_lodes_h %>% 
+  select(-c(year,state)) %>% 
+  left_join(ca_wac, by = "w_bg")
+
+stockton_lodes_h_join_wac_normalize <-
+  stockton_lodes_h_join_wac %>% 
+  mutate(
+    goodsproducing = CNS01+CNS02+CNS04+CNS05,
+    tradetransportutil = CNS03+CNS06+CNS07+CNS08,
+    services = CNS09+CNS10+CNS11+CNS12+CNS13+CNS14+CNS15+CNS16+CNS17+CNS18+CNS19+CNS20
+  ) %>% 
+  mutate_at(
+    .vars = vars(CNS01,CNS02,CNS04,CNS05),
+    .funs = list(~ SI01*./goodsproducing)
+  ) %>% 
+  mutate_at(
+    .vars = vars(CNS03,CNS06,CNS07,CNS08),
+    .funs = list(~ SI02*./tradetransportutil)
+  ) %>%
+  mutate_at(
+    .vars = vars(CNS09:CNS20),
+    .funs = list(~ SI03*./services)
+  ) %>% 
+  select(-c(SA01:SA03,C000:CE03,CR01:CFS05),SE01,SE02,SE03) %>% 
+  mutate(low=SE01,mid=SE02,high=SE03) %>% 
+  gather(key = "type", value, low:high) %>% 
+  mutate_at(
+    .vars = vars(CNS01:CNS20),
+    .funs = list(~ ./S000*value)
+  ) %>% 
+  gather(key = "type2", value2, CNS01:CNS20) %>% 
+  unite(temp,type,type2) %>% 
+  spread(temp,value2) %>% 
+  filter(value > 0) %>% 
+  select(-value)
+
+stockton_lodes_w_counties_detail<-
+  stockton_lodes_h_join_wac_normalize %>%
+  mutate(
+    COUNTY = substr(w_bg,3,5),
+    person_miles = S000*as.numeric(distance)/1.60934,
+    person_hours = S000*as.numeric(duration)/60
+  ) %>%
+  group_by(COUNTY) %>%
+  summarise_at(
+    vars(S000,SE01,SE02,SE03,person_miles,person_hours,high_CNS01:mid_CNS20),
+    sum, na.rm=T
+  ) %>%
+  mutate_at(
+    .vars = vars(person_miles:mid_CNS20),
+    .funs = list(~ round(.,0))
+  )
+```
+
+```{r}
+stockton_lodes_w_counties_ghg <- 
+  stockton_lodes_w_top_counties %>%
+  mutate(
+    person_miles_rm_excessive = ifelse(
+      `Average Commute Time, Hours` < 3,
+      `Average Commute Distance, Miles`*Jobs,
+      0
+    ),
+    `Percent VMT` = person_miles_rm_excessive/sum(person_miles_rm_excessive,na.rm = TRUE),
+    `GHG Annual` = (person_miles_rm_excessive*0.82*2+person_miles_rm_excessive*.116/2*2)*369.39*0.00035812,
+    `Percent GHG` = `GHG Annual`/sum(`GHG Annual`),
+    `Average GHG` = `GHG Annual`/Jobs
+  )
+
+stockton_lodes_w_top_counties_ghg_table <- 
+  stockton_lodes_w_counties_ghg %>% 
+  st_set_geometry(NULL) %>% 
+  transmute(
+    County = County,
+    Jobs = Jobs,
+    `Percent VMT` = round(`Percent VMT`,2),
+    `GHG Annual` = round(`GHG Annual`,0),
+    `Percent GHG` = round(`Percent GHG`,2),
+    `Average GHG` = round(`Average GHG`,2)
+  ) 
+
+datatable(stockton_lodes_w_top_counties_ghg_table, rownames = FALSE, options = list(pageLength = 15))
+```
+*Table 13. Top 15 Counties where Stockton Residents Work, Greenhouse Gas Emissions. Data from LODES, 2017.*
+
+```{r}
+mapview(stockton_lodes_w_counties_ghg, zcol = "Average GHG", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Average GHG')
+```
+*Figure 15. Top 15 Counties where Stockton Residents Work - Average GHG Emissions from Driving per Worker. Data from LODES, 2017.*
+
+```{r}
+mapview(stockton_lodes_w_counties_ghg, zcol = "GHG Annual", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'GHG Annual')
+```
+*Figure 16. Top 15 Counties where Stockton Residents Work - Annual GHG Emissions from Driving. Data from LODES, 2017.*
+
 ## Energy
 
-```{r, warning=FALSE, message=FALSE, error=FALSE, results=FALSE, fig.keep='all'}
+```{r}
 #next few steps are for PG&E analysis. first getting zip code tabulation areas, treating those as roughly the sam as zip codes, and then using them to pair PG&E zip code energy data with zip code level building summaries.
 
 zcta <- zctas(starts_with="95") %>% 
@@ -539,7 +1097,7 @@ zcta <- zctas(starts_with="95") %>%
 stockton_boundary <- places("CA") %>% 
   filter(NAME == "Stockton")
 
-stockton_boundary_influence <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/SpheresOfInfluence/SpheresOfInfluence.shp") %>% 
+stockton_boundary_influence <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/SpheresOfInfluence/SpheresOfInfluence.shp", quiet = TRUE) %>% 
   filter(SPHERE == "STOCKTON") %>% 
   st_transform(st_crs(zcta)) #stockton boundary is legit but really spotty, so i prefer using sphere of influence from the County GIS page.
 
@@ -581,20 +1139,20 @@ pge_stockton <- do.call(rbind,lapply(2013:2018,function(year){
         filter(ZIPCODE %in% zcta_stockton$ZIPCODE) %>% 
         group_by(ZIPCODE, CUSTOMERCLASS) %>% 
         summarize(TOTALKBTU = ifelse(type == "Electric",sum(TOTALKWH)*3.4121416331,sum(TOTALTHM)*99.9761), 
-                  TOTALMTCO2 = ifelse(type == "Electric",sum(TOTALKWH)*factor/1000*0.000453592,sum(TOTALTHM)*0.00531), 
+                  TOTALTCO2E = ifelse(type == "Electric",sum(TOTALKWH)*factor/1000*0.000453592,sum(TOTALTHM)*0.00531), 
                   TOTALCUSTOMERS = sum(TOTALCUSTOMERS)) %>%  
-        dplyr::select(ZIPCODE, CUSTOMERCLASS, TOTALKBTU, TOTALMTCO2, TOTALCUSTOMERS) # note the numbers here are mostly unit conversions. 
+        dplyr::select(ZIPCODE, CUSTOMERCLASS, TOTALKBTU, TOTALTCO2E, TOTALCUSTOMERS) # note the numbers here are mostly unit conversions. 
       
     }))
     
   })) %>% 
     group_by(ZIPCODE, CUSTOMERCLASS) %>% 
     summarize(TOTALKBTU = sum(TOTALKBTU), 
-              TOTALMTCO2 = sum(TOTALMTCO2), 
+              TOTALTCO2E = sum(TOTALTCO2E), 
               TOTALCUSTOMERS = sum(TOTALCUSTOMERS)) %>%  
     mutate(YEAR = year, 
            KBTUPERCUST = TOTALKBTU/TOTALCUSTOMERS, 
-           MTCO2PERCUST = TOTALMTCO2/TOTALCUSTOMERS,
+           TCO2EPERCUST = TOTALTCO2E/TOTALCUSTOMERS,
            CUSTOMERCLASS = ifelse(CUSTOMERCLASS == "Elec- Residential","ER",ifelse(CUSTOMERCLASS == "Gas- Residential","GR",ifelse(CUSTOMERCLASS == "Elec- Commercial","EC",ifelse(CUSTOMERCLASS == "Elec- Industrial","EI",ifelse(CUSTOMERCLASS == "Elec- Agricultural","EA","GC"))))))
   
 }))
@@ -602,22 +1160,22 @@ pge_stockton <- do.call(rbind,lapply(2013:2018,function(year){
 
 
 #the next two lines are just to create a summary graph showing electricity vs. gas over the years. this was an earlier analysis. 
-summary_mtco2_average <- pge_stockton %>% 
+summary_TCO2E_average <- pge_stockton %>% 
   filter(!(CUSTOMERCLASS %in% c("Elec- Industrial","Elec- Agricultural"))) %>% 
   mutate(ENERGYTYPE = substr(CUSTOMERCLASS,1,1)) %>% 
   group_by(ENERGYTYPE, YEAR) %>% 
-  summarize(annual_average = sum(TOTALMTCO2)/sum(TOTALCUSTOMERS)*12)
+  summarize(annual_average = sum(TOTALTCO2E)/sum(TOTALCUSTOMERS)*12)
 
-ggplot(summary_mtco2_average, aes(as.factor(YEAR), annual_average)) + 
+ggplot(summary_TCO2E_average, aes(as.factor(YEAR), annual_average)) + 
   geom_bar(stat = "identity", aes(fill = ENERGYTYPE), position = "dodge") + 
-  labs(x = "Year", y = "MTCO2e/customer", title = "PG&E Territory Annual Energy Usage, 2013 to 2018") + 
+  labs(x = "Year", y = "tCO2e/customer", title = "PG&E Territory Annual Energy Usage, 2013 to 2018") + 
   scale_fill_discrete(name="Energy Type",labels = c("Electricity","Gas"))
 ```
 
 ## Buildings
 
-```{r, warning=FALSE, message=FALSE, results = FALSE, error=FALSE, fig.show='asis'}
-#here's the newer tidyverse work to better disaggregate energy type (gas vs. electric), class (residential vs. commercial), and output (kbtu vs. mtco2), in every potential meaningful combination. the use of gather/unite/spread is to turn individual outputs of kbtu, mtco2, kbtu/cust, mtco2/cust for every combination of type and class into separate "wide" columns which helps for easy leaflet mapping later on. however i don't have lots of familiarity with best practice here so if the next few steps can be achieved much more elegantly, please make changes!
+```{r}
+#here's the newer tidyverse work to better disaggregate energy type (gas vs. electric), class (residential vs. commercial), and output (kbtu vs. TCO2E), in every potential meaningful combination. the use of gather/unite/spread is to turn individual outputs of kbtu, TCO2E, kbtu/cust, TCO2E/cust for every combination of type and class into separate "wide" columns which helps for easy leaflet mapping later on. however i don't have lots of familiarity with best practice here so if the next few steps can be achieved much more elegantly, please make changes!
 
 #note at this point i've been mostly removing industrial because it's "compromised" by having a lot of missing data because of privacy rules, and agricultural because it's a more negligible amount unrelated to our work. if we were to get better PG&E industrial data, then we'd want to include it as a meaningful category in the subsequent steps.
 #only viewing one year at a time, in this case 2016. there could have been even further disaggregation by year but then there'd be hundreds of columns.
@@ -626,7 +1184,7 @@ pge_stockton_filtered <- pge_stockton %>%
   select(-YEAR)
 
 zips_spread <- pge_stockton_filtered %>% 
-  gather(key = "type", value, TOTALKBTU:MTCO2PERCUST) %>% 
+  gather(key = "type", value, TOTALKBTU:TCO2EPERCUST) %>% 
   unite(temp,CUSTOMERCLASS,type) %>% 
   spread(temp,value) 
 
@@ -636,11 +1194,11 @@ zips_spread_2 <- pge_stockton_filtered %>%
   select(-CUSTOMERCLASS) %>% 
   group_by(ZIPCODE, ENERGYTYPE) %>% 
   summarise(TOTALKBTU = sum(TOTALKBTU),
-            TOTALMTCO2 = sum(TOTALMTCO2),
+            TOTALTCO2E = sum(TOTALTCO2E),
             TOTALCUSTOMERS = sum(TOTALCUSTOMERS)) %>% 
   mutate(KBTUPERCUST = TOTALKBTU/TOTALCUSTOMERS,
-         MTCO2PERCUST = TOTALMTCO2/TOTALCUSTOMERS) %>% 
-  gather(key = "type", value, TOTALKBTU:MTCO2PERCUST) %>% 
+         TCO2EPERCUST = TOTALTCO2E/TOTALCUSTOMERS) %>% 
+  gather(key = "type", value, TOTALKBTU:TCO2EPERCUST) %>% 
   unite(temp,ENERGYTYPE,type) %>% 
   spread(temp,value)
 
@@ -650,19 +1208,19 @@ zips_spread_3 <- pge_stockton_filtered %>%
   select(-CUSTOMERCLASS) %>% 
   group_by(ZIPCODE, SECTOR) %>% 
   summarise(TOTALKBTU = sum(TOTALKBTU),
-            TOTALMTCO2 = sum(TOTALMTCO2),
+            TOTALTCO2E = sum(TOTALTCO2E),
             TOTALCUSTOMERS = max(TOTALCUSTOMERS)) %>% 
   mutate(KBTUPERCUST = TOTALKBTU/TOTALCUSTOMERS,
-         MTCO2PERCUST = TOTALMTCO2/TOTALCUSTOMERS) %>% 
-  gather(key = "type", value, TOTALKBTU:MTCO2PERCUST) %>% 
+         TCO2EPERCUST = TOTALTCO2E/TOTALCUSTOMERS) %>% 
+  gather(key = "type", value, TOTALKBTU:TCO2EPERCUST) %>% 
   unite(temp,SECTOR,type) %>% 
   spread(temp,value)
 
-#the final step here is to get the actual total totals for kbtu and mtco2 indicators, and then join all the "subtotals" from the previous 3 spreads.
-zips_mtco2_total <- pge_stockton_filtered %>% 
+#the final step here is to get the actual total totals for kbtu and TCO2E indicators, and then join all the "subtotals" from the previous 3 spreads.
+zips_TCO2E_total <- pge_stockton_filtered %>% 
   group_by(ZIPCODE) %>% 
   summarize(TOTALKBTU = sum(TOTALKBTU), 
-            TOTALMTCO2 = sum(TOTALMTCO2)) %>% 
+            TOTALTCO2E = sum(TOTALTCO2E)) %>% 
   left_join(zips_spread_3, by = "ZIPCODE") %>% 
   mutate(TOTALCUSTOMERS = R_TOTALCUSTOMERS + C_TOTALCUSTOMERS) %>% 
   left_join(zips_spread_2, by = "ZIPCODE") %>% 
@@ -670,7 +1228,7 @@ zips_mtco2_total <- pge_stockton_filtered %>%
 
 #join this massive summary back to the zcta geometries
 zcta_stockton_joined <- zcta_stockton %>% 
-  left_join(zips_mtco2_total, by="ZIPCODE")
+  left_join(zips_TCO2E_total, by="ZIPCODE")
 
 #below I've brought in all the code from stockton_bldg.R, but it can all be skipped by going to the load() of stockton_bldg.Rdata at the bottom. Kevin, whatever refinements you've made, go ahead and make them here.
 
@@ -684,7 +1242,7 @@ stockton_boundary_influence %<>%
 
 stockton_bldg <- sjc_bldg[which(sjc_bldg$id %in% st_centroid(sjc_bldg)[stockton_boundary_influence,]$id),]
 
-sjc_parcels <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Parcels/Parcels.shp") %>% 
+sjc_parcels <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Parcels/Parcels.shp", quiet = TRUE) %>% 
   st_transform(st_crs(4326))
 
 sjc_parcels_valid <- st_make_valid(sjc_parcels)
@@ -696,10 +1254,10 @@ bldg_parcel_join <- st_join(st_centroid(stockton_bldg), stockton_parcels) %>%
   rename(area = STAREA__) %>% 
   st_set_geometry(NULL)
 
-sjc_zoning <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Zoning/Zoning.shp") %>% st_transform(st_crs(4326)) %>% 
+sjc_zoning <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Zoning/Zoning.shp", quiet = TRUE) %>% st_transform(st_crs(4326)) %>% 
   filter(ZNLABEL != "STOCKTON")
 
-stockton_zoning <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Stockton_Zoning/Zoning.shp") %>% 
+stockton_zoning <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Stockton_Zoning/Zoning.shp", quiet = TRUE) %>% 
   st_transform(st_crs(4326))
 
 bldg_zoning_join <- st_join(st_centroid(stockton_bldg), stockton_zoning) %>% 
@@ -785,24 +1343,24 @@ zcta_bldg_stockton_joined <- zcta_stockton_joined %>%
          E_KBTUperSQFT = E_TOTALKBTU/TOTSQFT, 
          G_KBTUperSQFT = G_TOTALKBTU/TOTSQFT, 
          KBTUperSQFT = TOTALKBTU/TOTSQFT,
-         ER_MTCO2perSQFT = ER_TOTALMTCO2/R_TOTSQFT, 
-         GR_MTCO2perSQFT = GR_TOTALMTCO2/R_TOTSQFT, 
-         EC_MTCO2perSQFT = EC_TOTALMTCO2/C_TOTSQFT, 
-         GC_MTCO2perSQFT = GC_TOTALMTCO2/C_TOTSQFT, 
-         R_MTCO2perSQFT = R_TOTALMTCO2/R_TOTSQFT, 
-         C_MTCO2perSQFT = C_TOTALMTCO2/C_TOTSQFT, 
-         E_MTCO2perSQFT = E_TOTALMTCO2/TOTSQFT, 
-         G_MTCO2perSQFT = G_TOTALMTCO2/TOTSQFT, 
-         MTCO2perSQFT = TOTALMTCO2/TOTSQFT)
+         ER_TCO2EperSQFT = ER_TOTALTCO2E/R_TOTSQFT, 
+         GR_TCO2EperSQFT = GR_TOTALTCO2E/R_TOTSQFT, 
+         EC_TCO2EperSQFT = EC_TOTALTCO2E/C_TOTSQFT, 
+         GC_TCO2EperSQFT = GC_TOTALTCO2E/C_TOTSQFT, 
+         R_TCO2EperSQFT = R_TOTALTCO2E/R_TOTSQFT, 
+         C_TCO2EperSQFT = C_TOTALTCO2E/C_TOTSQFT, 
+         E_TCO2EperSQFT = E_TOTALTCO2E/TOTSQFT, 
+         G_TCO2EperSQFT = G_TOTALTCO2E/TOTSQFT, 
+         TCO2EperSQFT = TOTALTCO2E/TOTSQFT)
 
-mapview(zcta_bldg_stockton_joined, zcol= c("ER_MTCO2perSQFT", "GR_MTCO2perSQFT", "EC_MTCO2perSQFT", "GC_MTCO2perSQFT", "R_MTCO2perSQFT","C_MTCO2perSQFT","E_MTCO2perSQFT","G_MTCO2perSQFT","MTCO2perSQFT"), map.types = c("OpenStreetMap"), legend = TRUE, hide = TRUE)
+mapview(zcta_bldg_stockton_joined, zcol= c("ER_TCO2EperSQFT", "GR_TCO2EperSQFT", "EC_TCO2EperSQFT", "GC_TCO2EperSQFT", "R_TCO2EperSQFT","C_TCO2EperSQFT","E_TCO2EperSQFT","G_TCO2EperSQFT","TCO2EperSQFT"), map.types = c("OpenStreetMap"), legend = TRUE, hide = TRUE)
 ```
 
-```{r, warning=FALSE, message=FALSE, error=FALSE, results=FALSE,fig.keep='all'}
+```{r}
 zcta_bldg_stockton_summary <- 
   zcta_bldg_stockton_joined %>% 
   st_set_geometry(NULL) %>% 
-  summarise_at(c("NUMBLDG", "R_NUMBLDG", "C_NUMBLDG","TOTSQFTGROUND","TOTSQFT","R_TOTSQFT","C_TOTSQFT","R_TOTSQFTGROUND","C_TOTSQFTGROUND","TOTALKBTU","E_TOTALKBTU","G_TOTALKBTU","R_TOTALKBTU","C_TOTALKBTU", "ER_TOTALKBTU", "GR_TOTALKBTU", "EC_TOTALKBTU", "GC_TOTALKBTU", "TOTALMTCO2", "E_TOTALMTCO2", "G_TOTALMTCO2", "R_TOTALMTCO2", "C_TOTALMTCO2", "ER_TOTALMTCO2", "GR_TOTALMTCO2", "EC_TOTALMTCO2", "GC_TOTALMTCO2"), sum) %>% 
+  summarise_at(c("NUMBLDG", "R_NUMBLDG", "C_NUMBLDG","TOTSQFTGROUND","TOTSQFT","R_TOTSQFT","C_TOTSQFT","R_TOTSQFTGROUND","C_TOTSQFTGROUND","TOTALKBTU","E_TOTALKBTU","G_TOTALKBTU","R_TOTALKBTU","C_TOTALKBTU", "ER_TOTALKBTU", "GR_TOTALKBTU", "EC_TOTALKBTU", "GC_TOTALKBTU", "TOTALTCO2E", "E_TOTALTCO2E", "G_TOTALTCO2E", "R_TOTALTCO2E", "C_TOTALTCO2E", "ER_TOTALTCO2E", "GR_TOTALTCO2E", "EC_TOTALTCO2E", "GC_TOTALTCO2E"), sum) %>% 
   mutate(ER_KBTUperSQFT = ER_TOTALKBTU/R_TOTSQFT, 
          GR_KBTUperSQFT = GR_TOTALKBTU/R_TOTSQFT, 
          EC_KBTUperSQFT = EC_TOTALKBTU/C_TOTSQFT, 
@@ -812,86 +1370,17 @@ zcta_bldg_stockton_summary <-
          E_KBTUperSQFT = E_TOTALKBTU/TOTSQFT, 
          G_KBTUperSQFT = G_TOTALKBTU/TOTSQFT, 
          KBTUperSQFT = TOTALKBTU/TOTSQFT,
-         ER_MTCO2perSQFT = ER_TOTALMTCO2/R_TOTSQFT, 
-         GR_MTCO2perSQFT = GR_TOTALMTCO2/R_TOTSQFT, 
-         EC_MTCO2perSQFT = EC_TOTALMTCO2/C_TOTSQFT, 
-         GC_MTCO2perSQFT = GC_TOTALMTCO2/C_TOTSQFT, 
-         R_MTCO2perSQFT = R_TOTALMTCO2/R_TOTSQFT, 
-         C_MTCO2perSQFT = C_TOTALMTCO2/C_TOTSQFT, 
-         E_MTCO2perSQFT = E_TOTALMTCO2/TOTSQFT, 
-         G_MTCO2perSQFT = G_TOTALMTCO2/TOTSQFT, 
-         MTCO2perSQFT = TOTALMTCO2/TOTSQFT)
+         ER_TCO2EperSQFT = ER_TOTALTCO2E/R_TOTSQFT, 
+         GR_TCO2EperSQFT = GR_TOTALTCO2E/R_TOTSQFT, 
+         EC_TCO2EperSQFT = EC_TOTALTCO2E/C_TOTSQFT, 
+         GC_TCO2EperSQFT = GC_TOTALTCO2E/C_TOTSQFT, 
+         R_TCO2EperSQFT = R_TOTALTCO2E/R_TOTSQFT, 
+         C_TCO2EperSQFT = C_TOTALTCO2E/C_TOTSQFT, 
+         E_TCO2EperSQFT = E_TOTALTCO2E/TOTSQFT, 
+         G_TCO2EperSQFT = G_TOTALTCO2E/TOTSQFT, 
+         TCO2EperSQFT = TOTALTCO2E/TOTSQFT)
 
 # datatable(zcta_bldg_stockton_summary, rownames = FALSE, options = list(pageLength = 20))
-```
-
-## Vehicle Miles Traveled
-
-```{r, echo=FALSE, warning=FALSE, message=FALSE, results=FALSE, error=FALSE, fig.show='asis'}
-load("C:\\Users\\Derek Ouyang\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
-
-stockton_lodes_w_counties <- 
-  stockton_lodes_h %>% 
-  mutate(
-    COUNTY = substr(w_bg,3,5), 
-    person_miles = S000*as.numeric(distance)/1.60934, 
-    person_hours = S000*as.numeric(duration)/60
-  ) %>% 
-  group_by(COUNTY) %>% 
-  summarise_at(
-    c("S000","SA01","SA02","SA03","SE01","SE02","SE03","SI01","SI02","SI03","person_miles", "person_hours"), 
-    sum
-  ) %>% 
-  mutate(
-    avg_distance = person_miles/S000, 
-    avg_duration = person_hours/S000, 
-    person_miles_rm_excessive = ifelse(
-      avg_duration < 3, 
-      person_miles, 
-      0
-    ), 
-    `Percent Low Wage Jobs in County` = SE01/S000, 
-    `Percent Low Wage Jobs Overall` = SE01/sum(SE01,na.rm = TRUE), 
-    `Percent High Wage Jobs in County` = SE03/S000, 
-    `Percent High Wage Jobs Overall` = SE03/sum(SE03,na.rm = TRUE),
-    `Percent Goods Jobs in County` = SI01/S000, 
-    `Percent Goods Jobs Overall` = SI01/sum(SI01,na.rm = TRUE), 
-    `Percent Trade Transport Utility Jobs in County` = SI02/S000, 
-    `Percent Trade Transport Utility Jobs Overall` = SI02/sum(SI02,na.rm = TRUE), 
-    `Percent Service Jobs in County` = SI03/S000, 
-    `Percent Service Jobs Overall` = SI03/sum(SI03,na.rm = TRUE), 
-    `Percent Total Jobs` = S000/sum(S000,na.rm = TRUE), 
-    `Percent VMT` = person_miles_rm_excessive/sum(person_miles_rm_excessive,na.rm = TRUE),
-    `GHG Annual` = (person_miles_rm_excessive*0.82*2+person_miles_rm_excessive*.116/2*2)*369.39*0.00035812, 
-    `Percent GHG` = `GHG Annual`/sum(`GHG Annual`), 
-    `Average GHG` = `GHG Annual`/S000
-  ) %>% 
-  rename(
-    Jobs = S000,
-    `Number of jobs of workers age 29 or younger` = SA01,
-    `Number of jobs for workers age 30 to 54` = SA02,
-    `Number of jobs for workers age 55 or older` = SA03,
-    `Number of jobs with earnings $1250/month or less` = SE01,
-    `Number of jobs with earnings $1251/month to $3333/month` = SE02,
-    `Number of jobs with earnings greater than $3333/month` = SE03,
-    `Number of jobs in Goods Producing industry sectors` = SI01,
-    `Number of jobs in Trade, Transportation, and Utilities industry sectors` = SI02,
-    `Number of jobs in All Other Services industry sectors` = SI03,
-    `Average Distance` = avg_distance)
-
-ca_counties <- counties("CA", cb = TRUE)
-
-stockton_lodes_w_counties <- 
-  ca_counties %>% 
-  dplyr::select(COUNTYFP, NAME) %>% 
-  left_join(stockton_lodes_w_counties, by = c("COUNTYFP" = "COUNTY")) %>% 
-  arrange(desc(Jobs)) %>% 
-  select(-COUNTYFP)
-
-stockton_lodes_w_top_counties <-
-  stockton_lodes_w_counties[1:8,]
-
-mapview(stockton_lodes_w_top_counties, burst = TRUE, map.types = c("OpenStreetMap"), legend = TRUE, hide = TRUE)
 ```
 
 
