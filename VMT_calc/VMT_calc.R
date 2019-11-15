@@ -107,7 +107,7 @@ osrmTable_Stockton_VMT <- do.call(rbind, lapply( 1:nrow(safegraphplaces), functi
   
 }))
 
-saveRDS(osrmTable_Stockton_VMT, "C:/Users/Derek/Desktop/osrmTable_Stockton_VMT")
+save(osrmTable_Stockton_VMT, file = "S:/CCF/OD_VMT_df/osrm_Stockton_VMT.RData")
 
 ##########
 
