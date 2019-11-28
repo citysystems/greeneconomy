@@ -1269,6 +1269,17 @@ While LODES origin-destination data doesn't provide job types at a granularity l
 The percentages in the table below should be interpreted as the % of overall jobs of that industry sector and wage tier that are based in San Joaquin County (the remainder being based in other counties). Particularly notable here are the low-percentage estimates of high-wage jobs in sectors generally related to the "knowledge economy": Finance and Insurance (38%), Information (28%), and Professional, Scientific, and Technical Services (19%). Also notable is the low percentage of high-wage jobs in Construction (35%), which may include specialized building trades such as solar installation. These percentages are relative to an overall 64% of high-wage jobs being based in SJC, which suggests that the best jobs in these notable industries are significantly underrepresented in the local economy.
 
 ```{r}
+ca_wac <- 
+  grab_lodes(
+    state = "ca", 
+    year = 2017, 
+    lodes_type = "wac", 
+    job_type = "JT01", 
+    segment = "S000", 
+    state_part = "main", 
+    agg_geo = "bg"
+  )
+
 stockton_lodes_h_join_wac <- 
   stockton_lodes_h_filter %>% 
   select(-c(year,state)) %>% 
@@ -1497,7 +1508,7 @@ stockton_lodes_h_counties_ghg_map <-
       Jobs = prettyNum(jobs,big.mark=","),
       `Percent Jobs` = round(perc_jobs,2),
       VMT = prettyNum(round(vmt,0),big.mark=","),
-      `Total Annual GHG (tCO2e)` = prettyNum(round(ghg,0),big.mark=","),
+      `Total Annual GHG (tCO2e)` = prettyNum(round(annual_ghg,0),big.mark=","),
     `Percent Annual GHG` = round(perc_ghg,2),
     `Average Annual GHG/worker (tCO2e)` = round(avg_ghg,2)
       )
@@ -2012,7 +2023,7 @@ The following table shows projections of electricity and gas usage
 
 #note at this point i've been mostly removing industrial because it's "compromised" by having a lot of missing data because of privacy rules, and agricultural because it's a more negligible amount unrelated to our work. if we were to get better PG&E industrial data, then we'd want to include it as a meaningful category in the subsequent steps.
 #only viewing one year at a time, in this case 2016. there could have been even further disaggregation by year but then there'd be hundreds of columns.
-pge_stockton_filtered <- pge_stockton %>% 
+pge_stockton_filtered <- pge_data %>% 
   filter(!CUSTOMERCLASS %in% c("EI","EA") & (YEAR == 2016)) %>%
   select(-YEAR)
 
