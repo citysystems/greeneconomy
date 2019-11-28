@@ -759,23 +759,6 @@ stockton_lodes_dest_centroids <-
 stockton_lodes_dest_bg <- 
   ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),]
 
-# below is an alternate method of creating an OD matrix using a specific function in the osrm package, but it's less useful because it doesn't include distance as an output. the osrmRoute below it take longer but it gets both duration and distance.
-
-# od_matrix <- do.call(cbind,lapply(1:56,function(x){
-#   rbind(osrmTable(src = stockton_lodes_origin_centroids[1:100,],
-#                        dst = stockton_lodes_dest_centroids[(x*100-99):(x*100),])$durations,
-#                    osrmTable(src = stockton_lodes_origin_centroids[101:161,],
-#                              dst = stockton_lodes_dest_centroids[(x*100-99):(x*100),])$durations)}))
-# od_matrix <- cbind(od_matrix,
-#                    rbind(osrmTable(src = stockton_lodes_origin_centroids[1:100,],
-#                                    dst = stockton_lodes_dest_centroids[5601:5691,])$durations,
-#                    osrmTable(src = stockton_lodes_origin_centroids[101:161,],
-#                              dst = stockton_lodes_dest_centroids[5601:5691,])$durations))
-# 
-# stockton_lodes_h$duration <- lapply(1:nrow(stockton_lodes_h),function(row){
-#   od_matrix[which(stockton_lodes_origin_centroids$GEOID %in% stockton_lodes_h[row,"h_bg"]), which(stockton_lodes_dest_centroids$GEOID %in% stockton_lodes_h[row,"w_bg"])]
-
-# 1:nrow(stockton_lodes_h)
 
 timer <- proc.time()
 prep <- 
@@ -965,8 +948,8 @@ m1
 
 write_csv(stockton_lodes_w_counties, "C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes_w_counties.csv")
 
-save(stockton_lodes_w, stockton_lodes_h, stockton_rac, ca_wac, stockton_wac, stockton_lodes_w_counties, stockton_lodes_w_counties_filter, stockton_lodes_w_top_counties, prep, file = "C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
-load("C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.R")
+save(stockton_lodes_w, stockton_lodes_h, stockton_rac, ca_wac, stockton_wac, stockton_lodes_w_counties, stockton_lodes_w_counties_filter, stockton_lodes_w_top_counties, prep, file = "C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.Rdata")
+load("C:\\Users\\derek\\Google Drive\\City Systems\\Stockton Green Economy\\LODES\\stockton_lodes.Rdata")
 
 stockton_bgs <- stockton_bgs %>% geo_join(stockton_lodes_summary, "GEOID", "h_bg") 
 
@@ -996,7 +979,7 @@ plot(stockton_rac["perc_low_wage"])
 stockton_lodes_dest_convert <- stockton_lodes_dest_bg %>% geo_join(stockton_lodes_h, "GEOID", "w_bg") %>% st_set_geometry(NULL) %>% group_by(COUNTYFP) %>% summarize(jobs = sum(S000))
 stockton_lodes_dest_county <- 
   
-mapview(stockton_boundary, alpha.regions = 0, lwd = 2) +
+  mapview(stockton_boundary, alpha.regions = 0, lwd = 2) +
   mapview(stockton_lodes_dest_bg, zcol='S000')
 
 
@@ -1017,18 +1000,18 @@ mapview(stockton_boundary, alpha.regions = 0, lwd = 2) +
 #the rest is old stuff i'm not using anymore.
 
 qwi_2005 <- getCensus(name = "timeseries/qwi/sa",
-            region = "county:077",
-            regionin = "state:06",
-            vars = c("EmpS","EarnS","industry"),
-            time = "2005") 
+                      region = "county:077",
+                      regionin = "state:06",
+                      vars = c("EmpS","EarnS","industry"),
+                      time = "2005") 
 
 jobs_2005 <- qwi_2005 %>% mutate(year = substr(time,1,4), Emp = as.numeric(Emp)) %>% group_by(year) %>% summarise(Emp = sum(Emp))
 
 qwi_2016 <- getCensus(name = "timeseries/qwi/sa",
-                       region = "county:077",
-                       regionin = "state:06",
-                       vars = c("Emp"),
-                       time = "2016")
+                      region = "county:077",
+                      regionin = "state:06",
+                      vars = c("Emp"),
+                      time = "2016")
 
 jobs_2016 <- qwi_2016 %>% mutate(year = substr(time,1,4), Emp = as.numeric(Emp)) %>% group_by(year) %>% summarise(Emp = sum(Emp))
 
@@ -1062,8 +1045,8 @@ pop_2016 <- getCensus(name = "acs/acs1",
 
 
 california_place_medincome <- get_acs(geography = "place", 
-              variables = c(medincome = "B19013_001", population = "B01003_001"),
-              state = "CA", output = "wide")
+                                      variables = c(medincome = "B19013_001", population = "B01003_001"),
+                                      state = "CA", output = "wide")
 
 california_place_medincome <- california_place_medincome %>% arrange(desc(populationE))
 
@@ -1078,17 +1061,17 @@ california_place_medincome %>% top_n(20, populationE) %>%
        x = "ACS estimate (bars represent margin of error)")
 
 compare_medincome <- get_acs(geography = "place", variables = c(medincome = "B19013_001", population = "B01003_001", laborforce= "B23025_002"), output = "wide") %>% filter(NAME %in% c("Stockton city, California", 
-                                                                                                                  "Fort Collins city, Colorado",
-                                                                                                                  "Denver city, Colorado",
-                                                                                                                  "St. Louis city, Missouri", 
-                                                                                                                  "Cleveland city, Ohio", 
-                                                                                                                  "Pittsburgh city, Pennsylvania", 
-                                                                                                                  "Honolulu city, Hawaii",
-                                                                                                                  "St. Paul city, Minnesota",
-                                                                                                                  "Corpus Christi city, Texas",
-                                                                                                                  "Sacramento city, California",
-                                                                                                                  "Jackson city, Mississippi",
-                                                                                                                  "South Bend city, Indiana")) 
+                                                                                                                                                                                        "Fort Collins city, Colorado",
+                                                                                                                                                                                        "Denver city, Colorado",
+                                                                                                                                                                                        "St. Louis city, Missouri", 
+                                                                                                                                                                                        "Cleveland city, Ohio", 
+                                                                                                                                                                                        "Pittsburgh city, Pennsylvania", 
+                                                                                                                                                                                        "Honolulu city, Hawaii",
+                                                                                                                                                                                        "St. Paul city, Minnesota",
+                                                                                                                                                                                        "Corpus Christi city, Texas",
+                                                                                                                                                                                        "Sacramento city, California",
+                                                                                                                                                                                        "Jackson city, Mississippi",
+                                                                                                                                                                                        "South Bend city, Indiana")) 
 
 compare_medincome %>% mutate(NAME = gsub(" city", "", NAME)) %>%
   ggplot(aes(x = estimate, y = reorder(NAME, estimate))) +
