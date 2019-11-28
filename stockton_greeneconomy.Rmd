@@ -1703,56 +1703,257 @@ get_stockton_vmt <- function(year){
   
   save(stockton_lodes_h_route,stockton_lodes_h_filter,stockton_lodes_h_mode, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
   
-  total_vmt = sum(stockton_lodes_h_mode$vmt, na.rm=T)
+  result <- 
+    data.frame(
+      Year = year,
+      vmt = sum(stockton_lodes_h_mode$vmt, na.rm=T),
+      jobs = sum(stockton_lodes_h_mode$jobs, na.rm=T)
+    )
     
-  return(total_vmt)
+  return(result)
+}
+
+get_stockton_vmt_2 <- function(year){
+  
+  print(year)
+  
+  ca_lodes <-
+    grab_lodes(
+      state = "ca",
+      year = year,
+      lodes_type = "od",
+      job_type = "JT01", #Primary Jobs
+      segment = "S000",
+      state_part = "main",
+      agg_geo = "bg"
+    )
+  
+  stockton_lodes_h <-
+    ca_lodes[which(ca_lodes$h_bg %in% stockton_bgs_full$GEOID),]
+  
+  stockton_lodes_h_origin_centroids <-
+    st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$h_bg),])
+  
+  stockton_lodes_h_dest_centroids <-
+    st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),])
+  
+  route <-
+    1:nrow(stockton_lodes_h) %>%
+    map_dfr(function(row){
+      print(row)
+      route <- osrmRoute(
+        src = stockton_lodes_h_origin_centroids[which(stockton_lodes_h_origin_centroids$GEOID %in% stockton_lodes_h[row,"h_bg"]),],
+        dst = stockton_lodes_h_dest_centroids[which(stockton_lodes_h_dest_centroids$GEOID %in% stockton_lodes_h[row,"w_bg"]),],
+        overview = FALSE
+      ) %>%
+        as.list() %>%
+        as.data.frame()
+      if(is_empty(route)){
+        return(
+          data.frame(
+            duration = NA,
+            distance = NA
+          )
+        )
+      } else {return(route)}
+    })
+  
+  stockton_lodes_h_route <-
+    stockton_lodes_h %>%
+    cbind(route)
+  
+  stockton_lodes_h_filter <-
+    stockton_lodes_h_route %>%
+    filter(duration < 180)
+  
+  stockton_lodes_h_tracts <-
+    stockton_lodes_h_filter %>% 
+    mutate(
+      h_tract =
+        substr(h_bg,1,nchar(h_bg)-1)
+    ) %>% 
+    dplyr::select(h_tract) %>% 
+    unique()
+  
+  save(stockton_lodes_h_route,stockton_lodes_h_filter, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
+  
+  travel_time_mode <-
+    getCensus(
+      name = "acs/acs5",
+      vintage = year,
+      region = "tract:*",
+      regionin = "state:06+county:077",
+      vars = "group(B08134)"
+    ) %>%
+    mutate(
+      tract =
+        paste0(state,county,tract)
+    ) %>%
+    filter(tract %in% stockton_lodes_h_tracts$h_tract) %>% # This importantly filters to only tracts that show up in our Stockton LODES data, which reduces data size considerably.
+    select_if(!names(.) %in% c("GEO_ID","state","county","NAME")) %>%
+    dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
+    gather(
+      key = "variable",
+      value = "estimate",
+      -tract
+    ) %>%
+    mutate(
+      label = acs_vars$label[match(variable,acs_vars$name)],
+      time = # This extracts only the time information from our label.
+        substr(
+          label,
+          lapply(
+            label,
+            function(x){
+              ifelse(
+                length(unlist(gregexpr('!!',x)))<3,
+                NA,
+                max(unlist(gregexpr('!!',x)))+2
+              )
+            }
+          ),
+          nchar(label)
+        ),
+      mode = # This extracts only the mode information from our label. It doesn't fully deal with double-counting, so some are further removed later on in a filter.
+        substr(
+          label,
+          lapply(
+            label,
+            function(x){
+              ifelse(
+                length(unlist(gregexpr('!!',x)))<3,
+                NA,
+                unlist(gregexpr('!!',x))[length(unlist(gregexpr('!!',x)))-1]+2
+              )
+            }
+          ),
+          lapply(
+            label,
+            function(x){
+              max(unlist(gregexpr('!!',x)))-1
+            }
+          )
+        )
+    ) %>%
+    filter(!is.na(time)) %>% # This removes the grand total rows that are usually at the top of the ACS data.
+    filter(!mode %in% c("Car truck or van","Carpooled","Public transportation (excluding taxicab)")) %>% # This removes double-counted subtotals.
+    dplyr::select(-variable,-label)
+  
+  stockton_lodes_h_mode <-
+    stockton_lodes_h_filter %>%
+    transmute(
+      residence = h_bg,
+      residence_tract = substr(h_bg,1,nchar(h_bg)-1),
+      workplace = w_bg,
+      jobs = S000,
+      duration = duration,
+      person_miles = S000*as.numeric(distance)/1.60934,
+      person_hours = S000*as.numeric(duration)/60
+    ) %>%
+    mutate(
+      tier =
+        case_when(
+          duration < 10 ~ "Less than 10 minutes",
+          duration < 15 ~ "10 to 14 minutes",
+          duration < 20 ~ "15 to 19 minutes",
+          duration < 25 ~ "20 to 24 minutes",
+          duration < 30 ~ "25 to 29 minutes",
+          duration < 35 ~ "30 to 34 minutes",
+          duration < 45 ~ "35 to 44 minutes",
+          duration < 60 ~ "45 to 59 minutes",
+          TRUE ~ "60 or more minutes"
+        )
+    )
+  
+  stockton_lodes_h_mode <-
+    stockton_lodes_h_mode %>%
+    mutate(
+      perc_vehicle =
+        1:nrow(stockton_lodes_h_mode) %>%
+        map_dbl(function(x){
+          mode_drive <-
+            travel_time_mode %>%
+            filter(tract == stockton_lodes_h_mode$residence_tract[x]) %>%
+            filter(time == stockton_lodes_h_mode$tier[x])
+  
+          perc_vehicle =
+            (mode_drive$estimate[which(mode_drive$mode == "Drove alone")] +
+               mode_drive$estimate[which(mode_drive$mode == "In 2-person carpool")]/2 +
+               mode_drive$estimate[which(mode_drive$mode == "In 3-or-more-person carpool")]/3)/
+            sum(mode_drive$estimate)
+  
+          return(perc_vehicle)
+        }),
+      vehicles = jobs*perc_vehicle,
+      vmt = person_miles*perc_vehicle
+    )
+  
+  save(stockton_lodes_h_route,stockton_lodes_h_filter,stockton_lodes_h_mode, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
+  
+  result <- 
+    data.frame(
+      Year = year,
+      vmt = sum(stockton_lodes_h_mode$vmt, na.rm=T),
+      jobs = sum(stockton_lodes_h_mode$jobs, na.rm=T)
+    )
+    
+  return(result)
 }
 
 # stockton_commute_vmt <- NULL
 # 
-# for(year in 2013:2017){
+# for(year in 2011:2017){
 #   stockton_commute_vmt <-
 #     rbind(
 #       stockton_commute_vmt,
-#       data.frame(
-#         Year = year,
-#         vmt = get_stockton_vmt(year)
+#       ifelse(
+#         year > 2012,
+#         get_stockton_vmt(year),
+#         get_stockton_vmt_2(year)
 #       )
 #     )
 # }
-# 
+
 # save(stockton_commute_vmt, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt.Rdata")
 load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt.Rdata")
 
-stockton_commute_vmt_table <-
+stockton_commute_vmt_norm <-
   stockton_commute_vmt %>% 
+  mutate(
+    `One-Way VMT/Workers` = vmt/jobs
+  )
+
+stockton_commute_vmt_table <-
+  stockton_commute_vmt_norm %>% 
   transmute(
     Year = Year,
-    `Commute VMT` = prettyNum(vmt, big.mark=",")
+    `Commute One-Way VMT` = prettyNum(vmt, big.mark=","),
+    `Workers` = prettyNum(round(jobs,0), big.mark=","),
+    `One-Way VMT/Workers` = round(`One-Way VMT/Workers`,2)
   )
 
 datatable(stockton_commute_vmt_table, rownames = FALSE, options = list(pageLength = 7))
 ```
-*Table 16. Stockton Commute VMT from 2010-2017. Data from LODES and ACS 1-yr.*
+*Table 16. Stockton Commute One-Way VMT from 2010-2017. Data from LODES and ACS 1-yr.*
 
-Commentary on trends
+The average one-way commute trip for the Stockton worker appears to have increased by 26% over the last 6 years. This could be explained by existing residents changing to jobs that are further and further away from home, where better employment opportunities can be found, and by new residents moving to Stockton to find affordable housing but retaining their faraway jobs.
 
 ```{r}
 ggplot(
-  stockton_commute_vmt, 
+  stockton_commute_vmt_norm, 
   aes(
     x = Year,
-    y = vmt
+    y = `One-Way VMT/Workers`
   )
 ) + 
   geom_line(size=2, color = "forest green") +
   labs(
-    title = "Stockton Commute VMT, 2013-2017",
+    title = "Stockton Commute One-Way VMT/Workers",
     x = "Year",
-    y = "Vehicle Miles Traveled, One-Way Trip"
+    y = "One-Way VMT/Workers"
   )
 ```
-*Figure 18. Stockton Commute VMT from 2010-2017. Data from LODES and ACS 1-yr.*
+*Figure 18. Stockton Commute One-Way VMT per Employed Resident from 2013-2017. Data from LODES and ACS 1-yr.*
 
 ## Energy
 
@@ -2011,6 +2212,80 @@ We used the [Cal-Adapt Degree Day tool](https://cal-adapt.org/tools/degree-days)
 The following table shows historical 2013-2018 annual energy usage per capita (residents for residential energy, jobs for commercial energy) per degree day (HDDs for gas, CDDs for electricity). 
 
 ```{r}
+hdd <- 
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/hdd.csv") %>% 
+  filter(year %in% summary_TCO2E_average$YEAR & model == "CanESM2") %>% 
+  transmute(
+    YEAR = year,
+    hdd = degree_days
+  )
+cdd <- 
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/cdd.csv") %>% 
+  filter(year %in% summary_TCO2E_average$YEAR & model == "CanESM2") %>% 
+  transmute(
+    YEAR = year,
+    cdd = degree_days
+  )
+
+summary_TCO2E_norm <- 
+  pge_data %>% 
+  filter(!CUSTOMERCLASS %in% c("EI","EA")) %>%
+  group_by(ZIPCODE, CUSTOMERCLASS, YEAR) %>%
+  summarize(
+    TOTALKBTU = sum(TOTALKBTU, na.rm=T),
+    TOTALTCO2E = sum(TOTALTCO2E, na.rm=T), 
+    TOTALCUSTOMERS = mean(TOTALCUSTOMERS, na.rm=T)
+  ) %>% 
+  group_by(CUSTOMERCLASS, YEAR) %>%
+  summarize_at(
+    vars(TOTALKBTU,TOTALTCO2E,TOTALCUSTOMERS),
+    sum,
+    na.rm=T
+  ) %>% 
+  left_join(hdd, by = "YEAR") %>% 
+  left_join(cdd, by = "YEAR") %>% 
+  left_join(pop_stockton, by = c("YEAR" = "year")) %>% 
+  left_join(jobs_stockton, by = c("YEAR" = "year"))
+
+summary_TCO2E_norm_ER <-
+  summary_TCO2E_norm %>% 
+  filter(CUSTOMERCLASS == "ER") %>% 
+  mutate(
+    KBTU_res_cdd =
+      TOTALKBTU/PopulationStockton/cdd,
+    TCO2E_res_cdd = 
+      TOTALTCO2E/PopulationStockton/cdd
+  )
+
+summary_TCO2E_norm_GR <-
+  summary_TCO2E_norm %>% 
+  filter(CUSTOMERCLASS == "GR") %>% 
+  mutate(
+    KBTU_res_hdd =
+      TOTALKBTU/PopulationStockton/hdd,
+    TCO2E_res_hdd = 
+      TOTALTCO2E/PopulationStockton/hdd
+  )
+
+summary_TCO2E_norm_EC <-
+  summary_TCO2E_norm %>% 
+  filter(CUSTOMERCLASS == "EC") %>% 
+  mutate(
+    KBTU_job_cdd =
+      TOTALKBTU/PopulationStockton/cdd,
+    TCO2E_job_cdd = 
+      TOTALTCO2E/PopulationStockton/cdd
+  )
+
+summary_TCO2E_norm_GC <-
+  summary_TCO2E_norm %>% 
+  filter(CUSTOMERCLASS == "GC") %>% 
+  mutate(
+    KBTU_job_hdd =
+      TOTALKBTU/PopulationStockton/hdd,
+    TCO2E_job_hdd = 
+      TOTALTCO2E/PopulationStockton/hdd
+  )
 
 ```
 
