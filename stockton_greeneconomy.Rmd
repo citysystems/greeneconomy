@@ -251,7 +251,7 @@ pop_jobs_sjc_w_projection_table <-
 
 save(pop_jobs_sjc_w_projection, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/pop_jobs_sjc_w_projection.Rdata")
 
-datatable(pop_jobs_sjc_w_projection_table, rownames = FALSE, options = list(pageLength = 13))
+datatable(pop_jobs_sjc_w_projection_table, rownames = FALSE, options = list(pageLength = 14))
 ```
 *Table 1. Historical Population and Job counts for San Joaquin County 2010-2017, followed by projections to 2040.*
 
@@ -521,7 +521,7 @@ pop_jobs_stockton_w_projection_table <-
 
 save(pop_jobs_stockton_w_projection, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/pop_jobs_stockton_w_projection.Rdata")
 
-datatable(pop_jobs_stockton_w_projection_table, rownames = FALSE, options = list(pageLength = 13))
+datatable(pop_jobs_stockton_w_projection_table, rownames = FALSE, options = list(pageLength = 14))
 ```
 *Table 3. Historical Population and Job counts for Stockton 2010-2018, followed by projections to 2040.*
 
@@ -2342,13 +2342,15 @@ summary_TCO2E_norm_all %>%
   geom_line(
     aes(
       y = `Residential Electricity, kBTU/resident/CDD`,
-      colour = "RE"
+      colour = "RE",
+      linetype = "RE"
     )
   ) +
   geom_smooth(
     aes(
       y = `Residential Electricity, kBTU/resident/CDD`,
-      colour = "RE forecast"
+      colour = "RE forecast",
+      linetype = "RE forecast"
     ),
     method = lm,
     se = FALSE
@@ -2356,14 +2358,55 @@ summary_TCO2E_norm_all %>%
   geom_line(
     aes(
       y = `Residential Gas, kBTU/resident/HDD`,
-      colour = "RG"
+      colour = "RG",
+      linetype = "RG"
     )
   ) +
-  scale_colour_manual(values = c("red","red","blue")) +
-  scale_linetype_manual(values = c("line","dashed","line")) + 
+  geom_smooth(
+    aes(
+      y = `Residential Gas, kBTU/resident/HDD`,
+      colour = "RG forecast",
+      linetype = "RG forecast"
+    ),
+    method = lm,
+    se = FALSE
+  ) +
+  geom_line(
+    aes(
+      y = `Commercial Electricity, kBTU/job/CDD`,
+      colour = "CE",
+      linetype = "CE"
+    )
+  ) +
+  geom_smooth(
+    aes(
+      y = `Commercial Electricity, kBTU/job/CDD`,
+      colour = "CE forecast",
+      linetype = "CE forecast"
+    ),
+    method = lm,
+    se = FALSE
+  ) +
+  geom_line(
+    aes(
+      y = `Commercial Gas, kBTU/job/HDD`,
+      colour = "CG",
+      linetype = "CG"
+    )
+  ) +
+  geom_smooth(
+    aes(
+      y = `Commercial Gas, kBTU/job/HDD`,
+      colour = "CG forecast",
+      linetype = "CG forecast"
+    ),
+    method = lm,
+    se = FALSE
+  ) +
+  scale_colour_manual(values = c("red","red","blue","blue", "orange", "orange", "green","green")) +
+  scale_linetype_manual(values = c("solid","dashed","solid","dashed","solid","dashed","solid","dashed")) + 
   labs(title = "Stockton, CA", y = "kBTU/cap/degree-day", colour = "")
 ```
-
 
 ## Buildings
 
