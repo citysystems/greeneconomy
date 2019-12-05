@@ -2850,13 +2850,15 @@ summary_TCO2E_norm_projection <-
 
 ```
 
-# Case Studies
-
 # Analysis of Green Economy Strategies
 
 ## Methodology
 
 ## Building Retrofits
+
+### Case Study: RMI
+
+### Strategy: Electrification
 
 ## Solar Installations
 
