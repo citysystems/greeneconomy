@@ -113,7 +113,7 @@ for(year in 2010:2018){
 }
 
 sjc_projection <-
-  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/SSP_asrc_STATEfiles/DATA-PROCESSED/SPLITPROJECTIONS/CA.csv") %>%
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/SSP_asrc_STATEfiles/DATA-PROCESSED/SPLITPROJECTIONS/CA.csv") %>%
   filter(COUNTY == "077") %>%
   group_by(YEAR) %>%
   summarize(
@@ -197,8 +197,8 @@ pop_emp_sjc_w_projection <-
 #   }) %>%
 #   rbindlist()
 # 
-# save(sjc_wac, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata")
+# save(sjc_wac, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata")
 
 jobs_sjc <-
   sjc_wac %>%
@@ -249,7 +249,7 @@ pop_jobs_sjc_w_projection_table <-
     `Percent Unemployment` = ifelse(is.na(`Percent Unemployment`),"NA",paste0(`Percent Unemployment`,"%"))
   )
 
-save(pop_jobs_sjc_w_projection, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/pop_jobs_sjc_w_projection.Rdata")
+save(pop_jobs_sjc_w_projection, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/pop_jobs_sjc_w_projection.Rdata")
 
 datatable(pop_jobs_sjc_w_projection_table, rownames = FALSE, options = list(pageLength = 14))
 ```
@@ -285,7 +285,7 @@ ggplot(pop_jobs_sjc_w_projection, aes(x = Year)) +
 The [Quarterly Workforce Indicators](https://www.census.gov/data/developers/data-sets/qwi.html) dataset also illustrates the number and average earnings of jobs in different sub-level NAICS industry sectors (228 total). 
 ```{r}
 label_industry <-
-  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/label_industry.csv")
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/label_industry.csv")
 
 qwi_sjc <- data.frame(matrix(ncol=5,nrow=0))
 colnames(qwi_sjc) <- c("year","industry","label","EmpS","EarnS")
@@ -315,9 +315,9 @@ for(years in 2010:2018){
     bind_rows(qwi_sjc,qwi)
 }
 
-save(qwi_sjc, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/qwi_sjc.Rdata")
+save(qwi_sjc, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/qwi_sjc.Rdata")
 
-# qwi_sjc <- read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/qwi_sjc.csv")
+# qwi_sjc <- read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/qwi_sjc.csv")
 
 qwi_sjc_18 <-
   qwi_sjc %>% 
@@ -467,8 +467,8 @@ pop_emp_stockton_w_projection <-
 #   }) %>% 
 #   rbindlist()
 # 
-# save(stockton_wac, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_wac.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_wac.Rdata")
+# save(stockton_wac, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_wac.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_wac.Rdata")
 
 jobs_stockton <-
   stockton_wac %>% 
@@ -519,7 +519,7 @@ pop_jobs_stockton_w_projection_table <-
     `Percent Unemployment` = ifelse(is.na(`Percent Unemployment`),"NA",paste0(`Percent Unemployment`,"%"))
   )
 
-save(pop_jobs_stockton_w_projection, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/pop_jobs_stockton_w_projection.Rdata")
+save(pop_jobs_stockton_w_projection, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/pop_jobs_stockton_w_projection.Rdata")
 
 datatable(pop_jobs_stockton_w_projection_table, rownames = FALSE, options = list(pageLength = 14))
 ```
@@ -580,8 +580,8 @@ Estimation of the average earnings of Stockton jobs is not possible using the QW
 #     return(temp)
 #   })
 # 
-# save(stockton_rac, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_rac.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_rac.Rdata")
+# save(stockton_rac, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_rac.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_rac.Rdata")
 
 jobs_stockton_residents <-
   stockton_rac %>%
@@ -657,7 +657,7 @@ The following six tables filter the full Quarterly Workforce Indicators dataset 
 
 ```{r}
 green_jobs_classification <- 
-  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/green_jobs_classification.csv")
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/green_jobs_classification.csv")
 
 green_jobs_summary <-
   green_jobs_classification %>% 
@@ -892,8 +892,8 @@ The following table shows a preliminary normalization of the 2005 and 2016 GHG e
 #     state_part = "main",
 #     agg_geo = "bg"
 #   )
-# save(ca_wac_2005, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ca_wac_2005.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ca_wac_2005.Rdata")
+# save(ca_wac_2005, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ca_wac_2005.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ca_wac_2005.Rdata")
 
 stockton_jobs_2005 <-
   stockton_bgs_full %>%
@@ -1116,9 +1116,9 @@ Our key dataset is from [Longitudinal Employer-Household Dynamics Origin-Destina
 #     vmt = person_miles*perc_vehicle
 #   )
 # 
-# save(stockton_lodes_h_route,stockton_lodes_h_filter,stockton_lodes_h_mode, file= "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes.Rdata")
+# save(stockton_lodes_h_route,stockton_lodes_h_filter,stockton_lodes_h_mode, file= "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes.Rdata")
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes.Rdata")
 
 ggplot(
   stockton_lodes_h_filter, 
@@ -1577,7 +1577,7 @@ get_stockton_vmt <- function(year){
     stockton_lodes_h_route %>%
     filter(duration < 180)
   
-  save(stockton_lodes_h_route,stockton_lodes_h_filter, file = paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
+  save(stockton_lodes_h_route,stockton_lodes_h_filter, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
   
   travel_time_mode <-
     getCensus(
@@ -1694,7 +1694,7 @@ get_stockton_vmt <- function(year){
       vmt = person_miles*perc_vehicle
     )
   
-  save(stockton_lodes_h_route,stockton_lodes_h_filter,stockton_lodes_h_mode, file = paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
+  save(stockton_lodes_h_route,stockton_lodes_h_filter,stockton_lodes_h_mode, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
   
   result <- 
     data.frame(
@@ -1768,7 +1768,7 @@ get_stockton_vmt_2 <- function(year){
     dplyr::select(h_tract) %>% 
     unique()
   
-  save(stockton_lodes_h_route,stockton_lodes_h_filter, file = paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
+  save(stockton_lodes_h_route,stockton_lodes_h_filter, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
   
   travel_time_mode <-
     getCensus(
@@ -1881,7 +1881,7 @@ get_stockton_vmt_2 <- function(year){
       vmt = person_miles*perc_vehicle
     )
   
-  save(stockton_lodes_h_route,stockton_lodes_h_filter,stockton_lodes_h_mode, file = paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
+  save(stockton_lodes_h_route,stockton_lodes_h_filter,stockton_lodes_h_mode, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
   
   result <- 
     data.frame(
@@ -1907,8 +1907,8 @@ get_stockton_vmt_2 <- function(year){
 #     )
 # }
 
-# save(stockton_commute_vmt, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt.Rdata")
+# save(stockton_commute_vmt, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt.Rdata")
 
 stockton_commute_vmt_norm <-
   stockton_commute_vmt %>% 
@@ -1955,9 +1955,9 @@ After transportation, buildings are the next largest source of emissions based o
 ```{r}
 zcta <- zctas(starts_with="95") %>% 
   mutate(ZCTA5CE10 = as.numeric(ZCTA5CE10))
-# zips_stockton <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ZipCodes/ZipCodes.shp") %>% st_transform(st_crs(zcta)) #this was downloaded from Stockton GIS site to do a quick visual check of the difference between ZCTA and zip code. We determined they were pretty much the same.
+# zips_stockton <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ZipCodes/ZipCodes.shp") %>% st_transform(st_crs(zcta)) #this was downloaded from Stockton GIS site to do a quick visual check of the difference between ZCTA and zip code. We determined they were pretty much the same.
 
-stockton_boundary_influence <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/SpheresOfInfluence/SpheresOfInfluence.shp", quiet = TRUE) %>% 
+stockton_boundary_influence <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/SpheresOfInfluence/SpheresOfInfluence.shp", quiet = TRUE) %>% 
   filter(SPHERE == "STOCKTON") %>% 
   st_transform(st_crs(zcta)) #stockton boundary is legit but really spotty, so i prefer using sphere of influence from the County GIS page.
 
@@ -1983,30 +1983,30 @@ PG&E's data had some minor formatting errors that were manually corrected:
 
 Also, because of privacy regulations, the PG&E data has many gaps in industrial and agricultural energy usage. Even though industrial energy usage may be a significant contributors to emissions, as the ICLEI report suggests, without more consistent data we decided to leave industrial energy analysis out of our report. 
 
-After downloading and aggregating the PG&E residential and commercial data by month and year, we converted electricity and gas energy usage to tCO2e. For gas, we converted therms to tCO2e based a factor from the [U.S. Energy Information Administration](https://www.eia.gov/environment/emissions/co2_vol_mass.php) (assuming that PG&E’s natural gas emits at this rate, and that it doesn’t change from year to year). For electricity, we converted kWh to tCO2e for the appropriate year using the table provided by PG&E in their [2019 Corporate Responsibility Report](http://www.pgecorp.com/corp_responsibility/reports/2019/en02_climate_change.html), under the table titled “Benchmarking Greenhouse Gas Emissions for Delivered Electricity”. Because the latest emissions data is for 2017, we used the 2017's value of 210 lbs CO2 per MWh for 2018 as well.
+After downloading and aggregating the PG&E residential and commercial data by month and year, we converted electricity and gas energy usage to tCO2e. For gas, we converted therms to tCO2e based a factor from the [U.S. Energy Information Administration](https://www.eia.gov/environment/emissions/co2_vol_mass.php) (assuming that PG&E’s natural gas emits at this rate, and that it doesn’t change from year to year). For electricity, we converted kWh to tCO2e for the appropriate year using the table provided by PG&E in their [2019 Corporate Responsibility Report](http://www.pgecorp.com/corp_responsibility/reports/2019/en02_climate_change.html), under the table titled “Benchmarking Greenhouse Gas Emissions for Delivered Electricity”. Because the latest emissions data is 210 lbs CO2 per MWh for 2017, and SB 100 signed into law September 2018 requires state energy agencies to adopt a 100 percent clean energy by 2045 planning goal, we assume the emissions factor will decrease by 7.5 lbs CO2 per MWh each here, resulting in a value of 202.5 for 2018.
 
 ```{r}
 #Note: Elec- Industrial mostly 0's, 95206 suddenly shows up with ~70 customers in 2014 Q3/Q4, 2015 Q1, 2016 M2/M3, 2018 M6/M9
 
-# pge_elec_emissions_factor <- 
+# pge_elec_emissions_factor <-
 #   data.frame(
-#     year = 2013:2018, 
-#     factor = c(427,434.92,404.51,293.67,210,210)
+#     year = 2013:2018,
+#     factor = c(427,434.92,404.51,293.67,210,202.5)
 #   )
 # 
 # pge_data <-
 #   2013:2018 %>% # Supply a list of years, 2013 to 2018. Recall the syntax for a list of numbers from past assignments.
 #   map_dfr(function(year){ # This is another variation of map() that automatically binds rows together into a dataframe (what we used rbindlist() in the past for), assuming you’re working with dataframes. Otherwise it works exactly the same way as map().
-#     
+# 
 #     factor <- pge_elec_emissions_factor$factor[match(year,pge_elec_emissions_factor$year)] # You will want to use match() to get the correct emissions factor from the lookup table you made in the previous chunk. Refer back to the lines where we used match() on acs_vars in the past for the correct syntax.
-#     
+# 
 #     1:4 %>% # Look closely at the PG&E datasets and you’ll see that the data is organized by quarter, and we’ll need to refer to the quarter in the filename when we load CSVs. Supply a list of quarters here.
 #       map_dfr(function(quarter){
-#         
+# 
 #         c("Electric","Gas") %>% # The datasets are either for Electricity or Gas. Look carefully at how these are written in the filenames, and supply a c() with both strings here.
 #           map_dfr(function(type){
-#             
-#             filename <- 
+# 
+#             filename <-
 #               paste0(
 #                 "F:/Data Library/PG&E/PGE_",
 #                 year,
@@ -2016,13 +2016,13 @@ After downloading and aggregating the PG&E residential and commercial data by mo
 #                 type,
 #                 "UsageByZip.csv"
 #               )
-#             
-#             data <- # This will load the CSV and then manipulate 
-#               read_csv(filename) %>% 
+# 
+#             data <- # This will load the CSV and then manipulate
+#               read_csv(filename) %>%
 #               rename_all(toupper) %>% # This is part of cleaning the messy CSVs, since sometimes the field names were lowercase and sometimes they were uppercase. This makes them all uppercase so there is no issue referring to them below.
-#               filter(ZIPCODE %in% zcta_stockton$ZIPCODE) %>% 
+#               filter(ZIPCODE %in% zcta_stockton$ZIPCODE) %>%
 #               mutate(
-#                 CUSTOMERCLASS = 
+#                 CUSTOMERCLASS =
 #                   case_when(
 #                     CUSTOMERCLASS == "Elec- Residential" ~ "ER",
 #                     CUSTOMERCLASS == "Gas- Residential" ~ "GR",
@@ -2031,41 +2031,41 @@ After downloading and aggregating the PG&E residential and commercial data by mo
 #                     CUSTOMERCLASS == "Elec- Agricultural" ~ "EA",
 #                     TRUE ~ "GC"
 #                   ),
-#                 TOTALKBTU = 
+#                 TOTALKBTU =
 #                   ifelse(
 #                     substr(CUSTOMERCLASS,1,1) == "E",
 #                     TOTALKWH*3.4121416331,
 #                     TOTALTHM*99.9761
 #                   ),
-#                 TOTALTCO2E = 
+#                 TOTALTCO2E =
 #                   ifelse(
 #                     substr(CUSTOMERCLASS,1,1) == "E",
 #                     TOTALKWH*factor/1000*0.000453592,
 #                     TOTALTHM*0.00531
 #                   )
-#               ) %>% 
+#               ) %>%
 #               dplyr::select(
 #                 ZIPCODE,
 #                 YEAR,
 #                 MONTH,
-#                 CUSTOMERCLASS, 
-#                 TOTALKBTU, 
-#                 TOTALTCO2E, 
+#                 CUSTOMERCLASS,
+#                 TOTALKBTU,
+#                 TOTALTCO2E,
 #                 TOTALCUSTOMERS
 #               )
 # 
 #           })
-#         
+# 
 #       })
-#     
+# 
 #   }) %>%
 #   mutate(
-#     KBTUPERCUST = TOTALKBTU/TOTALCUSTOMERS, 
+#     KBTUPERCUST = TOTALKBTU/TOTALCUSTOMERS,
 #     TCO2EPERCUST = TOTALTCO2E/TOTALCUSTOMERS
 #   )
-#   
-# save(pge_data, file= "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_pge.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_pge.Rdata")
+# 
+# save(pge_data, file= "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_pge.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_pge.Rdata")
 
 summary_TCO2E_average <- 
   pge_data %>% 
@@ -2200,17 +2200,17 @@ ggplot(
 
 Note that heating and cooling loads, which appear to contribute to significant seasonal variation within years, is also heavily dependent on the specific weather in any given year, typically measured in heating degree days (HDDs) and cooling degree days (CDDs). A more accurate comparison of annual energy consumption would control for change in HDDs and CDDs year-to-year; a more accurate forecasting of energy consumption into the future would also factor in climate model predictions of future HDDs and CDDs.
 
-We used the [Cal-Adapt Degree Day tool](https://cal-adapt.org/tools/degree-days) to collect HDDs and CDDs for Stockton from 2013 to 2018, and on to 2040, using the average simulation (CanESM2) under the Representative Concentration Pathway (RCP) 4.5 scenario (in which global GHG emissions peak around 2040, then decline). 
+We used the [Cal-Adapt Degree Day tool](https://cal-adapt.org/tools/degree-days) to collect HDDs and CDDs for Stockton from 2013 to 2018, and on to 2040, using the average simulation (CanESM2) under the Representative Concentration Pathway (RCP) 4.5 scenario (in which global GHG emissions peak around 2040, then decline). The graph below shows the data from Cal-Adapt, as well as linear trendlines, with a clear overall upwards trend for CDDs (meaning that temperatures are rising and more cooling power is needed), and a clear overall downwards trend for HDDs. 
 
 ```{r}
 hdd <- 
-  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/hdd.csv") %>% 
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/hdd.csv") %>% 
   transmute(
     YEAR = year,
     hdd = degree_days
   )
 cdd <- 
-  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/cdd.csv") %>% 
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/cdd.csv") %>% 
   filter(model == "CanESM2") %>% 
   transmute(
     YEAR = year,
@@ -2228,26 +2228,44 @@ hdd %>%
   geom_line(
     aes(
       y = hdd,
-      colour = "Heating"
+      colour = "Heating",
+      linetype = "Cal-Adapt"
     )
+  ) +
+  geom_smooth(
+    aes(
+      y = hdd,
+      colour = "Heating",
+      linetype = "Trendline"
+    ),
+    method = lm,
+    se = FALSE
   ) +
   geom_line(
     aes(
       y = cdd,
-      colour = "Cooling"
+      colour = "Cooling",
+      linetype = "Cal-Adapt"
     )
   ) +
-  geom_vline(aes(xintercept = 2019), color = "dark grey") +
-  annotate("text",label= "Historical\n", color = "dark grey", x=2019, y=2600, angle = 90, size=4) +
-  annotate("text",label= "\nForecast", color = "dark grey", x=2019, y=2600, angle = 90, size=4) +
+  geom_smooth(
+    aes(
+      y = cdd,
+      colour = "Cooling",
+      linetype = "Trendline"
+    ),
+    method = lm,
+    se = FALSE
+  ) +
+  geom_vline(aes(xintercept = 2018), color = "dark grey") +
+  annotate("text",label= "Historical\n", color = "dark grey", x=2018, y=2600, angle = 90, size=4) +
+  annotate("text",label= "\nForecast", color = "dark grey", x=2018, y=2600, angle = 90, size=4) +
   scale_colour_manual(values = c("red","blue")) + 
-  labs(title = "Stockton, CA Heating and Cooling Degree Days", y = "Degree Days", colour = "")
+  scale_linetype_manual(values = c("solid","dotted")) +
+  labs(title = "Stockton Heating and Cooling Degree Days", y = "Degree Days", colour = "")
 ```
 
-
-A full forecast of energy usage will also depend on predicted changes in resident and job populations, which will lead to more buildings and more energy used in buildings, and many other factors that are outside the scope of this analysis.
-
-The following table shows historical 2013-2018 annual energy usage per capita (residents for residential energy, jobs for commercial energy) per degree day (HDDs for gas, CDDs for electricity). 
+The following table shows historical 2013-2018 annual energy usage per capita (residents for residential energy, jobs for commercial energy) per degree day (HDDs for gas, CDDs for electricity), and the graph that follows shows these four energy use factors with downward trends. This may be through a combination of changing building energy efficiency as well as changing building utilization (e.g. more or less space per occupant), though we don't have the data to be able to separate these two factors.
 
 ```{r}
 summary_TCO2E_norm <- 
@@ -2330,27 +2348,25 @@ summary_TCO2E_norm_all <-
 datatable(summary_TCO2E_norm_all, rownames = FALSE, options = list(pageLength = 6))
 ```
 
-The following table shows projections of electricity and gas usage to 2040, using the same assumptions from Section 2.1 of future population and jobs, and Cal-Adapt's HDD and CDD projections. We assume  We also assume PG&E's 2017 electricity emissions value of 210 lbs CO2 per MWh is fixed through 2040, though SB 100 signed into law September 2018 requires state energy agencies to adopt a 100 percent clean energy by 2045 planning goal.
-
 ```{r}
-summary_TCO2E_norm_all %>% 
+summary_TCO2E_norm_all %>%
   ggplot(
     aes(
       x = Year
     )
-  ) + 
+  ) +
   geom_line(
     aes(
       y = `Residential Electricity, kBTU/resident/CDD`,
-      colour = "RE",
-      linetype = "RE"
+      colour = "Residential Electricity (kBTU/resident/CDD)",
+      linetype = "Historical"
     )
   ) +
   geom_smooth(
     aes(
       y = `Residential Electricity, kBTU/resident/CDD`,
-      colour = "RE forecast",
-      linetype = "RE forecast"
+      colour = "Residential Electricity (kBTU/resident/CDD)",
+      linetype = "Trendline"
     ),
     method = lm,
     se = FALSE
@@ -2358,15 +2374,15 @@ summary_TCO2E_norm_all %>%
   geom_line(
     aes(
       y = `Residential Gas, kBTU/resident/HDD`,
-      colour = "RG",
-      linetype = "RG"
+      colour = "Residential Gas (kBTU/resident/HDD)",
+      linetype = "Historical"
     )
   ) +
   geom_smooth(
     aes(
       y = `Residential Gas, kBTU/resident/HDD`,
-      colour = "RG forecast",
-      linetype = "RG forecast"
+      colour = "Residential Gas (kBTU/resident/HDD)",
+      linetype = "Trendline"
     ),
     method = lm,
     se = FALSE
@@ -2374,15 +2390,15 @@ summary_TCO2E_norm_all %>%
   geom_line(
     aes(
       y = `Commercial Electricity, kBTU/job/CDD`,
-      colour = "CE",
-      linetype = "CE"
+      colour = "Commercial Electricity (kBTU/job/CDD)",
+      linetype = "Historical"
     )
   ) +
   geom_smooth(
     aes(
       y = `Commercial Electricity, kBTU/job/CDD`,
-      colour = "CE forecast",
-      linetype = "CE forecast"
+      colour = "Commercial Electricity (kBTU/job/CDD)",
+      linetype = "Trendline"
     ),
     method = lm,
     se = FALSE
@@ -2390,235 +2406,449 @@ summary_TCO2E_norm_all %>%
   geom_line(
     aes(
       y = `Commercial Gas, kBTU/job/HDD`,
-      colour = "CG",
-      linetype = "CG"
+      colour = "Commercial Gas (kBTU/job/HDD)",
+      linetype = "Historical"
     )
   ) +
   geom_smooth(
     aes(
       y = `Commercial Gas, kBTU/job/HDD`,
-      colour = "CG forecast",
-      linetype = "CG forecast"
+      colour = "Commercial Gas (kBTU/job/HDD)",
+      linetype = "Trendline"
     ),
     method = lm,
     se = FALSE
   ) +
-  scale_colour_manual(values = c("red","red","blue","blue", "orange", "orange", "green","green")) +
-  scale_linetype_manual(values = c("solid","dashed","solid","dashed","solid","dashed","solid","dashed")) + 
-  labs(title = "Stockton, CA", y = "kBTU/cap/degree-day", colour = "")
+  scale_colour_manual(values = c("red","blue","orange", "green")) +
+  scale_linetype_manual(values = c("solid","dotted")) +
+  labs(title = "Stockton Energy Use per Capita per Degree-Day", y = "kBTU/cap/degree-day", colour = "Energy Factor", linetype = "Data Type")
 ```
+
+A full forecast of energy usage will also depend on predicted changes in resident and job populations, which will lead to more buildings and more energy used in buildings, predicted changes in building energy efficiency and utilization, predicted changes in weather, and many other factors that are outside the scope of this analysis. One last available dataset to incorporate into our understanding of energy use relates to buildings.
 
 ## Buildings
 
+2018 data from the local County Assessor's Office includes property use type and total building square footage for every parcel in Stockton. Because the assessor's record of total building square footage is of poor quality, we chose to instead use [Microsoft's U.S. Building Footprint Data](https://github.com/microsoft/USBuildingFootprints), joined each building footprint to a parcel (thereby also assigning a residential or commercial type based on the zoning of the parcel), and multiplied this footprint area by number of stories if it was recorded on the assessor's record. This dataset may still contain significant errors (e.g. mixed use parcels are mis-identified, the stories record may be incorrect, Microsoft's building footprints may be incorrect, etc.), but we decided it was the best representation of total building square footage in Stockton. 
+
+The following maps show the density of residents per 1000 sqft of residential buildings across Stockton, followed by the density of jobs per 1000 sqft of commercials buildings, at the block group level. Residential population was obtained from ACS 2017 5-yr data, and job count was obtained from LODES 2017.
+
 ```{r}
-#here's the newer tidyverse work to better disaggregate energy type (gas vs. electric), class (residential vs. commercial), and output (kbtu vs. TCO2E), in every potential meaningful combination. the use of gather/unite/spread is to turn individual outputs of kbtu, TCO2E, kbtu/cust, TCO2E/cust for every combination of type and class into separate "wide" columns which helps for easy leaflet mapping later on. however i don't have lots of familiarity with best practice here so if the next few steps can be achieved much more elegantly, please make changes!
+pge_stockton_filtered <- 
+  pge_data %>% 
+  filter(!CUSTOMERCLASS %in% c("EI","EA") & (YEAR == 2018)) %>%
+  dplyr::select(-YEAR,-TOTALTCO2E,-TCO2EPERCUST)
 
-#note at this point i've been mostly removing industrial because it's "compromised" by having a lot of missing data because of privacy rules, and agricultural because it's a more negligible amount unrelated to our work. if we were to get better PG&E industrial data, then we'd want to include it as a meaningful category in the subsequent steps.
-#only viewing one year at a time, in this case 2016. there could have been even further disaggregation by year but then there'd be hundreds of columns.
-pge_stockton_filtered <- pge_data %>% 
-  filter(!CUSTOMERCLASS %in% c("EI","EA") & (YEAR == 2016)) %>%
-  dplyr::select(-YEAR)
-
-zips_spread <- pge_stockton_filtered %>% 
-  gather(key = "type", value, TOTALKBTU:TCO2EPERCUST) %>% 
+zips_spread <- 
+  pge_stockton_filtered %>% 
+  group_by(ZIPCODE, CUSTOMERCLASS) %>% 
+  summarise(
+    TOTALKBTU = sum(TOTALKBTU, na.rm=T),
+    TOTALCUSTOMERS = mean(TOTALCUSTOMERS, na.rm=T)
+  ) %>% 
+  mutate(KBTUPERCUST = TOTALKBTU/TOTALCUSTOMERS) %>% 
+  gather(key = "type", value, TOTALKBTU:KBTUPERCUST) %>% 
   unite(temp,CUSTOMERCLASS,type) %>% 
   spread(temp,value) 
 
 #next, since the previous line fully disaggregates by type AND class, but i also consider it valuable to disaggregate by type OR class individually on their own, i do a second and third spread. all of these "spreads" will be joined back to an original in the final step.
-zips_spread_2 <- pge_stockton_filtered %>% 
+zips_spread_2 <- 
+  pge_stockton_filtered %>% 
+  group_by(ZIPCODE, CUSTOMERCLASS) %>% 
+  summarise(
+    TOTALKBTU = sum(TOTALKBTU, na.rm=T),
+    TOTALCUSTOMERS = mean(TOTALCUSTOMERS, na.rm=T)
+  ) %>% 
+  ungroup() %>% 
   mutate(ENERGYTYPE = substr(CUSTOMERCLASS,1,1)) %>% 
   dplyr::select(-CUSTOMERCLASS) %>% 
   group_by(ZIPCODE, ENERGYTYPE) %>% 
-  summarise(TOTALKBTU = sum(TOTALKBTU),
-            TOTALTCO2E = sum(TOTALTCO2E),
-            TOTALCUSTOMERS = sum(TOTALCUSTOMERS)) %>% 
-  mutate(KBTUPERCUST = TOTALKBTU/TOTALCUSTOMERS,
-         TCO2EPERCUST = TOTALTCO2E/TOTALCUSTOMERS) %>% 
-  gather(key = "type", value, TOTALKBTU:TCO2EPERCUST) %>% 
+  summarise(
+    TOTALKBTU = sum(TOTALKBTU, na.rm=T),
+    TOTALCUSTOMERS = sum(TOTALCUSTOMERS, na.rm=T)
+  ) %>% 
+  mutate(KBTUPERCUST = TOTALKBTU/TOTALCUSTOMERS) %>% 
+  gather(key = "type", value, TOTALKBTU:KBTUPERCUST) %>% 
   unite(temp,ENERGYTYPE,type) %>% 
   spread(temp,value)
 
 #note that when combining into SECTOR, say electricity and gas for commercial, the summary function for TOTALCUSTOMERS switches to max(), with the reasoning that many of these commercial customers have both electricity and gas, so we would assume that the correct total # of customers is closer to the max of either, than to add them together (which presumes that there are no overlapping electricity and gas customers).
-zips_spread_3 <- pge_stockton_filtered %>%
+zips_spread_3 <- 
+  pge_stockton_filtered %>%
+  group_by(ZIPCODE, CUSTOMERCLASS) %>% 
+  summarise(
+    TOTALKBTU = sum(TOTALKBTU, na.rm=T),
+    TOTALCUSTOMERS = mean(TOTALCUSTOMERS, na.rm=T)
+  ) %>% 
+  ungroup() %>% 
   mutate(SECTOR = substr(CUSTOMERCLASS,2,2)) %>% 
   dplyr::select(-CUSTOMERCLASS) %>% 
   group_by(ZIPCODE, SECTOR) %>% 
-  summarise(TOTALKBTU = sum(TOTALKBTU),
-            TOTALTCO2E = sum(TOTALTCO2E),
-            TOTALCUSTOMERS = max(TOTALCUSTOMERS)) %>% 
-  mutate(KBTUPERCUST = TOTALKBTU/TOTALCUSTOMERS,
-         TCO2EPERCUST = TOTALTCO2E/TOTALCUSTOMERS) %>% 
-  gather(key = "type", value, TOTALKBTU:TCO2EPERCUST) %>% 
+  summarise(TOTALKBTU = sum(TOTALKBTU, na.rm=T),
+            TOTALCUSTOMERS = max(TOTALCUSTOMERS, na.rm=T)) %>% 
+  mutate(KBTUPERCUST = TOTALKBTU/TOTALCUSTOMERS) %>% 
+  gather(key = "type", value, TOTALKBTU:KBTUPERCUST) %>% 
   unite(temp,SECTOR,type) %>% 
   spread(temp,value)
 
 #the final step here is to get the actual total totals for kbtu and TCO2E indicators, and then join all the "subtotals" from the previous 3 spreads.
-zips_TCO2E_total <- pge_stockton_filtered %>% 
+zips_total <- 
+  pge_stockton_filtered %>% 
   group_by(ZIPCODE) %>% 
-  summarize(TOTALKBTU = sum(TOTALKBTU), 
-            TOTALTCO2E = sum(TOTALTCO2E)) %>% 
+  summarize(TOTALKBTU = sum(TOTALKBTU, na.rm=T)) %>% 
   left_join(zips_spread_3, by = "ZIPCODE") %>% 
   mutate(TOTALCUSTOMERS = R_TOTALCUSTOMERS + C_TOTALCUSTOMERS) %>% 
   left_join(zips_spread_2, by = "ZIPCODE") %>% 
   left_join(zips_spread, by = "ZIPCODE")
 
 #join this massive summary back to the zcta geometries
-zcta_stockton_joined <- zcta_stockton %>% 
-  left_join(zips_TCO2E_total, by="ZIPCODE")
+zcta_stockton_joined <- 
+  zcta_stockton %>% 
+  left_join(zips_total, by="ZIPCODE")
 
 #below I've brought in all the code from stockton_bldg.R, but it can all be skipped by going to the load() of stockton_bldg.Rdata at the bottom. Kevin, whatever refinements you've made, go ahead and make them here.
 
-sjc_bldg <- read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/ca_06077_footprints.csv") %>% 
-  st_as_sf(wkt = "WKT") %>% 
-  st_set_crs(4326) %>% 
-  mutate(id = row_number())
+# sjc_bldg <- 
+#   read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/ca_06077_footprints.csv") %>% 
+#   st_as_sf(wkt = "WKT") %>% 
+#   st_set_crs(4326) %>% 
+#   st_transform(st_crs(zcta_stockton)) %>% 
+#   mutate(id = row_number())
+# 
+# stockton_bldg <- 
+#   sjc_bldg[which(sjc_bldg$id %in% st_centroid(sjc_bldg)[stockton_boundary_influence,]$id),]
+# 
+# sjc_parcels <- 
+#   st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Parcels/Parcels.shp") %>% 
+#   st_transform(st_crs(zcta_stockton))
+# 
+# sjc_parcels_valid <- 
+#   st_make_valid(sjc_parcels)
+# 
+# stockton_parcels <- 
+#   sjc_parcels_valid[stockton_boundary_influence,]
+# 
+# bldg_parcel_join <- 
+#   st_join(st_centroid(stockton_bldg), stockton_parcels) %>%
+#   dplyr::select(APN, id, STAREA__) %>% 
+#   rename(area = STAREA__) %>% 
+#   st_set_geometry(NULL)
+# 
+# sjc_zoning <- 
+#   st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Zoning/Zoning.shp") %>% 
+#   st_transform(st_crs(zcta_stockton)) %>% 
+#   filter(ZNLABEL != "STOCKTON")
+# 
+# stockton_zoning <- 
+#   st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Stockton_Zoning/Zoning.shp") %>% 
+#   st_transform(st_crs(zcta_stockton))
+# 
+# bldg_zoning_join <- 
+#   st_join(st_centroid(stockton_bldg), stockton_zoning) %>% 
+#   dplyr::select(ZONE, id) %>% 
+#   st_set_geometry(NULL)
+# 
+# bldg_zoning_join_uninc <- 
+#   st_join(st_centroid(stockton_bldg), sjc_zoning) %>% 
+#   dplyr::select(ZNCODE, id) %>% 
+#   st_set_geometry(NULL)
+# 
+# bldg_zoning_join %<>% 
+#   merge(bldg_zoning_join_uninc) %>% 
+#   mutate(ZONE = ifelse(is.na(ZONE),as.character(ZNCODE),as.character(ZONE))) %>% 
+#   dplyr::select(ZONE, id)
+# 
+# sjc_bgs <- 
+#   block_groups("California", "San Joaquin County")
+# 
+# stockton_bgs <- 
+#   sjc_bgs[stockton_boundary_influence,]
+# 
+# bldg_bg_join <- 
+#   st_join(st_centroid(stockton_bldg), stockton_bgs) %>% 
+#   dplyr::select(GEOID, id) %>% 
+#   st_set_geometry(NULL)
+# 
+# bldg_zcta_join <- 
+#   st_join(st_centroid(stockton_bldg), zcta_stockton) %>% 
+#   dplyr::select(ZIPCODE, id) %>% 
+#   st_set_geometry(NULL)
+# 
+# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/tax_sjc.Rdata")
+# 
+# tax_sjc <- 
+#   tax_sjc %>% 
+#   mutate(APN = as.numeric(apn)) %>% 
+#   st_set_geometry(NULL)
+# 
+# stockton_bldg_final <-
+#   stockton_bldg %>%
+#   left_join(bldg_parcel_join, by="id") %>%
+#   left_join(bldg_zoning_join, by="id") %>%
+#   left_join(bldg_bg_join, by="id") %>%
+#   left_join(bldg_zcta_join, by="id") %>%
+#   left_join(tax_sjc, by="APN") %>%
+#   mutate( # the following takes the bldg data, computes bldgground (ground footprint, where the factor conversion is sqm to sqft) and bldgtot (total sqft).
+#     bldgground = as.numeric(st_area(WKT))*10.7639,
+#     bldgtot =
+#       ifelse(
+#         is.na(stories),
+#         bldgground,
+#         bldgground*stories
+#       ),
+#     ZIPCODE = as.numeric(ZIPCODE),
+#     ZONING = 
+#       ifelse(
+#         type > 0 & type < 20, 
+#         "R", 
+#         ifelse(
+#           type > 20 & type < 50, 
+#           "C",
+#           "O"
+#         )
+#       )
+#   )
+# 
+# save(stockton_bldg_final, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
 
-stockton_boundary_influence %<>% 
-  st_transform(st_crs(4326))
+bg_bldg <-
+  stockton_bldg_final %>% 
+  st_set_geometry(NULL) %>% 
+  group_by(GEOID, ZONING) %>% 
+  summarize(
+    numbldg = n(),
+    bldgtot = sum(bldgtot, na.rm=T)
+  ) %>% 
+  ungroup() %>% 
+  left_join(stockton_bgs_full, by = "GEOID") %>% 
+  st_as_sf() %>% 
+  filter(!is.na(st_dimension(.)))
 
-stockton_bldg <- sjc_bldg[which(sjc_bldg$id %in% st_centroid(sjc_bldg)[stockton_boundary_influence,]$id),]
+#res/sqft per block group
+bg_pop <-
+  getCensus(
+    name = "acs/acs5",
+    vintage = 2017,
+    vars = c("B01003_001E"),
+    region = "block group:*",
+    regionin = "state:06+county:077"
+  ) %>%
+  transmute(
+    GEOID = paste0(state,county,tract,block_group),
+    pop = B01003_001E
+  )
 
-sjc_parcels <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Parcels/Parcels.shp", quiet = TRUE) %>% 
-  st_transform(st_crs(4326))
+bg_bldg_norm_r <-
+  bg_bldg %>% 
+  filter(ZONING == "R") %>% 
+  left_join(bg_pop, by = "GEOID") %>% 
+  mutate(`Residents/1000sqft` = pop/bldgtot*1000)
 
-sjc_parcels_valid <- st_make_valid(sjc_parcels)
+mapview(bg_bldg_norm_r,zcol=c("Residents/1000sqft"), legend = TRUE, layer.name = "Residents/1000sqft")
+```
 
-stockton_parcels <- sjc_parcels_valid[stockton_boundary_influence,]
+```{r}
+#job/sqft per block group
+bg_bldg_norm_c <-
+  bg_bldg %>% 
+  filter(ZONING == "C") %>% 
+  left_join(
+    stockton_wac %>% 
+      filter(year == 2017) %>% 
+      dplyr::select(jobs = C000, GEOID), 
+    by = "GEOID"
+  ) %>% 
+  mutate(`Jobs/1000sqft` = jobs/bldgtot*1000)
 
-bldg_parcel_join <- st_join(st_centroid(stockton_bldg), stockton_parcels) %>% 
-  dplyr::select(APN, id, STAREA__) %>% 
-  rename(area = STAREA__) %>% 
-  st_set_geometry(NULL)
+mapview(bg_bldg_norm_c,zcol=c("Jobs/1000sqft"), legend = TRUE, layer.name = "Jobs/1000sqft")
 
-sjc_zoning <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Zoning/Zoning.shp", quiet = TRUE) %>% st_transform(st_crs(4326)) %>% 
-  filter(ZNLABEL != "STOCKTON")
+bldg_norm_r <-
+  bg_bldg %>% 
+  filter(ZONING == "R") %>% 
+  left_join(bg_pop, by = "GEOID") %>% 
+  summarize(
+    pop = sum(pop, na.rm=T),
+    bldgtot = sum(bldgtot, na.rm=T)
+  ) %>% 
+  mutate(`Residents/1000sqft` = pop/bldgtot*1000)
 
-stockton_zoning <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Stockton_Zoning/Zoning.shp", quiet = TRUE) %>% 
-  st_transform(st_crs(4326))
+bldg_norm_c <-
+  bg_bldg %>% 
+  filter(ZONING == "C") %>% 
+  left_join(
+    stockton_wac %>% 
+      filter(year == 2017) %>% 
+      dplyr::select(jobs = C000, GEOID), 
+    by = "GEOID"
+  ) %>% 
+  summarize(
+    jobs = sum(jobs, na.rm=T),
+    bldgtot = sum(bldgtot, na.rm=T)
+  ) %>% 
+  mutate(`Jobs/1000sqft` = jobs/bldgtot*1000)
+```
 
-bldg_zoning_join <- st_join(st_centroid(stockton_bldg), stockton_zoning) %>% 
-  dplyr::select(ZONE, id) %>% 
-  st_set_geometry(NULL)
+Because we do not have robust historical building datasets, we cannot analyze the change in building square footages over time. For forecasting, we  assume an overall fixed building utilization estimate of 1.7 residents per 1000 sqft of residential buildings, and 1.3 jobs per 1000 sqft of commercial buildings. In the intervention stage, if we expect a strategy would change building utilization, we would make a reduction in energy consumption relative to these baseline utilization rates.
 
-bldg_zoning_join_uninc <- st_join(st_centroid(stockton_bldg), sjc_zoning) %>% 
-  dplyr::select(ZNCODE, id) %>% 
-  st_set_geometry(NULL)
+As one last couple of building-specific analyses, we aggregated building square footage information up to the zipcode level and compared with energy usage data to see residential and commercial building energy efficiency at a recent snapshot of time as spatially distributed in Stockton.
 
-bldg_zoning_join %<>% merge(bldg_zoning_join_uninc) %>% 
-  mutate(ZONE = ifelse(is.na(ZONE),as.character(ZNCODE),as.character(ZONE))) %>% 
-  dplyr::select(ZONE, id)
-
-sjc_bgs <- block_groups("California", "San Joaquin County") %>% 
-  st_transform(st_crs(4326))
-
-stockton_bgs <- sjc_bgs[stockton_boundary_influence,]
-
-bldg_bg_join <- st_join(st_centroid(stockton_bldg), stockton_bgs) %>% 
-  dplyr::select(GEOID, id) %>% 
-  st_set_geometry(NULL)
-
-zcta_stockton %<>% st_transform(st_crs(4326))
-
-bldg_zcta_join <- st_join(st_centroid(stockton_bldg), zcta_stockton) %>% 
-  dplyr::select(ZIPCODE, id) %>% 
-  st_set_geometry(NULL)
-
-zcta_stockton %<>% st_transform(st_crs(zcta))
-
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/sjc_assessor.Rdata")
-
-sjc_assessor <- sjc_assessor %>% 
-  mutate(APN = as.numeric(`UNFORMATTED APN`))
-
-stockton_bldg_final <- stockton_bldg %>% 
-  left_join(bldg_parcel_join, by="id") %>% 
-  left_join(bldg_zoning_join, by="id") %>% 
-  left_join(bldg_bg_join, by="id") %>% 
-  left_join(bldg_zcta_join, by="id") %>% 
-  left_join(sjc_assessor, by="APN") %>% 
-  st_transform(st_crs(zcta))
-
-stockton_boundary_influence %<>% st_transform(st_crs(zcta))
-
-# the following takes the bldg data, computes bldgground (ground footprint, where the factor conversion is sqm to sqft) and bldgtot (total sqft). O is "Other" zoning, though we may want to disaggregate more.
-zcta_bldg_summary <- stockton_bldg_final %>% 
-  mutate(bldgground = as.numeric(st_area(WKT))*10.7639,
-         bldgtot = ifelse(is.na(`STORIES NUMBER`), bldgground, bldgground * `STORIES NUMBER`), 
-         ZIPCODE = as.numeric(ZIPCODE), 
-         ZONING = ifelse(substr(ZONE,1,1)=="R","R", ifelse(substr(ZONE,1,1)=="C","C","O"))) %>% 
-  st_set_geometry(NULL)
-
+```{r}
 #disaggregating by zipcode and zoning type of the buildings to get summaries of # of buildings, total ground footprint, and total bldg sqft. the filter removes NAs in the data, which could be missing zones in specific zipcodes.
-zcta_bldg_spread <- zcta_bldg_summary %>% 
+zcta_bldg_spread <- 
+  stockton_bldg_final %>% 
+  st_set_geometry(NULL) %>% 
   group_by(ZIPCODE, ZONING) %>% 
-  summarise(NUMBLDG = n(), 
-            TOTSQFTGROUND = sum(bldgground), 
-            TOTSQFT = sum(bldgtot)) %>% 
+  summarise(
+    NUMBLDG = n(),
+    TOTSQFTGROUND = sum(bldgground, na.rm=T),
+    TOTSQFT = sum(bldgtot, na.rm=T)
+  ) %>% 
   filter(!is.na(ZIPCODE) & !is.na(ZONING)) %>% 
   gather(key, value, NUMBLDG:TOTSQFT) %>% 
   unite(temp,ZONING,key) %>% 
   spread(temp,value)
 
-#summarize totals by zipcode (without breaking down to zoning type), then join the zoning-specific subtotals to it.
-zcta_bldg_summary %<>% group_by(ZIPCODE) %>% 
-  summarise(NUMBLDG = n(), 
-            TOTSQFTGROUND = sum(bldgground), 
-            TOTSQFT = sum(bldgtot)) %>% 
+#summarize totals by zipcode, then join the zoning-specific subtotals to it.
+zcta_bldg_summary <-
+  stockton_bldg_final %>% 
+  st_set_geometry(NULL) %>% 
+  group_by(ZIPCODE) %>% 
+  summarise(
+    NUMBLDG = n(),
+    TOTSQFTGROUND = sum(bldgground, na.rm=T),
+    TOTSQFT = sum(bldgtot, na.rm=T)
+  ) %>% 
   left_join(zcta_bldg_spread, by = "ZIPCODE")
 
-#the following gets quite messy, basically normalizing everything by sqft, where before we normalized by customer. there is probably a more elegant way to do this which requires getting the sqft data in much earlier, basically right at the beginning, and then creating sqft-normalized values BEFORE doing the first spreads earlier in the script. One would just need to be careful about how R_TOTSQFT and C_TOTSQFT are used in the right cases. Any attempt to better organize this would be appreciated.
-zcta_bldg_stockton_joined <- zcta_stockton_joined %>% 
+zcta_bldg_stockton_joined <- 
+  zcta_stockton_joined %>% 
   filter(ZIPCODE != 95211) %>% 
   left_join(zcta_bldg_summary, by = "ZIPCODE") %>% 
-  mutate(ER_KBTUperSQFT = ER_TOTALKBTU/R_TOTSQFT, 
-         GR_KBTUperSQFT = GR_TOTALKBTU/R_TOTSQFT, 
-         EC_KBTUperSQFT = EC_TOTALKBTU/C_TOTSQFT, 
-         GC_KBTUperSQFT = GC_TOTALKBTU/C_TOTSQFT, 
-         R_KBTUperSQFT = R_TOTALKBTU/R_TOTSQFT, 
-         C_KBTUperSQFT = C_TOTALKBTU/C_TOTSQFT, 
-         E_KBTUperSQFT = E_TOTALKBTU/TOTSQFT, 
-         G_KBTUperSQFT = G_TOTALKBTU/TOTSQFT, 
-         KBTUperSQFT = TOTALKBTU/TOTSQFT,
-         ER_TCO2EperSQFT = ER_TOTALTCO2E/R_TOTSQFT, 
-         GR_TCO2EperSQFT = GR_TOTALTCO2E/R_TOTSQFT, 
-         EC_TCO2EperSQFT = EC_TOTALTCO2E/C_TOTSQFT, 
-         GC_TCO2EperSQFT = GC_TOTALTCO2E/C_TOTSQFT, 
-         R_TCO2EperSQFT = R_TOTALTCO2E/R_TOTSQFT, 
-         C_TCO2EperSQFT = C_TOTALTCO2E/C_TOTSQFT, 
-         E_TCO2EperSQFT = E_TOTALTCO2E/TOTSQFT, 
-         G_TCO2EperSQFT = G_TOTALTCO2E/TOTSQFT, 
-         TCO2EperSQFT = TOTALTCO2E/TOTSQFT)
+  mutate(
+    ER_KBTUperSQFT = ER_TOTALKBTU/R_TOTSQFT, 
+    GR_KBTUperSQFT = GR_TOTALKBTU/R_TOTSQFT, 
+    EC_KBTUperSQFT = EC_TOTALKBTU/C_TOTSQFT, 
+    GC_KBTUperSQFT = GC_TOTALKBTU/C_TOTSQFT, 
+    R_KBTUperSQFT = R_TOTALKBTU/R_TOTSQFT, 
+    C_KBTUperSQFT = C_TOTALKBTU/C_TOTSQFT, 
+    E_KBTUperSQFT = E_TOTALKBTU/TOTSQFT, 
+    G_KBTUperSQFT = G_TOTALKBTU/TOTSQFT, 
+    KBTUperSQFT = TOTALKBTU/TOTSQFT
+  )
 
-mapview(zcta_bldg_stockton_joined, zcol= c("ER_TCO2EperSQFT", "GR_TCO2EperSQFT", "EC_TCO2EperSQFT", "GC_TCO2EperSQFT", "R_TCO2EperSQFT","C_TCO2EperSQFT","E_TCO2EperSQFT","G_TCO2EperSQFT","TCO2EperSQFT"), map.types = c("OpenStreetMap"), legend = TRUE, hide = TRUE)
+mapview(zcta_bldg_stockton_joined, zcol=c("R_KBTUperSQFT"), legend = TRUE, layer.name = "KBTU per sqft, Residential")
+```
+
+```{r}
+mapview(zcta_bldg_stockton_joined, zcol=c("C_KBTUperSQFT"), legend = TRUE, layer.name = "KBTU per sqft, Commercial")
 ```
 
 ```{r}
 zcta_bldg_stockton_summary <- 
   zcta_bldg_stockton_joined %>% 
   st_set_geometry(NULL) %>% 
-  summarise_at(c("NUMBLDG", "R_NUMBLDG", "C_NUMBLDG","TOTSQFTGROUND","TOTSQFT","R_TOTSQFT","C_TOTSQFT","R_TOTSQFTGROUND","C_TOTSQFTGROUND","TOTALKBTU","E_TOTALKBTU","G_TOTALKBTU","R_TOTALKBTU","C_TOTALKBTU", "ER_TOTALKBTU", "GR_TOTALKBTU", "EC_TOTALKBTU", "GC_TOTALKBTU", "TOTALTCO2E", "E_TOTALTCO2E", "G_TOTALTCO2E", "R_TOTALTCO2E", "C_TOTALTCO2E", "ER_TOTALTCO2E", "GR_TOTALTCO2E", "EC_TOTALTCO2E", "GC_TOTALTCO2E"), sum) %>% 
-  mutate(ER_KBTUperSQFT = ER_TOTALKBTU/R_TOTSQFT, 
-         GR_KBTUperSQFT = GR_TOTALKBTU/R_TOTSQFT, 
-         EC_KBTUperSQFT = EC_TOTALKBTU/C_TOTSQFT, 
-         GC_KBTUperSQFT = GC_TOTALKBTU/C_TOTSQFT, 
-         R_KBTUperSQFT = R_TOTALKBTU/R_TOTSQFT, 
-         C_KBTUperSQFT = C_TOTALKBTU/C_TOTSQFT, 
-         E_KBTUperSQFT = E_TOTALKBTU/TOTSQFT, 
-         G_KBTUperSQFT = G_TOTALKBTU/TOTSQFT, 
-         KBTUperSQFT = TOTALKBTU/TOTSQFT,
-         ER_TCO2EperSQFT = ER_TOTALTCO2E/R_TOTSQFT, 
-         GR_TCO2EperSQFT = GR_TOTALTCO2E/R_TOTSQFT, 
-         EC_TCO2EperSQFT = EC_TOTALTCO2E/C_TOTSQFT, 
-         GC_TCO2EperSQFT = GC_TOTALTCO2E/C_TOTSQFT, 
-         R_TCO2EperSQFT = R_TOTALTCO2E/R_TOTSQFT, 
-         C_TCO2EperSQFT = C_TOTALTCO2E/C_TOTSQFT, 
-         E_TCO2EperSQFT = E_TOTALTCO2E/TOTSQFT, 
-         G_TCO2EperSQFT = G_TOTALTCO2E/TOTSQFT, 
-         TCO2EperSQFT = TOTALTCO2E/TOTSQFT)
+  summarise_at(c("NUMBLDG", "R_NUMBLDG", "C_NUMBLDG","TOTSQFTGROUND","TOTSQFT","R_TOTSQFT","C_TOTSQFT","R_TOTSQFTGROUND","C_TOTSQFTGROUND","TOTALKBTU","E_TOTALKBTU","G_TOTALKBTU","R_TOTALKBTU","C_TOTALKBTU", "ER_TOTALKBTU", "GR_TOTALKBTU", "EC_TOTALKBTU", "GC_TOTALKBTU"), sum, na.rm=T) %>% 
+  mutate(
+    ER_KBTUperSQFT = ER_TOTALKBTU/R_TOTSQFT, 
+    GR_KBTUperSQFT = GR_TOTALKBTU/R_TOTSQFT, 
+    EC_KBTUperSQFT = EC_TOTALKBTU/C_TOTSQFT, 
+    GC_KBTUperSQFT = GC_TOTALKBTU/C_TOTSQFT, 
+    R_KBTUperSQFT = R_TOTALKBTU/R_TOTSQFT, 
+    C_KBTUperSQFT = C_TOTALKBTU/C_TOTSQFT, 
+    E_KBTUperSQFT = E_TOTALKBTU/TOTSQFT, 
+    G_KBTUperSQFT = G_TOTALKBTU/TOTSQFT, 
+    KBTUperSQFT = TOTALKBTU/TOTSQFT,
+  )
 
 # datatable(zcta_bldg_stockton_summary, rownames = FALSE, options = list(pageLength = 20))
 ```
 
+## GHG Forecast
+
+For our "business as usual" forecast og GHG emissions through 2040, and for our subsequent exploration of intervention strategies, we will focus on the following sectors for which we have used available data to refine our models: transportation, commercial energy, and residential energy. These sectors represented 58% of ICLEI's modeled emissions in 2016. The other sectors, particularly industrial energy which comprised 24% of 2016 emissions, are also significant opportunities for GHG reductions, but are outside of the scope of this analysis without better data.
+
+Our simplified model of transportation emissions assumes that commute one-way vehicle miles traveled per worker is on a linear trend based on recent data. Otherwise, our forecasts of growth in the number of employed residents drives changes in VMT and thus transportation emissions. Other "business as usual" factors, like a forecasted adoption of EVs, are not considered in this analysis.
+
+Our simplified model of energy emissions will assume that building square footage increases with population and job growth through fixed ratios, and an underlying energy use factor for commercial and residential electricity and gas will follow the same trends as the last six years through 2040. Otherwise, a basic climate change model will drive additional changes in the forecasts.
+
+In summary, the following assumptions go into inputs for the forecasts, which are also shown in the table below:
+
+- From Section 2.1, we derived future population, employed resident, and job forecasts, specifically for the years 2020, 2025, 2030, 2035, and 2040.
+- From Section 2.4, we derived commute one-way VMT/workers for 2011-2017, and projected a linear trend to 2040.
+- From Section 2.4, we derived simplified aggregate vehicle emission rates for San Joaquin County through 2040.
+- From Section 2.5, we derived a linear forecast of PG&E's electricity emissions factor which runs from 2017's data point towards a 2045 target of 100% clean energy.
+- From Section 2.5, we derived linear forecasts of heating and cooling degree days through 2040 from Cal-Adapt's HDD and CDD projections.
+- From Section 2.5, we derived linear forecasts of energy use per capita per degree-day through 2040. For Commercial Gas, we leveled out the forecast at 1 kBTU/job/HDD from 2035 on.
+
+```{r}
+summary_TCO2E_norm_projection <-
+  summary_TCO2E_norm_all
+
+summary_TCO2E_norm_projection[7:11,1] <- c(2020,2025,2030,2035,2040)
+
+summary_TCO2E_norm_projection <-
+  summary_TCO2E_norm_projection %>% 
+  dplyr::select(-`Heating Degree Days`,-`Cooling Degree Days`,-Residents,-Jobs) %>% 
+  mutate(
+    `Residential Electricity, kBTU/resident/CDD` =
+      ifelse(
+        Year < 2020,
+        `Residential Electricity, kBTU/resident/CDD`,
+        lm(
+          `Residential Electricity, kBTU/resident/CDD`[1:6] ~ Year[1:6]
+        )$coefficients[1]+
+          lm(
+            `Residential Electricity, kBTU/resident/CDD`[1:6] ~ Year[1:6]
+          )$coefficients[2]*Year
+      ),
+    `Residential Gas, kBTU/resident/HDD` =
+      ifelse(
+        Year < 2020,
+        `Residential Gas, kBTU/resident/HDD`,
+        lm(
+          `Residential Gas, kBTU/resident/HDD`[1:6] ~ Year[1:6]
+        )$coefficients[1]+
+          lm(
+            `Residential Gas, kBTU/resident/HDD`[1:6] ~ Year[1:6]
+          )$coefficients[2]*Year
+      ),
+    `Commercial Electricity, kBTU/job/CDD` =
+      ifelse(
+        Year < 2020,
+        `Commercial Electricity, kBTU/job/CDD`,
+        lm(
+          `Commercial Electricity, kBTU/job/CDD`[1:6] ~ Year[1:6]
+        )$coefficients[1]+
+          lm(
+            `Commercial Electricity, kBTU/job/CDD`[1:6] ~ Year[1:6]
+          )$coefficients[2]*Year
+      ),
+    `Commercial Gas, kBTU/job/HDD` =
+      ifelse(
+        Year < 2020,
+        `Commercial Gas, kBTU/job/HDD`,
+        lm(
+          `Commercial Gas, kBTU/job/HDD`[1:6] ~ Year[1:6]
+        )$coefficients[1]+
+          lm(
+            `Commercial Gas, kBTU/job/HDD`[1:6] ~ Year[1:6]
+          )$coefficients[2]*Year
+      ),
+    `Commercial Gas, kBTU/job/HDD` =
+      ifelse(
+        `Commercial Gas, kBTU/job/HDD` < 1,
+        1,
+        `Commercial Gas, kBTU/job/HDD`
+      )
+  ) %>% 
+  left_join(hdd, by = c("Year" = "YEAR")) %>% 
+  left_join(cdd, by = c("Year" = "YEAR")) %>% 
+  left_join(pop_jobs_sjc_w_projection %>% dplyr::select(Year, Population, Jobs), by = "Year")
+
+# PG&E emissions factors
+
+
+```
 
 # Case Studies
 
@@ -2635,3 +2865,8 @@ zcta_bldg_stockton_summary <-
 ## R&D Business Growth
 
 # Conclusion
+
+```{r}
+save.image(file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_greeneconomy.Rdata")
+```
+
