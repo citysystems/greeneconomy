@@ -2,7 +2,7 @@
 
 pop_blockgroup_stockton <- function(month_hps){
 
-  stockton_boundary_influence <- st_read("S:/CCF/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(4326))
+  stockton_boundary_influence <- st_read("C:/Users/Derek/Desktop/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(4326))
   sjc_bgs <- block_groups("California", "San Joaquin County", cb = TRUE) %>% st_transform(st_crs(4326))
   stockton_bgs <- sjc_bgs[which(sjc_bgs$GEOID %in% st_centroid(sjc_bgs)[stockton_boundary_influence,]$GEOID),]
   stockton_bgs <- stockton_bgs %>% dplyr::select(GEOID)

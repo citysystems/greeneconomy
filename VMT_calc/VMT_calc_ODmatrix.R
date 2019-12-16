@@ -42,6 +42,10 @@ source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions
 
 ##########
 
+# Uploading the South Stockton Promise Zone (SSPZ) and the Stockton Spheres of Influence. 
+sspzboundary <- st_read("C:/Users/Derek/Desktop/sspzboundary.shp") %>% st_transform(st_crs(4326))
+stockton_boundary_influence <- (st_read("C:/Users/Derek/Desktop/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(4326)))[1,]
+
 # Taking the block groups within Stockton and filtering them by those within the following:
 # (1) Stockton Boundary of Influence (SBOI)
 # (2) Stockton South Promise Zone (SSPZ)
@@ -63,7 +67,7 @@ sboi_centroid <- st_centroid(sboi_bgs)
 ##########
 
 # Uploading the San Joaquin safegraphplaces dataset.
-safegraphplaces <- read.csv("S:/Restricted Data Library/Safegraph/poi/safegraphplaces.csv", header=TRUE, stringsAsFactors = FALSE)
+safegraphplaces <- read.csv("C:/Users/Derek/Desktop/safegraphplaces.csv", header=TRUE, stringsAsFactors = FALSE)
 safegraphplaces <- safegraphplaces[!is.na(safegraphplaces$sub_category), ]
 safegraphplaces$full_address <- paste(safegraphplaces$location_name, safegraphplaces$street_address,
                                       safegraphplaces$city, safegraphplaces$state, safegraphplaces$zip_code, sep = ", ")
@@ -82,6 +86,6 @@ osrmTable_Stockton_VMT <- do.call(rbind, lapply(1:nrow(safegraphplaces), functio
   
 }))
 
-saveRDS(osrmTable_Stockton_VMT, "C:/Users/Derek/Desktop/osrmTable_Stockton_VMT")
+saveRDS(osrmTable_Stockton_VMT, "C:/Users/Derek/Desktop/osrmTable_Stockton_VMT.RData")
 
 # osrmTable_Stockton_VMT <- left_join(osrmTable_Stockton_VMT, safegraphplaces[ , c("safegraph_place_id", "full_address")], by = "safegraph_place_id")
