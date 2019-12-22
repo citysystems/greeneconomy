@@ -104,14 +104,14 @@ sboi_centroid <- st_centroid(sboi_bgs)
 
 ##########
 ### osrmTable_Stockton_VMT <- do.call(rbind, lapply( 1:nrow(safegraphplaces), function(counterTable){
-  
+
 ###  safegraph_osrm <- data.frame( osrmTable(src = sboi_centroid[, c("GEOID", "geometry")], dst = safegraphplaces[counterTable, c("safegraph_place_id", "longitude", "latitude")]) )
-  
+
 ###  safegraph_osrm <- data.frame( cbind(sboi_centroid$GEOID, safegraphplaces[counterTable, c("safegraph_place_id", "full_address")], safegraph_osrm) )
 ###  colnames(safegraph_osrm) <- c("source_GEOID", "safegraph_place_id", "full_address", "time_minutes", "sources.lon", "sources.lat", "destination.lon", "destination.lat")
-  
+
 ###  return(safegraph_osrm)
-  
+
 ### }))
 
 ### save(osrmTable_Stockton_VMT, file = "S:/CCF/OD_VMT_df/osrm_Stockton_VMT.RData")
@@ -136,7 +136,7 @@ NHTS_carpoolVehicleFilter <- nudge_carpoolVehicleFilter(NHTS_df_final)
 # Downloading Safegraph patterns .csv files.
 
 for(num in 1:12){
-
+  
   print(num)
   
   patterns_text <- patterns_choice(num)
@@ -361,7 +361,7 @@ for(counterMonth in 1:12){
   
   start_counter <- nrow(locations_of_consideration)
   locations_of_consideration <- rbind(locations_of_consideration, st_sf(st_as_sf(m_dest_matrix_sf[!is.na(m_dest_matrix_sf$longitude), ],
-                                                                                coords = c("longitude", "latitude"), crs = 4326) ) )
+                                                                                 coords = c("longitude", "latitude"), crs = 4326) ) )
   pre_end_counter <- nrow( locations_of_consideration )
   
   non_sf_SJ_dest <- m_dest_matrix_sf[m_dest_matrix_sf$full_address %in% as.character(dest_amenities_matrix[!(dest_amenities_matrix$name_address %in% locations_of_consideration[(start_counter+1):pre_end_counter,]$full_address),]),]
@@ -411,13 +411,13 @@ for(counterMonth in 1:12){
   pop_bg_stockton <- pop_blockgroup_stockton(m_hps)
   
   # This for loop performs the VMT analysis for each of Stockton's block groups.
-
+  
   for(counterVMT in 1:dest_num){
-
+    
     print(counterVMT)
     
     # For each destination, I'm creating a list of the origins and a vector with the destination. These data structures have visit and visitor count information.
-
+    
     origin_matrix <- m_origin_matrix_sf[m_origin_matrix_sf$full_address == dest_amenities_matrix[counterVMT, "name_address"], ]
     dest_vector <- m_dest_matrix_sf[m_dest_matrix_sf$full_address == dest_amenities_matrix[counterVMT, "name_address"], ]
     
@@ -486,7 +486,7 @@ for(counterMonth in 1:12){
     
     locations_of_consideration[(start_counter + 1):end_counter, ][locations_of_consideration[(start_counter + 1):end_counter, ]$full_address == dest_vector$full_address, (9 + counterMonth)] <- sum(VMT_Origin_recorded_unique_dest, na.rm = TRUE)
     locations_of_consideration[(start_counter + 1):end_counter, ][locations_of_consideration[(start_counter + 1):end_counter, ]$full_address == dest_vector$full_address, (21 + counterMonth)] <- sum(VMT_Origin_nonrecorded_unique_dest)
-     
+    
   }
   
   # Calculating the VMTs associated with destinations not included within "dest_amenities_matrix".
@@ -499,7 +499,7 @@ for(counterMonth in 1:12){
   loc_of_cons_proportion_recorded <- locations_of_consideration[(locations_of_consideration[(start_counter + 1):end_counter,]$full_address %in% StocktonDest_proportion_recorded_narm$locations),]
   
   k_withinStocktonBuffer <- sum( as.numeric(StocktonDest_proportion_recorded_narm[,"StocktonDest_proportion_recorded"]) * (loc_of_cons_proportion_recorded[, (9 + counterMonth)] + loc_of_cons_proportion_recorded[, (21 + counterMonth)])[, 1] / sum((loc_of_cons_proportion_recorded[, (9 + counterMonth)] + loc_of_cons_proportion_recorded[, (21 + counterMonth)])[,1]) )
-
+  
   # Proportion value for outside of the Stockton 1-mile buffer
   
   nonStocktonDest_proportion_recorded_narm <- nonStocktonDest_proportion_recorded[!is.na(nonStocktonDest_proportion_recorded$locations), ]
@@ -577,7 +577,7 @@ for(counterMonth in 1:12){
   VMT_unique_dest_avg <- (locations_of_consideration[(start_counter + 1):end_counter, ][VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, (33 + counterMonth)])
   VMT_unique_dest_avg <- mean(VMT_unique_dest_avg[[1]], na.rm = TRUE)
   VMT_Origin_otherdest_nonrecorded[, (1 + counterMonth)] <- VMT_unique_dest_avg * otherdest_rows / nrow(pop_bg_stockton)
-
+  
   ### This may not be needed, anymore.
   
   
