@@ -7,7 +7,7 @@ safegraphplaces_tot <- rbind(safegraphplaces_SJ, safegraphplaces_CA)
 safegraphplaces <- safegraphplaces_cleanse(safegraphplaces_tot)
 
 for(counterMonth in 1:12){
-
+  
   patterns_text <- patterns_choice(counterMonth)
   filename <- paste("C:/Users/Derek/Desktop/m_patterns_new", substr(patterns_text, 38, 51), "_new.RData", sep = "")
   load(filename)
@@ -442,9 +442,9 @@ for (counterTable in 34596:nrow(all_dest)){
   colnames(safegraph_osrm) <- c("source_GEOID", "safegraph_place_id", "full_address", "time_minutes", "sources.lon", "sources.lat", "destination.lon", "destination.lat")
   
   osrmTable_Stockton_VMT_v2 <- rbind(osrmTable_Stockton_VMT_v2, safegraph_osrm)
-
+  
   print(counterTable)
-
+  
 }
 
 osrmTable_Stockton_VMT_v2 <- do.call(rbind, lapply( 1:nrow(all_dest), function(counterTable){
@@ -489,7 +489,7 @@ osrm_drive_stockton_vmt <- do.call(rbind, lapply( 1:nrow(all_dest), function(cou
   # counterTable
   safegraph_osrm <- data.frame( cbind(sboi_centroid$GEOID, all_dest[counterTable, c("safegraph_place_id", "full_address")], safegraph_osrm) )
   colnames(safegraph_osrm) <- c("source_GEOID", "safegraph_place_id", "full_address", "time_minutes", "sources.lon", "sources.lat", "destination.lon", "destination.lat")
-
+  
   return(safegraph_osrm)
-
+  
 }))
