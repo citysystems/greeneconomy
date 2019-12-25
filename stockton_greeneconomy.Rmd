@@ -361,53 +361,56 @@ datatable(qwi_sjc_18, rownames = FALSE, options = list(pageLength = 20))
 Comparison of J/ER for different counties
 
 ```{r}
-county_jer <- NULL
-
-for(year in 2010:2017){
-  
-  ca_wac <-
-    grab_lodes(
-      state = "ca",
-      year = year,
-      lodes_type = "wac",
-      job_type = "JT01",
-      segment = "S000",
-      state_part = "main",
-      agg_geo = "tract"
-    )
-  
-  for(county in county_neighbors$COUNTYFP){
-    
-     temp <-
-      getCensus(
-        name = "acs/acs1/subject",
-        vintage = year,
-        vars = c("S2301_C01_001E","S2301_C03_001E","S2301_C04_001E"),
-        region = paste0("county:",county),
-        regionin = "state:06"
-      ) %>%
-      mutate(
-        Population16andOlder = S2301_C01_001E,
-        PercEmployedResidents = S2301_C03_001E,
-        EmployedResidents = round( PercEmployedResidents/100*Population16andOlder),
-        Year = year,
-        Jobs = 
-          ca_wac %>% 
-          filter(substr(w_tract,3,5) == county) %>% 
-          pull(C000) %>% 
-          sum(na.rm=T),
-        County = county_neighbors[which(county_neighbors$COUNTYFP == county),]$NAME,
-      ) %>%
-      dplyr::select(
-        County,
-        Year,
-        Jobs,
-        EmployedResidents
-      )
-  
-    county_jer<- rbind(county_jer,temp)
-  }
-}
+# county_jer <- NULL
+# 
+# for(year in 2010:2017){
+#   
+#   ca_wac <-
+#     grab_lodes(
+#       state = "ca",
+#       year = year,
+#       lodes_type = "wac",
+#       job_type = "JT01",
+#       segment = "S000",
+#       state_part = "main",
+#       agg_geo = "tract"
+#     )
+#   
+#   for(county in county_neighbors$COUNTYFP){
+#     
+#      temp <-
+#       getCensus(
+#         name = "acs/acs1/subject",
+#         vintage = year,
+#         vars = c("S2301_C01_001E","S2301_C03_001E","S2301_C04_001E"),
+#         region = paste0("county:",county),
+#         regionin = "state:06"
+#       ) %>%
+#       mutate(
+#         Population16andOlder = S2301_C01_001E,
+#         PercEmployedResidents = S2301_C03_001E,
+#         EmployedResidents = round( PercEmployedResidents/100*Population16andOlder),
+#         Year = year,
+#         Jobs = 
+#           ca_wac %>% 
+#           filter(substr(w_tract,3,5) == county) %>% 
+#           pull(C000) %>% 
+#           sum(na.rm=T),
+#         County = county_neighbors[which(county_neighbors$COUNTYFP == county),]$NAME,
+#       ) %>%
+#       dplyr::select(
+#         County,
+#         Year,
+#         Jobs,
+#         EmployedResidents
+#       )
+#   
+#     county_jer<- rbind(county_jer,temp)
+#   }
+# }
+# 
+# save(county_jer,file="C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/county_jer.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/county_jer.Rdata")
 
 county_jer %>% 
   filter(County %in% c("San Joaquin","Stanislaus","Alameda","Sacramento","Fresno","Solano","Contra Costa")) %>% 
@@ -1787,17 +1790,17 @@ get_county_vmt <- function(county,year){
 
 # county_commute_vmt <- NULL
 # 
-# for(year in 2011:2017){
-#   for(county in c("001","077")){
-#     county_commute_vmt <-
-#       rbind(
-#         county_commute_vmt,
-#         get_county_vmt(county,year)
-#       )
-# 
-#     save(county_commute_vmt,file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt.Rdata")
-#   }
-# }
+for(year in 2015:2016){
+  for(county in c("067","099")){
+    county_commute_vmt <-
+      rbind(
+        county_commute_vmt,
+        get_county_vmt(county,year)
+      )
+
+    save(county_commute_vmt,file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt.Rdata")
+  }
+}
 
 load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt.Rdata")
 
@@ -1832,274 +1835,6 @@ county_commute_vmt %>%
 ### City-level Analysis
 
 We isolated every pair of Stockton home blockgroups and work blockgroups and used the [Open Source Routing Machine](http://project-osrm.org/) to compute a distance (in miles) and duration (and hours) for a one-way trip. The following graph shows the distribution of workplaces by distance from home for Stockton residents.
-
-```{r}
-# ca_lodes <-
-#   grab_lodes(
-#     state = "ca",
-#     year = 2017,
-#     lodes_type = "od",
-#     job_type = "JT01", #Primary Jobs
-#     segment = "S000",
-#     state_part = "main",
-#     agg_geo = "bg"
-#   )
-# 
-# stockton_lodes_h <-
-#   ca_lodes[which(ca_lodes$h_bg %in% stockton_bgs_full$GEOID),]
-# 
-# stockton_lodes_h_origin_centroids <-
-#   st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$h_bg),])
-# 
-# stockton_lodes_h_dest_centroids <-
-#   st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),])
-# 
-# route <-
-#   1:nrow(stockton_lodes_h) %>%
-#   map_dfr(function(row){
-#     print(row)
-#     route <- osrmRoute(
-#       src = stockton_lodes_h_origin_centroids[which(stockton_lodes_h_origin_centroids$GEOID %in% stockton_lodes_h[row,"h_bg"]),],
-#       dst = stockton_lodes_h_dest_centroids[which(stockton_lodes_h_dest_centroids$GEOID %in% stockton_lodes_h[row,"w_bg"]),],
-#       overview = FALSE
-#     ) %>%
-#       as.list() %>%
-#       as.data.frame()
-#     if(is_empty(route)){
-#       return(
-#         data.frame(
-#           duration = NA,
-#           distance = NA
-#         )
-#       )
-#     } else {return(route)}
-#   })
-# 
-# stockton_lodes_h_route <-
-#   stockton_lodes_h %>%
-#   cbind(route)
-# 
-# stockton_lodes_h_filter <-
-#   stockton_lodes_h_route %>%
-#   filter(duration < 180)
-# 
-# travel_time_mode <-
-#   getCensus(
-#     name = "acs/acs5",
-#     vintage = 2017,
-#     region = "block group:*",
-#     regionin = "state:06+county:077",
-#     vars = "group(B08134)"
-#   ) %>%
-#   mutate(
-#     bg =
-#       paste0(state,county,tract,block_group)
-#   ) %>%
-#   filter(bg %in% stockton_lodes_h_filter$h_bg) %>% # This importantly filters to only block groups that show up in our Stockton LODES data, which reduces data size considerably.
-#   select_if(!names(.) %in% c("GEO_ID","state","county","tract","block_group","NAME")) %>%
-#   dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
-#   gather(
-#     key = "variable",
-#     value = "estimate",
-#     -bg
-#   ) %>%
-#   mutate(
-#     label = acs_vars$label[match(variable,acs_vars$name)],
-#     time = # This extracts only the time information from our label.
-#       substr(
-#         label,
-#         lapply(
-#           label,
-#           function(x){
-#             ifelse(
-#               length(unlist(gregexpr('!!',x)))<3,
-#               NA,
-#               max(unlist(gregexpr('!!',x)))+2
-#             )
-#           }
-#         ),
-#         nchar(label)
-#       ),
-#     mode = # This extracts only the mode information from our label. It doesn't fully deal with double-counting, so some are further removed later on in a filter.
-#       substr(
-#         label,
-#         lapply(
-#           label,
-#           function(x){
-#             ifelse(
-#               length(unlist(gregexpr('!!',x)))<3,
-#               NA,
-#               unlist(gregexpr('!!',x))[length(unlist(gregexpr('!!',x)))-1]+2
-#             )
-#           }
-#         ),
-#         lapply(
-#           label,
-#           function(x){
-#             max(unlist(gregexpr('!!',x)))-1
-#           }
-#         )
-#       )
-#   ) %>%
-#   filter(!is.na(time)) %>% # This removes the grand total rows that are usually at the top of the ACS data.
-#   filter(!mode %in% c("Car truck or van","Carpooled","Public transportation (excluding taxicab)")) %>% # This removes double-counted subtotals.
-#   dplyr::select(-variable,-label)
-# 
-# stockton_lodes_h_mode <-
-#   stockton_lodes_h_filter %>%
-#   transmute(
-#     residence = h_bg,
-#     workplace = w_bg,
-#     jobs = S000,
-#     duration = duration,
-#     person_miles = S000*as.numeric(distance)/1.60934,
-#     person_hours = S000*as.numeric(duration)/60
-#   ) %>%
-#   left_join(
-#     ca_bgs[,"GEOID"],
-#     by = c("residence" = "GEOID")
-#   ) %>%
-#   st_as_sf() %>%
-#   mutate(
-#     tier =
-#       case_when(
-#         duration < 10 ~ "Less than 10 minutes",
-#         duration < 15 ~ "10 to 14 minutes",
-#         duration < 20 ~ "15 to 19 minutes",
-#         duration < 25 ~ "20 to 24 minutes",
-#         duration < 30 ~ "25 to 29 minutes",
-#         duration < 35 ~ "30 to 34 minutes",
-#         duration < 45 ~ "35 to 44 minutes",
-#         duration < 60 ~ "45 to 59 minutes",
-#         TRUE ~ "60 or more minutes"
-#       )
-#   )
-# 
-# stockton_lodes_h_mode <-
-#   stockton_lodes_h_mode %>%
-#   mutate(
-#     perc_vehicle =
-#       1:nrow(stockton_lodes_h_mode) %>%
-#       map_dbl(function(x){
-#         mode_drive <-
-#           travel_time_mode %>%
-#           filter(bg == stockton_lodes_h_mode$residence[x]) %>%
-#           filter(time == stockton_lodes_h_mode$tier[x])
-# 
-#         perc_vehicle =
-#           (mode_drive$estimate[which(mode_drive$mode == "Drove alone")] +
-#              mode_drive$estimate[which(mode_drive$mode == "In 2-person carpool")]/2 +
-#              mode_drive$estimate[which(mode_drive$mode == "In 3-or-more-person carpool")]/3)/
-#           sum(mode_drive$estimate)
-# 
-#         return(perc_vehicle)
-#       }),
-#     vehicles = jobs*perc_vehicle,
-#     vmt = person_miles*perc_vehicle
-#   )
-# 
-# save(stockton_lodes_h_route,stockton_lodes_h_filter,stockton_lodes_h_mode, file= "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes.Rdata")
-
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes.Rdata")
-
-ggplot(
-  stockton_lodes_h_filter, 
-  aes(
-    x = as.numeric(distance)/1.60934, 
-    weight = S000
-  )
-) +
-  geom_histogram(binwidth = 5) +
-  labs(title = "Workplace Commute Distance to Work for Stockton Employed Residents", x = "Commute Distance to Work, Miles", y = "Number of Residents")
-```
-*Figure 7. Distribution of workplaces by distance from home for Stockton employed residents. Trips greater than 3 hours are removed. Data from LODES, 2017.*
-
-```{r}
-mapview(stockton_lodes_w_top_counties, zcol = "Average Commute Time, Hours", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Average Commute Time, Hours')
-```
-*Figure 8. Top 15 counties where Stockton residents work - average commute time, in hours. Data from LODES, 2017.*
-
-The graph above, and our subsequent analyses, focuses on counties with average commute times of less than 3 hours, which eliminates the unrealistic commutes while preserving ~94% of reported commutes.
-
-We estimated the total and average GHG emissions for Stockton workers commuting to each of the top 15 counties (filtering out counties further than 3 hours away). We made the following assumptions:
-
-- For each origin-destination block group pair, we used ACS 1-yr 2017 data on commute mode by travel time for the origin block group to estimate a share of travelers commuting by single occupancy vehicle and by carpooling, and applied this factor to the count of jobs from LODES to estimate a total number of vehicle trips and vehicle mildes traveled (VMT).
-- For carpool trips, we counted 2-person carpools as 1 vehicle for every 2 jobs, and 3-or-more-person carpools as 1 vehicle for every 3 jobs.
-- For daily VMT, each vehicle was assumed to take 2 one-way trips.
-- To convert daily VMT to annual VMT, the same annualization factor was used as ICLEI: 369.39. The factor appears to account for both expected reductions in VMT because of sick days, as well as expected increases in VMT because of chained trips.
-- All vehicles were assumed to be passenger vehicles with an average mpg of 29.2 in 2017 and CO2e emissions of 303 g/mi (0.000334 tCO2e/mi), using data from the [EPA Automotive Trends Report](https://www.epa.gov/automotive-trends/explore-automotive-trends-data). Disregarding SUVs and trucks has the effect of underestimating emissions. 
-
-```{r}
-stockton_lodes_h_counties_ghg <- 
-  stockton_lodes_h_mode %>%
-  st_set_geometry(NULL) %>% 
-  mutate(
-    COUNTY = substr(workplace,3,5)
-  ) %>%
-  group_by(COUNTY) %>%
-  summarise_at(
-    vars(jobs,person_miles,person_hours,vehicles,vmt),
-    sum, na.rm=T
-  ) %>% 
-  mutate(
-    perc_jobs = jobs/sum(jobs),
-    annual_vmt = vmt*2*369.39,
-    annual_ghg = annual_vmt*0.000334,
-    perc_ghg = annual_ghg/sum(annual_ghg),
-    avg_ghg = annual_ghg/jobs
-  ) %>% 
-  left_join(ca_counties, by = c("COUNTY" = "COUNTYFP")) %>% 
-  st_as_sf() %>% 
-  arrange(desc(annual_ghg))
-  
-stockton_lodes_h_counties_ghg_table <- 
-  stockton_lodes_h_counties_ghg %>%
-  st_set_geometry(NULL) %>% 
-  transmute(
-    County = NAME,
-    Jobs = prettyNum(round(jobs,-2),big.mark=","),
-    `Percent Jobs` = paste0(round(perc_jobs*100),"%"),
-    `VMT (millions)` = prettyNum(round(annual_vmt/1000000),big.mark=","),
-    `Total Annual GHG (tCO2e)` = prettyNum(round(annual_ghg,-3),big.mark=","),
-    `Percent Annual GHG` = paste0(round(perc_ghg*100),"%"),
-    `Average Annual GHG/worker (tCO2e)` = round(avg_ghg,1)
-  )
-
-datatable(stockton_lodes_h_counties_ghg_table[1:15,], rownames = FALSE, options = list(pageLength = 15))
-```
-*Table 15. Top 15 counties where Stockton residents work, GHG emissions. Data from LODES, 2017.*
-
-According to the table above, 59% percent of Stockton residents work in San Joaquin County and collectively contribute 18% of all commute GHGs. The next 14 counties comprise another 38% of Stockton residents, but they collectively contribute 76% of all commute GHGs. This significant difference comes down to difference in average commute distance to each county, which is directly related to average GHG emissions per worker, as seen in the following map. In a later section, we will explore opportunities to stimulate local job creation so that some of these long-distance commutes can be converted into local commutes, reducing both the toll on the environment and the tolls on health and well-being for Stockton residents.
-
-```{r}
-stockton_lodes_h_counties_ghg_map <-
-  stockton_lodes_h_counties_ghg[1:15,] %>% 
-    transmute(
-      County = NAME,
-      Jobs = prettyNum(jobs,big.mark=","),
-      `Percent Jobs` = round(perc_jobs,2),
-      VMT = prettyNum(round(vmt,0),big.mark=","),
-      `Total Annual GHG (tCO2e)` = round(annual_ghg,0),
-    `Percent Annual GHG` = round(perc_ghg,2),
-    `Average Annual GHG/worker (tCO2e)` = round(avg_ghg,2)
-      )
-
-mapview(
-  stockton_lodes_h_counties_ghg_map, 
-  zcol = "Average Annual GHG/worker (tCO2e)", 
-  map.types = c("OpenStreetMap"), 
-  legend = TRUE, 
-  layer.name = 'Average Annual GHG/worker (tCO2e)'
-)
-```
-*Figure 16. Top 15 Counties where Stockton residents work - average GHG emissions from driving per worker. Data from LODES, 2017.*
-
-```{r}
-mapview(stockton_lodes_h_counties_ghg_map, zcol = "Total Annual GHG (tCO2e)", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Total Annual GHG (tCO2e)')
-```
-*Figure 17. Top 15 Counties where Stockton residents work - annual GHG emissions from driving. Data from LODES, 2017.*
-
-To conclude this section, we used LODES and ACS data from 2013-2017 to estimate the change in VMT over that time period. Since our specific VMT methodology includes many simplifying assumptions, it is perhaps most valuable to see the change in VMT using a constant methodology over time.
 
 ```{r}
 get_stockton_vmt_bg <- function(year){
@@ -2157,13 +1892,15 @@ get_stockton_vmt_bg <- function(year){
   
   save(stockton_lodes_h_route,stockton_lodes_h_filter, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
   
-  acs_vars <-
-    listCensusMetadata(
-      name = paste0(year,"/acs/acs5"),
-      type = "variables"
-    )
-
-  save(acs_vars,file=paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
+  # acs_vars <-
+  #   listCensusMetadata(
+  #     name = paste0(year,"/acs/acs5"),
+  #     type = "variables"
+  #   )
+  # 
+  # save(acs_vars,file=paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
+  
+  load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
   
   travel_time_mode <-
     getCensus(
@@ -2347,13 +2084,15 @@ get_stockton_vmt_tract <- function(year){
   
   save(stockton_lodes_h_route,stockton_lodes_h_filter, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata"))
   
-  acs_vars <-
-    listCensusMetadata(
-      name = paste0(year,"/acs/acs5"),
-      type = "variables"
-    )
-
-  save(acs_vars,file=paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
+  # acs_vars <-
+  #   listCensusMetadata(
+  #     name = paste0(year,"/acs/acs5"),
+  #     type = "variables"
+  #   )
+  # 
+  # save(acs_vars,file=paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
+  
+  load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
   
   travel_time_mode <-
     getCensus(
@@ -2477,24 +2216,67 @@ get_stockton_vmt_tract <- function(year){
   return(result)
 }
 
-# stockton_commute_vmt_tract <- NULL
-# 
-# for(year in 2011:2017){
-#   stockton_commute_vmt_tract <-
-#     rbind(
-#       stockton_commute_vmt_tract,
-#       get_stockton_vmt_tract(year)
-#     )
-# }
-# 
-# save(stockton_commute_vmt_tract, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tract.Rdata")
-# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017.Rdata")
+
+ggplot(
+  stockton_lodes_h_filter, 
+  aes(
+    x = as.numeric(distance)/1.60934, 
+    weight = S000
+  )
+) +
+  geom_histogram(binwidth = 5) +
+  labs(title = "Workplace Commute Distance to Work for Stockton Employed Residents", x = "Commute Distance to Work, Miles", y = "Number of Residents")
+```
+*Figure 7. Distribution of workplaces by distance from home for Stockton employed residents. Trips greater than 3 hours are removed. Data from LODES, 2017.*
+
+```{r}
+stockton_commute_avg <-
+  stockton_lodes_h_filter %>% 
+  mutate(
+    w_bg = substr(w_tract,1,nchar(w_tract)-1)
+  )
+  group_by(w_bg) %>% 
+  summarize(
+    `Average Commute Time, Hours` = mean(duration, na.rm=T)
+  ) %>% 
+  left_join(ca_tracts, by = c("w_bg" = "GEOID")) %>%
+  st_as_sf()
+
+mapview(stockton_commute_avg, zcol = "Average Commute Time, Hours", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Average Commute Time, Hours')
+```
+*Figure 8. Top 15 counties where Stockton residents work - average commute time, in hours. Data from LODES, 2017.*
+
+The graph above, and our subsequent analyses, focuses on counties with average commute times of less than 3 hours, which eliminates the unrealistic commutes while preserving ~94% of reported commutes.
+
+We estimated the total and average GHG emissions for Stockton workers commuting to each of the top 15 counties (filtering out counties further than 3 hours away). We made the following assumptions:
+
+- For each origin-destination block group pair, we used ACS 1-yr 2017 data on commute mode by travel time for the origin block group to estimate a share of travelers commuting by single occupancy vehicle and by carpooling, and applied this factor to the count of jobs from LODES to estimate a total number of vehicle trips and vehicle mildes traveled (VMT).
+- For carpool trips, we counted 2-person carpools as 1 vehicle for every 2 jobs, and 3-or-more-person carpools as 1 vehicle for every 3 jobs.
+- For daily VMT, each vehicle was assumed to take 2 one-way trips.
+- To convert daily VMT to annual VMT, the same annualization factor was used as ICLEI: 369.39. The factor appears to account for both expected reductions in VMT because of sick days, as well as expected increases in VMT because of chained trips.
+- All vehicles were assumed to be passenger vehicles with an average mpg of 29.2 in 2017 and CO2e emissions of 303 g/mi (0.000334 tCO2e/mi), using data from the [EPA Automotive Trends Report](https://www.epa.gov/automotive-trends/explore-automotive-trends-data). Disregarding SUVs and trucks has the effect of underestimating emissions. 
+
+```{r}
+stockton_commute_vmt <- NULL
+
+for(year in 2013:2015){
+  stockton_commute_vmt <-
+    rbind(
+      stockton_commute_vmt,
+      get_stockton_vmt_bg(year)
+    )
+}
+
+save(stockton_commute_vmt_tract, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tract.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tract.Rdata")
 
 stockton_commute_vmt_norm <-
   stockton_commute_vmt_tract %>% 
   mutate(
     `One-Way VMT/Workers` = vmt/jobs
-  )
+  ) %>% 
+  arrange(Year)
 
 stockton_commute_vmt_table <-
   stockton_commute_vmt_norm %>% 
@@ -2507,7 +2289,135 @@ stockton_commute_vmt_table <-
 
 datatable(stockton_commute_vmt_table, rownames = FALSE, options = list(pageLength = 7))
 ```
+
+
+```{r}
+stockton_lodes_h_counties_ghg <- 
+  stockton_lodes_h_mode %>%
+  st_set_geometry(NULL) %>% 
+  mutate(
+    COUNTY = substr(workplace,3,5)
+  ) %>%
+  group_by(COUNTY) %>%
+  summarise_at(
+    vars(jobs,person_miles,person_hours,vehicles,vmt),
+    sum, na.rm=T
+  ) %>% 
+  mutate(
+    perc_jobs = jobs/sum(jobs),
+    annual_vmt = vmt*2*369.39,
+    annual_ghg = annual_vmt*0.000334,
+    perc_ghg = annual_ghg/sum(annual_ghg),
+    avg_ghg = annual_ghg/jobs
+  ) %>% 
+  left_join(ca_counties, by = c("COUNTY" = "COUNTYFP")) %>% 
+  st_as_sf() %>% 
+  arrange(desc(annual_ghg))
+  
+stockton_lodes_h_counties_ghg_table <- 
+  stockton_lodes_h_counties_ghg %>%
+  st_set_geometry(NULL) %>% 
+  transmute(
+    County = NAME,
+    Jobs = prettyNum(round(jobs,-2),big.mark=","),
+    `Percent Jobs` = paste0(round(perc_jobs*100),"%"),
+    `VMT (millions)` = prettyNum(round(annual_vmt/1000000),big.mark=","),
+    `Total Annual GHG (tCO2e)` = prettyNum(round(annual_ghg,-3),big.mark=","),
+    `Percent Annual GHG` = paste0(round(perc_ghg*100),"%"),
+    `Average Annual GHG/worker (tCO2e)` = round(avg_ghg,1)
+  )
+
+datatable(stockton_lodes_h_counties_ghg_table[1:15,], rownames = FALSE, options = list(pageLength = 15))
+```
+*Table 15. Top 15 counties where Stockton residents work, GHG emissions. Data from LODES, 2017.*
+
+According to the table above, 59% percent of Stockton residents work in San Joaquin County and collectively contribute 18% of all commute GHGs. The next 14 counties comprise another 38% of Stockton residents, but they collectively contribute 76% of all commute GHGs. This significant difference comes down to difference in average commute distance to each county, which is directly related to average GHG emissions per worker, as seen in the following map. In a later section, we will explore opportunities to stimulate local job creation so that some of these long-distance commutes can be converted into local commutes, reducing both the toll on the environment and the tolls on health and well-being for Stockton residents.
+
+```{r}
+stockton_lodes_h_counties_ghg_map <-
+  stockton_lodes_h_counties_ghg[1:15,] %>% 
+    transmute(
+      County = NAME,
+      Jobs = prettyNum(jobs,big.mark=","),
+      `Percent Jobs` = round(perc_jobs,2),
+      VMT = prettyNum(round(vmt,0),big.mark=","),
+      `Total Annual GHG (tCO2e)` = round(annual_ghg,0),
+    `Percent Annual GHG` = round(perc_ghg,2),
+    `Average Annual GHG/worker (tCO2e)` = round(avg_ghg,2)
+      )
+
+mapview(
+  stockton_lodes_h_counties_ghg_map, 
+  zcol = "Average Annual GHG/worker (tCO2e)", 
+  map.types = c("OpenStreetMap"), 
+  legend = TRUE, 
+  layer.name = 'Average Annual GHG/worker (tCO2e)'
+)
+```
+*Figure 16. Top 15 Counties where Stockton residents work - average GHG emissions from driving per worker. Data from LODES, 2017.*
+
+```{r}
+mapview(stockton_lodes_h_counties_ghg_map, zcol = "Total Annual GHG (tCO2e)", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Total Annual GHG (tCO2e)')
+```
+*Figure 17. Top 15 Counties where Stockton residents work - annual GHG emissions from driving. Data from LODES, 2017.*
+
+To conclude this section, we used LODES and ACS data from 2013-2017 to estimate the change in VMT over that time period. Since our specific VMT methodology includes many simplifying assumptions, it is perhaps most valuable to see the change in VMT using a constant methodology over time.
+
+```{r}
+
+```
 *Table 16. Stockton commute one-way VMT from 2011-2017. Data from LODES and ACS 1-yr.*
+
+```{r}
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt.Rdata")
+
+stockton_commute_vmt_norm_bg <-
+  stockton_commute_vmt %>% 
+  mutate(
+    `One-Way VMT/Workers` = vmt/jobs
+  ) %>% 
+  arrange(Year)
+
+commute_combined <-
+  rbind(
+    stockton_commute_vmt_norm %>% 
+      mutate(type = "tract"),
+    stockton_commute_vmt_norm_bg %>% 
+      mutate(type = "bg")
+  )
+
+ggplot(
+  commute_combined, 
+  aes(
+    x = Year,
+    y = vmt,
+    colour = type
+  )
+) + 
+  geom_line() +
+  labs(
+    title = "Stockton Commute One-Way VMT/Workers",
+    x = "Year",
+    y = "One-Way VMT/Workers"
+  )
+```
+
+```{r}
+for(year in 2011:2017){
+  load(
+    paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata")
+  )
+  
+  test <-
+    stockton_lodes_h_filter %>% 
+    filter(h_tract == w_tract) %>% 
+    pull(S000) %>% 
+    sum()
+  
+  print(paste0(year,"-",test))
+}
+```
+
 
 The average one-way commute trip for the Stockton worker appears to have increased by 26% over the last 6 years. This could be explained by existing residents changing to jobs that are further and further away from home, where better employment opportunities can be found, and by new residents moving to Stockton to find affordable housing but retaining their faraway jobs.
 
