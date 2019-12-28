@@ -1593,235 +1593,222 @@ To-do:
 
 ### County-level Analysis
 
-```{r}
-get_county_vmt <- function(county,year){
-  
-  print(paste0(county,"-",year))
-  
-  ca_lodes <-
-    grab_lodes(
-      state = "ca",
-      year = year,
-      lodes_type = "od",
-      job_type = "JT01", #Primary Jobs
-      segment = "S000",
-      state_part = "main",
-      agg_geo = "tract"
-    )
-  
-  county_tracts <-
-    ca_tracts %>% 
-    filter(COUNTYFP == county)
-  
-  county_lodes_h <-
-    ca_lodes[which(ca_lodes$h_tract %in% county_tracts$GEOID),]
-  
-  county_lodes_h_origin_centroids <-
-    st_centroid(ca_tracts[which(ca_tracts$GEOID %in% county_lodes_h$h_tract),])
-  
-  county_lodes_h_dest_centroids <-
-    st_centroid(ca_tracts[which(ca_tracts$GEOID %in% county_lodes_h$w_tract),])
-  
-  route <-
-    1:nrow(county_lodes_h) %>%
-    map_dfr(function(row){
-      print(row)
-      route <- osrmRoute(
-        src = county_lodes_h_origin_centroids[which(county_lodes_h_origin_centroids$GEOID %in% county_lodes_h[row,"h_tract"]),],
-        dst = county_lodes_h_dest_centroids[which(county_lodes_h_dest_centroids$GEOID %in% county_lodes_h[row,"w_tract"]),],
-        overview = FALSE
-      ) %>%
-        as.list() %>%
-        as.data.frame()
-      if(is_empty(route)){
-        return(
-          data.frame(
-            duration = NA,
-            distance = NA
-          )
-        )
-      } else {return(route)}
-    })
-  
-  county_lodes_h_route <-
-    county_lodes_h %>%
-    cbind(route)
-  
-  county_lodes_h_filter <-
-    county_lodes_h_route %>%
-    filter(duration < 180)
-  
-  save(county_lodes_h_route,county_lodes_h_filter, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
-  
-  acs_vars <-
-    listCensusMetadata(
-      name = paste0(year,"/acs/acs5"),
-      type = "variables"
-    )
-
-  save(acs_vars,file=paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
-  
-  travel_time_mode <-
-    getCensus(
-      name = "acs/acs5",
-      vintage = year,
-      region = "tract:*",
-      regionin = paste0("state:06+county:",county),
-      vars = "group(B08134)"
-    ) %>%
-    mutate(
-      tract =
-        paste0(state,county,tract)
-    ) %>%
-    select_if(!names(.) %in% c("GEO_ID","state","county","NAME")) %>%
-    dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
-    gather(
-      key = "variable",
-      value = "estimate",
-      -tract
-    ) %>%
-    mutate(
-      label = acs_vars$label[match(variable,acs_vars$name)],
-      time = # This extracts only the time information from our label.
-        substr(
-          label,
-          lapply(
-            label,
-            function(x){
-              ifelse(
-                length(unlist(gregexpr('!!',x)))<3,
-                NA,
-                max(unlist(gregexpr('!!',x)))+2
-              )
-            }
-          ),
-          nchar(label)
-        ),
-      mode = # This extracts only the mode information from our label. It doesn't fully deal with double-counting, so some are further removed later on in a filter.
-        substr(
-          label,
-          lapply(
-            label,
-            function(x){
-              ifelse(
-                length(unlist(gregexpr('!!',x)))<3,
-                NA,
-                unlist(gregexpr('!!',x))[length(unlist(gregexpr('!!',x)))-1]+2
-              )
-            }
-          ),
-          lapply(
-            label,
-            function(x){
-              max(unlist(gregexpr('!!',x)))-1
-            }
-          )
-        )
-    ) %>%
-    filter(!is.na(time)) %>% # This removes the grand total rows that are usually at the top of the ACS data.
-    filter(!mode %in% c("Car truck or van","Carpooled","Public transportation (excluding taxicab)")) %>% # This removes double-counted subtotals.
-    dplyr::select(-variable,-label)
-  
-  county_lodes_h_mode <-
-    county_lodes_h_filter %>%
-    transmute(
-      residence = h_tract,
-      workplace = w_tract,
-      jobs = S000,
-      duration = duration,
-      person_miles = S000*as.numeric(distance)/1.60934,
-      person_hours = S000*as.numeric(duration)/60
-    ) %>%
-    left_join(
-      ca_tracts[,"GEOID"],
-      by = c("residence" = "GEOID")
-    ) %>%
-    st_as_sf() %>%
-    mutate(
-      tier =
-        case_when(
-          duration < 10 ~ "Less than 10 minutes",
-          duration < 15 ~ "10 to 14 minutes",
-          duration < 20 ~ "15 to 19 minutes",
-          duration < 25 ~ "20 to 24 minutes",
-          duration < 30 ~ "25 to 29 minutes",
-          duration < 35 ~ "30 to 34 minutes",
-          duration < 45 ~ "35 to 44 minutes",
-          duration < 60 ~ "45 to 59 minutes",
-          TRUE ~ "60 or more minutes"
-        )
-    )
-  
-  county_lodes_h_mode <-
-    county_lodes_h_mode %>%
-    mutate(
-      perc_vehicle =
-        1:nrow(county_lodes_h_mode) %>%
-        map_dbl(function(x){
-          mode_drive <-
-            travel_time_mode %>%
-            filter(tract == county_lodes_h_mode$residence[x]) %>%
-            filter(time == county_lodes_h_mode$tier[x])
-  
-          perc_vehicle =
-            (mode_drive$estimate[which(mode_drive$mode == "Drove alone")] +
-               mode_drive$estimate[which(mode_drive$mode == "In 2-person carpool")]/2 +
-               mode_drive$estimate[which(mode_drive$mode == "In 3-or-more-person carpool")]/3)/
-            sum(mode_drive$estimate)
-  
-          return(perc_vehicle)
-        }),
-      vehicles = jobs*perc_vehicle,
-      vmt = person_miles*perc_vehicle
-    )
-  
-  save(county_lodes_h_route,county_lodes_h_filter,county_lodes_h_mode, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
-  
-  result <- 
-    data.frame(
-      Year = year,
-      County = county,
-      vmt = sum(county_lodes_h_mode$vmt, na.rm=T),
-      jobs = sum(county_lodes_h_mode$jobs, na.rm=T)
-    )
-    
-  return(result)
-}
-
-# county_commute_vmt <- NULL
+```{r county commute vmt tractmode}
+# for(year in 2011:2017){
+#   for(county in c("013")){
 # 
-for(year in 2015:2016){
-  for(county in c("067","099")){
-    county_commute_vmt <-
-      rbind(
-        county_commute_vmt,
-        get_county_vmt(county,year)
-      )
+#     print(paste0(county,"-",year))
+# 
+#     ca_lodes <-
+#       grab_lodes(
+#         state = "ca",
+#         year = year,
+#         lodes_type = "od",
+#         job_type = "JT01", #Primary Jobs
+#         segment = "S000",
+#         state_part = "main",
+#         agg_geo = "tract"
+#       )
+#     
+#     save(ca_lodes, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/ca_lodes_",year,"_tract.Rdata"))
+# 
+#     county_tracts <-
+#       ca_tracts %>%
+#       filter(COUNTYFP == county)
+# 
+#     county_lodes_h <-
+#       ca_lodes[which(ca_lodes$h_tract %in% county_tracts$GEOID),]
+# 
+#     county_lodes_h_origin_centroids <-
+#       st_centroid(ca_tracts[which(ca_tracts$GEOID %in% county_lodes_h$h_tract),])
+# 
+#     county_lodes_h_dest_centroids <-
+#       st_centroid(ca_tracts[which(ca_tracts$GEOID %in% county_lodes_h$w_tract),])
+# 
+#     route <-
+#       1:nrow(county_lodes_h) %>%
+#       map_dfr(function(row){
+#         print(row)
+#         route <- osrmRoute(
+#           src = county_lodes_h_origin_centroids[which(county_lodes_h_origin_centroids$GEOID %in% county_lodes_h[row,"h_tract"]),],
+#           dst = county_lodes_h_dest_centroids[which(county_lodes_h_dest_centroids$GEOID %in% county_lodes_h[row,"w_tract"]),],
+#           overview = FALSE
+#         ) %>%
+#           as.list() %>%
+#           as.data.frame()
+#         if(is_empty(route)){
+#           return(
+#             data.frame(
+#               duration = NA,
+#               distance = NA
+#             )
+#           )
+#         } else {return(route)}
+#       })
+# 
+#     county_lodes_h_route <-
+#       county_lodes_h %>%
+#       cbind(route)
+# 
+#     county_lodes_h_filter <-
+#       county_lodes_h_route %>%
+#       filter(duration < 180)
+# 
+#     save(county_lodes_h_route,county_lodes_h_filter, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
+#   }
+# }
 
-    save(county_commute_vmt,file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt.Rdata")
-  }
-}
-
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt.Rdata")
-
-#2014 appears to be an outlier, remove
-#remove other counties
-county_commute_vmt <-
-  county_commute_vmt %>% 
-  filter(Year != 2014) %>% 
-  filter(County %in% c("077","001"))
-
-# county_commute_vmt %>% 
-#   ggplot(
-#     aes(
-#       x = Year,
-#       y = vmt,
-#       colour = County
+# county_commute_vmt_tractmode <- NULL
+# 
+# for(year in 2011:2017){
+#   for(county in c("013")){
+#     print(paste0(year,"-",county))
+# 
+#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
+# 
+#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
+# 
+#     travel_time_mode <-
+#       getCensus(
+#         name = "acs/acs5",
+#         vintage = year,
+#         region = "tract:*",
+#         regionin = paste0("state:06+county:",county),
+#         vars = "group(B08134)"
+#       ) %>%
+#       mutate(tract = paste0(state,county,tract)) %>%
+#       select_if(!names(.) %in% c("GEO_ID","state","county","NAME")) %>%
+#       dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
+#       gather(
+#         key = "variable",
+#         value = "estimate",
+#         -tract
+#       ) %>%
+#       mutate(
+#         label = acs_vars$label[match(variable,acs_vars$name)],
+#         time = # This extracts only the time information from our label.
+#           substr(
+#             label,
+#             lapply(
+#               label,
+#               function(x){
+#                 ifelse(
+#                   length(unlist(gregexpr('!!',x)))<3,
+#                   NA,
+#                   max(unlist(gregexpr('!!',x)))+2
+#                 )
+#               }
+#             ),
+#             nchar(label)
+#           ),
+#         mode = # This extracts only the mode information from our label. It doesn't fully deal with double-counting, so some are further removed later on in a filter.
+#           substr(
+#             label,
+#             lapply(
+#               label,
+#               function(x){
+#                 ifelse(
+#                   length(unlist(gregexpr('!!',x)))<3,
+#                   NA,
+#                   unlist(gregexpr('!!',x))[length(unlist(gregexpr('!!',x)))-1]+2
+#                 )
+#               }
+#             ),
+#             lapply(
+#               label,
+#               function(x){
+#                 max(unlist(gregexpr('!!',x)))-1
+#               }
+#             )
+#           )
+#       ) %>%
+#       filter(!is.na(time)) %>% # This removes the grand total rows that are usually at the top of the ACS data.
+#       filter(!mode %in% c("Car, truck, or van","Car truck or van","Carpooled","Public transportation (excluding taxicab)")) %>% # This removes double-counted subtotals.
+#       dplyr::select(-variable,-label)
+# 
+#     travel_time_mode_summary <-
+#       travel_time_mode %>%
+#       group_by(tract,time) %>%
+#       summarize(
+#         jobs = sum(estimate),
+#         jobs_drovealone = sum(estimate[which(mode == "Drove alone")]),
+#         jobs_carpool2 = sum(estimate[which(mode == "In 2-person carpool")]),
+#         jobs_carpool3 = sum(estimate[which(mode == "In 3-or-more-person carpool")]),
+#       ) %>%
+#       mutate(
+#         vehicles_drovealone = jobs_drovealone,
+#         vehicles_carpool2 = jobs_carpool2/2,
+#         vehicles_carpool3 = jobs_carpool3/3,
+#         jobs_car = jobs_drovealone+jobs_carpool2+jobs_carpool3,
+#         jobs_carpool = jobs_carpool2+jobs_carpool3,
+#         vehicles = vehicles_drovealone,vehicles_carpool2,vehicles_carpool3,
+#         perc_jobs_car = jobs_car/jobs,
+#         perc_jobs_carpool = jobs_carpool/jobs,
+#         perc_vehicle = vehicles/jobs
+#       )
+# 
+#   county_lodes_h_mode <-
+#     county_lodes_h_filter %>%
+#     transmute(
+#       residence = h_tract,
+#       jobs = S000,
+#       duration = duration,
+#       person_miles = S000*as.numeric(distance)/1.60934,
+#       person_hours = S000*as.numeric(duration)/60
+#     ) %>%
+#     mutate(
+#       tier =
+#         case_when(
+#           duration < 10 ~ "Less than 10 minutes",
+#           duration < 15 ~ "10 to 14 minutes",
+#           duration < 20 ~ "15 to 19 minutes",
+#           duration < 25 ~ "20 to 24 minutes",
+#           duration < 30 ~ "25 to 29 minutes",
+#           duration < 35 ~ "30 to 34 minutes",
+#           duration < 45 ~ "35 to 44 minutes",
+#           duration < 60 ~ "45 to 59 minutes",
+#           TRUE ~ "60 or more minutes"
+#         )
+#     ) %>%
+#     left_join(
+#       travel_time_mode_summary %>%
+#         dplyr::select(
+#           tract,
+#           time,
+#           perc_jobs_car,
+#           perc_jobs_carpool,
+#           perc_vehicle
+#         ),
+#       by = c("residence" = "tract", "tier" = "time")
+#     ) %>%
+#     mutate(
+#       jobs_car = jobs*perc_jobs_car,
+#       jobs_carpool = jobs*perc_jobs_carpool,
+#       vehicles = jobs*perc_vehicle,
+#       vmt = person_miles*perc_vehicle
 #     )
-#   ) +
-#   geom_line()
+# 
+#     county_commute_vmt_tractmode <-
+#       rbind(county_commute_vmt_tractmode,
+#         data.frame(
+#           Year = year,
+#           County = county,
+#           person_miles = sum(county_lodes_h_mode$person_miles, na.rm=T),
+#           jobs = sum(county_lodes_h_mode$jobs, na.rm=T),
+#           jobs_car = sum(county_lodes_h_mode$jobs_car, na.rm=T),
+#           jobs_carpool = sum(county_lodes_h_mode$jobs_carpool, na.rm=T),
+#           vehicles = sum(county_lodes_h_mode$vehicles, na.rm = T),
+#           vmt = sum(county_lodes_h_mode$vmt, na.rm=T)
+#         )
+#       )
+# 
+#     save(county_commute_vmt_tractmode,file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
+#   }
+# }
 
-county_commute_vmt %>% 
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
+
+county_commute_vmt_tractmode %>% 
   ggplot(
     aes(
       x = Year,
@@ -1832,391 +1819,375 @@ county_commute_vmt %>%
   geom_line()
 ```
 
+
+```{r county commute vmt countymode}
+# county_commute_vmt_countymode <- NULL
+# 
+# for(year in 2011:2017){
+#   for(county in c("013")){
+# 
+#     print(paste0(year,"-",county))
+# 
+#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
+# 
+#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_",year,".Rdata"))
+# 
+#     travel_time_mode <-
+#     getCensus(
+#       name = "acs/acs1",
+#       vintage = year,
+#       region = paste0("county:",county),
+#       regionin = "state:06",
+#       vars = "group(B08134)"
+#     ) %>%
+#     select_if(!names(.) %in% c("GEO_ID","state","NAME")) %>%
+#     dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
+#     gather(
+#       key = "variable",
+#       value = "estimate",
+#       -county
+#     ) %>%
+#     mutate(
+#       label = acs_vars$label[match(variable,acs_vars$name)],
+#       time = # This extracts only the time information from our label.
+#         substr(
+#           label,
+#           lapply(
+#             label,
+#             function(x){
+#               ifelse(
+#                 length(unlist(gregexpr('!!',x)))<3,
+#                 NA,
+#                 max(unlist(gregexpr('!!',x)))+2
+#               )
+#             }
+#           ),
+#           nchar(label)
+#         ),
+#       mode = # This extracts only the mode information from our label. It doesn't fully deal with double-counting, so some are further removed later on in a filter.
+#         substr(
+#           label,
+#           lapply(
+#             label,
+#             function(x){
+#               ifelse(
+#                 length(unlist(gregexpr('!!',x)))<3,
+#                 NA,
+#                 unlist(gregexpr('!!',x))[length(unlist(gregexpr('!!',x)))-1]+2
+#               )
+#             }
+#           ),
+#           lapply(
+#             label,
+#             function(x){
+#               max(unlist(gregexpr('!!',x)))-1
+#             }
+#           )
+#         )
+#     ) %>%
+#     filter(!is.na(time)) %>% # This removes the grand total rows that are usually at the top of the ACS data.
+#     filter(!mode %in% c("Car, truck, or van","Car truck or van","Carpooled","Public transportation (excluding taxicab)")) %>% # This removes double-counted subtotals.
+#     dplyr::select(-variable,-label)
+# 
+#     travel_time_mode_summary <-
+#       travel_time_mode %>%
+#       group_by(time) %>%
+#       summarize(
+#         jobs = sum(estimate),
+#         jobs_drovealone = sum(estimate[which(mode == "Drove alone")]),
+#         jobs_carpool2 = sum(estimate[which(mode == "In 2-person carpool")]),
+#         jobs_carpool3 = sum(estimate[which(mode == "In 3-or-more-person carpool")]),
+#       ) %>%
+#       mutate(
+#         vehicles_drovealone = jobs_drovealone,
+#         vehicles_carpool2 = jobs_carpool2/2,
+#         vehicles_carpool3 = jobs_carpool3/3,
+#         jobs_car = jobs_drovealone+jobs_carpool2+jobs_carpool3,
+#         jobs_carpool = jobs_carpool2+jobs_carpool3,
+#         vehicles = vehicles_drovealone,vehicles_carpool2,vehicles_carpool3,
+#         perc_jobs_car = jobs_car/jobs,
+#         perc_jobs_carpool = jobs_carpool/jobs,
+#         perc_vehicle = vehicles/jobs
+#       )
+# 
+#   county_lodes_h_mode <-
+#     county_lodes_h_filter %>%
+#     transmute(
+#       jobs = S000,
+#       duration = duration,
+#       person_miles = S000*as.numeric(distance)/1.60934,
+#       person_hours = S000*as.numeric(duration)/60
+#     ) %>%
+#     mutate(
+#       tier =
+#         case_when(
+#           duration < 10 ~ "Less than 10 minutes",
+#           duration < 15 ~ "10 to 14 minutes",
+#           duration < 20 ~ "15 to 19 minutes",
+#           duration < 25 ~ "20 to 24 minutes",
+#           duration < 30 ~ "25 to 29 minutes",
+#           duration < 35 ~ "30 to 34 minutes",
+#           duration < 45 ~ "35 to 44 minutes",
+#           duration < 60 ~ "45 to 59 minutes",
+#           TRUE ~ "60 or more minutes"
+#         )
+#     ) %>%
+#     left_join(
+#       travel_time_mode_summary %>%
+#         dplyr::select(
+#           time,
+#           perc_jobs_car,
+#           perc_jobs_carpool,
+#           perc_vehicle
+#         ),
+#       by = c("tier" = "time")
+#     ) %>%
+#     mutate(
+#       jobs_car = jobs*perc_jobs_car,
+#       jobs_carpool = jobs*perc_jobs_carpool,
+#       vehicles = jobs*perc_vehicle,
+#       vmt = person_miles*perc_vehicle
+#     )
+# 
+#     county_commute_vmt_countymode <-
+#       rbind(county_commute_vmt_countymode,
+#         data.frame(
+#           Year = year,
+#           County = county,
+#           person_miles = sum(county_lodes_h_mode$person_miles, na.rm=T),
+#           jobs = sum(county_lodes_h_mode$jobs, na.rm=T),
+#           jobs_car = sum(county_lodes_h_mode$jobs_car, na.rm=T),
+#           jobs_carpool = sum(county_lodes_h_mode$jobs_carpool, na.rm=T),
+#           vehicles = sum(county_lodes_h_mode$vehicles, na.rm = T),
+#           vmt = sum(county_lodes_h_mode$vmt, na.rm=T)
+#         )
+#       )
+#   }
+# }
+# 
+# save(county_commute_vmt_countymode, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_countymode.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_countymode.Rdata")
+
+county_commute_vmt_countymode %>% 
+  filter(jobs_car != 0) %>% 
+  ggplot(
+    aes(
+      x = Year,
+      y = vmt/jobs,
+      colour = County
+    )
+  ) +
+  geom_line()
+```
+
+```{r compare tractmode and countymode}
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
+
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_countymode.Rdata")
+
+county_commute_vmt_compare <-
+  rbind(
+    county_commute_vmt_tractmode %>% 
+      mutate(type = "tract"),
+    county_commute_vmt_countymode %>% 
+      mutate(type = "county")
+  )
+
+county_commute_vmt_compare %>% 
+  filter(jobs_car != 0) %>% 
+  ggplot(
+    aes(
+      x = Year,
+      y = vmt/jobs,
+      linetype = type,
+      colour = County
+    )
+  ) +
+  geom_line()
+```
+
+
+```{r county modeshare}
+# county_modeshare <- NULL
+# 
+# for(year in 2011:2017){
+#   for(county in county_neighbors$COUNTYFP){
+#     
+#     print(paste0(year,"-",county))
+#     
+#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_",year,".Rdata"))
+#     
+#     travel_time_mode <-
+#     getCensus(
+#       name = "acs/acs1",
+#       vintage = year,
+#       region = paste0("county:",county),
+#       regionin = "state:06",
+#       vars = "group(B08134)"
+#     ) %>%
+#     select_if(!names(.) %in% c("GEO_ID","state","NAME")) %>%
+#     dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
+#     gather(
+#       key = "variable",
+#       value = "estimate",
+#       -county
+#     ) %>%
+#     mutate(
+#       label = acs_vars$label[match(variable,acs_vars$name)],
+#       time = # This extracts only the time information from our label.
+#         substr(
+#           label,
+#           lapply(
+#             label,
+#             function(x){
+#               ifelse(
+#                 length(unlist(gregexpr('!!',x)))<3,
+#                 NA,
+#                 max(unlist(gregexpr('!!',x)))+2
+#               )
+#             }
+#           ),
+#           nchar(label)
+#         ),
+#       mode = # This extracts only the mode information from our label. It doesn't fully deal with double-counting, so some are further removed later on in a filter.
+#         substr(
+#           label,
+#           lapply(
+#             label,
+#             function(x){
+#               ifelse(
+#                 length(unlist(gregexpr('!!',x)))<3,
+#                 NA,
+#                 unlist(gregexpr('!!',x))[length(unlist(gregexpr('!!',x)))-1]+2
+#               )
+#             }
+#           ),
+#           lapply(
+#             label,
+#             function(x){
+#               max(unlist(gregexpr('!!',x)))-1
+#             }
+#           )
+#         )
+#     ) %>%
+#     filter(!is.na(time)) %>% # This removes the grand total rows that are usually at the top of the ACS data.
+#     filter(!mode %in% c("Car, truck, or van","Car truck or van","Carpooled","Public transportation (excluding taxicab)")) %>% # This removes double-counted subtotals.
+#     dplyr::select(-variable,-label)
+#     
+#     travel_time_mode_summary <-
+#       travel_time_mode %>%
+#       summarize(
+#         jobs = sum(estimate),
+#         jobs_drovealone = sum(estimate[which(mode == "Drove alone")]),
+#         jobs_carpool2 = sum(estimate[which(mode == "In 2-person carpool")]),
+#         jobs_carpool3 = sum(estimate[which(mode == "In 3-or-more-person carpool")]),
+#       ) %>% 
+#       mutate(
+#         vehicles_drovealone = jobs_drovealone,
+#         vehicles_carpool2 = jobs_carpool2/2,
+#         vehicles_carpool3 = jobs_carpool3/3,
+#         jobs_car = jobs_drovealone+jobs_carpool2+jobs_carpool3,
+#         jobs_carpool = jobs_carpool2+jobs_carpool3,
+#         vehicles = vehicles_drovealone,vehicles_carpool2,vehicles_carpool3,
+#         perc_jobs_car = jobs_car/jobs,
+#         perc_jobs_carpool = jobs_carpool/jobs,
+#         perc_vehicle = vehicles/jobs
+#       )
+#     
+#     county_modeshare <-
+#       county_modeshare %>% 
+#       rbind(
+#         data.frame(
+#           year = year,
+#           county = county,
+#           jobs = travel_time_mode_summary$jobs,
+#           perc_jobs_car = travel_time_mode_summary$perc_jobs_car,
+#           perc_jobs_carpool = travel_time_mode_summary$perc_jobs_carpool,
+#           perc_vehicle = travel_time_mode_summary$perc_vehicle
+#         )
+#       )
+#   }
+# }
+# 
+# save(county_modeshare, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_modeshare.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_modeshare.Rdata")
+
+county_modeshare %>% 
+  filter(county %in% c("077","001","013","067","099")) %>% 
+  filter(jobs != 0) %>% 
+  ggplot(
+    aes(
+      x = year,
+      y = perc_jobs_carpool/perc_jobs_car,
+      colour = county
+    )
+  ) +
+  geom_line()
+```
+
+
 ### City-level Analysis
 
 We isolated every pair of Stockton home blockgroups and work blockgroups and used the [Open Source Routing Machine](http://project-osrm.org/) to compute a distance (in miles) and duration (and hours) for a one-way trip. The following graph shows the distribution of workplaces by distance from home for Stockton residents.
 
-```{r}
-get_stockton_vmt_bg <- function(year){
-  
-  print(year)
-  
-  ca_lodes <-
-    grab_lodes(
-      state = "ca",
-      year = year,
-      lodes_type = "od",
-      job_type = "JT01", #Primary Jobs
-      segment = "S000",
-      state_part = "main",
-      agg_geo = "bg"
-    )
-  
-  stockton_lodes_h <-
-    ca_lodes[which(ca_lodes$h_bg %in% stockton_bgs_full$GEOID),]
-  
-  stockton_lodes_h_origin_centroids <-
-    st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$h_bg),])
-  
-  stockton_lodes_h_dest_centroids <-
-    st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),])
-  
-  route <-
-    1:nrow(stockton_lodes_h) %>%
-    map_dfr(function(row){
-      print(row)
-      route <- osrmRoute(
-        src = stockton_lodes_h_origin_centroids[which(stockton_lodes_h_origin_centroids$GEOID %in% stockton_lodes_h[row,"h_bg"]),],
-        dst = stockton_lodes_h_dest_centroids[which(stockton_lodes_h_dest_centroids$GEOID %in% stockton_lodes_h[row,"w_bg"]),],
-        overview = FALSE
-      ) %>%
-        as.list() %>%
-        as.data.frame()
-      if(is_empty(route)){
-        return(
-          data.frame(
-            duration = NA,
-            distance = NA
-          )
-        )
-      } else {return(route)}
-    })
-  
-  stockton_lodes_h_route <-
-    stockton_lodes_h %>%
-    cbind(route)
-  
-  stockton_lodes_h_filter <-
-    stockton_lodes_h_route %>%
-    filter(duration < 180)
-  
-  save(stockton_lodes_h_route,stockton_lodes_h_filter, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
-  
-  # acs_vars <-
-  #   listCensusMetadata(
-  #     name = paste0(year,"/acs/acs5"),
-  #     type = "variables"
-  #   )
-  # 
-  # save(acs_vars,file=paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
-  
-  load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
-  
-  travel_time_mode <-
-    getCensus(
-      name = "acs/acs5",
-      vintage = year,
-      region = "block group:*",
-      regionin = "state:06+county:077",
-      vars = "group(B08134)"
-    ) %>%
-    mutate(
-      bg =
-        paste0(state,county,tract,block_group)
-    ) %>%
-    filter(bg %in% stockton_bgs_full$GEOID) %>% # This importantly filters to only block groups that show up in our Stockton LODES data, which reduces data size considerably.
-    select_if(!names(.) %in% c("GEO_ID","state","county","tract","block_group","NAME")) %>%
-    dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
-    gather(
-      key = "variable",
-      value = "estimate",
-      -bg
-    ) %>%
-    mutate(
-      label = acs_vars$label[match(variable,acs_vars$name)],
-      time = # This extracts only the time information from our label.
-        substr(
-          label,
-          lapply(
-            label,
-            function(x){
-              ifelse(
-                length(unlist(gregexpr('!!',x)))<3,
-                NA,
-                max(unlist(gregexpr('!!',x)))+2
-              )
-            }
-          ),
-          nchar(label)
-        ),
-      mode = # This extracts only the mode information from our label. It doesn't fully deal with double-counting, so some are further removed later on in a filter.
-        substr(
-          label,
-          lapply(
-            label,
-            function(x){
-              ifelse(
-                length(unlist(gregexpr('!!',x)))<3,
-                NA,
-                unlist(gregexpr('!!',x))[length(unlist(gregexpr('!!',x)))-1]+2
-              )
-            }
-          ),
-          lapply(
-            label,
-            function(x){
-              max(unlist(gregexpr('!!',x)))-1
-            }
-          )
-        )
-    ) %>%
-    filter(!is.na(time)) %>% # This removes the grand total rows that are usually at the top of the ACS data.
-    filter(!mode %in% c("Car truck or van","Carpooled","Public transportation (excluding taxicab)")) %>% # This removes double-counted subtotals.
-    dplyr::select(-variable,-label)
-  
-  stockton_lodes_h_mode <-
-    stockton_lodes_h_filter %>%
-    transmute(
-      residence = h_bg,
-      workplace = w_bg,
-      jobs = S000,
-      duration = duration,
-      person_miles = S000*as.numeric(distance)/1.60934,
-      person_hours = S000*as.numeric(duration)/60
-    ) %>%
-    left_join(
-      ca_bgs[,"GEOID"],
-      by = c("residence" = "GEOID")
-    ) %>%
-    st_as_sf() %>%
-    mutate(
-      tier =
-        case_when(
-          duration < 10 ~ "Less than 10 minutes",
-          duration < 15 ~ "10 to 14 minutes",
-          duration < 20 ~ "15 to 19 minutes",
-          duration < 25 ~ "20 to 24 minutes",
-          duration < 30 ~ "25 to 29 minutes",
-          duration < 35 ~ "30 to 34 minutes",
-          duration < 45 ~ "35 to 44 minutes",
-          duration < 60 ~ "45 to 59 minutes",
-          TRUE ~ "60 or more minutes"
-        )
-    )
-  
-  stockton_lodes_h_mode <-
-    stockton_lodes_h_mode %>%
-    mutate(
-      perc_vehicle =
-        1:nrow(stockton_lodes_h_mode) %>%
-        map_dbl(function(x){
-          mode_drive <-
-            travel_time_mode %>%
-            filter(bg == stockton_lodes_h_mode$residence[x]) %>%
-            filter(time == stockton_lodes_h_mode$tier[x])
-  
-          perc_vehicle =
-            (mode_drive$estimate[which(mode_drive$mode == "Drove alone")] +
-               mode_drive$estimate[which(mode_drive$mode == "In 2-person carpool")]/2 +
-               mode_drive$estimate[which(mode_drive$mode == "In 3-or-more-person carpool")]/3)/
-            sum(mode_drive$estimate)
-  
-          return(perc_vehicle)
-        }),
-      vehicles = jobs*perc_vehicle,
-      vmt = person_miles*perc_vehicle
-    )
-  
-  save(stockton_lodes_h_route,stockton_lodes_h_filter,stockton_lodes_h_mode, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
-  
-  result <- 
-    data.frame(
-      Year = year,
-      vmt = sum(stockton_lodes_h_mode$vmt, na.rm=T),
-      jobs = sum(stockton_lodes_h_mode$jobs, na.rm=T)
-    )
-    
-  return(result)
-}
+```{r stockton commute vmt distribution 2017}
+# for(year in 2011:2017){
+#   
+#   print(year)
+#   
+#   ca_lodes <-
+#     grab_lodes(
+#       state = "ca",
+#       year = year,
+#       lodes_type = "od",
+#       job_type = "JT01", #Primary Jobs
+#       segment = "S000",
+#       state_part = "main",
+#       agg_geo = "bg"
+#     )
+#   
+#   stockton_lodes_h <-
+#     ca_lodes[which(ca_lodes$h_bg %in% stockton_bgs_full$GEOID),]
+#   
+#   stockton_lodes_h_origin_centroids <-
+#     st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$h_bg),])
+#   
+#   stockton_lodes_h_dest_centroids <-
+#     st_centroid(ca_bgs[which(ca_bgs$GEOID %in% stockton_lodes_h$w_bg),])
+#   
+#   route <-
+#     1:nrow(stockton_lodes_h) %>%
+#     map_dfr(function(row){
+#       print(row)
+#       route <- osrmRoute(
+#         src = stockton_lodes_h_origin_centroids[which(stockton_lodes_h_origin_centroids$GEOID %in% stockton_lodes_h[row,"h_bg"]),],
+#         dst = stockton_lodes_h_dest_centroids[which(stockton_lodes_h_dest_centroids$GEOID %in% stockton_lodes_h[row,"w_bg"]),],
+#         overview = FALSE
+#       ) %>%
+#         as.list() %>%
+#         as.data.frame()
+#       if(is_empty(route)){
+#         return(
+#           data.frame(
+#             duration = NA,
+#             distance = NA
+#           )
+#         )
+#       } else {return(route)}
+#     })
+#   
+#   stockton_lodes_h_route <-
+#     stockton_lodes_h %>%
+#     cbind(route)
+#   
+#   stockton_lodes_h_filter <-
+#     stockton_lodes_h_route %>%
+#     filter(duration < 180)
+#   
+#   save(stockton_lodes_h_route,stockton_lodes_h_filter, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
+# }
 
-get_stockton_vmt_tract <- function(year){
-  
-  print(year)
-  
-  ca_lodes <-
-    grab_lodes(
-      state = "ca",
-      year = year,
-      lodes_type = "od",
-      job_type = "JT01", #Primary Jobs
-      segment = "S000",
-      state_part = "main",
-      agg_geo = "tract"
-    )
-  
-  stockton_lodes_h <-
-    ca_lodes[which(ca_lodes$h_tract %in% stockton_tracts_full$GEOID),]
-  
-  stockton_lodes_h_origin_centroids <-
-    st_centroid(ca_tracts[which(ca_tracts$GEOID %in% stockton_lodes_h$h_tract),])
-  
-  stockton_lodes_h_dest_centroids <-
-    st_centroid(ca_tracts[which(ca_tracts$GEOID %in% stockton_lodes_h$w_tract),])
-  
-  route <-
-    1:nrow(stockton_lodes_h) %>%
-    map_dfr(function(row){
-      print(row)
-      route <- osrmRoute(
-        src = stockton_lodes_h_origin_centroids[which(stockton_lodes_h_origin_centroids$GEOID %in% stockton_lodes_h[row,"h_tract"]),],
-        dst = stockton_lodes_h_dest_centroids[which(stockton_lodes_h_dest_centroids$GEOID %in% stockton_lodes_h[row,"w_tract"]),],
-        overview = FALSE
-      ) %>%
-        as.list() %>%
-        as.data.frame()
-      if(is_empty(route)){
-        return(
-          data.frame(
-            duration = NA,
-            distance = NA
-          )
-        )
-      } else {return(route)}
-    })
-  
-  stockton_lodes_h_route <-
-    stockton_lodes_h %>%
-    cbind(route)
-  
-  stockton_lodes_h_filter <-
-    stockton_lodes_h_route %>%
-    filter(duration < 180)
-  
-  save(stockton_lodes_h_route,stockton_lodes_h_filter, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata"))
-  
-  # acs_vars <-
-  #   listCensusMetadata(
-  #     name = paste0(year,"/acs/acs5"),
-  #     type = "variables"
-  #   )
-  # 
-  # save(acs_vars,file=paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
-  
-  load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
-  
-  travel_time_mode <-
-    getCensus(
-      name = "acs/acs5",
-      vintage = year,
-      region = "tract:*",
-      regionin = "state:06+county:077",
-      vars = "group(B08134)"
-    ) %>%
-    mutate(
-      tract =
-        paste0(state,county,tract)
-    ) %>%
-    filter(tract %in% stockton_tracts_full$GEOID) %>% # This importantly filters to only tracts that show up in our Stockton LODES data, which reduces data size considerably.
-    select_if(!names(.) %in% c("GEO_ID","state","county","NAME")) %>%
-    dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
-    gather(
-      key = "variable",
-      value = "estimate",
-      -tract
-    ) %>%
-    mutate(
-      label = acs_vars$label[match(variable,acs_vars$name)],
-      time = # This extracts only the time information from our label.
-        substr(
-          label,
-          lapply(
-            label,
-            function(x){
-              ifelse(
-                length(unlist(gregexpr('!!',x)))<3,
-                NA,
-                max(unlist(gregexpr('!!',x)))+2
-              )
-            }
-          ),
-          nchar(label)
-        ),
-      mode = # This extracts only the mode information from our label. It doesn't fully deal with double-counting, so some are further removed later on in a filter.
-        substr(
-          label,
-          lapply(
-            label,
-            function(x){
-              ifelse(
-                length(unlist(gregexpr('!!',x)))<3,
-                NA,
-                unlist(gregexpr('!!',x))[length(unlist(gregexpr('!!',x)))-1]+2
-              )
-            }
-          ),
-          lapply(
-            label,
-            function(x){
-              max(unlist(gregexpr('!!',x)))-1
-            }
-          )
-        )
-    ) %>%
-    filter(!is.na(time)) %>% # This removes the grand total rows that are usually at the top of the ACS data.
-    filter(!mode %in% c("Car truck or van","Carpooled","Public transportation (excluding taxicab)")) %>% # This removes double-counted subtotals.
-    dplyr::select(-variable,-label)
-  
-  stockton_lodes_h_mode <-
-    stockton_lodes_h_filter %>%
-    transmute(
-      residence = h_tract,
-      workplace = w_tract,
-      jobs = S000,
-      duration = duration,
-      person_miles = S000*as.numeric(distance)/1.60934,
-      person_hours = S000*as.numeric(duration)/60
-    ) %>%
-    mutate(
-      tier =
-        case_when(
-          duration < 10 ~ "Less than 10 minutes",
-          duration < 15 ~ "10 to 14 minutes",
-          duration < 20 ~ "15 to 19 minutes",
-          duration < 25 ~ "20 to 24 minutes",
-          duration < 30 ~ "25 to 29 minutes",
-          duration < 35 ~ "30 to 34 minutes",
-          duration < 45 ~ "35 to 44 minutes",
-          duration < 60 ~ "45 to 59 minutes",
-          TRUE ~ "60 or more minutes"
-        )
-    )
-  
-  stockton_lodes_h_mode <-
-    stockton_lodes_h_mode %>%
-    mutate(
-      perc_vehicle =
-        1:nrow(stockton_lodes_h_mode) %>%
-        map_dbl(function(x){
-          mode_drive <-
-            travel_time_mode %>%
-            filter(tract == stockton_lodes_h_mode$residence[x]) %>%
-            filter(time == stockton_lodes_h_mode$tier[x])
-  
-          perc_vehicle =
-            (mode_drive$estimate[which(mode_drive$mode == "Drove alone")] +
-               mode_drive$estimate[which(mode_drive$mode == "In 2-person carpool")]/2 +
-               mode_drive$estimate[which(mode_drive$mode == "In 3-or-more-person carpool")]/3)/
-            sum(mode_drive$estimate)
-  
-          return(perc_vehicle)
-        }),
-      vehicles = jobs*perc_vehicle,
-      vmt = person_miles*perc_vehicle
-    )
-  
-  save(stockton_lodes_h_route,stockton_lodes_h_filter,stockton_lodes_h_mode, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata"))
-  
-  result <- 
-    data.frame(
-      Year = year,
-      vmt = sum(stockton_lodes_h_mode$vmt, na.rm=T),
-      jobs = sum(stockton_lodes_h_mode$jobs, na.rm=T)
-    )
-    
-  return(result)
-}
-
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017_tract.Rdata")
 
 ggplot(
   stockton_lodes_h_filter, 
@@ -2233,21 +2204,20 @@ ggplot(
 ```{r}
 stockton_commute_avg <-
   stockton_lodes_h_filter %>% 
-  mutate(
-    w_bg = substr(w_tract,1,nchar(w_tract)-1)
-  )
-  group_by(w_bg) %>% 
+  group_by(w_tract) %>% 
   summarize(
     `Average Commute Time, Hours` = mean(duration, na.rm=T)
   ) %>% 
-  left_join(ca_tracts, by = c("w_bg" = "GEOID")) %>%
+  left_join(ca_tracts, by = c("w_tract" = "GEOID")) %>%
   st_as_sf()
 
 mapview(stockton_commute_avg, zcol = "Average Commute Time, Hours", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Average Commute Time, Hours')
 ```
-*Figure 8. Top 15 counties where Stockton residents work - average commute time, in hours. Data from LODES, 2017.*
+*Figure 8. Tracts where Stockton residents work - average commute time, in hours. Data from LODES, 2017.*
 
-The graph above, and our subsequent analyses, focuses on counties with average commute times of less than 3 hours, which eliminates the unrealistic commutes while preserving ~94% of reported commutes.
+The graph above, and our subsequent analyses, focuses on destinations with average commute times of less than 3 hours, which eliminates the unrealistic commutes while preserving ~94% of reported commutes.
+
+To conclude this section, we used LODES and ACS data from 2013-2017 to estimate the change in VMT over that time period. Since our specific VMT methodology includes many simplifying assumptions, it is perhaps most valuable to see the change in VMT using a constant methodology over time.
 
 We estimated the total and average GHG emissions for Stockton workers commuting to each of the top 15 counties (filtering out counties further than 3 hours away). We made the following assumptions:
 
@@ -2257,41 +2227,578 @@ We estimated the total and average GHG emissions for Stockton workers commuting 
 - To convert daily VMT to annual VMT, the same annualization factor was used as ICLEI: 369.39. The factor appears to account for both expected reductions in VMT because of sick days, as well as expected increases in VMT because of chained trips.
 - All vehicles were assumed to be passenger vehicles with an average mpg of 29.2 in 2017 and CO2e emissions of 303 g/mi (0.000334 tCO2e/mi), using data from the [EPA Automotive Trends Report](https://www.epa.gov/automotive-trends/explore-automotive-trends-data). Disregarding SUVs and trucks has the effect of underestimating emissions. 
 
-```{r}
-stockton_commute_vmt <- NULL
+To-do:
+- blockgroupmode
 
-for(year in 2013:2015){
-  stockton_commute_vmt <-
-    rbind(
-      stockton_commute_vmt,
-      get_stockton_vmt_bg(year)
+```{r stockton commute vmt bgmode}
+stockton_commute_vmt_bgmode <- NULL
+
+for(year in 2011:2017){
+    print(year)
+
+    load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
+
+    load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
+
+    travel_time_mode <-
+      getCensus(
+        name = "acs/acs5",
+        vintage = ifelse(
+          year < 2013,
+          2013,
+          year
+        ),
+        region = "block group:*",
+        regionin = "state:06+county:077",
+        vars = "group(B08134)"
+      ) %>%
+      mutate(bg = paste0(state,county,tract,block_group)) %>%
+      select_if(!names(.) %in% c("GEO_ID","state","county","tract","block_group","NAME")) %>%
+      dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
+      gather(
+        key = "variable",
+        value = "estimate",
+        -bg
+      ) %>%
+      mutate(
+        label = acs_vars$label[match(variable,acs_vars$name)],
+        time = # This extracts only the time information from our label.
+          substr(
+            label,
+            lapply(
+              label,
+              function(x){
+                ifelse(
+                  length(unlist(gregexpr('!!',x)))<3,
+                  NA,
+                  max(unlist(gregexpr('!!',x)))+2
+                )
+              }
+            ),
+            nchar(label)
+          ),
+        mode = # This extracts only the mode information from our label. It doesn't fully deal with double-counting, so some are further removed later on in a filter.
+          substr(
+            label,
+            lapply(
+              label,
+              function(x){
+                ifelse(
+                  length(unlist(gregexpr('!!',x)))<3,
+                  NA,
+                  unlist(gregexpr('!!',x))[length(unlist(gregexpr('!!',x)))-1]+2
+                )
+              }
+            ),
+            lapply(
+              label,
+              function(x){
+                max(unlist(gregexpr('!!',x)))-1
+              }
+            )
+          )
+      ) %>%
+      filter(!is.na(time)) %>% # This removes the grand total rows that are usually at the top of the ACS data.
+      filter(!mode %in% c("Car, truck, or van","Car truck or van","Carpooled","Public transportation (excluding taxicab)")) %>% # This removes double-counted subtotals.
+      dplyr::select(-variable,-label)
+
+    travel_time_mode_summary <-
+      travel_time_mode %>%
+      group_by(bg,time) %>%
+      summarize(
+        jobs = sum(estimate),
+        jobs_drovealone = sum(estimate[which(mode == "Drove alone")]),
+        jobs_carpool2 = sum(estimate[which(mode == "In 2-person carpool")]),
+        jobs_carpool3 = sum(estimate[which(mode == "In 3-or-more-person carpool")]),
+      ) %>%
+      mutate(
+        vehicles_drovealone = jobs_drovealone,
+        vehicles_carpool2 = jobs_carpool2/2,
+        vehicles_carpool3 = jobs_carpool3/3,
+        jobs_car = jobs_drovealone+jobs_carpool2+jobs_carpool3,
+        jobs_carpool = jobs_carpool2+jobs_carpool3,
+        vehicles = vehicles_drovealone,vehicles_carpool2,vehicles_carpool3,
+        perc_jobs_car = jobs_car/jobs,
+        perc_jobs_carpool = jobs_carpool/jobs,
+        perc_vehicle = vehicles/jobs
+      )
+
+  stockton_lodes_h_mode <-
+    stockton_lodes_h_filter %>%
+    transmute(
+      residence = h_bg,
+      jobs = S000,
+      duration = duration,
+      person_miles = S000*as.numeric(distance)/1.60934,
+      person_hours = S000*as.numeric(duration)/60
+    ) %>%
+    mutate(
+      tier =
+        case_when(
+          duration < 10 ~ "Less than 10 minutes",
+          duration < 15 ~ "10 to 14 minutes",
+          duration < 20 ~ "15 to 19 minutes",
+          duration < 25 ~ "20 to 24 minutes",
+          duration < 30 ~ "25 to 29 minutes",
+          duration < 35 ~ "30 to 34 minutes",
+          duration < 45 ~ "35 to 44 minutes",
+          duration < 60 ~ "45 to 59 minutes",
+          TRUE ~ "60 or more minutes"
+        )
+    ) %>%
+    left_join(
+      travel_time_mode_summary %>%
+        dplyr::select(
+          bg,
+          time,
+          perc_jobs_car,
+          perc_jobs_carpool,
+          perc_vehicle
+        ),
+      by = c("residence" = "bg", "tier" = "time")
+    ) %>%
+    mutate(
+      jobs_car = jobs*perc_jobs_car,
+      jobs_carpool = jobs*perc_jobs_carpool,
+      vehicles = jobs*perc_vehicle,
+      vmt = person_miles*perc_vehicle
     )
+
+    stockton_commute_vmt_bgmode <-
+      rbind(stockton_commute_vmt_bgmode,
+        data.frame(
+          Year = year,
+          person_miles = sum(stockton_lodes_h_mode$person_miles, na.rm=T),
+          jobs = sum(stockton_lodes_h_mode$jobs, na.rm=T),
+          jobs_car = sum(stockton_lodes_h_mode$jobs_car, na.rm=T),
+          jobs_carpool = sum(stockton_lodes_h_mode$jobs_carpool, na.rm=T),
+          vehicles = sum(stockton_lodes_h_mode$vehicles, na.rm = T),
+          vmt = sum(stockton_lodes_h_mode$vmt, na.rm=T)
+        )
+      )
+
+    save(stockton_commute_vmt_bgmode,file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_bgmode.Rdata")
 }
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_bgmode.Rdata")
 
-save(stockton_commute_vmt_tract, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tract.Rdata")
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tract.Rdata")
+stockton_commute_vmt_bgmode %>%
+  ggplot(
+    aes(
+      x = Year,
+      y = vmt/jobs
+    )
+  ) +
+  geom_line()
+```
 
-stockton_commute_vmt_norm <-
-  stockton_commute_vmt_tract %>% 
-  mutate(
-    `One-Way VMT/Workers` = vmt/jobs
-  ) %>% 
-  arrange(Year)
+```{r stockton commute vmt tractmode}
+# stockton_commute_vmt_tractmode <- NULL
+# 
+# for(year in 2011:2017){
+#     print(year)
+# 
+#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata"))
+# 
+#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
+# 
+#     travel_time_mode <-
+#       getCensus(
+#         name = "acs/acs5",
+#         vintage = year,
+#         region = "tract:*",
+#         regionin = "state:06+county:077",
+#         vars = "group(B08134)"
+#       ) %>%
+#       mutate(tract = paste0(state,county,tract)) %>%
+#       select_if(!names(.) %in% c("GEO_ID","state","county","NAME")) %>%
+#       dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
+#       gather(
+#         key = "variable",
+#         value = "estimate",
+#         -tract
+#       ) %>%
+#       mutate(
+#         label = acs_vars$label[match(variable,acs_vars$name)],
+#         time = # This extracts only the time information from our label.
+#           substr(
+#             label,
+#             lapply(
+#               label,
+#               function(x){
+#                 ifelse(
+#                   length(unlist(gregexpr('!!',x)))<3,
+#                   NA,
+#                   max(unlist(gregexpr('!!',x)))+2
+#                 )
+#               }
+#             ),
+#             nchar(label)
+#           ),
+#         mode = # This extracts only the mode information from our label. It doesn't fully deal with double-counting, so some are further removed later on in a filter.
+#           substr(
+#             label,
+#             lapply(
+#               label,
+#               function(x){
+#                 ifelse(
+#                   length(unlist(gregexpr('!!',x)))<3,
+#                   NA,
+#                   unlist(gregexpr('!!',x))[length(unlist(gregexpr('!!',x)))-1]+2
+#                 )
+#               }
+#             ),
+#             lapply(
+#               label,
+#               function(x){
+#                 max(unlist(gregexpr('!!',x)))-1
+#               }
+#             )
+#           )
+#       ) %>%
+#       filter(!is.na(time)) %>% # This removes the grand total rows that are usually at the top of the ACS data.
+#       filter(!mode %in% c("Car, truck, or van","Car truck or van","Carpooled","Public transportation (excluding taxicab)")) %>% # This removes double-counted subtotals.
+#       dplyr::select(-variable,-label)
+# 
+#     travel_time_mode_summary <-
+#       travel_time_mode %>%
+#       group_by(tract,time) %>%
+#       summarize(
+#         jobs = sum(estimate),
+#         jobs_drovealone = sum(estimate[which(mode == "Drove alone")]),
+#         jobs_carpool2 = sum(estimate[which(mode == "In 2-person carpool")]),
+#         jobs_carpool3 = sum(estimate[which(mode == "In 3-or-more-person carpool")]),
+#       ) %>%
+#       mutate(
+#         vehicles_drovealone = jobs_drovealone,
+#         vehicles_carpool2 = jobs_carpool2/2,
+#         vehicles_carpool3 = jobs_carpool3/3,
+#         jobs_car = jobs_drovealone+jobs_carpool2+jobs_carpool3,
+#         jobs_carpool = jobs_carpool2+jobs_carpool3,
+#         vehicles = vehicles_drovealone,vehicles_carpool2,vehicles_carpool3,
+#         perc_jobs_car = jobs_car/jobs,
+#         perc_jobs_carpool = jobs_carpool/jobs,
+#         perc_vehicle = vehicles/jobs
+#       )
+# 
+#   stockton_lodes_h_mode <-
+#     stockton_lodes_h_filter %>%
+#     transmute(
+#       residence = h_tract,
+#       jobs = S000,
+#       duration = duration,
+#       person_miles = S000*as.numeric(distance)/1.60934,
+#       person_hours = S000*as.numeric(duration)/60
+#     ) %>%
+#     mutate(
+#       tier =
+#         case_when(
+#           duration < 10 ~ "Less than 10 minutes",
+#           duration < 15 ~ "10 to 14 minutes",
+#           duration < 20 ~ "15 to 19 minutes",
+#           duration < 25 ~ "20 to 24 minutes",
+#           duration < 30 ~ "25 to 29 minutes",
+#           duration < 35 ~ "30 to 34 minutes",
+#           duration < 45 ~ "35 to 44 minutes",
+#           duration < 60 ~ "45 to 59 minutes",
+#           TRUE ~ "60 or more minutes"
+#         )
+#     ) %>%
+#     left_join(
+#       travel_time_mode_summary %>%
+#         dplyr::select(
+#           tract,
+#           time,
+#           perc_jobs_car,
+#           perc_jobs_carpool,
+#           perc_vehicle
+#         ),
+#       by = c("residence" = "tract", "tier" = "time")
+#     ) %>%
+#     mutate(
+#       jobs_car = jobs*perc_jobs_car,
+#       jobs_carpool = jobs*perc_jobs_carpool,
+#       vehicles = jobs*perc_vehicle,
+#       vmt = person_miles*perc_vehicle
+#     )
+# 
+#     stockton_commute_vmt_tractmode <-
+#       rbind(stockton_commute_vmt_tractmode,
+#         data.frame(
+#           Year = year,
+#           person_miles = sum(stockton_lodes_h_mode$person_miles, na.rm=T),
+#           jobs = sum(stockton_lodes_h_mode$jobs, na.rm=T),
+#           jobs_car = sum(stockton_lodes_h_mode$jobs_car, na.rm=T),
+#           jobs_carpool = sum(stockton_lodes_h_mode$jobs_carpool, na.rm=T),
+#           vehicles = sum(stockton_lodes_h_mode$vehicles, na.rm = T),
+#           vmt = sum(stockton_lodes_h_mode$vmt, na.rm=T)
+#         )
+#       )
+# 
+#     save(stockton_commute_vmt_tractmode,file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
+# }
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
 
-stockton_commute_vmt_table <-
-  stockton_commute_vmt_norm %>% 
+stockton_commute_vmt_tractmode %>%
+  ggplot(
+    aes(
+      x = Year,
+      y = vmt/jobs
+    )
+  ) +
+  geom_line()
+```
+
+```{r stockton commute vmt countymode}
+# stockton_commute_vmt_countymode <- NULL
+# 
+# for(year in 2011:2017){
+# 
+#   print(year)
+# 
+#   load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata"))
+# 
+#   load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_",year,".Rdata"))
+# 
+#   travel_time_mode <-
+#     getCensus(
+#       name = "acs/acs1",
+#       vintage = year,
+#       region = "county:077",
+#       regionin = "state:06",
+#       vars = "group(B08134)"
+#     ) %>%
+#     select_if(!names(.) %in% c("GEO_ID","state","NAME")) %>%
+#     dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
+#     gather(
+#       key = "variable",
+#       value = "estimate",
+#       -county
+#     ) %>%
+#     mutate(
+#       label = acs_vars$label[match(variable,acs_vars$name)],
+#       time = # This extracts only the time information from our label.
+#         substr(
+#           label,
+#           lapply(
+#             label,
+#             function(x){
+#               ifelse(
+#                 length(unlist(gregexpr('!!',x)))<3,
+#                 NA,
+#                 max(unlist(gregexpr('!!',x)))+2
+#               )
+#             }
+#           ),
+#           nchar(label)
+#         ),
+#       mode = # This extracts only the mode information from our label. It doesn't fully deal with double-counting, so some are further removed later on in a filter.
+#         substr(
+#           label,
+#           lapply(
+#             label,
+#             function(x){
+#               ifelse(
+#                 length(unlist(gregexpr('!!',x)))<3,
+#                 NA,
+#                 unlist(gregexpr('!!',x))[length(unlist(gregexpr('!!',x)))-1]+2
+#               )
+#             }
+#           ),
+#           lapply(
+#             label,
+#             function(x){
+#               max(unlist(gregexpr('!!',x)))-1
+#             }
+#           )
+#         )
+#     ) %>%
+#     filter(!is.na(time)) %>% # This removes the grand total rows that are usually at the top of the ACS data.
+#     filter(!mode %in% c("Car, truck, or van","Car truck or van","Carpooled","Public transportation (excluding taxicab)")) %>% # This removes double-counted subtotals.
+#     dplyr::select(-variable,-label)
+# 
+#     travel_time_mode_summary <-
+#       travel_time_mode %>%
+#       group_by(time) %>%
+#       summarize(
+#         jobs = sum(estimate),
+#         jobs_drovealone = sum(estimate[which(mode == "Drove alone")]),
+#         jobs_carpool2 = sum(estimate[which(mode == "In 2-person carpool")]),
+#         jobs_carpool3 = sum(estimate[which(mode == "In 3-or-more-person carpool")]),
+#       ) %>%
+#       mutate(
+#         vehicles_drovealone = jobs_drovealone,
+#         vehicles_carpool2 = jobs_carpool2/2,
+#         vehicles_carpool3 = jobs_carpool3/3,
+#         jobs_car = jobs_drovealone+jobs_carpool2+jobs_carpool3,
+#         jobs_carpool = jobs_carpool2+jobs_carpool3,
+#         vehicles = vehicles_drovealone,vehicles_carpool2,vehicles_carpool3,
+#         perc_jobs_car = jobs_car/jobs,
+#         perc_jobs_carpool = jobs_carpool/jobs,
+#         perc_vehicle = vehicles/jobs
+#       )
+# 
+#   stockton_lodes_h_mode <-
+#     stockton_lodes_h_filter %>%
+#     transmute(
+#       jobs = S000,
+#       duration = duration,
+#       person_miles = S000*as.numeric(distance)/1.60934,
+#       person_hours = S000*as.numeric(duration)/60
+#     ) %>%
+#     mutate(
+#       tier =
+#         case_when(
+#           duration < 10 ~ "Less than 10 minutes",
+#           duration < 15 ~ "10 to 14 minutes",
+#           duration < 20 ~ "15 to 19 minutes",
+#           duration < 25 ~ "20 to 24 minutes",
+#           duration < 30 ~ "25 to 29 minutes",
+#           duration < 35 ~ "30 to 34 minutes",
+#           duration < 45 ~ "35 to 44 minutes",
+#           duration < 60 ~ "45 to 59 minutes",
+#           TRUE ~ "60 or more minutes"
+#         )
+#     ) %>%
+#     left_join(
+#       travel_time_mode_summary %>%
+#         dplyr::select(
+#           time,
+#           perc_jobs_car,
+#           perc_jobs_carpool,
+#           perc_vehicle
+#         ),
+#       by = c("tier" = "time")
+#     ) %>%
+#     mutate(
+#       jobs_car = jobs*perc_jobs_car,
+#       jobs_carpool = jobs*perc_jobs_carpool,
+#       vehicles = jobs*perc_vehicle,
+#       vmt = person_miles*perc_vehicle
+#     )
+# 
+#     stockton_commute_vmt_countymode <-
+#       rbind(stockton_commute_vmt_countymode,
+#         data.frame(
+#           Year = year,
+#           person_miles = sum(stockton_lodes_h_mode$person_miles, na.rm=T),
+#           jobs = sum(stockton_lodes_h_mode$jobs, na.rm=T),
+#           jobs_car = sum(stockton_lodes_h_mode$jobs_car, na.rm=T),
+#           jobs_carpool = sum(stockton_lodes_h_mode$jobs_carpool, na.rm=T),
+#           vehicles = sum(stockton_lodes_h_mode$vehicles, na.rm = T),
+#           vmt = sum(stockton_lodes_h_mode$vmt, na.rm=T)
+#         )
+#       )
+# }
+# 
+# save(stockton_commute_vmt_countymode, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_countymode.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_countymode.Rdata")
+
+stockton_commute_vmt_countymode %>%
+  ggplot(
+    aes(
+      x = Year,
+      y = vmt/jobs
+    )
+  ) +
+  geom_line()
+```
+
+```{r stockton compare tractmode and countymode}
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_bgmode.Rdata")
+
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
+
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_countymode.Rdata")
+
+stockton_commute_vmt_compare <-
+  rbind(
+    stockton_commute_vmt_bgmode %>% 
+      mutate(mode = "block group"),
+    stockton_commute_vmt_tractmode %>% 
+      mutate(mode = "tract"),
+    stockton_commute_vmt_countymode %>% 
+      mutate(mode = "county")
+  )
+
+stockton_commute_vmt_compare %>%
+  ggplot(
+    aes(
+      x = Year,
+      y = vmt/jobs,
+      linetype = mode
+    )
+  ) +
+  geom_line()
+```
+
+```{r stockton compare tractmode and countymode}
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
+
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
+
+stockton_county_commute_vmt_compare <-
+  rbind(
+    stockton_commute_vmt_tractmode %>% 
+      mutate(type = "stockton"),
+    county_commute_vmt_tractmode %>% 
+      filter(County == "077") %>% 
+      dplyr::select(-County) %>% 
+      mutate(type = "sjc")
+  )
+
+stockton_county_commute_vmt_compare %>%
+  ggplot(
+    aes(
+      x = Year,
+      y = jobs_car/jobs,
+      linetype = type
+    )
+  ) +
+  geom_line()
+```
+
+```{r stockton commute vmt table}
+stockton_commute_vmt_tractmode_table <-
+  stockton_commute_vmt_tractmode %>% 
   transmute(
     Year = Year,
     `Commute One-Way VMT` = prettyNum(round(vmt,-3), big.mark=","),
     `Workers` = prettyNum(round(jobs,-3), big.mark=","),
-    `One-Way VMT/Workers` = round(`One-Way VMT/Workers`,1)
+    `One-Way VMT/Workers` = round(vmt/jobs,1),
+    `% Car-Dependent Workers who Carpool` = paste0(round(jobs_carpool/jobs_car*100,1),"%")
   )
 
-datatable(stockton_commute_vmt_table, rownames = FALSE, options = list(pageLength = 7))
+datatable(stockton_commute_vmt_tractmode_table, rownames = FALSE, options = list(pageLength = 7))
 ```
+*Table 16. Stockton commute one-way VMT from 2011-2017. Data from LODES and ACS 1-yr.*
+
+The average one-way commute trip for the Stockton worker appears to have increased by 26% over the last 6 years. This could be explained by existing residents changing to jobs that are further and further away from home, where better employment opportunities can be found, and by new residents moving to Stockton to find affordable housing but retaining their faraway jobs.
+
+```{r vmt graph}
+ggplot(
+  stockton_commute_vmt_tractmode, 
+  aes(
+    x = Year,
+    y = vmt/jobs
+  )
+) + 
+  geom_line(size=2, color = "forest green") +
+  labs(
+    title = "Stockton Commute One-Way VMT/Workers",
+    x = "Year",
+    y = "One-Way VMT/Workers"
+  )
+```
+*Figure 18. Stockton commute one-way VMT per employed resident from 2011-2017. Data from LODES and ACS 1-yr.*
+
+To-do:
+- Forecast
+- Amenities VMT
 
 
-```{r}
+```{r ghg}
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017.Rdata")
+
 stockton_lodes_h_counties_ghg <- 
   stockton_lodes_h_mode %>%
   st_set_geometry(NULL) %>% 
@@ -2333,7 +2840,7 @@ datatable(stockton_lodes_h_counties_ghg_table[1:15,], rownames = FALSE, options 
 
 According to the table above, 59% percent of Stockton residents work in San Joaquin County and collectively contribute 18% of all commute GHGs. The next 14 counties comprise another 38% of Stockton residents, but they collectively contribute 76% of all commute GHGs. This significant difference comes down to difference in average commute distance to each county, which is directly related to average GHG emissions per worker, as seen in the following map. In a later section, we will explore opportunities to stimulate local job creation so that some of these long-distance commutes can be converted into local commutes, reducing both the toll on the environment and the tolls on health and well-being for Stockton residents.
 
-```{r}
+```{r ghg map}
 stockton_lodes_h_counties_ghg_map <-
   stockton_lodes_h_counties_ghg[1:15,] %>% 
     transmute(
@@ -2356,92 +2863,10 @@ mapview(
 ```
 *Figure 16. Top 15 Counties where Stockton residents work - average GHG emissions from driving per worker. Data from LODES, 2017.*
 
-```{r}
+```{r ghg map 2}
 mapview(stockton_lodes_h_counties_ghg_map, zcol = "Total Annual GHG (tCO2e)", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Total Annual GHG (tCO2e)')
 ```
 *Figure 17. Top 15 Counties where Stockton residents work - annual GHG emissions from driving. Data from LODES, 2017.*
-
-To conclude this section, we used LODES and ACS data from 2013-2017 to estimate the change in VMT over that time period. Since our specific VMT methodology includes many simplifying assumptions, it is perhaps most valuable to see the change in VMT using a constant methodology over time.
-
-```{r}
-
-```
-*Table 16. Stockton commute one-way VMT from 2011-2017. Data from LODES and ACS 1-yr.*
-
-```{r}
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt.Rdata")
-
-stockton_commute_vmt_norm_bg <-
-  stockton_commute_vmt %>% 
-  mutate(
-    `One-Way VMT/Workers` = vmt/jobs
-  ) %>% 
-  arrange(Year)
-
-commute_combined <-
-  rbind(
-    stockton_commute_vmt_norm %>% 
-      mutate(type = "tract"),
-    stockton_commute_vmt_norm_bg %>% 
-      mutate(type = "bg")
-  )
-
-ggplot(
-  commute_combined, 
-  aes(
-    x = Year,
-    y = vmt,
-    colour = type
-  )
-) + 
-  geom_line() +
-  labs(
-    title = "Stockton Commute One-Way VMT/Workers",
-    x = "Year",
-    y = "One-Way VMT/Workers"
-  )
-```
-
-```{r}
-for(year in 2011:2017){
-  load(
-    paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata")
-  )
-  
-  test <-
-    stockton_lodes_h_filter %>% 
-    filter(h_tract == w_tract) %>% 
-    pull(S000) %>% 
-    sum()
-  
-  print(paste0(year,"-",test))
-}
-```
-
-
-The average one-way commute trip for the Stockton worker appears to have increased by 26% over the last 6 years. This could be explained by existing residents changing to jobs that are further and further away from home, where better employment opportunities can be found, and by new residents moving to Stockton to find affordable housing but retaining their faraway jobs.
-
-```{r}
-ggplot(
-  stockton_commute_vmt_norm, 
-  aes(
-    x = Year,
-    y = `One-Way VMT/Workers`
-  )
-) + 
-  geom_line(size=2, color = "forest green") +
-  labs(
-    title = "Stockton Commute One-Way VMT/Workers",
-    x = "Year",
-    y = "One-Way VMT/Workers"
-  )
-```
-*Figure 18. Stockton commute one-way VMT per employed resident from 2011-2017. Data from LODES and ACS 1-yr.*
-
-To-do:
-- Forecast
-- Amenities VMT
-
 
 ## Energy
 
@@ -2930,7 +3355,7 @@ A full forecast of energy usage will also depend on predicted changes in residen
 
 The following maps show the density of residents per 1000 sqft of residential buildings across Stockton, followed by the density of jobs per 1000 sqft of commercials buildings, at the block group level. Residential population was obtained from ACS 2017 5-yr data, and job count was obtained from LODES 2017.
 
-```{r}
+```{r bldg dataset, residential density}
 pge_stockton_filtered <- 
   pge_data %>% 
   filter(!CUSTOMERCLASS %in% c("EI","EA") & (YEAR == 2018)) %>%
@@ -3109,8 +3534,58 @@ zcta_stockton_joined <-
 # save(stockton_bldg_final, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
 load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
 
+# stockton_bldg_17 <- 
+#   readOGR(dsn = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/Stockton2017", layer = "Stockton") %>% 
+#   st_as_sf() %>% 
+#   st_transform(st_crs(stockton_bldg_final))
+# 
+# save(stockton_bldg_17, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/stockton_bldg_17.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/stockton_bldg_17.Rdata")
+
+#match height from 2017 data
+# bldg_join <-
+#   stockton_bldg_final %>%
+#   st_join(
+#     stockton_bldg_17 %>%
+#       st_transform(26910) %>%
+#       st_buffer(-1) %>%
+#       st_transform(st_crs(stockton_bldg_final))
+#   ) %>%
+#   group_by(id) %>%
+#   summarize(
+#     Height = mean(Height,na.rm=T)
+#   ) %>%
+#   left_join(stockton_bldg_final %>% st_set_geometry(NULL),by="id")
+# 
+# save(bldg_join, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/bldg_join.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/bldg_join.Rdata")
+
+bldg_join <-
+  bldg_join %>% 
+  mutate(
+    stories_by_height =
+      case_when(
+        GEOID == "060770039001" ~ 1, #Naval b ase
+        is.na(Height) & is.na(stories) ~ 1,
+        is.na(Height) ~ round(stories),
+        !is.na(stories) ~ round(stories),
+        Height < mean(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==1),]$Height) + sd(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==1),]$Height) ~ 1,
+        Height < mean(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==2),]$Height) + sd(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==2),]$Height) ~ 2,
+        Height < mean(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==3),]$Height) + sd(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==3),]$Height) ~ 3,
+        Height < mean(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==4),]$Height) + sd(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==4),]$Height) ~ 4,
+        TRUE ~ round(Height/5)
+      ),
+    bldg_tot =
+      bldgground*stories_by_height
+  )
+#6033 unmatched when using -1m buffer. #2637 of those did not have assessor stories data, set to 1F. Of other 3396, 2090 1F, 1248 2F, 58 3F.
+#70757 had both 2017 heights and assessor stories data, go with assessor stories data. 51676 had assessor stories = 1, kept at 1F. 18974 had assessor stories = 2, kept at 2F. 107 had assessor stories > 2, set to 2.5F.
+# mean height for assessor 1F: 11.30, sd 1.63. mean height for assessor 2F: 13.98, sd 2.25. mean height for assessor 3F: 15.39, sd 2.99. mean height for assessor 4F: 14.42, sd 5.35. 
+#24660 had no assessor stories data but had 2017 heights, use mean + 1 sd from above as thresholds. 1F: 12.92. 2F: 16.23. 3F: 18.38. 4F: 19.77
+#15991 1F, 5642 2F, 908 3F, 1512 4F, 541 5F, 29 6F, 12 7F, 15 8F, 4 9F, 5 10F, 1 12F.
+
 bg_bldg <-
-  stockton_bldg_final %>% 
+  bldg_join %>% 
   st_set_geometry(NULL) %>% 
   group_by(GEOID, ZONING) %>% 
   summarize(
@@ -3140,26 +3615,37 @@ bg_bldg_norm_r <-
   bg_bldg %>% 
   filter(ZONING == "R") %>% 
   left_join(bg_pop, by = "GEOID") %>% 
-  mutate(`Residents per 1,000 sqft` = pop/bldgtot*1000)
+  mutate(
+    `Residents per 1,000 sqft` = pop/bldgtot*1000,
+    residential_density = bldgtot/(as.numeric(st_area(.))/4046.86)
+  )
 
 mapview(bg_bldg_norm_r,zcol=c("Residents per 1,000 sqft"), legend = TRUE, layer.name = "Residents per 1,000 sqft")
+
+mapview(bg_bldg_norm_r,zcol=c("residential_density"), legend = TRUE, layer.name = "Residential density")
 ```
 *Figure 25. Stockton residents per 1,000 sqft of residential building area, per block group.*
 
-```{r}
-#job/sqft per block group
+```{r job/sqft per block group}
 bg_bldg_norm_c <-
   bg_bldg %>% 
   filter(ZONING == "C") %>% 
   left_join(
     stockton_wac %>% 
+      as.data.frame() %>% 
       filter(year == 2015) %>% 
-      dplyr::select(jobs = C000, GEOID), 
+      dplyr::select(jobs=C000,GEOID), 
     by = "GEOID"
   ) %>% 
-  mutate(`Jobs per 1,000 sqft` = jobs/bldgtot*1000)
+  mutate(
+    `Jobs per 1,000 sqft` = jobs/bldgtot*1000,
+    commercial_density = bldgtot/(as.numeric(st_area(.))/4046.86)
+  ) %>% 
+  filter(!GEOID %in% c("060770039001","060770039002"))
 
 mapview(bg_bldg_norm_c,zcol=c("Jobs per 1,000 sqft"), legend = TRUE, layer.name = "Jobs per 1,000 sqft")
+
+mapview(bg_bldg_norm_c,zcol=c("commercial_density"), legend = TRUE, layer.name = "Commercial density")
 
 # bldg_norm_r <-
 #   bg_bldg %>% 
@@ -3534,189 +4020,3 @@ To-do:
 save.image(file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_greeneconomy.Rdata")
 load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_greeneconomy.Rdata")
 ```
-
-```{r}
-#test tract version
-get_stockton_vmt <- function(year){
-  
-  print(year)
-  
-  ca_lodes <-
-    grab_lodes(
-      state = "ca",
-      year = year,
-      lodes_type = "od",
-      job_type = "JT01", #Primary Jobs
-      segment = "S000",
-      state_part = "main",
-      agg_geo = "tract"
-    )
-  
-  stockton_lodes_h <-
-    ca_lodes[which(ca_lodes$h_tract %in% stockton_tracts_full$GEOID),]
-  
-  stockton_lodes_h_origin_centroids <-
-    st_centroid(ca_tracts[which(ca_tracts$GEOID %in% stockton_lodes_h$h_tract),])
-  
-  stockton_lodes_h_dest_centroids <-
-    st_centroid(ca_tracts[which(ca_tracts$GEOID %in% stockton_lodes_h$w_tract),])
-  
-  route <-
-    1:nrow(stockton_lodes_h) %>%
-    map_dfr(function(row){
-      print(row)
-      route <- osrmRoute(
-        src = stockton_lodes_h_origin_centroids[which(stockton_lodes_h_origin_centroids$GEOID %in% stockton_lodes_h[row,"h_tract"]),],
-        dst = stockton_lodes_h_dest_centroids[which(stockton_lodes_h_dest_centroids$GEOID %in% stockton_lodes_h[row,"w_tract"]),],
-        overview = FALSE
-      ) %>%
-        as.list() %>%
-        as.data.frame()
-      if(is_empty(route)){
-        return(
-          data.frame(
-            duration = NA,
-            distance = NA
-          )
-        )
-      } else {return(route)}
-    })
-  
-  stockton_lodes_h_route <-
-    stockton_lodes_h %>%
-    cbind(route)
-  
-  stockton_lodes_h_filter <-
-    stockton_lodes_h_route %>%
-    filter(duration < 180)
-  
-  save(stockton_lodes_h_route,stockton_lodes_h_filter, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata"))
-  
-  travel_time_mode <-
-    getCensus(
-      name = "acs/acs5",
-      vintage = year,
-      region = "tract:*",
-      regionin = "state:06+county:077",
-      vars = "group(B08134)"
-    ) %>%
-    mutate(
-      tract =
-        paste0(state,county,tract)
-    ) %>%
-    filter(tract %in% stockton_lodes_h_filter$h_tract) %>% # This importantly filters to only block groups that show up in our Stockton LODES data, which reduces data size considerably.
-    select_if(!names(.) %in% c("GEO_ID","state","county","NAME")) %>%
-    dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
-    gather(
-      key = "variable",
-      value = "estimate",
-      -tract
-    ) %>%
-    mutate(
-      label = acs_vars$label[match(variable,acs_vars$name)],
-      time = # This extracts only the time information from our label.
-        substr(
-          label,
-          lapply(
-            label,
-            function(x){
-              ifelse(
-                length(unlist(gregexpr('!!',x)))<3,
-                NA,
-                max(unlist(gregexpr('!!',x)))+2
-              )
-            }
-          ),
-          nchar(label)
-        ),
-      mode = # This extracts only the mode information from our label. It doesn't fully deal with double-counting, so some are further removed later on in a filter.
-        substr(
-          label,
-          lapply(
-            label,
-            function(x){
-              ifelse(
-                length(unlist(gregexpr('!!',x)))<3,
-                NA,
-                unlist(gregexpr('!!',x))[length(unlist(gregexpr('!!',x)))-1]+2
-              )
-            }
-          ),
-          lapply(
-            label,
-            function(x){
-              max(unlist(gregexpr('!!',x)))-1
-            }
-          )
-        )
-    ) %>%
-    filter(!is.na(time)) %>% # This removes the grand total rows that are usually at the top of the ACS data.
-    filter(!mode %in% c("Car truck or van","Carpooled","Public transportation (excluding taxicab)")) %>% # This removes double-counted subtotals.
-    dplyr::select(-variable,-label)
-  
-  stockton_lodes_h_mode <-
-    stockton_lodes_h_filter %>%
-    transmute(
-      residence = h_tract,
-      workplace = w_tract,
-      jobs = S000,
-      duration = duration,
-      person_miles = S000*as.numeric(distance)/1.60934,
-      person_hours = S000*as.numeric(duration)/60
-    ) %>%
-    left_join(
-      ca_tracts[,"GEOID"],
-      by = c("residence" = "GEOID")
-    ) %>%
-    st_as_sf() %>%
-    mutate(
-      tier =
-        case_when(
-          duration < 10 ~ "Less than 10 minutes",
-          duration < 15 ~ "10 to 14 minutes",
-          duration < 20 ~ "15 to 19 minutes",
-          duration < 25 ~ "20 to 24 minutes",
-          duration < 30 ~ "25 to 29 minutes",
-          duration < 35 ~ "30 to 34 minutes",
-          duration < 45 ~ "35 to 44 minutes",
-          duration < 60 ~ "45 to 59 minutes",
-          TRUE ~ "60 or more minutes"
-        )
-    )
-  
-  stockton_lodes_h_mode <-
-    stockton_lodes_h_mode %>%
-    mutate(
-      perc_vehicle =
-        1:nrow(stockton_lodes_h_mode) %>%
-        map_dbl(function(x){
-          mode_drive <-
-            travel_time_mode %>%
-            filter(tract == stockton_lodes_h_mode$residence[x]) %>%
-            filter(time == stockton_lodes_h_mode$tier[x])
-  
-          perc_vehicle =
-            (mode_drive$estimate[which(mode_drive$mode == "Drove alone")] +
-               mode_drive$estimate[which(mode_drive$mode == "In 2-person carpool")]/2 +
-               mode_drive$estimate[which(mode_drive$mode == "In 3-or-more-person carpool")]/3)/
-            sum(mode_drive$estimate)
-  
-          return(perc_vehicle)
-        }),
-      vehicles = jobs*perc_vehicle,
-      vmt = person_miles*perc_vehicle
-    )
-  
-  save(stockton_lodes_h_route,stockton_lodes_h_filter,stockton_lodes_h_mode, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata"))
-  
-  result <- 
-    data.frame(
-      Year = year,
-      vmt = sum(stockton_lodes_h_mode$vmt, na.rm=T),
-      jobs = sum(stockton_lodes_h_mode$jobs, na.rm=T)
-    )
-    
-  return(result)
-}
-```
-
