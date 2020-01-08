@@ -25,23 +25,23 @@ options(tigris_class = "sf")
 
 # Import files.
 
-NHTS_df_final <- read.csv(file = "C:/Users/Derek/Desktop/CSVdata_files/NHTS_df_final.csv", header = TRUE)
+NHTS_df_final <- read.csv(file = "C:/Users/Derek/Desktop/VMT_calc_important_files/CSVdata_files/NHTS_df_final.csv", header = TRUE)
 
-source("C:/Users/Derek/Desktop/VMT_calc_functions/patterns_choice.R")
-source("C:/Users/Derek/Desktop/VMT_calc_functions/safegraphplaces_cleanse.R")
-source("C:/Users/Derek/Desktop/VMT_calc_functions/m_patterns_cleanse.R")
-source("C:/Users/Derek/Desktop/VMT_calc_functions/m_patterns_join_cleanse.R")
+source("C:/Users/Derek/Desktop/VMT_calc_important_files/VMT_calc_functions/patterns_choice.R")
+source("C:/Users/Derek/Desktop/VMT_calc_important_files/VMT_calc_functions/safegraphplaces_cleanse.R")
+source("C:/Users/Derek/Desktop/VMT_calc_important_files/VMT_calc_functions/m_patterns_cleanse.R")
+source("C:/Users/Derek/Desktop/VMT_calc_important_files/VMT_calc_functions/m_patterns_join_cleanse.R")
 # source("C:/Users/Derek/Desktop/VMT_calc_functions/home_panel_summary.R")
 # source("C:/Users/Derek/Desktop/VMT_calc_functions/pop_blockgroup_stockton.R")
-source("C:/Users/Derek/Desktop/VMT_calc_functions/month_patterns_new.R")
-source("C:/Users/Derek/Desktop/VMT_calc_functions/origin_trips.R")
-source("C:/Users/Derek/Desktop/VMT_calc_functions/dest_trips.R")
-source("C:/Users/Derek/Desktop/VMT_calc_functions/origin_locations.R")
-source("C:/Users/Derek/Desktop/VMT_calc_functions/dest_locations.R")
-source("C:/Users/Derek/Desktop/VMT_calc_functions/geocodeSL.R")
-source("C:/Users/Derek/Desktop/VMT_calc_functions/nudge_MeanMedConv.R")
-source("C:/Users/Derek/Desktop/VMT_calc_functions/nudge_LinkedTrips.R")
-source("C:/Users/Derek/Desktop/VMT_calc_functions/nudge_CarpoolVehicleFilter.R")
+source("C:/Users/Derek/Desktop/VMT_calc_important_files/VMT_calc_functions/month_patterns_new.R")
+source("C:/Users/Derek/Desktop/VMT_calc_important_files/VMT_calc_functions/origin_trips.R")
+source("C:/Users/Derek/Desktop/VMT_calc_important_files/VMT_calc_functions/dest_trips.R")
+source("C:/Users/Derek/Desktop/VMT_calc_important_files/VMT_calc_functions/origin_locations.R")
+source("C:/Users/Derek/Desktop/VMT_calc_important_files/VMT_calc_functions/dest_locations.R")
+source("C:/Users/Derek/Desktop/VMT_calc_important_files/VMT_calc_functions/geocodeSL.R")
+source("C:/Users/Derek/Desktop/VMT_calc_important_files/VMT_calc_functions/nudge_MeanMedConv.R")
+source("C:/Users/Derek/Desktop/VMT_calc_important_files/VMT_calc_functions/nudge_LinkedTrips.R")
+source("C:/Users/Derek/Desktop/VMT_calc_important_files/VMT_calc_functions/nudge_CarpoolVehicleFilter.R")
 
 # Using the census API to create block groups and use census information in Stockton.
 census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", overwrite = TRUE)
@@ -79,8 +79,8 @@ source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions
 # Testing of the two possible OSRM approaches: (1) OSRM Isochrones and (2) OSRM Routing
 
 # Uploading the South Stockton Promise Zone (SSPZ) and the Stockton Spheres of Influence. 
-sspzboundary <- st_read("C:/Users/Derek/Desktop/sspzboundary/sspzboundary.shp") %>% st_transform(st_crs(4326))
-stockton_boundary_influence <- (st_read("C:/Users/Derek/Desktop/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(4326)))[1,]
+sspzboundary <- st_read("C:/Users/Derek/Desktop/VMT_calc_important_files/sspzboundary/sspzboundary.shp") %>% st_transform(st_crs(4326))
+stockton_boundary_influence <- (st_read("C:/Users/Derek/Desktop/VMT_calc_important_files/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(4326)))[1,]
 
 # Taking the block groups within Stockton and filtering them by those within the following:
 # (1) Stockton Boundary of Influence (SBOI)
@@ -116,7 +116,7 @@ sboi_centroid <- st_centroid(sboi_bgs)
 
 ### save(osrmTable_Stockton_VMT, file = "S:/CCF/OD_VMT_df/osrm_Stockton_VMT.RData")
 
-osrmTable_Stockton_VMT <- readRDS(file = "C:/Users/Derek/Desktop/osrmTable_Stockton_VMT.RData")
+load(file = "C:/Users/Derek/Desktop/osrmTable_Stockton_VMT_v2.RData")
 
 ##########
 
@@ -258,7 +258,7 @@ rownames(VMT_Origin_otherdest_nonrecorded) <- pop_bg_stockton$origin
 # Creating shapefiles that include (1) the Stockton boundary and (2) the Stockton boundary with a 1-mile buffer.
 
 meters_to_miles <- 1609.34
-stockton_boundary_influence <- (st_read("C:/Users/Derek/Desktop/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(4326)))[1,]
+stockton_boundary_influence <- (st_read("C:/Users/Derek/Desktop/VMT_calc_important_files/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(4326)))[1,]
 stockton_boundary_influence <- st_transform(stockton_boundary_influence, crs = "+proj=utm +zone=10 +datum=NAD83 +units=m +no_defs")
 stockton_boundary_influence_milebuffer <- st_buffer(stockton_boundary_influence, meters_to_miles)
 
@@ -333,12 +333,12 @@ dest_col_names <- c("VMTs_recorded_m_1",
 # This for loop analyses the VMT by origin and destination, per month.
 
 for(counterMonth in 1:12){
-  counterMonth <- 1
+  # counterMonth <- 1
   # Loading the m_patterns_new data. This includes "m_origin_matrix_sf", "m_dest_matrix_sf" and "m_patterns_new".
   # This is done for each of the 12 months of the year.
   
   patterns_text <- patterns_choice(counterMonth)
-  filename <- paste("C:/Users/Derek/Desktop/m_patterns_new", substr(patterns_text, 38, 51), "_new.RData", sep = "")
+  filename <- paste("C:/Users/Derek/Desktop/VMT_calc_important_files/m_patterns_new", substr(patterns_text, 38, 51), "_new.RData", sep = "")
   load(filename)
   
   # Editing the "m_dest_matrix_sf" data frame. This involves adding adding additional columns,
@@ -385,6 +385,8 @@ for(counterMonth in 1:12){
     }
     
   }
+  
+  print("done")
   
   non_sf_SJ_dest_latlong$longitude <- as.numeric(non_sf_SJ_dest_latlong$longitude)
   non_sf_SJ_dest_latlong$latitude <- as.numeric(non_sf_SJ_dest_latlong$latitude)
@@ -449,9 +451,9 @@ for(counterMonth in 1:12){
     # The following code computes the "non-recorded" VMTs from the "distance_bg_nonrecorded" feature previously calculated.
     
     subset_non_recorded <- subset( VMT_Origin_nonrecorded[, c(1, (1 + counterMonth))], !(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin) )
-    # osrmTable_Stockton_VMT ... change back from "osrm_drive_stockton_vmt"
+    
     osrmTable_Stockton_VMT_unique_dest <-
-      osrm_drive_stockton_vmt[osrm_drive_stockton_vmt$full_address == dest_vector$full_address, ][
+      osrmTable_Stockton_VMT_v2[osrmTable_Stockton_VMT_v2$full_address == dest_vector$full_address, ][
         !(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), c("source_GEOID", "full_address", "safegraph_place_id", "time_minutes")]
     osrmTable_Stockton_VMT_unique_dest$VMT_proportion <- osrmTable_Stockton_VMT_unique_dest$time_minutes / sum(osrmTable_Stockton_VMT_unique_dest$time_minutes)
     
@@ -496,94 +498,114 @@ for(counterMonth in 1:12){
   # Proportion value for within the Stockton 1-mile buffer
   
   StocktonDest_proportion_recorded_narm <- StocktonDest_proportion_recorded[!is.na(StocktonDest_proportion_recorded$locations), ]
-  loc_of_cons_proportion_recorded <- locations_of_consideration[(locations_of_consideration[(start_counter + 1):end_counter,]$full_address %in% StocktonDest_proportion_recorded_narm$locations),]
+  loc_of_cons_proportion_recorded <- locations_of_consideration[(start_counter + 1):end_counter, ][(locations_of_consideration[(start_counter + 1):end_counter,]$full_address %in% StocktonDest_proportion_recorded_narm$locations),]
   
   k_withinStocktonBuffer <- sum( as.numeric(StocktonDest_proportion_recorded_narm[,"StocktonDest_proportion_recorded"]) * (loc_of_cons_proportion_recorded[, (9 + counterMonth)] + loc_of_cons_proportion_recorded[, (21 + counterMonth)])[, 1] / sum((loc_of_cons_proportion_recorded[, (9 + counterMonth)] + loc_of_cons_proportion_recorded[, (21 + counterMonth)])[,1]) )
   
   # Proportion value for outside of the Stockton 1-mile buffer
   
   nonStocktonDest_proportion_recorded_narm <- nonStocktonDest_proportion_recorded[!is.na(nonStocktonDest_proportion_recorded$locations), ]
-  loc_of_cons_proportion_nonrecorded <- locations_of_consideration[(locations_of_consideration[(start_counter + 1):end_counter,]$full_address %in% nonStocktonDest_proportion_recorded_narm$locations),]
+  loc_of_cons_proportion_nonrecorded <- locations_of_consideration[(start_counter + 1):end_counter, ][(locations_of_consideration[(start_counter + 1):end_counter,]$full_address %in% nonStocktonDest_proportion_recorded_narm$locations),]
   
   k_outsideStocktonBuffer <- sum( as.numeric(nonStocktonDest_proportion_recorded_narm[,"nonStocktonDest_proportion_recorded"]) * (loc_of_cons_proportion_nonrecorded[, (9 + counterMonth)] + loc_of_cons_proportion_nonrecorded[, (21 + counterMonth)])[, 1] / sum((loc_of_cons_proportion_nonrecorded[, (9 + counterMonth)] + loc_of_cons_proportion_nonrecorded[, (21 + counterMonth)])[,1]) )
   
-  ### COMMENTS HERE.
+  # Inserting average VMT values into NA slots for both the "within Stockton buffer" and "outside Stockton buffer" "locations of consideration"
   
-  loc_of_cons_nonrecordVMT <- locations_of_consideration[!(locations_of_consideration$full_address %in% dest_amenities_matrix$name_address),]$full_address
+  loc_month <- locations_of_consideration[(start_counter + 1):end_counter, ][!(locations_of_consideration[(start_counter + 1):end_counter,]$full_address %in% dest_amenities_matrix$name_address),]
+  loc_true_buffer <- loc_month[loc_month$within_StocktonBuffer == TRUE, ]
+  loc_false_buffer <- loc_month[loc_month$within_StocktonBuffer == FALSE, ]
+  
+  mean_loc_true_buffer <- mean(as.numeric(loc_true_buffer$distance_from_home), na.rm = TRUE)
+  mean_loc_false_buffer <- mean(as.numeric(loc_false_buffer$distance_from_home), na.rm = TRUE)
+  
+  # Creating the "condition_isna" conditional
+  condition_isna <- is.na(locations_of_consideration[(start_counter + 1):end_counter, ][!(locations_of_consideration[(start_counter + 1):end_counter,]$full_address %in% dest_amenities_matrix$name_address),]$distance_from_home)
+  
+  # Creating the "condition_trueBuffer" conditional
+  condition_trueBuffer <- locations_of_consideration[(start_counter + 1):end_counter, ][!(locations_of_consideration[(start_counter + 1):end_counter,]$full_address %in% dest_amenities_matrix$name_address),]$within_StocktonBuffer == TRUE
+  
+  # Creating the "condition_falseBuffer" conditional
+  condition_falseBuffer <- locations_of_consideration[(start_counter + 1):end_counter, ][!(locations_of_consideration[(start_counter + 1):end_counter,]$full_address %in% dest_amenities_matrix$name_address),]$within_StocktonBuffer == FALSE
+  
+  # Inserting the "mean_loc_true_buffer" and "mean_loc_false_buffer" values into the proper "distance_from_home" cells.
+  locations_of_consideration[(start_counter + 1):end_counter, ][!(locations_of_consideration[(start_counter + 1):end_counter,]$full_address %in% dest_amenities_matrix$name_address),][condition_isna & condition_trueBuffer, "distance_from_home"] <- mean_loc_true_buffer
+  locations_of_consideration[(start_counter + 1):end_counter, ][!(locations_of_consideration[(start_counter + 1):end_counter,]$full_address %in% dest_amenities_matrix$name_address),][condition_isna & condition_falseBuffer, "distance_from_home"] <- mean_loc_false_buffer
+  
+  ##########
+  
+  # Creation of the "outsideStockton_VMT_correction_factor" to correct for the over-estimate/under-estimate of the non-recorded VMTs with no block groups accociated with them.
+  
+  ### loc_of_cons_nonrecordVMT_all <- locations_of_consideration[(start_counter + 1):end_counter, ][!(locations_of_consideration[(start_counter + 1):end_counter, ]$full_address %in% dest_amenities_matrix$name_address),]
+  ### loc_of_cons_nonrecordVMT_all_within_StocktonBuffer <- loc_of_cons_nonrecordVMT_all[loc_of_cons_nonrecordVMT_all$within_StocktonBuffer == TRUE, ]
+  ### loc_of_cons_nonrecordVMT_all_not_within_StocktonBuffer <- loc_of_cons_nonrecordVMT_all[loc_of_cons_nonrecordVMT_all$within_StocktonBuffer == FALSE, ]
+  
+  ### VMT_within_StocktonBuffer <- sum(k_withinStocktonBuffer * as.numeric(loc_of_cons_nonrecordVMT_all_within_StocktonBuffer$distance_from_home) * as.numeric(loc_of_cons_nonrecordVMT_all_within_StocktonBuffer$raw_visit_counts) * factor_twoWayTrip *
+  ###   conv_MeterToMile * NHTS_MeanMedConv * NHTS_LinkedTripsConv * NHTS_carpoolVehicleFilter)
+  
+  ### VMT_not_within_StocktonBuffer <- sum(k_outsideStocktonBuffer * as.numeric(loc_of_cons_nonrecordVMT_all_not_within_StocktonBuffer$distance_from_home) * as.numeric(loc_of_cons_nonrecordVMT_all_not_within_StocktonBuffer$raw_visit_counts) * factor_twoWayTrip *
+  ###   conv_MeterToMile * NHTS_MeanMedConv * NHTS_LinkedTripsConv * NHTS_carpoolVehicleFilter)
+  
+  ### outsideStockton_VMT_correction_factor <- nudge_VMT / (VMT_not_within_StocktonBuffer/VMT_within_StocktonBuffer)
+  
+  ##########
+  
+  # Calculating the VMTs associated with each "location of consideration" and allocating those VMTs to all block groups according to their distance from the "location of consideration".
+  # This for-loop does take a considerable amount of time. However, it is necessary for the allocation of VMTs with respect to the "location of consideration".
+  # This analysis can be made easier if the allocation method is changed from that of the "distance away" to that of a uniform distribution.
+  
+  loc_of_cons_nonrecordVMT <- locations_of_consideration[(start_counter + 1):end_counter, ][!(locations_of_consideration[(start_counter + 1):end_counter, ]$full_address %in% dest_amenities_matrix$name_address) & locations_of_consideration[(start_counter + 1):end_counter, ]$within_StocktonBuffer == TRUE,]$full_address
+  
+  count <- 0
   
   for (location_nonrecordedVMT in loc_of_cons_nonrecordVMT){
-    # location_nonrecordedVMT <- loc_of_cons_nonrecordVMT[1]
     
-    loc_of_cons_row <- locations_of_consideration[locations_of_consideration$full_address == location_nonrecordedVMT, ]
+    loc_of_cons_row <- locations_of_consideration[(start_counter + 1):end_counter, ][locations_of_consideration[(start_counter + 1):end_counter, ]$full_address == location_nonrecordedVMT, ]
     
-    if(loc_of_cons_row$within_StocktonBuffer == TRUE){
-      
-      k_row <- k_withinStocktonBuffer
-      
-    } else if(loc_of_cons_row$within_StocktonBuffer == FALSE){
-      
-      k_row <- k_outsideStocktonBuffer
-      
-    }
+    k_row <- k_withinStocktonBuffer
     
-    VMTs_nonrecorded <- k_row * as.numeric(loc_of_cons_row$distance_from_home) * as.numeric(loc_of_cons_row$raw_visit_counts) *
-      factor_twoWayTrip * conv_MeterToMile * NHTS_MeanMedConv * NHTS_LinkedTripsConv * NHTS_carpoolVehicleFilter
-    
-    locations_of_consideration[locations_of_consideration$full_address == location_nonrecordedVMT, (33 + counterMonth)] <- VMTs_nonrecorded
-    
-    ##########
-    #
-    # Here, should I do a total average with the following:
-    #
-    # I would not call the above complete. Based on this analysis, I am assuming that the ratio of the origin population to the number of devices residing is 1:1.
-    # This is however not the case. I would recommend implementing code such as the following:
-    # 
-    # * as.numeric( pop_bg_stockton[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), "origin_population"][[1]] )
-    # / as.numeric( pop_bg_stockton[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), "number_devices_residing"][[1]] )
-    # 
-    # This would make it so that the ratio mentioned previously woud not be 1:1.
-    #
-    ##########
-    
-    osrmTable_Stockton_nonrecordedVMT <-
-      osrm_drive_stockton_vmt[osrm_drive_stockton_vmt$full_address == location_nonrecordedVMT, ][ , c("source_GEOID", "full_address", "safegraph_place_id", "time_minutes")]
+    osrmTable_Stockton_nonrecordedVMT <- osrmTable_Stockton_VMT_v2[osrmTable_Stockton_VMT_v2$full_address == location_nonrecordedVMT, ][ , c("source_GEOID", "full_address", "safegraph_place_id", "time_minutes")]
     
     osrmTable_Stockton_nonrecordedVMT$VMT_proportion <- osrmTable_Stockton_nonrecordedVMT$time_minutes / sum(osrmTable_Stockton_nonrecordedVMT$time_minutes)
     
-    VMT_Origin_otherdest_nonrecorded[, (1 + counterMonth)] <- VMTs_nonrecorded * osrmTable_Stockton_nonrecordedVMT$VMT_proportion
+    bgpop_device_scaleup_factor <- sum( osrmTable_Stockton_nonrecordedVMT$VMT_proportion * as.numeric( pop_bg_stockton[, "origin_population"][[1]] ) / as.numeric( pop_bg_stockton[, "number_devices_residing"][[1]] ) )
+    
+    VMTs_nonrecorded <- k_row * bgpop_device_scaleup_factor * as.numeric(loc_of_cons_row$distance_from_home) * as.numeric(loc_of_cons_row$raw_visit_counts) *
+      factor_twoWayTrip * conv_MeterToMile * NHTS_MeanMedConv * NHTS_LinkedTripsConv * NHTS_carpoolVehicleFilter
+    
+    locations_of_consideration[(start_counter + 1):end_counter, ][locations_of_consideration[(start_counter + 1):end_counter, ]$full_address == location_nonrecordedVMT, (33 + counterMonth)] <- VMTs_nonrecorded
+    
+    VMT_Origin_otherdest_nonrecorded[, (1 + counterMonth)] <- VMT_Origin_otherdest_nonrecorded[, (1 + counterMonth)] + VMTs_nonrecorded * osrmTable_Stockton_nonrecordedVMT$VMT_proportion * as.numeric( pop_bg_stockton[, "origin_population"][[1]] ) / as.numeric( pop_bg_stockton[, "number_devices_residing"][[1]] )
+    
+    print(count)
+    
+    # } else if(loc_of_cons_row$within_StocktonBuffer == FALSE){
+    
+    # k_row <- 0 # outsideStockton_VMT_correction_factor * k_outsideStocktonBuffer
+    
+    # locations_of_consideration[(start_counter + 1):end_counter, ][locations_of_consideration[(start_counter + 1):end_counter, ]$full_address == location_nonrecordedVMT, (33 + counterMonth)] <- k_row
+    
+    # print(count)
+    
+    # }
+    
+    ##########
+    
+    count <- count + 1
+    
+    if( any(osrmTable_Stockton_VMT_v2$full_address == location_nonrecordedVMT) == FALSE ){
+      
+      print(any(osrmTable_Stockton_VMT_v2$full_address == location_nonrecordedVMT))
+      print(location_nonrecordedVMT)
+      print(count)
+      print("---")
+      
+    }
+    
+    ##########
     
   }
   
-  
-  
-  
-  
-  ### This may not be needed, anymore.
-  
-  # The following code first computes two conditionals to understand if there is a destination that has not been allocated VMTs to. This analysis is done on a monthly basis.
-  # The first conditional checks to see whether any of the destinations have had VMTs allocated to them. If not, TRUE. Otherwise, FALSE. 
-  # The second conditional checks to see whether the destinations are within 1 mile of the Stockton buffer zone. If so, TRUE. Otherwise, FALSE.
-  
-  # VMT_unique_dest_conditional_1 <- is.na(locations_of_consideration[(start_counter + 1):end_counter, ][locations_of_consideration[(start_counter + 1):end_counter, (21 + counterMonth)], (21 + counterMonth)])[, 1]
-  VMT_unique_dest_conditional_1 <- is.na(locations_of_consideration[(start_counter + 1):end_counter, (21 + counterMonth)])[, 1]
-  VMT_unique_dest_conditional_2 <- (locations_of_consideration[(start_counter + 1):end_counter, ]$within_StocktonBuffer == TRUE)
-  
-  # The following code computes the number of rows in which the following two conditionals hold true (TRUE).
-  
-  otherdest_rows <- nrow(locations_of_consideration[(start_counter + 1):end_counter, ][VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, (21 + counterMonth)])
-  
-  # I then take these same values that were stored in the previous column, I find the mean and I evenly distribute these values across all of Stockton's origins.
-  
-  VMT_unique_dest_avg <- (locations_of_consideration[(start_counter + 1):end_counter, ][VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, (33 + counterMonth)])
-  VMT_unique_dest_avg <- mean(VMT_unique_dest_avg[[1]], na.rm = TRUE)
-  VMT_Origin_otherdest_nonrecorded[, (1 + counterMonth)] <- VMT_unique_dest_avg * otherdest_rows / nrow(pop_bg_stockton)
-  
-  ### This may not be needed, anymore.
-  
-  
-  
-  
-  
+  locations_of_consideration[(start_counter + 1):end_counter, ][!(locations_of_consideration[(start_counter + 1):end_counter, ]$full_address %in% dest_amenities_matrix$name_address) & locations_of_consideration[(start_counter + 1):end_counter, ]$within_StocktonBuffer == FALSE, (33 + counterMonth)] <- 0
   
   # At the end of each loop, I delete the m_patterns_new data. This includes "m_origin_matrix_sf", "m_dest_matrix_sf" and "m_patterns_new".
   # This is done so that the next month's data can be loaded in a clean manner.
