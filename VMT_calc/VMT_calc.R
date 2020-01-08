@@ -47,7 +47,7 @@ source("C:/Users/Derek/Desktop/VMT_calc_important_files/VMT_calc_functions/nudge
 census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", overwrite = TRUE)
 ca_bgs <- block_groups("CA", cb = TRUE)
 
-# Uploading safegraph Places .csv file & data cleansing.
+# Uploading safegraph places .csv file & data cleansing.
 safegraphplaces_SJ <- read.csv("C:/Users/Derek/Desktop/safegraphplaces/safegraphplaces.csv", header=TRUE, stringsAsFactors = FALSE)
 safegraphplaces <- safegraphplaces_cleanse(safegraphplaces_SJ)
 
@@ -67,10 +67,6 @@ safegraphplaces_CA_edit <- safegraphplaces_cleanse(safegraphplaces_CA)
 ### load("G:/My Drive/Stanford City Systems - Greg's Summer Work/00 Complete Communities Framework (CCF)/03 CCF Survey/pre_survey.RData")
 load("G:/My Drive/Stanford City Systems - Greg's Summer Work/00 Complete Communities Framework (CCF)/03 CCF Survey/amenities_persubcat_perblockgroup.RData")
 load("G:/My Drive/Stanford City Systems - Greg's Summer Work/00 Complete Communities Framework (CCF)/03 CCF Survey/ca_blockgroups_pop.RData")
-
-# The following code uploads scripts from the CCF survey project.
-source("C:/Users/Derek/Documents/GitHub/Stockton/CCF_survey/month_patterns_new_CCF_survey.R")
-source("C:/Users/Derek/Documents/GitHub/Stockton/CCF_survey/NAICS_NHTS_Lookup.R")
 
 # The following code uploads scripts from the Stockton Green Economt Project - VMT Analysis.
 source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/home_panel_summary.R")
@@ -324,6 +320,12 @@ dest_col_names <- c("VMTs_recorded_m_1",
                     "within_StocktonBuffer"
 )
 
+# The following includes a vector of all of the cities within the San Joaquin county.
+# I chose the city of Stockton and the bigger, more closer cities by Stockton.
+# This was done manually by checking on Google Maps and can be more calculated in the future. However, Stockton is the significant city to include.
+
+SanJoaquin_Cities_Vector <- unique(safegraphplaces_SJ$city)[c(3,5,6,12,18,23,31,37,47,52)]
+
 ##########
 
 # save.image(file = "C:/Users/Derek/Desktop/VMT_analysis_start.RData")
@@ -333,12 +335,13 @@ dest_col_names <- c("VMTs_recorded_m_1",
 # This for loop analyses the VMT by origin and destination, per month.
 
 for(counterMonth in 1:12){
-  # counterMonth <- 1
+  counterMonth <- 1
   # Loading the m_patterns_new data. This includes "m_origin_matrix_sf", "m_dest_matrix_sf" and "m_patterns_new".
   # This is done for each of the 12 months of the year.
   
   patterns_text <- patterns_choice(counterMonth)
-  filename <- paste("C:/Users/Derek/Desktop/VMT_calc_important_files/m_patterns_new", substr(patterns_text, 38, 51), "_new.RData", sep = "")
+  m_patterns <- m_patterns_cleanse(patterns_text)
+  filename <- paste("C:/Users/Derek/Desktop/VMT_calc_important_files/m_patterns_new", substr(patterns_text, 63, 76), "_new.RData", sep = "")
   load(filename)
   
   # Editing the "m_dest_matrix_sf" data frame. This involves adding adding additional columns,
@@ -360,8 +363,22 @@ for(counterMonth in 1:12){
   # as done with the "start_counter" and "end_counter" variables.
   
   start_counter <- nrow(locations_of_consideration)
+  
+  m_dest_matrix_sf_temp <- left_join(m_dest_matrix_sf, m_patterns[,c("city", "state", "full_address")], by = "full_address")
+  m_dest_matrix_sf_temp_latlongNA <- m_dest_matrix_sf_temp[m_dest_matrix_sf_temp$city %in% SanJoaquin_Cities_Vector & m_dest_matrix_sf_temp$state == "ca" & is.na(m_dest_matrix_sf_temp$longitude), "full_address"]
+  
+  for (missing_latlong_index in m_dest_matrix_sf_temp_latlongNA){
+   
+    resdf <- geocodeSL(m_dest_matrix_sf[m_dest_matrix_sf$full_address == missing_latlong_index, "name_address"])
+    
+    m_dest_matrix_sf[m_dest_matrix_sf$full_address == missing_latlong_index, "longitude"] <- as.numeric(as.character(resdf["lon"]))
+    m_dest_matrix_sf[m_dest_matrix_sf$full_address == missing_latlong_index, "latitude"] <- as.numeric(as.character(resdf["lat"]))
+
+  }
+  
   locations_of_consideration <- rbind(locations_of_consideration, st_sf(st_as_sf(m_dest_matrix_sf[!is.na(m_dest_matrix_sf$longitude), ],
                                                                                  coords = c("longitude", "latitude"), crs = 4326) ) )
+  
   pre_end_counter <- nrow( locations_of_consideration )
   
   non_sf_SJ_dest <- m_dest_matrix_sf[m_dest_matrix_sf$full_address %in% as.character(dest_amenities_matrix[!(dest_amenities_matrix$name_address %in% locations_of_consideration[(start_counter+1):pre_end_counter,]$full_address),]),]
