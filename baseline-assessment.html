@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 Baseline Assessment | Stockton Green Economy Report</title>
+  <meta name="description" content="2 Baseline Assessment | Stockton Green Economy Report" />
+  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 Baseline Assessment | Stockton Green Economy Report" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 Baseline Assessment | Stockton Green Economy Report" />
+  
+  
+  
+
+<meta name="author" content="City Systems" />
+
+
+<meta name="date" content="2019-01-01" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="introduction.html"/>
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.9/datatables.js"></script>
+<link href="libs/dt-core-1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.19/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.19/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+
+<script>
+/* ========================================================================
+ * Bootstrap: transition.js v3.3.7
+ * http://getbootstrap.com/javascript/#transitions
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
+  // ============================================================
+
+  function transitionEnd() {
+    var el = document.createElement('bootstrap')
+
+    var transEndEventNames = {
+      WebkitTransition : 'webkitTransitionEnd',
+      MozTransition    : 'transitionend',
+      OTransition      : 'oTransitionEnd otransitionend',
+      transition       : 'transitionend'
+    }
+
+    for (var name in transEndEventNames) {
+      if (el.style[name] !== undefined) {
+        return { end: transEndEventNames[name] }
+      }
+    }
+
+    return false // explicit for ie8 (  ._.)
+  }
+
+  // http://blog.alexmaccaw.com/css-transitions
+  $.fn.emulateTransitionEnd = function (duration) {
+    var called = false
+    var $el = this
+    $(this).one('bsTransitionEnd', function () { called = true })
+    var callback = function () { if (!called) $($el).trigger($.support.transition.end) }
+    setTimeout(callback, duration)
+    return this
+  }
+
+  $(function () {
+    $.support.transition = transitionEnd()
+
+    if (!$.support.transition) return
+
+    $.event.special.bsTransitionEnd = {
+      bindType: $.support.transition.end,
+      delegateType: $.support.transition.end,
+      handle: function (e) {
+        if ($(e.target).is(this)) return e.handleObj.handler.apply(this, arguments)
+      }
+    }
+  })
+
+}(jQuery);
+</script>
+<script>
+/* ========================================================================
+ * Bootstrap: collapse.js v3.3.7
+ * http://getbootstrap.com/javascript/#collapse
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+/* jshint latedef: false */
+
++function ($) {
+  'use strict';
+
+  // COLLAPSE PUBLIC CLASS DEFINITION
+  // ================================
+
+  var Collapse = function (element, options) {
+    this.$element      = $(element)
+    this.options       = $.extend({}, Collapse.DEFAULTS, options)
+    this.$trigger      = $('[data-toggle="collapse"][href="#' + element.id + '"],' +
+                           '[data-toggle="collapse"][data-target="#' + element.id + '"]')
+    this.transitioning = null
+
+    if (this.options.parent) {
+      this.$parent = this.getParent()
+    } else {
+      this.addAriaAndCollapsedClass(this.$element, this.$trigger)
+    }
+
+    if (this.options.toggle) this.toggle()
+  }
+
+  Collapse.VERSION  = '3.3.7'
+
+  Collapse.TRANSITION_DURATION = 350
+
+  Collapse.DEFAULTS = {
+    toggle: true
+  }
+
+  Collapse.prototype.dimension = function () {
+    var hasWidth = this.$element.hasClass('width')
+    return hasWidth ? 'width' : 'height'
+  }
+
+  Collapse.prototype.show = function () {
+    if (this.transitioning || this.$element.hasClass('in')) return
+
+    var activesData
+    var actives = this.$parent && this.$parent.children('.panel').children('.in, .collapsing')
+
+    if (actives && actives.length) {
+      activesData = actives.data('bs.collapse')
+      if (activesData && activesData.transitioning) return
+    }
+
+    var startEvent = $.Event('show.bs.collapse')
+    this.$element.trigger(startEvent)
+    if (startEvent.isDefaultPrevented()) return
+
+    if (actives && actives.length) {
+      Plugin.call(actives, 'hide')
+      activesData || actives.data('bs.collapse', null)
+    }
+
+    var dimension = this.dimension()
+
+    this.$element
+      .removeClass('collapse')
+      .addClass('collapsing')[dimension](0)
+      .attr('aria-expanded', true)
+
+    this.$trigger
+      .removeClass('collapsed')
+      .attr('aria-expanded', true)
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.$element
+        .removeClass('collapsing')
+        .addClass('collapse in')[dimension]('')
+      this.transitioning = 0
+      this.$element
+        .trigger('shown.bs.collapse')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    var scrollSize = $.camelCase(['scroll', dimension].join('-'))
+
+    this.$element
+      .one('bsTransitionEnd', $.proxy(complete, this))
+      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)[dimension](this.$element[0][scrollSize])
+  }
+
+  Collapse.prototype.hide = function () {
+    if (this.transitioning || !this.$element.hasClass('in')) return
+
+    var startEvent = $.Event('hide.bs.collapse')
+    this.$element.trigger(startEvent)
+    if (startEvent.isDefaultPrevented()) return
+
+    var dimension = this.dimension()
+
+    this.$element[dimension](this.$element[dimension]())[0].offsetHeight
+
+    this.$element
+      .addClass('collapsing')
+      .removeClass('collapse in')
+      .attr('aria-expanded', false)
+
+    this.$trigger
+      .addClass('collapsed')
+      .attr('aria-expanded', false)
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.transitioning = 0
+      this.$element
+        .removeClass('collapsing')
+        .addClass('collapse')
+        .trigger('hidden.bs.collapse')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    this.$element
+      [dimension](0)
+      .one('bsTransitionEnd', $.proxy(complete, this))
+      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)
+  }
+
+  Collapse.prototype.toggle = function () {
+    this[this.$element.hasClass('in') ? 'hide' : 'show']()
+  }
+
+  Collapse.prototype.getParent = function () {
+    return $(this.options.parent)
+      .find('[data-toggle="collapse"][data-parent="' + this.options.parent + '"]')
+      .each($.proxy(function (i, element) {
+        var $element = $(element)
+        this.addAriaAndCollapsedClass(getTargetFromTrigger($element), $element)
+      }, this))
+      .end()
+  }
+
+  Collapse.prototype.addAriaAndCollapsedClass = function ($element, $trigger) {
+    var isOpen = $element.hasClass('in')
+
+    $element.attr('aria-expanded', isOpen)
+    $trigger
+      .toggleClass('collapsed', !isOpen)
+      .attr('aria-expanded', isOpen)
+  }
+
+  function getTargetFromTrigger($trigger) {
+    var href
+    var target = $trigger.attr('data-target')
+      || (href = $trigger.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '') // strip for ie7
+
+    return $(target)
+  }
+
+
+  // COLLAPSE PLUGIN DEFINITION
+  // ==========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.collapse')
+      var options = $.extend({}, Collapse.DEFAULTS, $this.data(), typeof option == 'object' && option)
+
+      if (!data && options.toggle && /show|hide/.test(option)) options.toggle = false
+      if (!data) $this.data('bs.collapse', (data = new Collapse(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.collapse
+
+  $.fn.collapse             = Plugin
+  $.fn.collapse.Constructor = Collapse
+
+
+  // COLLAPSE NO CONFLICT
+  // ====================
+
+  $.fn.collapse.noConflict = function () {
+    $.fn.collapse = old
+    return this
+  }
+
+
+  // COLLAPSE DATA-API
+  // =================
+
+  $(document).on('click.bs.collapse.data-api', '[data-toggle="collapse"]', function (e) {
+    var $this   = $(this)
+
+    if (!$this.attr('data-target')) e.preventDefault()
+
+    var $target = getTargetFromTrigger($this)
+    var data    = $target.data('bs.collapse')
+    var option  = data ? 'toggle' : $this.data()
+
+    Plugin.call($target, option)
+  })
+
+}(jQuery);
+</script>
+<script>
+window.initializeCodeFolding = function(show) {
+
+  // handlers for show-all and hide all
+  $("#rmd-show-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('show');
+    });
+  });
+  $("#rmd-hide-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('hide');
+    });
+  });
+
+  // index for unique code element ids
+  var currentIndex = 1;
+
+  // select all R code blocks
+  var rCodeBlocks = $('pre.sourceCode, pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.js');
+  rCodeBlocks.each(function() {
+
+    // create a collapsable div to wrap the code in
+    var div = $('<div class="collapse r-code-collapse"></div>');
+    if (show)
+      div.addClass('in');
+    var id = 'rcode-643E0F36' + currentIndex++;
+    div.attr('id', id);
+    $(this).before(div);
+    $(this).detach().appendTo(div);
+
+    // add a show code button right above
+    var showCodeText = $('<span>' + (show ? 'Hide' : 'Code') + '</span>');
+    var showCodeButton = $('<button type="button" class="btn btn-default btn-xs code-folding-btn pull-right"></button>');
+    showCodeButton.append(showCodeText);
+    showCodeButton
+        .attr('data-toggle', 'collapse')
+        .attr('data-target', '#' + id)
+        .attr('aria-expanded', show)
+        .attr('aria-controls', id);
+
+    var buttonRow = $('<div class="row"></div>');
+    var buttonCol = $('<div class="col-md-12"></div>');
+
+    buttonCol.append(showCodeButton);
+    buttonRow.append(buttonCol);
+
+    div.before(buttonRow);
+
+    // update state of button on show/hide
+    div.on('hidden.bs.collapse', function () {
+      showCodeText.text('Code');
+    });
+    div.on('show.bs.collapse', function () {
+      showCodeText.text('Hide');
+    });
+  });
+
+}
+</script>
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+.row { display: flex; }
+.collapse { display: none; }
+.in { display:block }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "hide");
+});
+</script>
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#approach"><i class="fa fa-check"></i><b>1.1</b> Approach</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="baseline-assessment.html"><a href="baseline-assessment.html"><i class="fa fa-check"></i><b>2</b> Baseline Assessment</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="baseline-assessment.html"><a href="baseline-assessment.html#population-and-jobs"><i class="fa fa-check"></i><b>2.1</b> Population and Jobs</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="baseline-assessment.html"><a href="baseline-assessment.html#county-level-analysis"><i class="fa fa-check"></i><b>2.1.1</b> County-level Analysis</a></li>
+</ul></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Stockton Green Economy Report</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="baseline-assessment" class="section level1" number="2">
+<h1 number="2"><span class="header-section-number">2</span> Baseline Assessment</h1>
+<p>The first step to our research is to conduct a baseline assessment of Stockton’s environmental and economic performance, and produce “business as usual” forecasts. Different datasets will be limited to different historical ranges and geographic scales. We will explain all key assumptions made in data processing. For forecasting, we will generally rely on simple regression and will project to 2040, a common planning horizon.</p>
+<div id="population-and-jobs" class="section level2" number="2.1">
+<h2 number="2.1"><span class="header-section-number">2.1</span> Population and Jobs</h2>
+<p>The following analysis first processes population and jobs data at the County (SJC) level, where it is more readily available, followed by estimations at the City level.</p>
+<div id="county-level-analysis" class="section level3" number="2.1.1">
+<h3 number="2.1.1"><span class="header-section-number">2.1.1</span> County-level Analysis</h3>
+<p>The following datasets were collected for SJC:</p>
+<ul>
+<li><a href="https://www.census.gov/programs-surveys/acs">Total Population, American Communities Survey, 1-Yr Estimates, 2010-2018</a></li>
+<li><a href="https://osf.io/9ynfc/">Population projections for US counties, 2020-2100</a></li>
+<li><a href="https://lehd.ces.census.gov/data/">Longitudinal Employer-Household Dynamics Origin-Destination Employment Statistics, 2010-2017</a>, available at the block level</li>
+</ul>
+<p>A few notes on methodology and assumptions:</p>
+<ol style="list-style-type: decimal">
+<li>From the ACS, we collected Total Population, Total Population 16 and Older, Total Employed Residents (16+), and Unemployment Rate (for 16+). In order to forecast the future number of employed residents, which would then be used to forecast the future number of jobs, we chose to perform a linear regression on employment rate projecting to 2040, given that the unemployment rate was significantly more variable from 2010-2018.</li>
+<li>Population projections come from a <a href="https://www.nature.com/articles/sdata20195">study</a> published in Nature in 2019. The specific methodology is beyond the scope of this project to unpack. What’s notable is that five different projections were made by the author based on diferent “potential futures involving various growth policies, fossil-fuel usage, mitigation policies (ie emission reductions), adaptation policies (ie deployment of flood defenses), and population change”. We used the “Middle of the road” projection.</li>
+<li>Projections from the above study were available in 5-year age groups. While the total population projection is directly used in the final table below for SJC, Population of 15+ was also collected which was multiplied by the previously projected Employment Rate (#1) to forecast total Employed Residents. Note that given data limitations we have a discontinuity between Population 16+ data from 2010-2018 and Population 15+ data from 2020-2040. We assume this difference is negligible for the purposes of our analysis, but it would have the effect of overestimating job count.</li>
+<li>From LODES we collected “Primary Jobs” at the block group level and aggregated all jobs for block groups in SJC. These are meant to match the number of individual workers in a region. We also compared this number to the number of employees provided by the <a href="https://www.census.gov/data/developers/data-sets/qwi.html">Quarterly Workforce Indicators</a> dataset and the number of nonemployer establishments in the <a href="https://www.census.gov/data/developers/data-sets/cbp-nonemp-zbp/nonemp-api.2017.html">Nonemployer Statistics</a> dataset. The LODES Primary Jobs number was higher than the QWI Employee count but lower than the QWI Employee count plus Nonemployer Establishments count, which seems to make sense (since an individual could operate multiple nonemployer establishments).</li>
+<li>We calculated J/ER for 2010-2018 by dividing total Jobs by Employed Residents. Then, we chose to perform a linear regression on J/ER ratio projecting to 2040, and multiplied this by our projected Employed Residents (#3) to forecast total Jobs.</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="baseline-assessment.html#cb1-1"></a>ca_counties &lt;-<span class="st"> </span><span class="kw">counties</span>(<span class="st">&quot;CA&quot;</span>, <span class="dt">cb =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb1-2"><a href="baseline-assessment.html#cb1-2"></a>ca_tracts &lt;-<span class="st"> </span><span class="kw">tracts</span>(<span class="st">&quot;CA&quot;</span>, <span class="dt">cb =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb1-3"><a href="baseline-assessment.html#cb1-3"></a>ca_bgs &lt;-<span class="st"> </span><span class="kw">block_groups</span>(<span class="st">&quot;CA&quot;</span>, <span class="dt">cb =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb1-4"><a href="baseline-assessment.html#cb1-4"></a></span>
+<span id="cb1-5"><a href="baseline-assessment.html#cb1-5"></a>county_neighbors &lt;-</span>
+<span id="cb1-6"><a href="baseline-assessment.html#cb1-6"></a><span class="st">  </span>ca_counties <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-7"><a href="baseline-assessment.html#cb1-7"></a><span class="st">  </span><span class="kw">filter</span>(NAME <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(</span>
+<span id="cb1-8"><a href="baseline-assessment.html#cb1-8"></a>    <span class="st">&quot;San Joaquin&quot;</span>,</span>
+<span id="cb1-9"><a href="baseline-assessment.html#cb1-9"></a>    <span class="st">&quot;Alameda&quot;</span>,</span>
+<span id="cb1-10"><a href="baseline-assessment.html#cb1-10"></a>    <span class="st">&quot;Sacramento&quot;</span>,</span>
+<span id="cb1-11"><a href="baseline-assessment.html#cb1-11"></a>    <span class="st">&quot;Santa Clara&quot;</span>,</span>
+<span id="cb1-12"><a href="baseline-assessment.html#cb1-12"></a>    <span class="st">&quot;Stanislaus&quot;</span>,</span>
+<span id="cb1-13"><a href="baseline-assessment.html#cb1-13"></a>    <span class="st">&quot;Contra Costa&quot;</span>,</span>
+<span id="cb1-14"><a href="baseline-assessment.html#cb1-14"></a>    <span class="st">&quot;San Francisco&quot;</span>,</span>
+<span id="cb1-15"><a href="baseline-assessment.html#cb1-15"></a>    <span class="st">&quot;San Mateo&quot;</span>,</span>
+<span id="cb1-16"><a href="baseline-assessment.html#cb1-16"></a>    <span class="st">&quot;Solano&quot;</span>,</span>
+<span id="cb1-17"><a href="baseline-assessment.html#cb1-17"></a>    <span class="st">&quot;Fresno&quot;</span>,</span>
+<span id="cb1-18"><a href="baseline-assessment.html#cb1-18"></a>    <span class="st">&quot;Placer&quot;</span>,</span>
+<span id="cb1-19"><a href="baseline-assessment.html#cb1-19"></a>    <span class="st">&quot;Yolo&quot;</span>,</span>
+<span id="cb1-20"><a href="baseline-assessment.html#cb1-20"></a>    <span class="st">&quot;Sonoma&quot;</span>,</span>
+<span id="cb1-21"><a href="baseline-assessment.html#cb1-21"></a>    <span class="st">&quot;Merced&quot;</span>,</span>
+<span id="cb1-22"><a href="baseline-assessment.html#cb1-22"></a>    <span class="st">&quot;Monterey&quot;</span></span>
+<span id="cb1-23"><a href="baseline-assessment.html#cb1-23"></a>  ))</span>
+<span id="cb1-24"><a href="baseline-assessment.html#cb1-24"></a></span>
+<span id="cb1-25"><a href="baseline-assessment.html#cb1-25"></a>pop_sjc &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">matrix</span>(<span class="dt">ncol=</span><span class="dv">3</span>,<span class="dt">nrow=</span><span class="dv">0</span>))</span>
+<span id="cb1-26"><a href="baseline-assessment.html#cb1-26"></a><span class="kw">colnames</span>(pop_sjc) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Population&quot;</span>,<span class="st">&quot;Population15andolder&quot;</span>,<span class="st">&quot;year&quot;</span>)</span>
+<span id="cb1-27"><a href="baseline-assessment.html#cb1-27"></a></span>
+<span id="cb1-28"><a href="baseline-assessment.html#cb1-28"></a><span class="cf">for</span>(year <span class="cf">in</span> <span class="dv">2010</span><span class="op">:</span><span class="dv">2018</span>){</span>
+<span id="cb1-29"><a href="baseline-assessment.html#cb1-29"></a></span>
+<span id="cb1-30"><a href="baseline-assessment.html#cb1-30"></a>  temp &lt;-</span>
+<span id="cb1-31"><a href="baseline-assessment.html#cb1-31"></a><span class="st">    </span><span class="kw">getCensus</span>(</span>
+<span id="cb1-32"><a href="baseline-assessment.html#cb1-32"></a>      <span class="dt">name =</span> <span class="st">&quot;acs/acs1&quot;</span>,</span>
+<span id="cb1-33"><a href="baseline-assessment.html#cb1-33"></a>      <span class="dt">vintage =</span> year,</span>
+<span id="cb1-34"><a href="baseline-assessment.html#cb1-34"></a>      <span class="dt">vars =</span> <span class="kw">c</span>(<span class="st">&quot;B01003_001E&quot;</span>),</span>
+<span id="cb1-35"><a href="baseline-assessment.html#cb1-35"></a>      <span class="dt">region =</span> <span class="st">&quot;county:077&quot;</span>,</span>
+<span id="cb1-36"><a href="baseline-assessment.html#cb1-36"></a>      <span class="dt">regionin =</span> <span class="st">&quot;state:06&quot;</span></span>
+<span id="cb1-37"><a href="baseline-assessment.html#cb1-37"></a>    ) <span class="op">%&gt;%</span></span>
+<span id="cb1-38"><a href="baseline-assessment.html#cb1-38"></a><span class="st">    </span><span class="kw">mutate</span>(</span>
+<span id="cb1-39"><a href="baseline-assessment.html#cb1-39"></a>      <span class="dt">Population =</span> B01003_001E,</span>
+<span id="cb1-40"><a href="baseline-assessment.html#cb1-40"></a>      <span class="dt">year =</span> year</span>
+<span id="cb1-41"><a href="baseline-assessment.html#cb1-41"></a>    ) <span class="op">%&gt;%</span></span>
+<span id="cb1-42"><a href="baseline-assessment.html#cb1-42"></a><span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(</span>
+<span id="cb1-43"><a href="baseline-assessment.html#cb1-43"></a>      Population,</span>
+<span id="cb1-44"><a href="baseline-assessment.html#cb1-44"></a>      year</span>
+<span id="cb1-45"><a href="baseline-assessment.html#cb1-45"></a>    )</span>
+<span id="cb1-46"><a href="baseline-assessment.html#cb1-46"></a></span>
+<span id="cb1-47"><a href="baseline-assessment.html#cb1-47"></a>  pop_sjc&lt;-<span class="st"> </span><span class="kw">rbind</span>(pop_sjc,temp)</span>
+<span id="cb1-48"><a href="baseline-assessment.html#cb1-48"></a></span>
+<span id="cb1-49"><a href="baseline-assessment.html#cb1-49"></a>}</span>
+<span id="cb1-50"><a href="baseline-assessment.html#cb1-50"></a></span>
+<span id="cb1-51"><a href="baseline-assessment.html#cb1-51"></a>sjc_projection &lt;-</span>
+<span id="cb1-52"><a href="baseline-assessment.html#cb1-52"></a><span class="st">  </span><span class="kw">read_csv</span>(<span class="st">&quot;C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/SSP_asrc_STATEfiles/DATA-PROCESSED/SPLITPROJECTIONS/CA.csv&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb1-53"><a href="baseline-assessment.html#cb1-53"></a><span class="st">  </span><span class="kw">filter</span>(COUNTY <span class="op">==</span><span class="st"> &quot;077&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb1-54"><a href="baseline-assessment.html#cb1-54"></a><span class="st">  </span><span class="kw">group_by</span>(YEAR) <span class="op">%&gt;%</span></span>
+<span id="cb1-55"><a href="baseline-assessment.html#cb1-55"></a><span class="st">  </span><span class="kw">summarize</span>(</span>
+<span id="cb1-56"><a href="baseline-assessment.html#cb1-56"></a>    <span class="dt">Population =</span> <span class="kw">sum</span>(SSP2),</span>
+<span id="cb1-57"><a href="baseline-assessment.html#cb1-57"></a>    <span class="dt">Population15andOlder =</span> <span class="kw">sum</span>(SSP2[<span class="kw">which</span>(AGE <span class="op">&gt;</span><span class="st"> </span><span class="dv">3</span>)])</span>
+<span id="cb1-58"><a href="baseline-assessment.html#cb1-58"></a>  ) <span class="op">%&gt;%</span></span>
+<span id="cb1-59"><a href="baseline-assessment.html#cb1-59"></a><span class="st">  </span><span class="kw">filter</span>(YEAR <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">2020</span>,<span class="dv">2025</span>,<span class="dv">2030</span>,<span class="dv">2035</span>,<span class="dv">2040</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb1-60"><a href="baseline-assessment.html#cb1-60"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(Population, Population15andOlder, <span class="dt">year =</span> YEAR)</span>
+<span id="cb1-61"><a href="baseline-assessment.html#cb1-61"></a></span>
+<span id="cb1-62"><a href="baseline-assessment.html#cb1-62"></a>pop_sjc_w_projection &lt;-</span>
+<span id="cb1-63"><a href="baseline-assessment.html#cb1-63"></a><span class="st">  </span><span class="kw">bind_rows</span>(pop_sjc,sjc_projection)</span>
+<span id="cb1-64"><a href="baseline-assessment.html#cb1-64"></a></span>
+<span id="cb1-65"><a href="baseline-assessment.html#cb1-65"></a>emp_sjc &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">matrix</span>(<span class="dt">ncol=</span><span class="dv">2</span>,<span class="dt">nrow=</span><span class="dv">0</span>))</span>
+<span id="cb1-66"><a href="baseline-assessment.html#cb1-66"></a><span class="kw">colnames</span>(emp_sjc) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;EmployedResidents&quot;</span>,<span class="st">&quot;year&quot;</span>)</span>
+<span id="cb1-67"><a href="baseline-assessment.html#cb1-67"></a></span>
+<span id="cb1-68"><a href="baseline-assessment.html#cb1-68"></a><span class="cf">for</span>(year <span class="cf">in</span> <span class="dv">2010</span><span class="op">:</span><span class="dv">2018</span>){</span>
+<span id="cb1-69"><a href="baseline-assessment.html#cb1-69"></a></span>
+<span id="cb1-70"><a href="baseline-assessment.html#cb1-70"></a>  temp &lt;-</span>
+<span id="cb1-71"><a href="baseline-assessment.html#cb1-71"></a><span class="st">    </span><span class="kw">getCensus</span>(</span>
+<span id="cb1-72"><a href="baseline-assessment.html#cb1-72"></a>      <span class="dt">name =</span> <span class="st">&quot;acs/acs1/subject&quot;</span>,</span>
+<span id="cb1-73"><a href="baseline-assessment.html#cb1-73"></a>      <span class="dt">vintage =</span> year,</span>
+<span id="cb1-74"><a href="baseline-assessment.html#cb1-74"></a>      <span class="dt">vars =</span> <span class="kw">c</span>(<span class="st">&quot;S2301_C01_001E&quot;</span>,<span class="st">&quot;S2301_C03_001E&quot;</span>,<span class="st">&quot;S2301_C04_001E&quot;</span>),</span>
+<span id="cb1-75"><a href="baseline-assessment.html#cb1-75"></a>      <span class="dt">region =</span> <span class="st">&quot;county:077&quot;</span>,</span>
+<span id="cb1-76"><a href="baseline-assessment.html#cb1-76"></a>      <span class="dt">regionin =</span> <span class="st">&quot;state:06&quot;</span></span>
+<span id="cb1-77"><a href="baseline-assessment.html#cb1-77"></a>    ) <span class="op">%&gt;%</span></span>
+<span id="cb1-78"><a href="baseline-assessment.html#cb1-78"></a><span class="st">    </span><span class="kw">mutate</span>(</span>
+<span id="cb1-79"><a href="baseline-assessment.html#cb1-79"></a>      <span class="dt">Population16andOlder =</span> S2301_C01_001E,</span>
+<span id="cb1-80"><a href="baseline-assessment.html#cb1-80"></a>      <span class="dt">PercEmployedResidents =</span> S2301_C03_001E,</span>
+<span id="cb1-81"><a href="baseline-assessment.html#cb1-81"></a>      <span class="dt">EmployedResidents =</span> PercEmployedResidents<span class="op">/</span><span class="dv">100</span><span class="op">*</span>Population16andOlder,</span>
+<span id="cb1-82"><a href="baseline-assessment.html#cb1-82"></a>      <span class="dt">UnemploymentRate =</span> S2301_C04_001E,</span>
+<span id="cb1-83"><a href="baseline-assessment.html#cb1-83"></a>      <span class="dt">year =</span> year</span>
+<span id="cb1-84"><a href="baseline-assessment.html#cb1-84"></a>    ) <span class="op">%&gt;%</span></span>
+<span id="cb1-85"><a href="baseline-assessment.html#cb1-85"></a><span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(</span>
+<span id="cb1-86"><a href="baseline-assessment.html#cb1-86"></a>      Population16andOlder,</span>
+<span id="cb1-87"><a href="baseline-assessment.html#cb1-87"></a>      PercEmployedResidents,</span>
+<span id="cb1-88"><a href="baseline-assessment.html#cb1-88"></a>      EmployedResidents,</span>
+<span id="cb1-89"><a href="baseline-assessment.html#cb1-89"></a>      UnemploymentRate,</span>
+<span id="cb1-90"><a href="baseline-assessment.html#cb1-90"></a>      year</span>
+<span id="cb1-91"><a href="baseline-assessment.html#cb1-91"></a>    )</span>
+<span id="cb1-92"><a href="baseline-assessment.html#cb1-92"></a></span>
+<span id="cb1-93"><a href="baseline-assessment.html#cb1-93"></a>  emp_sjc&lt;-<span class="st"> </span><span class="kw">rbind</span>(emp_sjc,temp)</span>
+<span id="cb1-94"><a href="baseline-assessment.html#cb1-94"></a></span>
+<span id="cb1-95"><a href="baseline-assessment.html#cb1-95"></a>}</span>
+<span id="cb1-96"><a href="baseline-assessment.html#cb1-96"></a></span>
+<span id="cb1-97"><a href="baseline-assessment.html#cb1-97"></a>pop_emp_sjc_w_projection &lt;-</span>
+<span id="cb1-98"><a href="baseline-assessment.html#cb1-98"></a><span class="st">  </span>pop_sjc_w_projection <span class="op">%&gt;%</span></span>
+<span id="cb1-99"><a href="baseline-assessment.html#cb1-99"></a><span class="st">  </span><span class="kw">left_join</span>(emp_sjc, <span class="dt">by =</span> <span class="st">&quot;year&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb1-100"><a href="baseline-assessment.html#cb1-100"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb1-101"><a href="baseline-assessment.html#cb1-101"></a>    <span class="dt">PercEmployedResidents =</span> <span class="kw">ifelse</span>(</span>
+<span id="cb1-102"><a href="baseline-assessment.html#cb1-102"></a>      <span class="op">!</span><span class="kw">is.na</span>(PercEmployedResidents),</span>
+<span id="cb1-103"><a href="baseline-assessment.html#cb1-103"></a>      PercEmployedResidents,</span>
+<span id="cb1-104"><a href="baseline-assessment.html#cb1-104"></a>      <span class="kw">lm</span>(</span>
+<span id="cb1-105"><a href="baseline-assessment.html#cb1-105"></a>        <span class="dt">formula =</span> <span class="st">`</span><span class="dt">PercEmployedResidents</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>] <span class="op">~</span><span class="st"> </span>year[<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>]</span>
+<span id="cb1-106"><a href="baseline-assessment.html#cb1-106"></a>      )<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
+<span id="cb1-107"><a href="baseline-assessment.html#cb1-107"></a><span class="st">        </span><span class="kw">lm</span>(</span>
+<span id="cb1-108"><a href="baseline-assessment.html#cb1-108"></a>          <span class="dt">formula =</span> <span class="st">`</span><span class="dt">PercEmployedResidents</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>] <span class="op">~</span><span class="st"> </span>year[<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>]</span>
+<span id="cb1-109"><a href="baseline-assessment.html#cb1-109"></a>        )<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span>year</span>
+<span id="cb1-110"><a href="baseline-assessment.html#cb1-110"></a>    ),</span>
+<span id="cb1-111"><a href="baseline-assessment.html#cb1-111"></a>    <span class="dt">EmployedResidents =</span> <span class="kw">ifelse</span>(<span class="op">!</span><span class="kw">is.na</span>(EmployedResidents),EmployedResidents,Population15andOlder<span class="op">*</span>PercEmployedResidents<span class="op">/</span><span class="dv">100</span>)</span>
+<span id="cb1-112"><a href="baseline-assessment.html#cb1-112"></a>  )</span>
+<span id="cb1-113"><a href="baseline-assessment.html#cb1-113"></a></span>
+<span id="cb1-114"><a href="baseline-assessment.html#cb1-114"></a><span class="co"># sjc_wac &lt;-</span></span>
+<span id="cb1-115"><a href="baseline-assessment.html#cb1-115"></a><span class="co">#   2010:2017 %&gt;%</span></span>
+<span id="cb1-116"><a href="baseline-assessment.html#cb1-116"></a><span class="co">#   map(function(year){</span></span>
+<span id="cb1-117"><a href="baseline-assessment.html#cb1-117"></a><span class="co">#     ca_wac &lt;-</span></span>
+<span id="cb1-118"><a href="baseline-assessment.html#cb1-118"></a><span class="co">#       grab_lodes(</span></span>
+<span id="cb1-119"><a href="baseline-assessment.html#cb1-119"></a><span class="co">#         state = &quot;ca&quot;,</span></span>
+<span id="cb1-120"><a href="baseline-assessment.html#cb1-120"></a><span class="co">#         year = year,</span></span>
+<span id="cb1-121"><a href="baseline-assessment.html#cb1-121"></a><span class="co">#         lodes_type = &quot;wac&quot;,</span></span>
+<span id="cb1-122"><a href="baseline-assessment.html#cb1-122"></a><span class="co">#         job_type = &quot;JT01&quot;,</span></span>
+<span id="cb1-123"><a href="baseline-assessment.html#cb1-123"></a><span class="co">#         segment = &quot;S000&quot;,</span></span>
+<span id="cb1-124"><a href="baseline-assessment.html#cb1-124"></a><span class="co">#         state_part = &quot;main&quot;,</span></span>
+<span id="cb1-125"><a href="baseline-assessment.html#cb1-125"></a><span class="co">#         agg_geo = &quot;bg&quot;</span></span>
+<span id="cb1-126"><a href="baseline-assessment.html#cb1-126"></a><span class="co">#       )</span></span>
+<span id="cb1-127"><a href="baseline-assessment.html#cb1-127"></a><span class="co"># </span></span>
+<span id="cb1-128"><a href="baseline-assessment.html#cb1-128"></a><span class="co">#     temp &lt;-</span></span>
+<span id="cb1-129"><a href="baseline-assessment.html#cb1-129"></a><span class="co">#       ca_wac %&gt;%</span></span>
+<span id="cb1-130"><a href="baseline-assessment.html#cb1-130"></a><span class="co">#       filter(substr(w_bg,1,5) == &quot;06077&quot;)</span></span>
+<span id="cb1-131"><a href="baseline-assessment.html#cb1-131"></a><span class="co"># </span></span>
+<span id="cb1-132"><a href="baseline-assessment.html#cb1-132"></a><span class="co">#     return(temp)</span></span>
+<span id="cb1-133"><a href="baseline-assessment.html#cb1-133"></a><span class="co">#   }) %&gt;%</span></span>
+<span id="cb1-134"><a href="baseline-assessment.html#cb1-134"></a><span class="co">#   rbindlist()</span></span>
+<span id="cb1-135"><a href="baseline-assessment.html#cb1-135"></a><span class="co"># </span></span>
+<span id="cb1-136"><a href="baseline-assessment.html#cb1-136"></a><span class="co"># save(sjc_wac, file = &quot;C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata&quot;)</span></span>
+<span id="cb1-137"><a href="baseline-assessment.html#cb1-137"></a><span class="kw">load</span>(<span class="st">&quot;C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata&quot;</span>)</span>
+<span id="cb1-138"><a href="baseline-assessment.html#cb1-138"></a></span>
+<span id="cb1-139"><a href="baseline-assessment.html#cb1-139"></a>jobs_sjc &lt;-</span>
+<span id="cb1-140"><a href="baseline-assessment.html#cb1-140"></a><span class="st">  </span>sjc_wac <span class="op">%&gt;%</span></span>
+<span id="cb1-141"><a href="baseline-assessment.html#cb1-141"></a><span class="st">  </span><span class="kw">group_by</span>(year) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-142"><a href="baseline-assessment.html#cb1-142"></a><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">Jobs =</span> <span class="kw">sum</span>(C000))</span>
+<span id="cb1-143"><a href="baseline-assessment.html#cb1-143"></a></span>
+<span id="cb1-144"><a href="baseline-assessment.html#cb1-144"></a><span class="co">#Add 2018 jobs projection</span></span>
+<span id="cb1-145"><a href="baseline-assessment.html#cb1-145"></a>jobs_sjc[<span class="dv">9</span>,<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="dv">2018</span></span>
+<span id="cb1-146"><a href="baseline-assessment.html#cb1-146"></a>jobs_sjc[<span class="dv">9</span>,<span class="dv">2</span>] &lt;-<span class="st"> </span></span>
+<span id="cb1-147"><a href="baseline-assessment.html#cb1-147"></a><span class="st">  </span><span class="kw">lm</span>(<span class="dt">formula =</span> jobs_sjc<span class="op">$</span>Jobs[<span class="dv">1</span><span class="op">:</span><span class="dv">8</span>] <span class="op">~</span><span class="st"> </span>jobs_sjc<span class="op">$</span>year[<span class="dv">1</span><span class="op">:</span><span class="dv">8</span>])<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
+<span id="cb1-148"><a href="baseline-assessment.html#cb1-148"></a><span class="st">  </span><span class="kw">lm</span>(<span class="dt">formula =</span> jobs_sjc<span class="op">$</span>Jobs[<span class="dv">1</span><span class="op">:</span><span class="dv">8</span>] <span class="op">~</span><span class="st"> </span>jobs_sjc<span class="op">$</span>year[<span class="dv">1</span><span class="op">:</span><span class="dv">8</span>])<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span><span class="dv">2018</span></span>
+<span id="cb1-149"><a href="baseline-assessment.html#cb1-149"></a></span>
+<span id="cb1-150"><a href="baseline-assessment.html#cb1-150"></a>pop_jobs_sjc_w_projection &lt;-</span>
+<span id="cb1-151"><a href="baseline-assessment.html#cb1-151"></a><span class="st">  </span>pop_emp_sjc_w_projection <span class="op">%&gt;%</span></span>
+<span id="cb1-152"><a href="baseline-assessment.html#cb1-152"></a><span class="st">  </span><span class="kw">left_join</span>(jobs_sjc, <span class="dt">by =</span> <span class="st">&quot;year&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb1-153"><a href="baseline-assessment.html#cb1-153"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb1-154"><a href="baseline-assessment.html#cb1-154"></a>    <span class="dt">ratio =</span> <span class="kw">ifelse</span>(</span>
+<span id="cb1-155"><a href="baseline-assessment.html#cb1-155"></a>      <span class="op">!</span><span class="kw">is.na</span>(Jobs),</span>
+<span id="cb1-156"><a href="baseline-assessment.html#cb1-156"></a>      Jobs<span class="op">/</span>EmployedResidents,</span>
+<span id="cb1-157"><a href="baseline-assessment.html#cb1-157"></a>      <span class="kw">lm</span>(</span>
+<span id="cb1-158"><a href="baseline-assessment.html#cb1-158"></a>        <span class="dt">formula =</span> Jobs[<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>]<span class="op">/</span>EmployedResidents[<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>] <span class="op">~</span><span class="st"> </span>year[<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>]</span>
+<span id="cb1-159"><a href="baseline-assessment.html#cb1-159"></a>      )<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
+<span id="cb1-160"><a href="baseline-assessment.html#cb1-160"></a><span class="st">        </span><span class="kw">lm</span>(</span>
+<span id="cb1-161"><a href="baseline-assessment.html#cb1-161"></a>          <span class="dt">formula =</span> Jobs[<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>]<span class="op">/</span>EmployedResidents[<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>] <span class="op">~</span><span class="st"> </span>year[<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>]</span>
+<span id="cb1-162"><a href="baseline-assessment.html#cb1-162"></a>        )<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span>year</span>
+<span id="cb1-163"><a href="baseline-assessment.html#cb1-163"></a>    ),</span>
+<span id="cb1-164"><a href="baseline-assessment.html#cb1-164"></a>    <span class="dt">Jobs =</span> <span class="kw">ifelse</span>(<span class="op">!</span><span class="kw">is.na</span>(Jobs),Jobs,EmployedResidents<span class="op">*</span>ratio)</span>
+<span id="cb1-165"><a href="baseline-assessment.html#cb1-165"></a>  ) <span class="op">%&gt;%</span></span>
+<span id="cb1-166"><a href="baseline-assessment.html#cb1-166"></a><span class="st">  </span><span class="kw">transmute</span>(</span>
+<span id="cb1-167"><a href="baseline-assessment.html#cb1-167"></a>    <span class="dt">Year =</span> year,</span>
+<span id="cb1-168"><a href="baseline-assessment.html#cb1-168"></a>    <span class="dt">Population =</span> Population,</span>
+<span id="cb1-169"><a href="baseline-assessment.html#cb1-169"></a>    <span class="dt">Jobs =</span> Jobs,</span>
+<span id="cb1-170"><a href="baseline-assessment.html#cb1-170"></a>    <span class="st">`</span><span class="dt">Employed Residents</span><span class="st">`</span> =<span class="st"> </span>EmployedResidents,</span>
+<span id="cb1-171"><a href="baseline-assessment.html#cb1-171"></a>    <span class="st">`</span><span class="dt">J/ER Ratio</span><span class="st">`</span> =<span class="st"> </span>ratio,</span>
+<span id="cb1-172"><a href="baseline-assessment.html#cb1-172"></a>    <span class="st">`</span><span class="dt">Percent Employed Residents</span><span class="st">`</span> =<span class="st"> </span>PercEmployedResidents,</span>
+<span id="cb1-173"><a href="baseline-assessment.html#cb1-173"></a>    <span class="st">`</span><span class="dt">Percent Unemployment</span><span class="st">`</span> =<span class="st"> </span>UnemploymentRate</span>
+<span id="cb1-174"><a href="baseline-assessment.html#cb1-174"></a>  )</span>
+<span id="cb1-175"><a href="baseline-assessment.html#cb1-175"></a></span>
+<span id="cb1-176"><a href="baseline-assessment.html#cb1-176"></a>pop_jobs_sjc_w_projection_table &lt;-</span>
+<span id="cb1-177"><a href="baseline-assessment.html#cb1-177"></a><span class="st">  </span>pop_jobs_sjc_w_projection <span class="op">%&gt;%</span></span>
+<span id="cb1-178"><a href="baseline-assessment.html#cb1-178"></a><span class="st">  </span><span class="kw">transmute</span>(</span>
+<span id="cb1-179"><a href="baseline-assessment.html#cb1-179"></a>    <span class="dt">Year =</span> Year,</span>
+<span id="cb1-180"><a href="baseline-assessment.html#cb1-180"></a>    <span class="dt">Population =</span> <span class="kw">prettyNum</span>(<span class="kw">round</span>(Population,<span class="op">-</span><span class="dv">3</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
+<span id="cb1-181"><a href="baseline-assessment.html#cb1-181"></a>    <span class="dt">Jobs =</span> <span class="kw">prettyNum</span>(<span class="kw">round</span>(Jobs,<span class="op">-</span><span class="dv">3</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
+<span id="cb1-182"><a href="baseline-assessment.html#cb1-182"></a>    <span class="st">`</span><span class="dt">Employed Residents</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(<span class="st">`</span><span class="dt">Employed Residents</span><span class="st">`</span>,<span class="op">-</span><span class="dv">3</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
+<span id="cb1-183"><a href="baseline-assessment.html#cb1-183"></a>    <span class="st">`</span><span class="dt">J/ER Ratio</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(<span class="st">`</span><span class="dt">J/ER Ratio</span><span class="st">`</span>,<span class="dv">2</span>),</span>
+<span id="cb1-184"><a href="baseline-assessment.html#cb1-184"></a>    <span class="st">`</span><span class="dt">Percent Employed Residents</span><span class="st">`</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(<span class="st">`</span><span class="dt">Percent Employed Residents</span><span class="st">`</span>),<span class="st">&quot;%&quot;</span>),</span>
+<span id="cb1-185"><a href="baseline-assessment.html#cb1-185"></a>    <span class="st">`</span><span class="dt">Percent Unemployment</span><span class="st">`</span> =<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(<span class="st">`</span><span class="dt">Percent Unemployment</span><span class="st">`</span>),<span class="st">&quot;NA&quot;</span>,<span class="kw">paste0</span>(<span class="kw">round</span>(<span class="st">`</span><span class="dt">Percent Unemployment</span><span class="st">`</span>),<span class="st">&quot;%&quot;</span>))</span>
+<span id="cb1-186"><a href="baseline-assessment.html#cb1-186"></a>  )</span>
+<span id="cb1-187"><a href="baseline-assessment.html#cb1-187"></a></span>
+<span id="cb1-188"><a href="baseline-assessment.html#cb1-188"></a><span class="co"># save(pop_jobs_sjc_w_projection, file = &quot;C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/pop_jobs_sjc_w_projection.Rdata&quot;)</span></span>
+<span id="cb1-189"><a href="baseline-assessment.html#cb1-189"></a></span>
+<span id="cb1-190"><a href="baseline-assessment.html#cb1-190"></a><span class="kw">datatable</span>(pop_jobs_sjc_w_projection_table, <span class="dt">rownames =</span> <span class="ot">FALSE</span>, <span class="dt">options =</span> <span class="kw">list</span>(<span class="dt">pageLength =</span> <span class="dv">14</span>))</span></code></pre></div>
+<p><div id="htmlwidget-7089b3a38c290e4d48e0" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7089b3a38c290e4d48e0">{"x":{"filter":"none","data":[[2010,2011,2012,2013,2014,2015,2016,2017,2018,2020,2025,2030,2035,2040],["688,000","696,000","703,000","704,000","716,000","726,000","734,000","745,000","753,000","763,000","797,000","829,000","859,000","886,000"],["185,000","184,000","187,000","192,000","197,000","212,000","220,000","226,000","230,000","247,000","285,000","324,000","363,000","403,000"],["265,000","264,000","270,000","278,000","290,000","293,000","306,000","314,000","326,000","343,000","388,000","432,000","474,000","518,000"],[0.7,0.7,0.69,0.69,0.68,0.72,0.72,0.72,0.7,0.72,0.74,0.75,0.76,0.78],["52%","51%","52%","52%","54%","53%","55%","56%","57%","58%","61%","65%","68%","72%"],["17%","18%","16%","13%","11%","11%","9%","6%","6%","NA","NA","NA","NA","NA"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Year<\/th>\n      <th>Population<\/th>\n      <th>Jobs<\/th>\n      <th>Employed Residents<\/th>\n      <th>J/ER Ratio<\/th>\n      <th>Percent Employed Residents<\/th>\n      <th>Percent Unemployment<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":14,"columnDefs":[{"className":"dt-right","targets":[0,4]}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,14,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<em>Table 1. Historical population and job counts for San Joaquin County 2010-2017, followed by projections to 2040.</em></p>
+<p>The following graph shows the J/ER ratio projected out to 2040, reaching a high of 0.78. This is not particularly high (given our goal of surpassing 1). There is certainly room for improvement through proactive economic development strategies.</p>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="introduction.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "fixed"
+},
+"search": false,
+"info": true,
+"code_folding": "hide"
+});
+});
+</script>
+
+</body>
+
+</html>

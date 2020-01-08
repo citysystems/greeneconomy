@@ -1,0 +1,357 @@
+---
+title: "Stockton Green Economy Report"
+author: "City Systems"
+date: "2019"
+output: 
+  bookdown::gitbook:
+    includes:
+      in_header: header.html
+    config:
+      toc:
+        collapse: subsection
+        scroll_highlight: yes
+        before: null
+        after: null
+      toolbar:
+        position: fixed
+      edit : null
+      download: null
+      search: yes
+      fontsettings:
+        theme: white
+        family: sans
+        size: 2
+      sharing:
+        facebook: no
+        github: no
+        twitter: no
+        linkedin: no
+        weibo: no
+        instapaper: no
+        vk: no
+        all: no
+      info: no
+      code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: true
+    code_folding: hide
+    df_print: paged
+    theme: lumen
+editor_options: 
+  chunk_output_type: console
+
+
+
+```{r load libraries, include=FALSE}
+library(tidycensus)
+library(censusapi)
+library(tigris)
+library(units)
+library(lehdr)
+library(sf)
+library(osrm)
+library(mapview)
+library(tidyverse)
+library(magrittr)
+library(lwgeom)
+library(knitr)
+library(DT)
+library(bookdown)
+opts_chunk$set(
+  echo = TRUE, 
+  warning=FALSE, message=FALSE
+)
+mapviewOptions(basemaps = "OpenStreetMap")
+options(
+  tigris_use_cache = TRUE,
+  tigris_class = "sf",
+  osrm.server = "http://127.0.0.1:5000/",
+  scipen=999
+)
+census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", install = TRUE, overwrite = TRUE)
+Sys.setenv(CENSUS_KEY="c8aa67e4086b4b5ce3a8717f59faa9a28f611dab")
+```
+
+```{r htmlTemp3, echo=FALSE, eval=TRUE}
+codejs <- readr::read_lines("js/codefolding.js")
+collapsejs <- readr::read_lines("js/collapse.js")
+transitionjs <- readr::read_lines("js/transition.js")
+
+htmlhead <- 
+  paste('
+<script>',
+paste(transitionjs, collapse = "\n"),
+'</script>
+<script>',
+paste(collapsejs, collapse = "\n"),
+'</script>
+<script>',
+paste(codejs, collapse = "\n"),
+'</script>
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+.row { display: flex; }
+.collapse { display: none; }
+.in { display:block }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "hide");
+});
+</script>
+', sep = "\n")
+
+readr::write_lines(htmlhead, path = "header.html")
+```
+
+***
+
+# Introduction
+
+The Office of the Mayor in Stockton, CA is seeking to differentiate the City's investment opportunities, including potential capital from public (e.g. Transformative Climate Communities), private (e.g. Opportunity Zones), and philanthropic (e.g. foundations) sources, through the lens of **green economy**. The challenge at hand is to conduct a comprehensive assessment of Stockton's assets and opportunities across a wide range of industry, infrastructure, development, and policy domains which could be marketed as green economy investment opportunities, thereby enabling City representatives to prioritize and drive evidence-informed discussions with investors, as opposed to agendas being driven by one-off outside interests. In particular, the City is focused on leveraging such a framework to target and scope a green demonstration project in the short-term (2019-2020), which already has committed capital, that generates the most useful short-term results, both in realized environmental and economic benefits and in attracting further investment interest.
+
+City Systems has conducted a research activity with the following outcomes:
+
+1. A repository of information about green economy investment opportunities in Stockton, including relevant technical review, case studies of implementation in other cities, key risks/challenges, and estimated ranges of possible environmental and economic benefits per dollar of investment.
+2. Communication materials for the City of Stockton and partners to use in investor outreach.
+3. A detailed design and implementation plan for a green demonstration project, informed by consensus-building discussion with City-identified stakeholders throughout the research phase, and likely to have initiated before the conclusion of the research phase.
+
+The following document describes our methodology and results.
+
+## Approach
+
+The goal of every urban government is to provide residents a high quality of life, which not only includes the benefits associated with high-quality jobs, but also a vibrant economy filled with excellent amenities and supported by well-maintained infrastructure. Building a robust business tax base is one recognized strategy in California for cities to adequately fund general expenses and capital infrastructure, given, for example, state restrictions on property taxes. This strategy is particularly relevant to Stockton given its history of bankruptcy following the Recession and its "brain drain" challenge of keeping high-quality talent from leaving for economic opportunities in the Bay Area and elsewhere. One useful related indicator is the jobs to employed residents (J/ER) ratio; the higher this ratio, the greater the share of business and sales tax relative to property tax, and the less likely the region is a "bedroom community" in which there are more people at night than during the day. For reference, a city like San Jose is unique to have its metropolitan core location yet have a J/ER ratio less than 1; nearby cities like Palo Alto approach a J/ER ratio of 3. 
+
+If Stockton is to reinvent its economy, a key goal should be to increase its J/ER ratio while ensuring the quality of those jobs. To do so, it must aggressively attract high-quality businesses and support the growth of its existing ones, so that its number of jobs may increase more quickly than its population. Historical data for both population and jobs will help us understand the baseline performance of Stockton and its surrounding region in this regard, as well as allow us to forecast what "business as usual" looks like into the future. Then, J/ER ratio targets can be set in comparison to business as usual, which can be achieved through the kinds of economic development strategies explored in this report.
+
+Of course, both job and population growth directly impact a city's environmental footprint. In later sections, we will prepare a baseline assessment of Stockton's greenhouse gas inventory, our primary indicator of environmental performance. Importantly, GHGs should be disaggregated as much as possible into residential and non-residential (commercial, industrial, agricultural) sectors and normalized by respective populations (residents vs. workers) to understand the GHG use per capita in these different sectors. Stockton's GHG footprint will almost certainly increase in the coming decades simply due to the increase in jobs and population, but if GHG/capita for each sector can be reduced through the kinds of strategies explored in this report, then it should be considered successful in curbing GHGs -- and perhaps the City's GHG footprint may actually decrease as a whole.
+
+So, in summary, an accurate assessment of current population and jobs, combined with a GHG inventory, helps us measure important indicators of success like J/ER and GHG/capita. And a best estimate of how population and jobs will change in the future shows us what business as usual looks like for both economic and environmental health. Given this outlook, Stockton can consider a wide range of possible strategies that stimulate job growth, reduce our environmental footprint, or in the best case scenario, achieve both at the same time, all categorized under the term **green economy**. The effects of those strategies can be modeled into the future in comparison to business as usual to see if they help us achieve our economic and environmental targets. Of course, strategies will also need to be evaluated based on their costs and return on investment, which we will approximate as a $/tCO2e (metric tons of carbon dioxide equivalent) in net-present value, similar to the work done in [Climate Smart San Jose](http://www.sanjoseca.gov/DocumentCenter/View/75035). After robustly carrying out the quantitative analysis involved, this report will highlight the most promising strategies at the intersection of "green" and "economy" so that future decision-makers can take actionable steps towards a vibrant and sustainable future.
+
+# Baseline Assessment
+
+The first step to our research is to conduct a baseline assessment of Stockton's environmental and economic performance, and produce "business as usual" forecasts. Different datasets will be limited to different historical ranges and geographic scales. We will explain all key assumptions made in data processing. For forecasting, we will generally rely on simple regression and will project to 2040, a common planning horizon.
+
+## Population and Jobs
+
+The following analysis first processes population and jobs data at the County (SJC) level, where it is more readily available, followed by estimations at the City level. 
+
+### County-level Analysis
+
+The following datasets were collected for SJC:
+
+- [Total Population, American Communities Survey, 1-Yr Estimates, 2010-2018](https://www.census.gov/programs-surveys/acs)
+- [Population projections for US counties, 2020-2100](https://osf.io/9ynfc/)
+- [Longitudinal Employer-Household Dynamics Origin-Destination Employment Statistics, 2010-2017](https://lehd.ces.census.gov/data/), available at the block level
+
+A few notes on methodology and assumptions:
+
+1. From the ACS, we collected Total Population, Total Population 16 and Older, Total Employed Residents (16+), and Unemployment Rate (for 16+). In order to forecast the future number of employed residents, which would then be used to forecast the future number of jobs, we chose to perform a linear regression on employment rate projecting to 2040, given that the unemployment rate was significantly more variable from 2010-2018.
+2. Population projections come from a [study](https://www.nature.com/articles/sdata20195) published in Nature in 2019. The specific methodology is beyond the scope of this project to unpack. What's notable is that five different projections were made by the author based on diferent "potential futures involving various growth policies, fossil-fuel usage, mitigation policies (ie emission reductions), adaptation policies (ie deployment of flood defenses), and population change". We used the "Middle of the road" projection.
+3. Projections from the above study were available in 5-year age groups. While the total population projection is directly used in the final table below for SJC, Population of 15+ was also collected which was multiplied by the previously projected Employment Rate (#1) to forecast total Employed Residents. Note that given data limitations we have a discontinuity between Population 16+ data from 2010-2018 and Population 15+ data from 2020-2040. We assume this difference is negligible for the purposes of our analysis, but it would have the effect of overestimating job count.
+4. From LODES we collected "Primary Jobs" at the block group level and aggregated all jobs for block groups in SJC. These are meant to match the number of individual workers in a region. We also compared this number to the number of employees provided by the [Quarterly Workforce Indicators](https://www.census.gov/data/developers/data-sets/qwi.html) dataset and the number of nonemployer establishments in the [Nonemployer Statistics](https://www.census.gov/data/developers/data-sets/cbp-nonemp-zbp/nonemp-api.2017.html) dataset. The LODES Primary Jobs number was higher than the QWI Employee count but lower than the QWI Employee count plus Nonemployer Establishments count, which seems to make sense (since an individual could operate multiple nonemployer establishments).
+5. We calculated J/ER for 2010-2018 by dividing total Jobs by Employed Residents. Then, we chose to perform a linear regression on J/ER ratio projecting to 2040, and multiplied this by our projected Employed Residents (#3) to forecast total Jobs.
+
+
+```{r population and jobs data}
+ca_counties <- counties("CA", cb = TRUE)
+ca_tracts <- tracts("CA", cb = TRUE)
+ca_bgs <- block_groups("CA", cb = TRUE)
+
+county_neighbors <-
+  ca_counties %>% 
+  filter(NAME %in% c(
+    "San Joaquin",
+    "Alameda",
+    "Sacramento",
+    "Santa Clara",
+    "Stanislaus",
+    "Contra Costa",
+    "San Francisco",
+    "San Mateo",
+    "Solano",
+    "Fresno",
+    "Placer",
+    "Yolo",
+    "Sonoma",
+    "Merced",
+    "Monterey"
+  ))
+
+pop_sjc <- data.frame(matrix(ncol=3,nrow=0))
+colnames(pop_sjc) <- c("Population","Population15andolder","year")
+
+for(year in 2010:2018){
+
+  temp <-
+    getCensus(
+      name = "acs/acs1",
+      vintage = year,
+      vars = c("B01003_001E"),
+      region = "county:077",
+      regionin = "state:06"
+    ) %>%
+    mutate(
+      Population = B01003_001E,
+      year = year
+    ) %>%
+    dplyr::select(
+      Population,
+      year
+    )
+
+  pop_sjc<- rbind(pop_sjc,temp)
+
+}
+
+sjc_projection <-
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/SSP_asrc_STATEfiles/DATA-PROCESSED/SPLITPROJECTIONS/CA.csv") %>%
+  filter(COUNTY == "077") %>%
+  group_by(YEAR) %>%
+  summarize(
+    Population = sum(SSP2),
+    Population15andOlder = sum(SSP2[which(AGE > 3)])
+  ) %>%
+  filter(YEAR %in% c(2020,2025,2030,2035,2040)) %>%
+  dplyr::select(Population, Population15andOlder, year = YEAR)
+
+pop_sjc_w_projection <-
+  bind_rows(pop_sjc,sjc_projection)
+
+emp_sjc <- data.frame(matrix(ncol=2,nrow=0))
+colnames(emp_sjc) <- c("EmployedResidents","year")
+
+for(year in 2010:2018){
+
+  temp <-
+    getCensus(
+      name = "acs/acs1/subject",
+      vintage = year,
+      vars = c("S2301_C01_001E","S2301_C03_001E","S2301_C04_001E"),
+      region = "county:077",
+      regionin = "state:06"
+    ) %>%
+    mutate(
+      Population16andOlder = S2301_C01_001E,
+      PercEmployedResidents = S2301_C03_001E,
+      EmployedResidents = PercEmployedResidents/100*Population16andOlder,
+      UnemploymentRate = S2301_C04_001E,
+      year = year
+    ) %>%
+    dplyr::select(
+      Population16andOlder,
+      PercEmployedResidents,
+      EmployedResidents,
+      UnemploymentRate,
+      year
+    )
+
+  emp_sjc<- rbind(emp_sjc,temp)
+
+}
+
+pop_emp_sjc_w_projection <-
+  pop_sjc_w_projection %>%
+  left_join(emp_sjc, by = "year") %>%
+  mutate(
+    PercEmployedResidents = ifelse(
+      !is.na(PercEmployedResidents),
+      PercEmployedResidents,
+      lm(
+        formula = `PercEmployedResidents`[1:9] ~ year[1:9]
+      )$coefficients[1]+
+        lm(
+          formula = `PercEmployedResidents`[1:9] ~ year[1:9]
+        )$coefficients[2]*year
+    ),
+    EmployedResidents = ifelse(!is.na(EmployedResidents),EmployedResidents,Population15andOlder*PercEmployedResidents/100)
+  )
+
+# sjc_wac <-
+#   2010:2017 %>%
+#   map(function(year){
+#     ca_wac <-
+#       grab_lodes(
+#         state = "ca",
+#         year = year,
+#         lodes_type = "wac",
+#         job_type = "JT01",
+#         segment = "S000",
+#         state_part = "main",
+#         agg_geo = "bg"
+#       )
+# 
+#     temp <-
+#       ca_wac %>%
+#       filter(substr(w_bg,1,5) == "06077")
+# 
+#     return(temp)
+#   }) %>%
+#   rbindlist()
+# 
+# save(sjc_wac, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata")
+
+jobs_sjc <-
+  sjc_wac %>%
+  group_by(year) %>% 
+  summarize(Jobs = sum(C000))
+
+#Add 2018 jobs projection
+jobs_sjc[9,1] <- 2018
+jobs_sjc[9,2] <- 
+  lm(formula = jobs_sjc$Jobs[1:8] ~ jobs_sjc$year[1:8])$coefficients[1]+
+  lm(formula = jobs_sjc$Jobs[1:8] ~ jobs_sjc$year[1:8])$coefficients[2]*2018
+
+pop_jobs_sjc_w_projection <-
+  pop_emp_sjc_w_projection %>%
+  left_join(jobs_sjc, by = "year") %>%
+  mutate(
+    ratio = ifelse(
+      !is.na(Jobs),
+      Jobs/EmployedResidents,
+      lm(
+        formula = Jobs[1:9]/EmployedResidents[1:9] ~ year[1:9]
+      )$coefficients[1]+
+        lm(
+          formula = Jobs[1:9]/EmployedResidents[1:9] ~ year[1:9]
+        )$coefficients[2]*year
+    ),
+    Jobs = ifelse(!is.na(Jobs),Jobs,EmployedResidents*ratio)
+  ) %>%
+  transmute(
+    Year = year,
+    Population = Population,
+    Jobs = Jobs,
+    `Employed Residents` = EmployedResidents,
+    `J/ER Ratio` = ratio,
+    `Percent Employed Residents` = PercEmployedResidents,
+    `Percent Unemployment` = UnemploymentRate
+  )
+
+pop_jobs_sjc_w_projection_table <-
+  pop_jobs_sjc_w_projection %>%
+  transmute(
+    Year = Year,
+    Population = prettyNum(round(Population,-3),big.mark=","),
+    Jobs = prettyNum(round(Jobs,-3),big.mark=","),
+    `Employed Residents` = prettyNum(round(`Employed Residents`,-3),big.mark=","),
+    `J/ER Ratio` = round(`J/ER Ratio`,2),
+    `Percent Employed Residents` = paste0(round(`Percent Employed Residents`),"%"),
+    `Percent Unemployment` = ifelse(is.na(`Percent Unemployment`),"NA",paste0(round(`Percent Unemployment`),"%"))
+  )
+
+# save(pop_jobs_sjc_w_projection, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/pop_jobs_sjc_w_projection.Rdata")
+
+datatable(pop_jobs_sjc_w_projection_table, rownames = FALSE, options = list(pageLength = 14))
+```
+*Table 1. Historical population and job counts for San Joaquin County 2010-2017, followed by projections to 2040.*
+
+The following graph shows the J/ER ratio projected out to 2040, reaching a high of 0.78. This is not particularly high (given our goal of surpassing 1). There is certainly room for improvement through proactive economic development strategies.
