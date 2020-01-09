@@ -28,7 +28,11 @@ library(magrittr)
 library(lwgeom)
 library(knitr)
 library(DT)
-opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+opts_chunk$set(
+  echo = TRUE, 
+  warning=FALSE, 
+  message=FALSE
+)
 mapviewOptions(basemaps = "OpenStreetMap")
 options(
   tigris_use_cache = TRUE,

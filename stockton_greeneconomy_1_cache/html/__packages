@@ -1,10 +1,4 @@
 base
-methods
-datasets
-utils
-grDevices
-graphics
-stats
 tidycensus
 censusapi
 tigris
@@ -27,3 +21,4 @@ lwgeom
 knitr
 DT
 bookdown
+kableExtra
