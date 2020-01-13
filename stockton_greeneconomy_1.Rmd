@@ -346,7 +346,7 @@ kable(
   caption = 'Historical population and job counts for San Joaquin County 2010-2017, followed by projections to 2040.'
 ) %>%
   kable_styling() %>%
-  scroll_box(width = "100%", height = "500px")
+  scroll_box(width = "100%")
 ```
 
 $~$
@@ -532,7 +532,7 @@ stockton_tracts_full <-
 
 # mapview(stockton_tracts_full) + mapview(stockton_boundary, alpha.regions = 0, color = "red", lwd = 4)
 
-map = mapview(stockton_bgs_full) + mapview(stockton_boundary, alpha.regions = 0, color = "red", lwd = 4)
+map = mapview(stockton_bgs_full$geometry) + mapview(stockton_boundary$geometry, alpha.regions = 0, color = "red", lwd = 4)
 map@map
 ```
 
@@ -714,7 +714,7 @@ kable(
   caption = 'Historical population and job counts for Stockton 2010-2018, followed by projections to 2040.'
   ) %>%
   kable_styling() %>%
-  scroll_box(width = "100%", height = "500px")
+  scroll_box(width = "100%")
 ```
 
 $~$
@@ -834,7 +834,7 @@ kable(
   caption = 'Job counts by NAICS industry sector for Stockton 2017.'
   ) %>%
   kable_styling() %>%
-  scroll_box(width = "100%", height = "500px")
+  scroll_box(width = "100%")
 ```
 
 ## Green Jobs
@@ -937,7 +937,7 @@ kable(
   caption = 'Job counts and earnings by NAICS industry sector classified by BLS to contain green jobs and services related to "Energy efficiency" for San Joaquin County 2018.'
   ) %>% 
   kable_styling() %>%
-  scroll_box(width = "100%", height = "500px")
+  scroll_box(width = "100%")
 ```
 
 $~$
@@ -959,7 +959,7 @@ kable(
   caption = 'Job counts and earnings by NAICS industry sector classified by BLS to contain green jobs and services related to "Pollution reduction and removal, greenhouse gas reduction, and recycling and reuse" for San Joaquin County 2018.'
   ) %>% 
   kable_styling() %>%
-  scroll_box(width = "100%", height = "500px")
+  scroll_box(width = "100%")
 ```
 
 $~$
@@ -981,7 +981,7 @@ kable(
   caption = 'Job counts and earnings by NAICS industry sector classified by BLS to contain green jobs and services related to "Natural resource conservation" for San Joaquin County 2018.'
   ) %>% 
   kable_styling() %>%
-  scroll_box(width = "100%", height = "500px")
+  scroll_box(width = "100%")
 ```
 
 $~$
@@ -1003,7 +1003,7 @@ kable(
   caption = 'Job counts and earnings by NAICS industry sector classified by BLS to contain green jobs and services related to "Environmental compliance, education and training, and public awareness" for San Joaquin County 2017.'
   ) %>% 
   kable_styling() %>%
-  scroll_box(width = "100%", height = "500px")
+  scroll_box(width = "100%")
 ```
 
 $~$
@@ -1501,7 +1501,7 @@ kable(
 $~$
 
 ```{r stockton-lodes-w-top-counties-youth, fig.cap="Top 13 counties where Stockton residents work, not including SJC - percent of overall jobs for Stockton workers age 29 or younger located in workplace. Data from LODES, 2017."}
-map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs for workers age 29 or younger", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs for workers age 29 or younger')
+map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs for workers age 29 or younger", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>for workers age</br>29 or younger')
 
 map@map
 ```
@@ -1509,7 +1509,7 @@ map@map
 $~$
 
 ```{r stockton-lodes-w-top-counties-lowinc, fig.cap="Top 13 counties where Stockton residents work, not including SJC - percent of overall jobs for Stockton workers with earnings $1250/month or less located in workplace. Data from LODES, 2017."}
-map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs with earnings $1250/month or less", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs with earnings $1250/month or less')
+map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs with earnings $1250/month or less", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>with earnings</br>$1250/month or less')
 
 map@map
 ```
@@ -1517,7 +1517,7 @@ map@map
 $~$
 
 ```{r stockton-lodes-w-top-counties-highinc, fig.cap="Top 13 counties where Stockton residents work, not including SJC - percent of overall jobs for Stockton residents with earnings greater than $3333/month located in workplace. Data from LODES, 2017."}
-map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs with earnings greater than $3333/month", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs with earnings greater than $3333/month')
+map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs with earnings greater than $3333/month", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>with earnings</br>greater than</br>$3333/month')
 
 map@map
 ```
@@ -1525,7 +1525,7 @@ map@map
 $~$
 
 ```{r stockton-lodes-w-top-counties-goods, fig.cap="Top 13 counties where Stockton residents work, not including SJC - percent of jobs for Stockton residents in Goods Producing industry sectors located in workplace. Data from LODES, 2017."}
-map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs in Goods Producing industry sectors", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs in Goods Producing industry sectors')
+map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs in Goods Producing industry sectors", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>in Goods Producing</br>industry sectors')
 
 map@map
 ```
@@ -1533,7 +1533,7 @@ map@map
 $~$
 
 ```{r stockton-lodes-w-top-counties-trade, fig.cap="Top 13 counties where Stockton residents work, not including SJC - percent of jobs for Stockton residents in Trade, Transportation, and Utilities industry sectors located in workplace. Data from LODES, 2017."}
-map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs in Trade, Transportation, and Utilities industry sectors", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs in Trade, Transportation, and Utilities industry sectors')
+map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs in Trade, Transportation, and Utilities industry sectors", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>in Trade, Transportation,</br>and Utilities</br>industry sectors')
 
 map@map
 ```
@@ -1541,7 +1541,7 @@ map@map
 $~$
 
 ```{r stockton-lodes-w-top-counties-services, fig.cap="Top 13 counties where Stockton residents work, not including SJC - percent of jobs for Stockton residents in All Other Services industry sectors located in workplace. Data from LODES, 2017."}
-map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs in All Other Services industry sectors", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs in All Other Services industry sectors')
+map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs in All Other Services industry sectors", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>in All Other Services</br>industry sectors')
 
 map@map
 ```
@@ -1735,7 +1735,7 @@ stockton_lodes_w_construction_high <-
     `Number of High-wage Construction jobs` = high_CNS04
   )
 
-map = mapview(stockton_lodes_w_construction_high[1:10,], zcol = "Number of High-wage Construction jobs", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Number of High-wage Construction jobs')
+map = mapview(stockton_lodes_w_construction_high[1:10,], zcol = "Number of High-wage Construction jobs", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Number of</br>High-wage</br>Construction jobs')
 
 map@map
 ```
@@ -1757,7 +1757,7 @@ stockton_lodes_w_scientific_high <-
     `Number of Professional, Scientific, and Technical Services jobs` = high_CNS12
   )
 
-map = mapview(stockton_lodes_w_scientific_high[1:10,], zcol = "Number of Professional, Scientific, and Technical Services jobs", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Number of Professional, Scientific, and Technical Services jobs')
+map = mapview(stockton_lodes_w_scientific_high[1:10,], zcol = "Number of Professional, Scientific, and Technical Services jobs", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Number of</br>Professional,</br>Scientific,</br>and Technical</br>Services jobs')
 
 map@map
 ```
@@ -2388,7 +2388,7 @@ stockton_commute_avg <-
   left_join(ca_tracts, by = c("w_tract" = "GEOID")) %>%
   st_as_sf()
 
-map = mapview(stockton_commute_avg, zcol = "Average Commute Time, Hours", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Average Commute Time, Hours')
+map = mapview(stockton_commute_avg, zcol = "Average Commute Time, Hours", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Average Commute</br>Time, Hours')
 
 map@map
 ```
@@ -3029,7 +3029,7 @@ map = mapview(
   zcol = "Average Annual GHG/worker (tCO2e)", 
   map.types = c("OpenStreetMap"), 
   legend = TRUE, 
-  layer.name = 'Average Annual GHG/worker (tCO2e)'
+  layer.name = 'Average</br>Annual</br>GHG/worker</br>(tCO2e)'
 )
 
 map@map
@@ -3038,7 +3038,7 @@ map@map
 $~$
 
 ```{r ghg-map-2, fig.cap="Top 15 Counties where Stockton residents work - annual GHG emissions from driving. Data from LODES, 2017."}
-map = mapview(stockton_lodes_h_counties_ghg_map, zcol = "Total Annual GHG (tCO2e)", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Total Annual GHG (tCO2e)')
+map = mapview(stockton_lodes_h_counties_ghg_map, zcol = "Total Annual GHG (tCO2e)", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Total Annual</br>GHG (tCO2e)')
 
 map@map
 ```
@@ -3047,7 +3047,7 @@ map@map
 
 After transportation, buildings are the next largest source of emissions based on the ICLEI GHG inventories. Our best source of energy data is from [PG&E's Energy Data Request Program](https://pge-energydatarequest.com/public_datasets), which provides total customers, total kWh of electricity, and total therms of gas usage per zipcode per month dating back to 2013. We used the following zip code tabulation areas (ZCTAs), close proxies of customer zip codes, to represent Stockton.
 
-```{r}
+```{r zcta, fig.cap = "Zip code tabulation areas used to represent Stockton population estimates. The red outline is the official city boundary."}
 zcta <- zctas(starts_with="95") %>% 
   mutate(ZCTA5CE10 = as.numeric(ZCTA5CE10))
 # zips_stockton <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ZipCodes/ZipCodes.shp") %>% st_transform(st_crs(zcta)) #this was downloaded from Stockton GIS site to do a quick visual check of the difference between ZCTA and zip code. We determined they were pretty much the same.
@@ -3067,9 +3067,12 @@ zcta_stockton <- zcta[stockton_boundary_influence,] %>%
   #these are some extraneous zip codes that just barely touch the sphere of influence that i manually decided to remove.
 # zcta_stockton <- zcta[which(zcta$ZCTA5CE10 %in% st_centroid(zcta)[stockton_boundary_influence,]$ZCTA5CE10),] #this would be the go-to script to do a location by centroid within, but it's not as useful in this specific case.
 
-mapview(zcta_stockton$geometry) + mapview(stockton_boundary, alpha.regions = 0, color = "red", lwd = 4)
+map = mapview(zcta_stockton$geometry) + mapview(stockton_boundary$geometry, alpha.regions = 0, color = "red", lwd = 4)
+
+map@map
 ```
-*Figure 19. Zip code tabulation areas used to represent Stockton population estimates. The red outline is the official city boundary.*
+
+$~$
 
 PG&E's data had some minor formatting errors that were manually corrected:
 
@@ -3080,7 +3083,7 @@ Also, because of privacy regulations, the PG&E data has many gaps in industrial 
 
 After downloading and aggregating the PG&E residential and commercial data by month and year, we converted electricity and gas energy usage to tCO2e. For gas, we converted therms to tCO2e based a factor from the [U.S. Energy Information Administration](https://www.eia.gov/environment/emissions/co2_vol_mass.php) (assuming that PG&E's natural gas emits at this rate, and that it doesn’t change from year to year). For electricity, we converted kWh to tCO2e for the appropriate year using the table provided by PG&E in their [2019 Corporate Responsibility Report](http://www.pgecorp.com/corp_responsibility/reports/2019/en02_climate_change.html), under the table titled "Benchmarking Greenhouse Gas Emissions for Delivered Electricity". Because the latest emissions data is 210 lbs CO2 per MWh for 2017, and SB 100 signed into law September 2018 requires state energy agencies to adopt a 100 percent clean energy by 2045 planning goal, we assume the emissions factor will decrease by 7.5 lbs CO2 per MWh each here, resulting in a value of 202.5 for 2018.
 
-```{r}
+```{r summary-TCO2E-average-table}
 #Note: Elec- Industrial mostly 0's, 95206 suddenly shows up with ~70 customers in 2014 Q3/Q4, 2015 Q1, 2016 M2/M3, 2018 M6/M9
 
 # pge_elec_emissions_factor <-
@@ -3198,13 +3201,20 @@ summary_TCO2E_average_table <-
     `Total tCO2e` = prettyNum(round(TOTALTCO2E,-3), big.mark=",")
   )
 
-datatable(summary_TCO2E_average_table, rownames = FALSE, options = list(pageLength = 12))
+kable(
+  summary_TCO2E_average_table,
+  booktabs = TRUE,
+  caption = 'Stockton annual residential and commercial energy usage, 2013 to 2018. Data from PG&E.'
+) %>% 
+  kable_styling() %>% 
+  scroll_box(width = "100%")
 ```
-*Table 17. Stockton annual residential and commercial energy usage, 2013 to 2018. Data from PG&E.*
+
+$~$
 
 The graphs below illustrate that total energy usage (in kBTU) for electricity and gas has stayed roughly level across the last six years, but given that electricity has become cleaner through renewable power sources, the overall carbon footprint of electricity has decreased dramatically in comparison to gas.
 
-```{r}
+```{r summary-kBTU-average, fig.cap="Stockton annual residential and commercial energy usage, 2013 to 2018, in kBTU. Data from PG&E."}
 ggplot(
   summary_TCO2E_average, 
   aes(
@@ -3216,9 +3226,10 @@ ggplot(
   labs(x = "Year", y = "GBTU", title = "Stockton Annual Energy Usage, 2013 to 2018") + 
   scale_fill_discrete(name="Energy Type",labels = c("Electricity","Gas"))
 ```
-*Figure 20. stockton annual residential and commercial energy usage, 2013 to 2018, in kBTU. Data from PG&E.*
 
-```{r}
+$~$
+
+```{r summary-TCO2E-average, fig.cap="Stockton annual residential and commercial energy usage, 2013 to 2018, in tCO2e. Data from PG&E."}
 ggplot(
   summary_TCO2E_average, 
   aes(
@@ -3230,11 +3241,12 @@ ggplot(
   labs(x = "Year", y = "tCO2e", title = "Stockton Annual Energy Usage, 2013 to 2018") + 
   scale_fill_discrete(name="Energy Type",labels = c("Electricity","Gas"))
 ```
-*Figure 21. Stockton annual residential and commercial energy usage, 2013 to 2018, in tCO2e. Data from PG&E.*
+
+$~$
 
 The following graph plots monthly tCO2e for electricity vs. gas. The peaks in gas usage occur in January, corresponding to heating load, and the peaks in electricity usage occur in July, corresponding to cooling load, and overall decreasing as previously noted. As we'll explore in a later section, electrification of air and water heating in buildings may be a particularly effective strategy to shift the peak gas consumption to less carbon-intensive electricity loads.
 
-```{r}
+```{r summary-TCO2E-monthly, fig.cap = "Stockton monthly residential and commercial energy usage, 2013 to 2018, in tCO2e. Data from PG&E."}
 summary_TCO2E_monthly <- 
   pge_data %>% 
   filter(!CUSTOMERCLASS %in% c("EI","EA")) %>%
@@ -3291,13 +3303,14 @@ ggplot(
     date_labels = '%Y'
   )
 ```
-*Figure 22. Stockton monthly residential and commercial energy usage, 2013 to 2018, in tCO2e. Data from PG&E.*
+
+$~$
 
 Note that heating and cooling loads, which appear to contribute to significant seasonal variation within years, is also heavily dependent on the specific weather in any given year, typically measured in heating degree days (HDDs) and cooling degree days (CDDs). A more accurate comparison of annual energy consumption would control for change in HDDs and CDDs year-to-year; a more accurate forecasting of energy consumption into the future would also factor in climate model predictions of future HDDs and CDDs.
 
 We used the [Cal-Adapt Degree Day tool](https://cal-adapt.org/tools/degree-days) to collect HDDs and CDDs for Stockton from 2010 to 2018, and on to 2040, using the average simulation (CanESM2) under the Representative Concentration Pathway (RCP) 4.5 scenario (in which global GHG emissions peak around 2040, then decline). The graph below shows the data from Cal-Adapt, as well as linear trendlines, with a clear overall upwards trend for CDDs (meaning that temperatures are rising and more cooling power is needed), and a clear overall downwards trend for HDDs. 
 
-```{r}
+```{r hdd-cdd, fig.cap="Stockton heating and cooling degree days under RCP 4.5 scenario, 2010 to 2040. Data from Cal-Adapt."}
 hdd <- 
   read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/hdd.csv") %>% 
   transmute(
@@ -3359,11 +3372,12 @@ hdd %>%
   scale_linetype_manual(values = c("solid","dotted")) +
   labs(title = "Stockton Heating and Cooling Degree Days", y = "Degree Days", colour = "")
 ```
-*Figure 23. Stockton heating and cooling degree days under RCP 4.5 scenario, 2010 to 2040. Data from Cal-Adapt.*
+
+$~$
 
 The following table shows historical 2013-2018 annual energy usage per capita (residents for residential energy, jobs for commercial energy) per degree day (HDDs for gas, CDDs for electricity), and the graph that follows shows these four energy use factors with downward trends. This may be through a combination of changing building energy efficiency as well as changing building utilization (e.g. more or less space per occupant), though we don't have the data to be able to separate these two factors.
 
-```{r}
+```{r summary-TCO2E-norm-all}
 summary_TCO2E_norm <- 
   pge_data %>% 
   filter(!CUSTOMERCLASS %in% c("EI","EA")) %>%
@@ -3441,11 +3455,18 @@ summary_TCO2E_norm_all <-
     `Commercial Gas, kBTU/job/HDD` = round(summary_TCO2E_norm_GC$KBTU_job_hdd,1)
   )
   
-datatable(summary_TCO2E_norm_all, rownames = FALSE, options = list(pageLength = 6))
+kable(
+  summary_TCO2E_norm_all,
+  booktabs = TRUE,
+  caption = 'Stockton annual energy use per capita per degree-day, 2013 to 2018.'
+) %>% 
+  kable_styling() %>% 
+  scroll_box(width = "100%")
 ```
-*Table 18. Stockton annual energy use per capita per degree-day, 2013 to 2018.*
 
-```{r}
+$~$
+
+```{r summary-TCO2E-norm-all-graph, fig.cap="Stockton annual energy use per capita per degree-day, 2013 to 2018."}
 summary_TCO2E_norm_all %>%
   ggplot(
     aes(
@@ -3455,14 +3476,14 @@ summary_TCO2E_norm_all %>%
   geom_line(
     aes(
       y = `Residential Electricity, kBTU/resident/CDD`,
-      colour = "Residential Electricity (kBTU/resident/CDD)",
+      colour = "Residential Electricity\n(kBTU/resident/CDD)",
       linetype = "Historical"
     )
   ) +
   geom_smooth(
     aes(
       y = `Residential Electricity, kBTU/resident/CDD`,
-      colour = "Residential Electricity (kBTU/resident/CDD)",
+      colour = "Residential Electricity\n(kBTU/resident/CDD)",
       linetype = "Trendline"
     ),
     method = lm,
@@ -3471,14 +3492,14 @@ summary_TCO2E_norm_all %>%
   geom_line(
     aes(
       y = `Residential Gas, kBTU/resident/HDD`,
-      colour = "Residential Gas (kBTU/resident/HDD)",
+      colour = "Residential Gas\n(kBTU/resident/HDD)",
       linetype = "Historical"
     )
   ) +
   geom_smooth(
     aes(
       y = `Residential Gas, kBTU/resident/HDD`,
-      colour = "Residential Gas (kBTU/resident/HDD)",
+      colour = "Residential Gas\n(kBTU/resident/HDD)",
       linetype = "Trendline"
     ),
     method = lm,
@@ -3487,14 +3508,14 @@ summary_TCO2E_norm_all %>%
   geom_line(
     aes(
       y = `Commercial Electricity, kBTU/job/CDD`,
-      colour = "Commercial Electricity (kBTU/job/CDD)",
+      colour = "Commercial Electricity\n(kBTU/job/CDD)",
       linetype = "Historical"
     )
   ) +
   geom_smooth(
     aes(
       y = `Commercial Electricity, kBTU/job/CDD`,
-      colour = "Commercial Electricity (kBTU/job/CDD)",
+      colour = "Commercial Electricity\n(kBTU/job/CDD)",
       linetype = "Trendline"
     ),
     method = lm,
@@ -3503,14 +3524,14 @@ summary_TCO2E_norm_all %>%
   geom_line(
     aes(
       y = `Commercial Gas, kBTU/job/HDD`,
-      colour = "Commercial Gas (kBTU/job/HDD)",
+      colour = "Commercial Gas\n(kBTU/job/HDD)",
       linetype = "Historical"
     )
   ) +
   geom_smooth(
     aes(
       y = `Commercial Gas, kBTU/job/HDD`,
-      colour = "Commercial Gas (kBTU/job/HDD)",
+      colour = "Commercial Gas\n(kBTU/job/HDD)",
       linetype = "Trendline"
     ),
     method = lm,
@@ -3520,7 +3541,8 @@ summary_TCO2E_norm_all %>%
   scale_linetype_manual(values = c("solid","dotted")) +
   labs(title = "Stockton Energy Use per Capita per Degree-Day", y = "kBTU/cap/degree-day", colour = "Energy Factor", linetype = "Data Type")
 ```
-*Figure 24. Stockton annual energy use per capita per degree-day, 2013 to 2018.*
+
+$~$
 
 A full forecast of energy usage will also depend on predicted changes in resident and job populations, which will lead to more buildings and more energy used in buildings, predicted changes in building energy efficiency and utilization, predicted changes in weather, and many other factors that are outside the scope of this analysis. One last available dataset to incorporate into our understanding of energy use relates to buildings.
 
@@ -3530,7 +3552,7 @@ A full forecast of energy usage will also depend on predicted changes in residen
 
 The following maps show the density of residents per 1000 sqft of residential buildings across Stockton, followed by the density of jobs per 1000 sqft of commercials buildings, at the block group level. Residential population was obtained from ACS 2017 5-yr data, and job count was obtained from LODES 2017.
 
-```{r bldg dataset, residential density}
+```{r residential-density, fig.cap="Stockton residents per 1,000 sqft of residential building area, per block group."}
 pge_stockton_filtered <- 
   pge_data %>% 
   filter(!CUSTOMERCLASS %in% c("EI","EA") & (YEAR == 2018)) %>%
@@ -3795,13 +3817,14 @@ bg_bldg_norm_r <-
     residential_density = bldgtot/(as.numeric(st_area(.))/4046.86)
   )
 
-mapview(bg_bldg_norm_r,zcol=c("Residents per 1,000 sqft"), legend = TRUE, layer.name = "Residents per 1,000 sqft")
+map = mapview(bg_bldg_norm_r,zcol=c("residential_density"), legend = TRUE, layer.name = "Residential density")
 
-mapview(bg_bldg_norm_r,zcol=c("residential_density"), legend = TRUE, layer.name = "Residential density")
+map@map
 ```
-*Figure 25. Stockton residents per 1,000 sqft of residential building area, per block group.*
 
-```{r job/sqft per block group}
+$~$
+
+```{r commercial-density, fig.cap="Stockton jobs per 1,000 sqft of commercial building area, per block group."}
 bg_bldg_norm_c <-
   bg_bldg %>% 
   filter(ZONING == "C") %>% 
@@ -3818,9 +3841,9 @@ bg_bldg_norm_c <-
   ) %>% 
   filter(!GEOID %in% c("060770039001","060770039002"))
 
-mapview(bg_bldg_norm_c,zcol=c("Jobs per 1,000 sqft"), legend = TRUE, layer.name = "Jobs per 1,000 sqft")
+map = mapview(bg_bldg_norm_c,zcol=c("commercial_density"), legend = TRUE, layer.name = "Commercial density")
 
-mapview(bg_bldg_norm_c,zcol=c("commercial_density"), legend = TRUE, layer.name = "Commercial density")
+map@map
 
 # bldg_norm_r <-
 #   bg_bldg %>% 
@@ -3847,13 +3870,14 @@ mapview(bg_bldg_norm_c,zcol=c("commercial_density"), legend = TRUE, layer.name =
 #   ) %>% 
 #   mutate(`Jobs/1000sqft` = jobs/bldgtot*1000)
 ```
-*Figure 25. Stockton jobs per 1,000 sqft of commercial building area, per block group.*
+
+$~$
 
 Because we do not have robust historical building datasets, we cannot analyze the change in building square footages over time. For forecasting, we  assume an overall fixed building utilization estimate of 1.7 residents per 1000 sqft of residential buildings, and 1.3 jobs per 1000 sqft of commercial buildings. In the intervention stage, if we expect a strategy would change building utilization, we would make a reduction in energy consumption relative to these baseline utilization rates.
 
 As one last couple of building-specific analyses, we aggregated building square footage information up to the zipcode level and compared with energy usage data to see residential and commercial building energy efficiency at a recent snapshot of time as spatially distributed in Stockton.
 
-```{r}
+```{r res-customer, fig.cap="Stockton residential kBTU per sqft of residential building area, per zip code."}
 #disaggregating by zipcode and zoning type of the buildings to get summaries of # of buildings, total ground footprint, and total bldg sqft. the filter removes NAs in the data, which could be missing zones in specific zipcodes.
 zcta_bldg_spread <- 
   stockton_bldg_final %>% 
@@ -3897,20 +3921,47 @@ zcta_bldg_stockton_joined <-
     KBTUperSQFT = TOTALKBTU/TOTSQFT
   )
 
-mapview(zcta_bldg_stockton_joined, zcol=c("R_KBTUperSQFT"), legend = TRUE, layer.name = "kBTU per sqft, Residential")
-```
-*Figure 26. Stockton residential kBTU per sqft of residential building area, per zip code.*
+map = mapview(zcta_bldg_stockton_joined, zcol=c("R_KBTUPERCUST"), legend = TRUE, layer.name = "kBTU per customer,</br>Residential")
 
-```{r}
-mapview(zcta_bldg_stockton_joined, zcol=c("C_KBTUperSQFT"), legend = TRUE, layer.name = "kBTU per sqft, Commercial")
+map@map
 ```
-*Figure 27. Stockton commercial kBTU per sqft of commercial building area, per zip code.*
 
-```{r}
+$~$
+
+```{r comm-customer, fig.cap="Stockton commercial kBTU per sqft of commercial building area, per zip code."}
+map = mapview(zcta_bldg_stockton_joined, zcol=c("C_KBTUPERCUST"), legend = TRUE, layer.name = "kBTU per customer,</br>Commercial")
+
+map@map
+```
+
+$~$
+
+```{r zcta-bldg-stockton-table}
 zcta_bldg_stockton_summary <- 
   zcta_bldg_stockton_joined %>% 
   st_set_geometry(NULL) %>% 
-  summarise_at(c("NUMBLDG", "R_NUMBLDG", "C_NUMBLDG","TOTSQFTGROUND","TOTSQFT","R_TOTSQFT","C_TOTSQFT","R_TOTSQFTGROUND","C_TOTSQFTGROUND","TOTALKBTU","E_TOTALKBTU","G_TOTALKBTU","R_TOTALKBTU","C_TOTALKBTU", "ER_TOTALKBTU", "GR_TOTALKBTU", "EC_TOTALKBTU", "GC_TOTALKBTU"), sum, na.rm=T) %>% 
+  summarise_at(
+    c(
+      "NUMBLDG", 
+      "R_NUMBLDG", 
+      "C_NUMBLDG",
+      "TOTSQFTGROUND",
+      "TOTSQFT",
+      "R_TOTSQFT",
+      "C_TOTSQFT",
+      "R_TOTSQFTGROUND",
+      "C_TOTSQFTGROUND",
+      "TOTALKBTU",
+      "E_TOTALKBTU",
+      "G_TOTALKBTU",
+      "R_TOTALKBTU",
+      "C_TOTALKBTU", 
+      "ER_TOTALKBTU", 
+      "GR_TOTALKBTU", 
+      "EC_TOTALKBTU", 
+      "GC_TOTALKBTU"
+    ), sum, na.rm=T
+  ) %>% 
   mutate(
     ER_KBTUperSQFT = ER_TOTALKBTU/R_TOTSQFT, 
     GR_KBTUperSQFT = GR_TOTALKBTU/R_TOTSQFT, 
@@ -3923,8 +3974,109 @@ zcta_bldg_stockton_summary <-
     KBTUperSQFT = TOTALKBTU/TOTSQFT,
   )
 
-# datatable(zcta_bldg_stockton_summary, rownames = FALSE, options = list(pageLength = 20))
+zcta_bldg_stockton_table <-
+  data.frame(
+    Type = c(
+      "Residential Electricity",
+      "Residential Gas",
+      "Commercial Electricity",
+      "Commercial Gas",
+      "Residential Total",
+      "Commercial Total",
+      "Electricity Total",
+      "Gas Total",
+      "Total"
+    ),
+    Bldg = c(
+      NA,
+      NA,
+      NA,
+      NA,
+      zcta_bldg_stockton_summary$R_NUMBLDG,
+      zcta_bldg_stockton_summary$C_NUMBLDG,
+      NA,
+      NA,
+      zcta_bldg_stockton_summary$R_NUMBLDG+zcta_bldg_stockton_summary$C_NUMBLDG
+    ),
+    Footprint = c(
+      NA,
+      NA,
+      NA,
+      NA,
+      zcta_bldg_stockton_summary$R_TOTSQFTGROUND,
+      zcta_bldg_stockton_summary$C_TOTSQFTGROUND,
+      NA,
+      NA,
+      zcta_bldg_stockton_summary$R_TOTSQFTGROUND+zcta_bldg_stockton_summary$C_TOTSQFTGROUND
+    ),
+    sqft = c(
+      NA,
+      NA,
+      NA,
+      NA,
+      zcta_bldg_stockton_summary$R_TOTSQFT,
+      zcta_bldg_stockton_summary$C_TOTSQFT,
+      NA,
+      NA,
+      zcta_bldg_stockton_summary$R_TOTSQFT+zcta_bldg_stockton_summary$C_TOTSQFT
+    ),
+    kbtu = c(
+      zcta_bldg_stockton_summary$ER_TOTALKBTU,
+      zcta_bldg_stockton_summary$GR_TOTALKBTU,
+      zcta_bldg_stockton_summary$EC_TOTALKBTU,
+      zcta_bldg_stockton_summary$GC_TOTALKBTU,
+      zcta_bldg_stockton_summary$R_TOTALKBTU,
+      zcta_bldg_stockton_summary$C_TOTALKBTU,
+      zcta_bldg_stockton_summary$E_TOTALKBTU,
+      zcta_bldg_stockton_summary$G_TOTALKBTU,
+      zcta_bldg_stockton_summary$TOTALKBTU
+    ),
+    kbtusqft = c(
+      zcta_bldg_stockton_summary$ER_KBTUperSQFT,
+      zcta_bldg_stockton_summary$GR_KBTUperSQFT,
+      zcta_bldg_stockton_summary$EC_KBTUperSQFT,
+      zcta_bldg_stockton_summary$GC_KBTUperSQFT,
+      zcta_bldg_stockton_summary$R_KBTUperSQFT,
+      zcta_bldg_stockton_summary$C_KBTUperSQFT,
+      zcta_bldg_stockton_summary$E_KBTUperSQFT,
+      zcta_bldg_stockton_summary$G_KBTUperSQFT,
+      zcta_bldg_stockton_summary$TOTALKBTU/(zcta_bldg_stockton_summary$R_TOTSQFT+zcta_bldg_stockton_summary$C_TOTSQFT)
+    )
+  ) %>% 
+  transmute(
+    Type = Type,
+    `Number of Buildings` = 
+      ifelse(
+        is.na(Bldg),
+        "",
+        prettyNum(round(Bldg,-3),big.mark = ",")
+      ),
+    `Total Footprint` =
+      ifelse(
+        is.na(Footprint),
+        "",
+        prettyNum(round(Footprint,-6),big.mark = ",")
+      ),
+    `Total Sqft` =
+      ifelse(
+        is.na(sqft),
+        "",
+        prettyNum(round(sqft,-6),big.mark = ",")
+      ),
+    `Total kBTU` = prettyNum(round(kbtu,-7),big.mark = ","),
+    `kBTU/sqft` = prettyNum(round(kbtusqft),big.mark = ",")
+  )
+
+kable(
+  zcta_bldg_stockton_table, 
+  booktabs = TRUE,
+  caption = 'Summary of Building count, size, and energy usage for residential/commercial and electricity/gas. Data from PG&E, 2018.'
+) %>% 
+  kable_styling() %>% 
+  scroll_box(width = "100%")
 ```
+
+$~$
 
 ## GHG Forecast
 
@@ -3943,7 +4095,7 @@ In summary, the following assumptions go into inputs for the forecasts, which ar
 - From Section 2.5, we derived linear forecasts of heating and cooling degree days through 2040 from Cal-Adapt's HDD and CDD projections.
 - From Section 2.5, we derived linear forecasts of energy use per capita per degree-day through 2040. For Commercial Gas, we leveled out the forecast at 1 kBTU/job/HDD from 2035 on.
 
-```{r}
+```{r summary-TCO2E-norm-projection}
 summary_TCO2E_norm_projection <-
   summary_TCO2E_norm_all
 
@@ -4094,7 +4246,13 @@ heating_fuel <-
     `Percent of Households` = paste0(round(estimate/95557*100,2),"%")
   )
 
-datatable(heating_fuel, rownames = FALSE, options = list(pageLength = 10))
+kable(
+  heating_fuel,
+  booktabs = TRUE,
+  caption = 'Heating fuel type for Stockton households. Data from ACS 1-yr, 2018.'
+) %>% 
+  kable_styling() %>% 
+  scroll_box(width = "100%")
 ```
 
 The 65% of households with "Utility gas" represent the opportunity to replace space heating systems with electric alternatives like heat pumps, moving those households over to the "Electricity" category currently at 32%. The other households using other fuels like kerosene or biomass represent a very small number, but targeting these households may be particularly important because of the extra cost-effectiveness of electrification, and the likely co-benefits of improving health outcomes for a relatively more low-income and rural population. The California Public Utilities Commission is in the process of piloting projects to "[Identify Disadvantaged Communities in the San Joaquin Valley and Analyze Economically Feasible Options to Increase Access to Affordable Energy in those Disadvantaged Communities](http://docs.cpuc.ca.gov/PublishedDocs/Efile/G000/M199/K979/199979978.PDF)". Unfortunately, at least [one pilot in California City](https://www.socalgas.com/1443741594585/Exhibit-5---SoCalGas-Pilot-Project-Proposal-for-California-City--Revised-.pdf) is moving forward with natural gas infrastructure, seemingly because of bureaucratic issues related to the electricity alternative. We would recommend that the City of Stockton stay actively involved in this CPUC project by providing comments on the upcoming phases and advocating for further pilots in Stockton and its peripheral rural areas to involve electrification. 
@@ -4109,7 +4267,7 @@ The following are case studies of electrification incentive programs from other 
 
 - [Sacramento Municipal Utility District](https://www.smud.org/en) has an All-Electric Smart Home Program, part of the SMUD Smart Home Program, in which participating homeowners receive the financial incentives for single and multi-family homes shown in the table below. The minimum requirements include: all electric appliances and mechanical systems; no gas line in the home; and no gas service at the property. The public-private partnership has reached more than 1,000 homes and is expected to reach 2,000 by the end of the year.
 
-```{r}
+```{r smud}
 smud <-
   data.frame(
     Type = c("Single-family unit","Multi-family unit"),
@@ -4123,7 +4281,13 @@ smud <-
     `Total possible incentives` = Total.possible.incentives
   )
 
-datatable(smud, rownames = FALSE, options = list(pageLength = 2))
+kable(
+  smud,
+  booktabs = TRUE,
+  caption = 'Financial incentives for single-family and multi-family homes in the SMUD All-Electric Smart Home Program.'
+) %>% 
+  kable_styling() %>% 
+  scroll_box(width = "100%")
 ```
 
 - [MassCEC](https://www.masscec.com/installer-resources-air-source-heat-pumps) provides incentives for residential installation of whole-home air-source heat pumps. Pilot funding for the project is still being allocated so the number of affected homes is not yet recorded. Incentives are based on income category: For >120% of state median income, \$2,500; for 80-120%, \$3,750; for <80% or affordable housing, \$5,000.

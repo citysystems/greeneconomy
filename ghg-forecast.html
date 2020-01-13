@@ -66,13 +66,6 @@
 <script src="libs/HomeButton-0.0.1/home-button.js"></script>
 <script src="libs/HomeButton-0.0.1/easy-button-src.min.js"></script>
 <link href="libs/PopupTable-0.0.1/popup.css" rel="stylesheet" />
-<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.9/datatables.js"></script>
-<link href="libs/dt-core-1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.10.19/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.10.19/js/jquery.dataTables.min.js"></script>
-<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
 
 <script>
 /* ========================================================================
@@ -578,83 +571,806 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="ghg-forecast" class="section level2" number="2.8">
 <h2 number="2.8"><span class="header-section-number">2.8</span> GHG Forecast</h2>
-<p>For our “business as usual” forecast og GHG emissions through 2040, and for our subsequent exploration of intervention strategies, we will focus on the following sectors for which we have used available data to refine our models: transportation, commercial energy, and residential energy. These sectors represented 58% of ICLEI’s modeled emissions in 2016. The other sectors, particularly industrial energy which comprised 24% of 2016 emissions, are also significant opportunities for GHG reductions, but are outside of the scope of this analysis without better data.</p>
+<p>For our “business as usual” forecast of GHG emissions through 2040, and for our subsequent exploration of intervention strategies, we will focus on the following sectors for which we have used available data to refine our models: transportation, commercial energy, and residential energy. These sectors represented 58% of ICLEI’s modeled emissions in 2016. The other sectors, particularly industrial energy which comprised 24% of 2016 emissions, are also significant opportunities for GHG reductions, but are outside of the scope of this analysis without better data.</p>
 <p>Our simplified model of transportation emissions assumes that commute one-way vehicle miles traveled per worker is on a linear trend based on recent data. Otherwise, our forecasts of growth in the number of employed residents drives changes in VMT and thus transportation emissions. Other “business as usual” factors, like a forecasted adoption of EVs, are not considered in this analysis.</p>
-<p>Our simplified model of energy emissions will assume that building square footage increases with population and job growth through fixed ratios, and an underlying energy use factor for commercial and residential electricity and gas will follow the same trends as the last six years through 2040. Otherwise, a basic climate change model will drive additional changes in the forecasts.</p>
+<p>Our simplified model of energy emissions will assume that building square footage increases with population and job growth through fixed ratios, and an underlying energy use factor for commercial and residential electricity and gas will follow the same trends as the last six years through 2040. Otherwise, a basic climate change model of heating and cooling degree days will drive additional changes in the forecasts.</p>
 <p>In summary, the following assumptions go into inputs for the forecasts, which are also shown in the table below:</p>
 <ul>
 <li>From Section 2.1, we derived future population, employed resident, and job forecasts, specifically for the years 2020, 2025, 2030, 2035, and 2040.</li>
-<li>From Section 2.4, we derived commute one-way VMT/workers for 2011-2017, and projected a linear trend to 2040.</li>
-<li>From Section 2.4, we derived simplified aggregate vehicle emission rates for San Joaquin County through 2040.</li>
-<li>From Section 2.5, we derived a linear forecast of PG&amp;E’s electricity emissions factor which runs from 2017’s data point towards a 2045 target of 100% clean energy.</li>
-<li>From Section 2.5, we derived linear forecasts of heating and cooling degree days through 2040 from Cal-Adapt’s HDD and CDD projections.</li>
-<li>From Section 2.5, we derived linear forecasts of energy use per capita per degree-day through 2040. For Commercial Gas, we leveled out the forecast at 1 kBTU/job/HDD from 2035 on.</li>
+<li>From Section 2.5, we derived commute one-way VMT/workers for 2011-2017. The table below projects this trend to 2040.</li>
+<li>From Section 2.5, we derived simplified aggregate vehicle emission rates for San Joaquin County through 2040.</li>
+<li>From Section 2.6, we derived a linear forecast of PG&amp;E’s electricity emissions factor which runs from 2017’s data point towards a 2045 target of 100% clean energy.</li>
+<li>From Section 2.6, we derived linear forecasts of heating and cooling degree days through 2040 from Cal-Adapt’s HDD and CDD projections.</li>
+<li>From Section 2.6, we derived linear forecasts of energy use per capita per degree-day through 2040. For Commercial Gas, we leveled out the forecast at 1 kBTU/job/HDD from 2035 on.</li>
 </ul>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="ghg-forecast.html#cb60-1"></a>summary_TCO2E_norm_projection &lt;-</span>
-<span id="cb60-2"><a href="ghg-forecast.html#cb60-2"></a><span class="st">  </span>summary_TCO2E_norm_all</span>
-<span id="cb60-3"><a href="ghg-forecast.html#cb60-3"></a></span>
-<span id="cb60-4"><a href="ghg-forecast.html#cb60-4"></a>summary_TCO2E_norm_projection[<span class="dv">7</span><span class="op">:</span><span class="dv">11</span>,<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">2020</span>,<span class="dv">2025</span>,<span class="dv">2030</span>,<span class="dv">2035</span>,<span class="dv">2040</span>)</span>
-<span id="cb60-5"><a href="ghg-forecast.html#cb60-5"></a></span>
-<span id="cb60-6"><a href="ghg-forecast.html#cb60-6"></a>summary_TCO2E_norm_projection &lt;-</span>
-<span id="cb60-7"><a href="ghg-forecast.html#cb60-7"></a><span class="st">  </span>summary_TCO2E_norm_projection <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb60-8"><a href="ghg-forecast.html#cb60-8"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span><span class="st">`</span><span class="dt">Heating Degree Days</span><span class="st">`</span>,<span class="op">-</span><span class="st">`</span><span class="dt">Cooling Degree Days</span><span class="st">`</span>,<span class="op">-</span>Residents,<span class="op">-</span>Jobs) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb60-9"><a href="ghg-forecast.html#cb60-9"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
-<span id="cb60-10"><a href="ghg-forecast.html#cb60-10"></a>    <span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span> =</span>
-<span id="cb60-11"><a href="ghg-forecast.html#cb60-11"></a><span class="st">      </span><span class="kw">ifelse</span>(</span>
-<span id="cb60-12"><a href="ghg-forecast.html#cb60-12"></a>        Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2020</span>,</span>
-<span id="cb60-13"><a href="ghg-forecast.html#cb60-13"></a>        <span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span>,</span>
-<span id="cb60-14"><a href="ghg-forecast.html#cb60-14"></a>        <span class="kw">lm</span>(</span>
-<span id="cb60-15"><a href="ghg-forecast.html#cb60-15"></a>          <span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
-<span id="cb60-16"><a href="ghg-forecast.html#cb60-16"></a>        )<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
-<span id="cb60-17"><a href="ghg-forecast.html#cb60-17"></a><span class="st">          </span><span class="kw">lm</span>(</span>
-<span id="cb60-18"><a href="ghg-forecast.html#cb60-18"></a>            <span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
-<span id="cb60-19"><a href="ghg-forecast.html#cb60-19"></a>          )<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span>Year</span>
-<span id="cb60-20"><a href="ghg-forecast.html#cb60-20"></a>      ),</span>
-<span id="cb60-21"><a href="ghg-forecast.html#cb60-21"></a>    <span class="st">`</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span> =</span>
-<span id="cb60-22"><a href="ghg-forecast.html#cb60-22"></a><span class="st">      </span><span class="kw">ifelse</span>(</span>
-<span id="cb60-23"><a href="ghg-forecast.html#cb60-23"></a>        Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2020</span>,</span>
-<span id="cb60-24"><a href="ghg-forecast.html#cb60-24"></a>        <span class="st">`</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span>,</span>
-<span id="cb60-25"><a href="ghg-forecast.html#cb60-25"></a>        <span class="kw">lm</span>(</span>
-<span id="cb60-26"><a href="ghg-forecast.html#cb60-26"></a>          <span class="st">`</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
-<span id="cb60-27"><a href="ghg-forecast.html#cb60-27"></a>        )<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
-<span id="cb60-28"><a href="ghg-forecast.html#cb60-28"></a><span class="st">          </span><span class="kw">lm</span>(</span>
-<span id="cb60-29"><a href="ghg-forecast.html#cb60-29"></a>            <span class="st">`</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
-<span id="cb60-30"><a href="ghg-forecast.html#cb60-30"></a>          )<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span>Year</span>
-<span id="cb60-31"><a href="ghg-forecast.html#cb60-31"></a>      ),</span>
-<span id="cb60-32"><a href="ghg-forecast.html#cb60-32"></a>    <span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span> =</span>
-<span id="cb60-33"><a href="ghg-forecast.html#cb60-33"></a><span class="st">      </span><span class="kw">ifelse</span>(</span>
-<span id="cb60-34"><a href="ghg-forecast.html#cb60-34"></a>        Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2020</span>,</span>
-<span id="cb60-35"><a href="ghg-forecast.html#cb60-35"></a>        <span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span>,</span>
-<span id="cb60-36"><a href="ghg-forecast.html#cb60-36"></a>        <span class="kw">lm</span>(</span>
-<span id="cb60-37"><a href="ghg-forecast.html#cb60-37"></a>          <span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
-<span id="cb60-38"><a href="ghg-forecast.html#cb60-38"></a>        )<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
-<span id="cb60-39"><a href="ghg-forecast.html#cb60-39"></a><span class="st">          </span><span class="kw">lm</span>(</span>
-<span id="cb60-40"><a href="ghg-forecast.html#cb60-40"></a>            <span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
-<span id="cb60-41"><a href="ghg-forecast.html#cb60-41"></a>          )<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span>Year</span>
-<span id="cb60-42"><a href="ghg-forecast.html#cb60-42"></a>      ),</span>
-<span id="cb60-43"><a href="ghg-forecast.html#cb60-43"></a>    <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span> =</span>
-<span id="cb60-44"><a href="ghg-forecast.html#cb60-44"></a><span class="st">      </span><span class="kw">ifelse</span>(</span>
-<span id="cb60-45"><a href="ghg-forecast.html#cb60-45"></a>        Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2020</span>,</span>
-<span id="cb60-46"><a href="ghg-forecast.html#cb60-46"></a>        <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span>,</span>
-<span id="cb60-47"><a href="ghg-forecast.html#cb60-47"></a>        <span class="kw">lm</span>(</span>
-<span id="cb60-48"><a href="ghg-forecast.html#cb60-48"></a>          <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
-<span id="cb60-49"><a href="ghg-forecast.html#cb60-49"></a>        )<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
-<span id="cb60-50"><a href="ghg-forecast.html#cb60-50"></a><span class="st">          </span><span class="kw">lm</span>(</span>
-<span id="cb60-51"><a href="ghg-forecast.html#cb60-51"></a>            <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
-<span id="cb60-52"><a href="ghg-forecast.html#cb60-52"></a>          )<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span>Year</span>
-<span id="cb60-53"><a href="ghg-forecast.html#cb60-53"></a>      ),</span>
-<span id="cb60-54"><a href="ghg-forecast.html#cb60-54"></a>    <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span> =</span>
-<span id="cb60-55"><a href="ghg-forecast.html#cb60-55"></a><span class="st">      </span><span class="kw">ifelse</span>(</span>
-<span id="cb60-56"><a href="ghg-forecast.html#cb60-56"></a>        <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span> <span class="op">&lt;</span><span class="st"> </span><span class="dv">1</span>,</span>
-<span id="cb60-57"><a href="ghg-forecast.html#cb60-57"></a>        <span class="dv">1</span>,</span>
-<span id="cb60-58"><a href="ghg-forecast.html#cb60-58"></a>        <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span></span>
-<span id="cb60-59"><a href="ghg-forecast.html#cb60-59"></a>      )</span>
-<span id="cb60-60"><a href="ghg-forecast.html#cb60-60"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb60-61"><a href="ghg-forecast.html#cb60-61"></a><span class="st">  </span><span class="kw">left_join</span>(hdd, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;Year&quot;</span> =<span class="st"> &quot;YEAR&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb60-62"><a href="ghg-forecast.html#cb60-62"></a><span class="st">  </span><span class="kw">left_join</span>(cdd, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;Year&quot;</span> =<span class="st"> &quot;YEAR&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb60-63"><a href="ghg-forecast.html#cb60-63"></a><span class="st">  </span><span class="kw">left_join</span>(pop_jobs_sjc_w_projection <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(Year, Population, Jobs), <span class="dt">by =</span> <span class="st">&quot;Year&quot;</span>)</span>
-<span id="cb60-64"><a href="ghg-forecast.html#cb60-64"></a></span>
-<span id="cb60-65"><a href="ghg-forecast.html#cb60-65"></a><span class="co"># PG&amp;E emissions factors</span></span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="ghg-forecast.html#cb56-1"></a>summary_TCO2E_norm_projection &lt;-</span>
+<span id="cb56-2"><a href="ghg-forecast.html#cb56-2"></a><span class="st">  </span>summary_TCO2E_norm_all</span>
+<span id="cb56-3"><a href="ghg-forecast.html#cb56-3"></a></span>
+<span id="cb56-4"><a href="ghg-forecast.html#cb56-4"></a>summary_TCO2E_norm_projection[<span class="dv">7</span><span class="op">:</span><span class="dv">11</span>,<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">2020</span>,<span class="dv">2025</span>,<span class="dv">2030</span>,<span class="dv">2035</span>,<span class="dv">2040</span>)</span>
+<span id="cb56-5"><a href="ghg-forecast.html#cb56-5"></a></span>
+<span id="cb56-6"><a href="ghg-forecast.html#cb56-6"></a>ghg_forecast_prep &lt;-</span>
+<span id="cb56-7"><a href="ghg-forecast.html#cb56-7"></a><span class="st">  </span>summary_TCO2E_norm_projection <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb56-8"><a href="ghg-forecast.html#cb56-8"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span><span class="st">`</span><span class="dt">Heating Degree Days</span><span class="st">`</span>,<span class="op">-</span><span class="st">`</span><span class="dt">Cooling Degree Days</span><span class="st">`</span>,<span class="op">-</span>Residents,<span class="op">-</span>Jobs) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb56-9"><a href="ghg-forecast.html#cb56-9"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb56-10"><a href="ghg-forecast.html#cb56-10"></a>    <span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span> =</span>
+<span id="cb56-11"><a href="ghg-forecast.html#cb56-11"></a><span class="st">      </span><span class="kw">ifelse</span>(</span>
+<span id="cb56-12"><a href="ghg-forecast.html#cb56-12"></a>        Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2020</span>,</span>
+<span id="cb56-13"><a href="ghg-forecast.html#cb56-13"></a>        <span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span>,</span>
+<span id="cb56-14"><a href="ghg-forecast.html#cb56-14"></a>        <span class="kw">lm</span>(</span>
+<span id="cb56-15"><a href="ghg-forecast.html#cb56-15"></a>          <span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
+<span id="cb56-16"><a href="ghg-forecast.html#cb56-16"></a>        )<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
+<span id="cb56-17"><a href="ghg-forecast.html#cb56-17"></a><span class="st">          </span><span class="kw">lm</span>(</span>
+<span id="cb56-18"><a href="ghg-forecast.html#cb56-18"></a>            <span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
+<span id="cb56-19"><a href="ghg-forecast.html#cb56-19"></a>          )<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span>Year</span>
+<span id="cb56-20"><a href="ghg-forecast.html#cb56-20"></a>      ),</span>
+<span id="cb56-21"><a href="ghg-forecast.html#cb56-21"></a>    <span class="st">`</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span> =</span>
+<span id="cb56-22"><a href="ghg-forecast.html#cb56-22"></a><span class="st">      </span><span class="kw">ifelse</span>(</span>
+<span id="cb56-23"><a href="ghg-forecast.html#cb56-23"></a>        Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2020</span>,</span>
+<span id="cb56-24"><a href="ghg-forecast.html#cb56-24"></a>        <span class="st">`</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span>,</span>
+<span id="cb56-25"><a href="ghg-forecast.html#cb56-25"></a>        <span class="kw">lm</span>(</span>
+<span id="cb56-26"><a href="ghg-forecast.html#cb56-26"></a>          <span class="st">`</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
+<span id="cb56-27"><a href="ghg-forecast.html#cb56-27"></a>        )<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
+<span id="cb56-28"><a href="ghg-forecast.html#cb56-28"></a><span class="st">          </span><span class="kw">lm</span>(</span>
+<span id="cb56-29"><a href="ghg-forecast.html#cb56-29"></a>            <span class="st">`</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
+<span id="cb56-30"><a href="ghg-forecast.html#cb56-30"></a>          )<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span>Year</span>
+<span id="cb56-31"><a href="ghg-forecast.html#cb56-31"></a>      ),</span>
+<span id="cb56-32"><a href="ghg-forecast.html#cb56-32"></a>    <span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span> =</span>
+<span id="cb56-33"><a href="ghg-forecast.html#cb56-33"></a><span class="st">      </span><span class="kw">ifelse</span>(</span>
+<span id="cb56-34"><a href="ghg-forecast.html#cb56-34"></a>        Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2020</span>,</span>
+<span id="cb56-35"><a href="ghg-forecast.html#cb56-35"></a>        <span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span>,</span>
+<span id="cb56-36"><a href="ghg-forecast.html#cb56-36"></a>        <span class="kw">lm</span>(</span>
+<span id="cb56-37"><a href="ghg-forecast.html#cb56-37"></a>          <span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
+<span id="cb56-38"><a href="ghg-forecast.html#cb56-38"></a>        )<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
+<span id="cb56-39"><a href="ghg-forecast.html#cb56-39"></a><span class="st">          </span><span class="kw">lm</span>(</span>
+<span id="cb56-40"><a href="ghg-forecast.html#cb56-40"></a>            <span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
+<span id="cb56-41"><a href="ghg-forecast.html#cb56-41"></a>          )<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span>Year</span>
+<span id="cb56-42"><a href="ghg-forecast.html#cb56-42"></a>      ),</span>
+<span id="cb56-43"><a href="ghg-forecast.html#cb56-43"></a>    <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span> =</span>
+<span id="cb56-44"><a href="ghg-forecast.html#cb56-44"></a><span class="st">      </span><span class="kw">ifelse</span>(</span>
+<span id="cb56-45"><a href="ghg-forecast.html#cb56-45"></a>        Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2020</span>,</span>
+<span id="cb56-46"><a href="ghg-forecast.html#cb56-46"></a>        <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span>,</span>
+<span id="cb56-47"><a href="ghg-forecast.html#cb56-47"></a>        <span class="kw">lm</span>(</span>
+<span id="cb56-48"><a href="ghg-forecast.html#cb56-48"></a>          <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
+<span id="cb56-49"><a href="ghg-forecast.html#cb56-49"></a>        )<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
+<span id="cb56-50"><a href="ghg-forecast.html#cb56-50"></a><span class="st">          </span><span class="kw">lm</span>(</span>
+<span id="cb56-51"><a href="ghg-forecast.html#cb56-51"></a>            <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
+<span id="cb56-52"><a href="ghg-forecast.html#cb56-52"></a>          )<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span>Year</span>
+<span id="cb56-53"><a href="ghg-forecast.html#cb56-53"></a>      ),</span>
+<span id="cb56-54"><a href="ghg-forecast.html#cb56-54"></a>    <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span> =</span>
+<span id="cb56-55"><a href="ghg-forecast.html#cb56-55"></a><span class="st">      </span><span class="kw">ifelse</span>(</span>
+<span id="cb56-56"><a href="ghg-forecast.html#cb56-56"></a>        <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span> <span class="op">&lt;</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb56-57"><a href="ghg-forecast.html#cb56-57"></a>        <span class="dv">1</span>,</span>
+<span id="cb56-58"><a href="ghg-forecast.html#cb56-58"></a>        <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span></span>
+<span id="cb56-59"><a href="ghg-forecast.html#cb56-59"></a>      )</span>
+<span id="cb56-60"><a href="ghg-forecast.html#cb56-60"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb56-61"><a href="ghg-forecast.html#cb56-61"></a><span class="st">  </span><span class="kw">left_join</span>(hdd, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;Year&quot;</span> =<span class="st"> &quot;YEAR&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb56-62"><a href="ghg-forecast.html#cb56-62"></a><span class="st">  </span><span class="kw">left_join</span>(cdd, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;Year&quot;</span> =<span class="st"> &quot;YEAR&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb56-63"><a href="ghg-forecast.html#cb56-63"></a><span class="st">  </span><span class="kw">left_join</span>(pop_jobs_stockton_w_projection <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(Year, Population, <span class="st">`</span><span class="dt">Employed Residents</span><span class="st">`</span>, Jobs), <span class="dt">by =</span> <span class="st">&quot;Year&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb56-64"><a href="ghg-forecast.html#cb56-64"></a><span class="st">  </span><span class="kw">left_join</span>(stockton_commute_vmt_tractmode <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(Year, vmt, jobs_car), <span class="dt">by =</span> <span class="st">&quot;Year&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb56-65"><a href="ghg-forecast.html#cb56-65"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb56-66"><a href="ghg-forecast.html#cb56-66"></a>    <span class="dt">vmtperjob =</span> vmt<span class="op">/</span>jobs_car</span>
+<span id="cb56-67"><a href="ghg-forecast.html#cb56-67"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb56-68"><a href="ghg-forecast.html#cb56-68"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>vmt,<span class="op">-</span>jobs_car) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb56-69"><a href="ghg-forecast.html#cb56-69"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb56-70"><a href="ghg-forecast.html#cb56-70"></a>    <span class="dt">vmtperjob =</span></span>
+<span id="cb56-71"><a href="ghg-forecast.html#cb56-71"></a>      <span class="kw">ifelse</span>(</span>
+<span id="cb56-72"><a href="ghg-forecast.html#cb56-72"></a>        Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2018</span>,</span>
+<span id="cb56-73"><a href="ghg-forecast.html#cb56-73"></a>        vmtperjob,</span>
+<span id="cb56-74"><a href="ghg-forecast.html#cb56-74"></a>        <span class="kw">lm</span>(</span>
+<span id="cb56-75"><a href="ghg-forecast.html#cb56-75"></a>          vmtperjob[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</span>
+<span id="cb56-76"><a href="ghg-forecast.html#cb56-76"></a>        )<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
+<span id="cb56-77"><a href="ghg-forecast.html#cb56-77"></a><span class="st">          </span><span class="kw">lm</span>(</span>
+<span id="cb56-78"><a href="ghg-forecast.html#cb56-78"></a>            vmtperjob[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</span>
+<span id="cb56-79"><a href="ghg-forecast.html#cb56-79"></a>          )<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span>Year</span>
+<span id="cb56-80"><a href="ghg-forecast.html#cb56-80"></a>      )</span>
+<span id="cb56-81"><a href="ghg-forecast.html#cb56-81"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb56-82"><a href="ghg-forecast.html#cb56-82"></a><span class="st">  </span><span class="kw">left_join</span>(pge_elec_emissions_factor, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;Year&quot;</span> =<span class="st"> &quot;year&quot;</span>))</span>
+<span id="cb56-83"><a href="ghg-forecast.html#cb56-83"></a></span>
+<span id="cb56-84"><a href="ghg-forecast.html#cb56-84"></a>ghg_forecast_table_prep &lt;-</span>
+<span id="cb56-85"><a href="ghg-forecast.html#cb56-85"></a><span class="st">  </span>ghg_forecast_prep <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb56-86"><a href="ghg-forecast.html#cb56-86"></a><span class="st">  </span><span class="kw">transmute</span>(</span>
+<span id="cb56-87"><a href="ghg-forecast.html#cb56-87"></a>    <span class="dt">Year =</span> Year,</span>
+<span id="cb56-88"><a href="ghg-forecast.html#cb56-88"></a>    <span class="dt">Population =</span> <span class="kw">prettyNum</span>(<span class="kw">round</span>(Population,<span class="op">-</span><span class="dv">3</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
+<span id="cb56-89"><a href="ghg-forecast.html#cb56-89"></a>    <span class="st">`</span><span class="dt">Employed Residents</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(<span class="st">`</span><span class="dt">Employed Residents</span><span class="st">`</span>,<span class="op">-</span><span class="dv">3</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
+<span id="cb56-90"><a href="ghg-forecast.html#cb56-90"></a>    <span class="dt">Jobs =</span> <span class="kw">prettyNum</span>(<span class="kw">round</span>(Jobs,<span class="op">-</span><span class="dv">3</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
+<span id="cb56-91"><a href="ghg-forecast.html#cb56-91"></a>    <span class="st">`</span><span class="dt">One-way Commute VMT per Car-dependent Worker</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(vmtperjob),</span>
+<span id="cb56-92"><a href="ghg-forecast.html#cb56-92"></a>    <span class="st">`</span><span class="dt">PG&amp;E Electricity Emissions Factor</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(factor),</span>
+<span id="cb56-93"><a href="ghg-forecast.html#cb56-93"></a>    <span class="st">`</span><span class="dt">Heating Degree Days</span><span class="st">`</span> =<span class="st"> </span>hdd,</span>
+<span id="cb56-94"><a href="ghg-forecast.html#cb56-94"></a>    <span class="st">`</span><span class="dt">Cooling Degree Days</span><span class="st">`</span> =<span class="st"> </span>cdd,</span>
+<span id="cb56-95"><a href="ghg-forecast.html#cb56-95"></a>    <span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(<span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span>,<span class="dv">1</span>),</span>
+<span id="cb56-96"><a href="ghg-forecast.html#cb56-96"></a>    <span class="st">`</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(<span class="st">`</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span>,<span class="dv">1</span>),</span>
+<span id="cb56-97"><a href="ghg-forecast.html#cb56-97"></a>    <span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(<span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span>,<span class="dv">1</span>),</span>
+<span id="cb56-98"><a href="ghg-forecast.html#cb56-98"></a>    <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(<span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span>,<span class="dv">1</span>)</span>
+<span id="cb56-99"><a href="ghg-forecast.html#cb56-99"></a>  )</span>
+<span id="cb56-100"><a href="ghg-forecast.html#cb56-100"></a></span>
+<span id="cb56-101"><a href="ghg-forecast.html#cb56-101"></a><span class="kw">kable</span>(</span>
+<span id="cb56-102"><a href="ghg-forecast.html#cb56-102"></a>  ghg_forecast_table_prep,</span>
+<span id="cb56-103"><a href="ghg-forecast.html#cb56-103"></a>  <span class="dt">booktabs =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb56-104"><a href="ghg-forecast.html#cb56-104"></a>  <span class="dt">caption =</span> <span class="st">&#39;Input assumptions for GHG forecast to 2040.&#39;</span></span>
+<span id="cb56-105"><a href="ghg-forecast.html#cb56-105"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb56-106"><a href="ghg-forecast.html#cb56-106"></a><span class="st">  </span><span class="kw">kable_styling</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb56-107"><a href="ghg-forecast.html#cb56-107"></a><span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:ghg-forecast-prep">Table 22: </span>Input assumptions for GHG forecast to 2040.
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+Year
+</th>
+<th style="text-align:left;">
+Population
+</th>
+<th style="text-align:left;">
+Employed Residents
+</th>
+<th style="text-align:left;">
+Jobs
+</th>
+<th style="text-align:right;">
+One-way Commute VMT per Car-dependent Worker
+</th>
+<th style="text-align:right;">
+PG&amp;E Electricity Emissions Factor
+</th>
+<th style="text-align:right;">
+Heating Degree Days
+</th>
+<th style="text-align:right;">
+Cooling Degree Days
+</th>
+<th style="text-align:right;">
+Residential Electricity, kBTU/resident/CDD
+</th>
+<th style="text-align:right;">
+Residential Gas, kBTU/resident/HDD
+</th>
+<th style="text-align:right;">
+Commercial Electricity, kBTU/job/CDD
+</th>
+<th style="text-align:right;">
+Commercial Gas, kBTU/job/HDD
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+2013
+</td>
+<td style="text-align:left;">
+298,000
+</td>
+<td style="text-align:left;">
+109,000
+</td>
+<td style="text-align:left;">
+106,000
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+427
+</td>
+<td style="text-align:right;">
+2090
+</td>
+<td style="text-align:right;">
+2029
+</td>
+<td style="text-align:right;">
+4.7
+</td>
+<td style="text-align:right;">
+7.7
+</td>
+<td style="text-align:right;">
+11.5
+</td>
+<td style="text-align:right;">
+5.7
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2014
+</td>
+<td style="text-align:left;">
+302,000
+</td>
+<td style="text-align:left;">
+116,000
+</td>
+<td style="text-align:left;">
+107,000
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+435
+</td>
+<td style="text-align:right;">
+2246
+</td>
+<td style="text-align:right;">
+1811
+</td>
+<td style="text-align:right;">
+5.2
+</td>
+<td style="text-align:right;">
+5.9
+</td>
+<td style="text-align:right;">
+14.1
+</td>
+<td style="text-align:right;">
+4.7
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:left;">
+306,000
+</td>
+<td style="text-align:left;">
+117,000
+</td>
+<td style="text-align:left;">
+114,000
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+405
+</td>
+<td style="text-align:right;">
+2065
+</td>
+<td style="text-align:right;">
+1970
+</td>
+<td style="text-align:right;">
+4.7
+</td>
+<td style="text-align:right;">
+6.7
+</td>
+<td style="text-align:right;">
+12.1
+</td>
+<td style="text-align:right;">
+4.9
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+307,000
+</td>
+<td style="text-align:left;">
+123,000
+</td>
+<td style="text-align:left;">
+116,000
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+294
+</td>
+<td style="text-align:right;">
+1689
+</td>
+<td style="text-align:right;">
+1700
+</td>
+<td style="text-align:right;">
+5.3
+</td>
+<td style="text-align:right;">
+8.0
+</td>
+<td style="text-align:right;">
+13.9
+</td>
+<td style="text-align:right;">
+5.0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:left;">
+310,000
+</td>
+<td style="text-align:left;">
+131,000
+</td>
+<td style="text-align:left;">
+117,000
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+210
+</td>
+<td style="text-align:right;">
+2244
+</td>
+<td style="text-align:right;">
+1807
+</td>
+<td style="text-align:right;">
+5.2
+</td>
+<td style="text-align:right;">
+6.2
+</td>
+<td style="text-align:right;">
+12.6
+</td>
+<td style="text-align:right;">
+4.3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:left;">
+311,000
+</td>
+<td style="text-align:left;">
+129,000
+</td>
+<td style="text-align:left;">
+118,000
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+202
+</td>
+<td style="text-align:right;">
+2304
+</td>
+<td style="text-align:right;">
+2107
+</td>
+<td style="text-align:right;">
+4.1
+</td>
+<td style="text-align:right;">
+6.1
+</td>
+<td style="text-align:right;">
+10.5
+</td>
+<td style="text-align:right;">
+4.4
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+315,000
+</td>
+<td style="text-align:left;">
+138,000
+</td>
+<td style="text-align:left;">
+125,000
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+188
+</td>
+<td style="text-align:right;">
+2082
+</td>
+<td style="text-align:right;">
+1866
+</td>
+<td style="text-align:right;">
+4.6
+</td>
+<td style="text-align:right;">
+6.0
+</td>
+<td style="text-align:right;">
+11.5
+</td>
+<td style="text-align:right;">
+3.9
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2025
+</td>
+<td style="text-align:left;">
+323,000
+</td>
+<td style="text-align:left;">
+154,000
+</td>
+<td style="text-align:left;">
+134,000
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+150
+</td>
+<td style="text-align:right;">
+2410
+</td>
+<td style="text-align:right;">
+2106
+</td>
+<td style="text-align:right;">
+4.2
+</td>
+<td style="text-align:right;">
+5.2
+</td>
+<td style="text-align:right;">
+10.4
+</td>
+<td style="text-align:right;">
+2.8
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2030
+</td>
+<td style="text-align:left;">
+329,000
+</td>
+<td style="text-align:left;">
+169,000
+</td>
+<td style="text-align:left;">
+141,000
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+112
+</td>
+<td style="text-align:right;">
+2087
+</td>
+<td style="text-align:right;">
+2309
+</td>
+<td style="text-align:right;">
+3.9
+</td>
+<td style="text-align:right;">
+4.4
+</td>
+<td style="text-align:right;">
+9.3
+</td>
+<td style="text-align:right;">
+1.7
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2035
+</td>
+<td style="text-align:left;">
+335,000
+</td>
+<td style="text-align:left;">
+183,000
+</td>
+<td style="text-align:left;">
+146,000
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+75
+</td>
+<td style="text-align:right;">
+2260
+</td>
+<td style="text-align:right;">
+2286
+</td>
+<td style="text-align:right;">
+3.5
+</td>
+<td style="text-align:right;">
+3.5
+</td>
+<td style="text-align:right;">
+8.2
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2040
+</td>
+<td style="text-align:left;">
+339,000
+</td>
+<td style="text-align:left;">
+197,000
+</td>
+<td style="text-align:left;">
+151,000
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+2082
+</td>
+<td style="text-align:right;">
+2112
+</td>
+<td style="text-align:right;">
+3.2
+</td>
+<td style="text-align:right;">
+2.7
+</td>
+<td style="text-align:right;">
+7.1
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><span class="math inline">\(~\)</span></p>
+<p>The input assumptions above result in the following GHG forecasts.</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="ghg-forecast.html#cb57-1"></a>ghg_forecast &lt;-</span>
+<span id="cb57-2"><a href="ghg-forecast.html#cb57-2"></a><span class="st">  </span>ghg_forecast_prep <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb57-3"><a href="ghg-forecast.html#cb57-3"></a><span class="st">  </span><span class="kw">transmute</span>(</span>
+<span id="cb57-4"><a href="ghg-forecast.html#cb57-4"></a>    <span class="dt">Year =</span> Year,</span>
+<span id="cb57-5"><a href="ghg-forecast.html#cb57-5"></a>    <span class="dt">transport =</span> vmtperjob <span class="op">*</span><span class="st"> `</span><span class="dt">Employed Residents</span><span class="st">`</span> <span class="op">*</span><span class="dv">2</span><span class="op">*</span><span class="fl">369.39</span><span class="op">*</span><span class="fl">0.000334</span>,</span>
+<span id="cb57-6"><a href="ghg-forecast.html#cb57-6"></a>    <span class="dt">residential =</span> <span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span><span class="op">*</span>Population<span class="op">*</span>cdd<span class="op">*</span><span class="fl">2.9307e-7</span><span class="op">*</span><span class="fl">0.000453592</span> <span class="op">+</span><span class="st"> `</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span><span class="op">*</span>Population<span class="op">*</span>hdd<span class="op">/</span><span class="fl">99.9761</span><span class="op">*</span><span class="fl">0.00531</span>,</span>
+<span id="cb57-7"><a href="ghg-forecast.html#cb57-7"></a>    <span class="dt">commercial =</span> <span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span><span class="op">*</span>Jobs<span class="op">*</span>cdd<span class="op">*</span><span class="fl">2.9307e-7</span><span class="op">*</span><span class="fl">0.000453592</span> <span class="op">+</span><span class="st"> `</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span><span class="op">*</span>Jobs<span class="op">*</span>hdd<span class="op">/</span><span class="fl">99.9761</span><span class="op">*</span><span class="fl">0.00531</span></span>
+<span id="cb57-8"><a href="ghg-forecast.html#cb57-8"></a>  )</span>
+<span id="cb57-9"><a href="ghg-forecast.html#cb57-9"></a></span>
+<span id="cb57-10"><a href="ghg-forecast.html#cb57-10"></a>ghg_forecast_table &lt;-</span>
+<span id="cb57-11"><a href="ghg-forecast.html#cb57-11"></a><span class="st">  </span>ghg_forecast <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb57-12"><a href="ghg-forecast.html#cb57-12"></a><span class="st">  </span><span class="kw">transmute</span>(</span>
+<span id="cb57-13"><a href="ghg-forecast.html#cb57-13"></a>    <span class="dt">Year=</span>Year,</span>
+<span id="cb57-14"><a href="ghg-forecast.html#cb57-14"></a>    <span class="st">`</span><span class="dt">Transportation tCO2</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(transport,<span class="op">-</span><span class="dv">4</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
+<span id="cb57-15"><a href="ghg-forecast.html#cb57-15"></a>    <span class="st">`</span><span class="dt">Residential Building tCO2</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(residential,<span class="op">-</span><span class="dv">3</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
+<span id="cb57-16"><a href="ghg-forecast.html#cb57-16"></a>    <span class="st">`</span><span class="dt">Commercial Building tCO2</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(commercial,<span class="op">-</span><span class="dv">3</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>)</span>
+<span id="cb57-17"><a href="ghg-forecast.html#cb57-17"></a>  )</span>
+<span id="cb57-18"><a href="ghg-forecast.html#cb57-18"></a></span>
+<span id="cb57-19"><a href="ghg-forecast.html#cb57-19"></a><span class="kw">kable</span>(</span>
+<span id="cb57-20"><a href="ghg-forecast.html#cb57-20"></a>  ghg_forecast_table,</span>
+<span id="cb57-21"><a href="ghg-forecast.html#cb57-21"></a>  <span class="dt">booktabs =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb57-22"><a href="ghg-forecast.html#cb57-22"></a>  <span class="dt">caption =</span> <span class="st">&#39;GHG forecast to 2040.&#39;</span></span>
+<span id="cb57-23"><a href="ghg-forecast.html#cb57-23"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb57-24"><a href="ghg-forecast.html#cb57-24"></a><span class="st">  </span><span class="kw">kable_styling</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb57-25"><a href="ghg-forecast.html#cb57-25"></a><span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:ghg-forecast">Table 23: </span>GHG forecast to 2040.
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+Year
+</th>
+<th style="text-align:left;">
+Transportation tCO2
+</th>
+<th style="text-align:left;">
+Residential Building tCO2
+</th>
+<th style="text-align:left;">
+Commercial Building tCO2
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+2013
+</td>
+<td style="text-align:left;">
+560,000
+</td>
+<td style="text-align:left;">
+255,000
+</td>
+<td style="text-align:left;">
+67,000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2014
+</td>
+<td style="text-align:left;">
+630,000
+</td>
+<td style="text-align:left;">
+213,000
+</td>
+<td style="text-align:left;">
+60,000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:left;">
+600,000
+</td>
+<td style="text-align:left;">
+225,000
+</td>
+<td style="text-align:left;">
+61,000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+650,000
+</td>
+<td style="text-align:left;">
+220,000
+</td>
+<td style="text-align:left;">
+52,000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:left;">
+740,000
+</td>
+<td style="text-align:left;">
+229,000
+</td>
+<td style="text-align:left;">
+60,000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:left;">
+720,000
+</td>
+<td style="text-align:left;">
+232,000
+</td>
+<td style="text-align:left;">
+64,000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+800,000
+</td>
+<td style="text-align:left;">
+209,000
+</td>
+<td style="text-align:left;">
+53,000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2025
+</td>
+<td style="text-align:left;">
+960,000
+</td>
+<td style="text-align:left;">
+214,000
+</td>
+<td style="text-align:left;">
+48,000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2030
+</td>
+<td style="text-align:left;">
+1,140,000
+</td>
+<td style="text-align:left;">
+159,000
+</td>
+<td style="text-align:left;">
+26,000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2035
+</td>
+<td style="text-align:left;">
+1,310,000
+</td>
+<td style="text-align:left;">
+142,000
+</td>
+<td style="text-align:left;">
+18,000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2040
+</td>
+<td style="text-align:left;">
+1,500,000
+</td>
+<td style="text-align:left;">
+101,000
+</td>
+<td style="text-align:left;">
+17,000
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><span class="math inline">\(~\)</span></p>
+<p>The general insight is that transportation emissions are expected to increase while building emissions are expected to decrease.</p>
+<p>Many differences in inputs exist between this analysis and ICLEI’s 2016 GHG Inventory, including the following:</p>
+<ul>
+<li>ICLEI’s VMT data came from a source that was only available at the SJC level and was scaled down to Stockton by population, whereas our VMT data is based on the routed distance of LODES origin-destinations. The difference these methods results in is significant (2.5 billion vs. 1.5 billion annual VMTs) and should be investigated in further work. Our Transportation tCO2 number is only for passenger commuters, whereas ICLEI’s number includes many other modes.</li>
+<li>ICLEI’s electricity and gas data was obtained directly from PG&amp;E, while ours was downloaded at the zip code level from their public data portal. Since our zip codes include many parcels outside of the Stockton city boundary, it’s likely our consumption is for a larger population. As for commercial energy, ICLEI’s commercial data was combined with industrial data, while ours is separated, so that could explain why our commercial consumption numbers our lower.</li>
+</ul>
+<p>The assumptions built into these forecasts are necessarily simplistic given the scope of this analysis. In particular, linear trendlines should be refined into nonlinear functions given a better understanding of growth limits for each of the domains. It’s also worth noting that some trends based on the past few years, like the desirable decline in building emissions, may be heavily influenced by active strategic policymaking, the kind which this report is meant to guide for the future. That means that “business as usual” is not necessarily “doing nothing” but “successfully continuing to implement progressive policies” (e.g. PG&amp;E successfully meeting its aggressive decarbonization strategies).</p>
 </div>
 <!-- </div> -->
             </section>
