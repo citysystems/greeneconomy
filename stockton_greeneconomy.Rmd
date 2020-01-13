@@ -4362,7 +4362,9 @@ The 2019 California state legislative cycle resulted in some progressive accesso
 
 In San Mateo County, CA, many public- and private-led initiatives have been working to reduce policy, information, and construction barriers to the development of ADUs. At the County Housing Department level, the [Second Unit Resource Center](https://secondunitcentersmc.org/) provides information to homeowners, including a cost calculator and an idea book. This type of landing page for the public has been replicated in [Napa and Sonoma County](https://napasonomaadu.org/). The Housing Endowment and Regional Trust (HEART) in SMC is in the midst of its [Green and Liviable ADU Resource Program](https://heartofsmcadu.org/), which has commissioned a local architecture firm to produce ADU plans that will be made free of charge to homeowners, and potentially pre-approved by specific jurisdictions.
 
-San Jose, CA is leading the Bay Area in streamlining its local [ADU permitting process](https://www.sanjoseca.gov/business/development-services-permit-center/accessory-dwelling-units-adus) through the organization of ADU Tuesdays which feature express review service, a Universal Checklist, and a program for ADU designers and builders to get their plans pre-approved by the City. 
+San Jose, CA is leading the Bay Area in streamlining its local [ADU permitting process](https://www.sanjoseca.gov/business/development-services-permit-center/accessory-dwelling-units-adus) through the organization of ADU Tuesdays which feature express review service, a Universal Checklist, and a program for ADU designers and builders to get their plans pre-approved by the City.
+
+The benefits of ADUs from a building energy perspective primarily has to do with reduced energy use per person due to a higher building utilization, or smaller building footprint per inhabitant. Other benefits may include the reduction of sprawl development which reduces vehicle miles traveled to work or to other amenities.
 
 ### Strategy: Infill Growth
 
@@ -4578,9 +4580,22 @@ A private company, [OhmConnect](https://www.ohmconnect.com/how-it-works/impact),
 
 ## Local Jobs
 
+### Case Study: Clusters and Anchors in Pittsburgh, PA
+
 ### Strategy: R&D Business Growth
 
 ## Vehicle Miles Traveled
+
+### Case Study: Direct Connect in Pinellas County, FL
+
+The Pinellas Suncoast Transit Authority (PSTA), in Pinellas County, FL, was the first transit agency in the US to sign a service provision agreement with a transportation network company (TNC) to offer joint first/last-mile service subsidized by public dollars. PSTA's "Direct Connect" pilot allows riders to get to and from bus stops in a taxi, wheelchair-accessible vehicle (WAV), or Uber TNC vehicle at a subsidized rate. From August 2017 to March 2018, Uber trips taken via the service (beginning or ending within 800 feet of eight pilot transit stops) were subsidized on average from $7.64 to \$2.64 per ride. The Shared Use Mobility Center conducted a [program evaluation](https://learn.sharedusemobilitycenter.org/wp-content/uploads/SUMC_CaseStudy_Final3_06.21.19-1.pdf) in 2019 and outlined key lessons learned, including:
+
+- The importance of leadersihp within the transit agency, and the strong coordination of key staff members in charge of the project.
+- Heavy investment in public outreach about the program.
+- A common contract for multiple potential TNCs to compete within the program.
+- Negotiating greater data sharing from the TNC and direct investment in other forms of program data, such as user surveys.
+- Identifying clear performance goals to monitor over the project.
+- Refining the financial model and preparing for greater subsidy costs as TNC business models evolve.
 
 ### Strategy: Public Transit
 
@@ -4608,13 +4623,13 @@ Local public transit improvements will be modeled as reductions on local amenity
 Los Angeles County, CA
 - Energy Efficiency Programs
 
-Pinellas Suncoast Transit Authority, FL
+Pinellas County, FL
 - Direct Connect
 
 Pittsburgh, PA
 - Clusters and Anchors
 
-Bay Area, CA
+San Francisco Bay Area, CA
 - Accessory Dwelling Units
 
 
