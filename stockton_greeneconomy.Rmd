@@ -4356,13 +4356,15 @@ As seen in Table \@ref(tab:stockton-pop-jobs), Stockton's population is estimate
 
 ### Case Study: Missing Middle Housing in Minneapolis, MN
 
-### Case Study: ADUs in San Mateo County, CA
+### Case Study: Accessory Dwelling Units in the Bay Area, CA
+
+The 2019 California state legislative cycle resulted in some progressive accessory dwelling unit (ADU) laws that, among other changes, supercede local control to allow ADUs to be built on every single-family parcel.
+
+In San Mateo County, CA, many public- and private-led initiatives have been working to reduce policy, information, and construction barriers to the development of ADUs. At the County Housing Department level, the [Second Unit Resource Center](https://secondunitcentersmc.org/) provides information to homeowners, including a cost calculator and an idea book. This type of landing page for the public has been replicated in [Napa and Sonoma County](https://napasonomaadu.org/). The Housing Endowment and Regional Trust (HEART) in SMC is in the midst of its [Green and Liviable ADU Resource Program](https://heartofsmcadu.org/), which has commissioned a local architecture firm to produce ADU plans that will be made free of charge to homeowners, and potentially pre-approved by specific jurisdictions.
+
+San Jose, CA is leading the Bay Area in streamlining its local [ADU permitting process](https://www.sanjoseca.gov/business/development-services-permit-center/accessory-dwelling-units-adus) through the organization of ADU Tuesdays which feature express review service, a Universal Checklist, and a program for ADU designers and builders to get their plans pre-approved by the City. 
 
 ### Strategy: Infill Growth
-
-Accessory Dwelling Units
-
-Vacant land potential within General Plan
 
 ## Building Energy
 
@@ -4387,7 +4389,6 @@ luskin <-
   mutate(
     npv = 
       map2(energysavings, lifetime, function(x, y){
-        print(paste0(x,y))
         ifelse(
           is.na(x) | is.na(y),
           return(0),
@@ -4607,8 +4608,17 @@ Local public transit improvements will be modeled as reductions on local amenity
 Los Angeles County, CA
 - Energy Efficiency Programs
 
+Pinellas Suncoast Transit Authority, FL
+- Direct Connect
 
-```{r}
+Pittsburgh, PA
+- Clusters and Anchors
+
+Bay Area, CA
+- Accessory Dwelling Units
+
+
+```{r save}
 save.image(file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_greeneconomy.Rdata")
 load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_greeneconomy.Rdata")
 ```
