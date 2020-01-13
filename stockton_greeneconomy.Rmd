@@ -4426,7 +4426,7 @@ luskin_table <-
         paste0("$",prettyNum(round(netcost,-3),big.mark=","))
       ),
     `Lifetime tCO2e Reduction` = prettyNum(round(tco2e,-2),big.mark=","),
-    `$/tco2e` = 
+    `$/tCO2e` = 
       ifelse(
         netcost<0,
         paste0("-$",prettyNum(round(-costpertco2e,-2),big.mark=",")),
