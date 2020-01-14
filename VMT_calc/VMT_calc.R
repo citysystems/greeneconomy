@@ -267,17 +267,6 @@ stockton_boundary_influence_milebuffer <- st_transform(stockton_boundary_influen
 
 locations_of_consideration <- st_sf(data.frame(matrix(data = NA, nrow = 0, ncol = 47), geom = st_sfc()), crs = 4326) # "+proj=utm +zone=10 +datum=NAD83 +units=m +no_defs"
 
-# Creating two vectors that allow for inputs of the proportion of origins to a destination being from Stockton.
-# The first vector is used for destinations within Stockton.
-# The second vector is used for destinations outside of Stockton.
-# A counterDest scalar was created to count the number of previous destinations that have been used from the previous month's analysis.
-
-StocktonDest_proportion_recorded <- data.frame( matrix( ncol = 2, NA ) )
-nonStocktonDest_proportion_recorded <- data.frame( matrix( ncol = 2, NA ) )
-
-colnames(StocktonDest_proportion_recorded) <- c("locations", "StocktonDest_proportion_recorded")
-colnames(nonStocktonDest_proportion_recorded) <- c("locations", "nonStocktonDest_proportion_recorded")
-
 # This is a matrix of the column names for the VMT types being calculated.
 
 dest_col_names <- c("VMTs_recorded_m_1",
@@ -334,10 +323,12 @@ SanJoaquin_Cities_Vector <- unique(safegraphplaces_SJ$city)[c(3,5,6,12,18,23,31,
 
 # This for loop analyses the VMT by origin and destination, per month.
 
-for(counterMonth in 1:12){
-  counterMonth <- 1
+for(counterMonth in 1:3){
+  
   # Loading the m_patterns_new data. This includes "m_origin_matrix_sf", "m_dest_matrix_sf" and "m_patterns_new".
   # This is done for each of the 12 months of the year.
+  
+  print(counterMonth)
   
   patterns_text <- patterns_choice(counterMonth)
   m_patterns <- m_patterns_cleanse(patterns_text)
@@ -368,12 +359,12 @@ for(counterMonth in 1:12){
   m_dest_matrix_sf_temp_latlongNA <- m_dest_matrix_sf_temp[m_dest_matrix_sf_temp$city %in% SanJoaquin_Cities_Vector & m_dest_matrix_sf_temp$state == "ca" & is.na(m_dest_matrix_sf_temp$longitude), "full_address"]
   
   for (missing_latlong_index in m_dest_matrix_sf_temp_latlongNA){
-   
+    
     resdf <- geocodeSL(m_dest_matrix_sf[m_dest_matrix_sf$full_address == missing_latlong_index, "name_address"])
     
     m_dest_matrix_sf[m_dest_matrix_sf$full_address == missing_latlong_index, "longitude"] <- as.numeric(as.character(resdf["lon"]))
     m_dest_matrix_sf[m_dest_matrix_sf$full_address == missing_latlong_index, "latitude"] <- as.numeric(as.character(resdf["lat"]))
-
+    
   }
   
   locations_of_consideration <- rbind(locations_of_consideration, st_sf(st_as_sf(m_dest_matrix_sf[!is.na(m_dest_matrix_sf$longitude), ],
@@ -403,8 +394,6 @@ for(counterMonth in 1:12){
     
   }
   
-  print("done")
-  
   non_sf_SJ_dest_latlong$longitude <- as.numeric(non_sf_SJ_dest_latlong$longitude)
   non_sf_SJ_dest_latlong$latitude <- as.numeric(non_sf_SJ_dest_latlong$latitude)
   
@@ -429,11 +418,20 @@ for(counterMonth in 1:12){
   m_hps <- home_panel_summary(counterMonth)
   pop_bg_stockton <- pop_blockgroup_stockton(m_hps)
   
+  # Creating two vectors that allow for inputs of the proportion of origins to a destination being from Stockton.
+  # The first vector is used for destinations within Stockton.
+  # The second vector is used for destinations outside of Stockton.
+  # A counterDest scalar was created to count the number of previous destinations that have been used from the previous month's analysis.
+  
+  StocktonDest_proportion_recorded <- data.frame( matrix( ncol = 2, NA ) )
+  nonStocktonDest_proportion_recorded <- data.frame( matrix( ncol = 2, NA ) )
+  
+  colnames(StocktonDest_proportion_recorded) <- c("locations", "StocktonDest_proportion_recorded")
+  colnames(nonStocktonDest_proportion_recorded) <- c("locations", "nonStocktonDest_proportion_recorded")
+  
   # This for loop performs the VMT analysis for each of Stockton's block groups.
   
   for(counterVMT in 1:dest_num){
-    
-    print(counterVMT)
     
     # For each destination, I'm creating a list of the origins and a vector with the destination. These data structures have visit and visitor count information.
     
@@ -517,7 +515,9 @@ for(counterMonth in 1:12){
   StocktonDest_proportion_recorded_narm <- StocktonDest_proportion_recorded[!is.na(StocktonDest_proportion_recorded$locations), ]
   loc_of_cons_proportion_recorded <- locations_of_consideration[(start_counter + 1):end_counter, ][(locations_of_consideration[(start_counter + 1):end_counter,]$full_address %in% StocktonDest_proportion_recorded_narm$locations),]
   
-  k_withinStocktonBuffer <- sum( as.numeric(StocktonDest_proportion_recorded_narm[,"StocktonDest_proportion_recorded"]) * (loc_of_cons_proportion_recorded[, (9 + counterMonth)] + loc_of_cons_proportion_recorded[, (21 + counterMonth)])[, 1] / sum((loc_of_cons_proportion_recorded[, (9 + counterMonth)] + loc_of_cons_proportion_recorded[, (21 + counterMonth)])[,1]) )
+  k_withinStocktonBuffer <- sum( as.numeric(StocktonDest_proportion_recorded_narm[,"StocktonDest_proportion_recorded"] ) * (loc_of_cons_proportion_recorded[, (9 + counterMonth)] + loc_of_cons_proportion_recorded[, (21 + counterMonth)])[, 1] / sum((loc_of_cons_proportion_recorded[, (9 + counterMonth)] + loc_of_cons_proportion_recorded[, (21 + counterMonth)])[,1]) )
+  
+  print(k_withinStocktonBuffer)
   
   # Proportion value for outside of the Stockton 1-mile buffer
   
@@ -525,6 +525,13 @@ for(counterMonth in 1:12){
   loc_of_cons_proportion_nonrecorded <- locations_of_consideration[(start_counter + 1):end_counter, ][(locations_of_consideration[(start_counter + 1):end_counter,]$full_address %in% nonStocktonDest_proportion_recorded_narm$locations),]
   
   k_outsideStocktonBuffer <- sum( as.numeric(nonStocktonDest_proportion_recorded_narm[,"nonStocktonDest_proportion_recorded"]) * (loc_of_cons_proportion_nonrecorded[, (9 + counterMonth)] + loc_of_cons_proportion_nonrecorded[, (21 + counterMonth)])[, 1] / sum((loc_of_cons_proportion_nonrecorded[, (9 + counterMonth)] + loc_of_cons_proportion_nonrecorded[, (21 + counterMonth)])[,1]) )
+  
+  print(k_outsideStocktonBuffer)
+  
+  print("---")
+  
+  # save.image(file = "C:/Users/Derek/Desktop/save_debug_checkpoint1.RData")
+  # load("C:/Users/Derek/Desktop/save_debug_checkpoint3.RData")
   
   # Inserting average VMT values into NA slots for both the "within Stockton buffer" and "outside Stockton buffer" "locations of consideration"
   
@@ -572,8 +579,6 @@ for(counterMonth in 1:12){
   
   loc_of_cons_nonrecordVMT <- locations_of_consideration[(start_counter + 1):end_counter, ][!(locations_of_consideration[(start_counter + 1):end_counter, ]$full_address %in% dest_amenities_matrix$name_address) & locations_of_consideration[(start_counter + 1):end_counter, ]$within_StocktonBuffer == TRUE,]$full_address
   
-  count <- 0
-  
   for (location_nonrecordedVMT in loc_of_cons_nonrecordVMT){
     
     loc_of_cons_row <- locations_of_consideration[(start_counter + 1):end_counter, ][locations_of_consideration[(start_counter + 1):end_counter, ]$full_address == location_nonrecordedVMT, ]
@@ -593,8 +598,6 @@ for(counterMonth in 1:12){
     
     VMT_Origin_otherdest_nonrecorded[, (1 + counterMonth)] <- VMT_Origin_otherdest_nonrecorded[, (1 + counterMonth)] + VMTs_nonrecorded * osrmTable_Stockton_nonrecordedVMT$VMT_proportion * as.numeric( pop_bg_stockton[, "origin_population"][[1]] ) / as.numeric( pop_bg_stockton[, "number_devices_residing"][[1]] )
     
-    print(count)
-    
     # } else if(loc_of_cons_row$within_StocktonBuffer == FALSE){
     
     # k_row <- 0 # outsideStockton_VMT_correction_factor * k_outsideStocktonBuffer
@@ -605,21 +608,6 @@ for(counterMonth in 1:12){
     
     # }
     
-    ##########
-    
-    count <- count + 1
-    
-    if( any(osrmTable_Stockton_VMT_v2$full_address == location_nonrecordedVMT) == FALSE ){
-      
-      print(any(osrmTable_Stockton_VMT_v2$full_address == location_nonrecordedVMT))
-      print(location_nonrecordedVMT)
-      print(count)
-      print("---")
-      
-    }
-    
-    ##########
-    
   }
   
   locations_of_consideration[(start_counter + 1):end_counter, ][!(locations_of_consideration[(start_counter + 1):end_counter, ]$full_address %in% dest_amenities_matrix$name_address) & locations_of_consideration[(start_counter + 1):end_counter, ]$within_StocktonBuffer == FALSE, (33 + counterMonth)] <- 0
@@ -628,6 +616,9 @@ for(counterMonth in 1:12){
   # This is done so that the next month's data can be loaded in a clean manner.
   
   rm(m_origin_matrix_sf, m_dest_matrix_sf, m_patterns_new)
+  
+  # save.image(file = "C:/Users/Derek/Desktop/save_debug_checkpoint2.RData")
+  # load("C:/Users/Derek/Desktop/save_debug_checkpoint2.RData")
   
 }
 
