@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3.3 Building Energy | Stockton Green Economy Report</title>
+  <meta name="description" content="3.3 Building Energy | Stockton Green Economy Report" />
+  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3.3 Building Energy | Stockton Green Economy Report" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3.3 Building Energy | Stockton Green Economy Report" />
+  
+  
+  
+
+<meta name="author" content="City Systems" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="building-utilization.html"/>
+<link rel="next" href="employment-growth.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="libs/pagedtable-1.1/js/pagedtable.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="libs/Proj4Leaflet-1.0.1/proj4-compressed.js"></script>
+<script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding-2.0.2/leaflet.js"></script>
+<script src="libs/leaflet-providers-1.1.17/leaflet-providers.js"></script>
+<script src="libs/leaflet-providers-plugin-2.0.2/leaflet-providers-plugin.js"></script>
+<link href="libs/HomeButton-0.0.1/home-button.css" rel="stylesheet" />
+<script src="libs/HomeButton-0.0.1/home-button.js"></script>
+<script src="libs/HomeButton-0.0.1/easy-button-src.min.js"></script>
+<link href="libs/PopupTable-0.0.1/popup.css" rel="stylesheet" />
+
+<script>
+/* ========================================================================
+ * Bootstrap: transition.js v3.3.7
+ * http://getbootstrap.com/javascript/#transitions
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
+  // ============================================================
+
+  function transitionEnd() {
+    var el = document.createElement('bootstrap')
+
+    var transEndEventNames = {
+      WebkitTransition : 'webkitTransitionEnd',
+      MozTransition    : 'transitionend',
+      OTransition      : 'oTransitionEnd otransitionend',
+      transition       : 'transitionend'
+    }
+
+    for (var name in transEndEventNames) {
+      if (el.style[name] !== undefined) {
+        return { end: transEndEventNames[name] }
+      }
+    }
+
+    return false // explicit for ie8 (  ._.)
+  }
+
+  // http://blog.alexmaccaw.com/css-transitions
+  $.fn.emulateTransitionEnd = function (duration) {
+    var called = false
+    var $el = this
+    $(this).one('bsTransitionEnd', function () { called = true })
+    var callback = function () { if (!called) $($el).trigger($.support.transition.end) }
+    setTimeout(callback, duration)
+    return this
+  }
+
+  $(function () {
+    $.support.transition = transitionEnd()
+
+    if (!$.support.transition) return
+
+    $.event.special.bsTransitionEnd = {
+      bindType: $.support.transition.end,
+      delegateType: $.support.transition.end,
+      handle: function (e) {
+        if ($(e.target).is(this)) return e.handleObj.handler.apply(this, arguments)
+      }
+    }
+  })
+
+}(jQuery);
+</script>
+<script>
+/* ========================================================================
+ * Bootstrap: collapse.js v3.3.7
+ * http://getbootstrap.com/javascript/#collapse
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+/* jshint latedef: false */
+
++function ($) {
+  'use strict';
+
+  // COLLAPSE PUBLIC CLASS DEFINITION
+  // ================================
+
+  var Collapse = function (element, options) {
+    this.$element      = $(element)
+    this.options       = $.extend({}, Collapse.DEFAULTS, options)
+    this.$trigger      = $('[data-toggle="collapse"][href="#' + element.id + '"],' +
+                           '[data-toggle="collapse"][data-target="#' + element.id + '"]')
+    this.transitioning = null
+
+    if (this.options.parent) {
+      this.$parent = this.getParent()
+    } else {
+      this.addAriaAndCollapsedClass(this.$element, this.$trigger)
+    }
+
+    if (this.options.toggle) this.toggle()
+  }
+
+  Collapse.VERSION  = '3.3.7'
+
+  Collapse.TRANSITION_DURATION = 350
+
+  Collapse.DEFAULTS = {
+    toggle: true
+  }
+
+  Collapse.prototype.dimension = function () {
+    var hasWidth = this.$element.hasClass('width')
+    return hasWidth ? 'width' : 'height'
+  }
+
+  Collapse.prototype.show = function () {
+    if (this.transitioning || this.$element.hasClass('in')) return
+
+    var activesData
+    var actives = this.$parent && this.$parent.children('.panel').children('.in, .collapsing')
+
+    if (actives && actives.length) {
+      activesData = actives.data('bs.collapse')
+      if (activesData && activesData.transitioning) return
+    }
+
+    var startEvent = $.Event('show.bs.collapse')
+    this.$element.trigger(startEvent)
+    if (startEvent.isDefaultPrevented()) return
+
+    if (actives && actives.length) {
+      Plugin.call(actives, 'hide')
+      activesData || actives.data('bs.collapse', null)
+    }
+
+    var dimension = this.dimension()
+
+    this.$element
+      .removeClass('collapse')
+      .addClass('collapsing')[dimension](0)
+      .attr('aria-expanded', true)
+
+    this.$trigger
+      .removeClass('collapsed')
+      .attr('aria-expanded', true)
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.$element
+        .removeClass('collapsing')
+        .addClass('collapse in')[dimension]('')
+      this.transitioning = 0
+      this.$element
+        .trigger('shown.bs.collapse')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    var scrollSize = $.camelCase(['scroll', dimension].join('-'))
+
+    this.$element
+      .one('bsTransitionEnd', $.proxy(complete, this))
+      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)[dimension](this.$element[0][scrollSize])
+  }
+
+  Collapse.prototype.hide = function () {
+    if (this.transitioning || !this.$element.hasClass('in')) return
+
+    var startEvent = $.Event('hide.bs.collapse')
+    this.$element.trigger(startEvent)
+    if (startEvent.isDefaultPrevented()) return
+
+    var dimension = this.dimension()
+
+    this.$element[dimension](this.$element[dimension]())[0].offsetHeight
+
+    this.$element
+      .addClass('collapsing')
+      .removeClass('collapse in')
+      .attr('aria-expanded', false)
+
+    this.$trigger
+      .addClass('collapsed')
+      .attr('aria-expanded', false)
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.transitioning = 0
+      this.$element
+        .removeClass('collapsing')
+        .addClass('collapse')
+        .trigger('hidden.bs.collapse')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    this.$element
+      [dimension](0)
+      .one('bsTransitionEnd', $.proxy(complete, this))
+      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)
+  }
+
+  Collapse.prototype.toggle = function () {
+    this[this.$element.hasClass('in') ? 'hide' : 'show']()
+  }
+
+  Collapse.prototype.getParent = function () {
+    return $(this.options.parent)
+      .find('[data-toggle="collapse"][data-parent="' + this.options.parent + '"]')
+      .each($.proxy(function (i, element) {
+        var $element = $(element)
+        this.addAriaAndCollapsedClass(getTargetFromTrigger($element), $element)
+      }, this))
+      .end()
+  }
+
+  Collapse.prototype.addAriaAndCollapsedClass = function ($element, $trigger) {
+    var isOpen = $element.hasClass('in')
+
+    $element.attr('aria-expanded', isOpen)
+    $trigger
+      .toggleClass('collapsed', !isOpen)
+      .attr('aria-expanded', isOpen)
+  }
+
+  function getTargetFromTrigger($trigger) {
+    var href
+    var target = $trigger.attr('data-target')
+      || (href = $trigger.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '') // strip for ie7
+
+    return $(target)
+  }
+
+
+  // COLLAPSE PLUGIN DEFINITION
+  // ==========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.collapse')
+      var options = $.extend({}, Collapse.DEFAULTS, $this.data(), typeof option == 'object' && option)
+
+      if (!data && options.toggle && /show|hide/.test(option)) options.toggle = false
+      if (!data) $this.data('bs.collapse', (data = new Collapse(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.collapse
+
+  $.fn.collapse             = Plugin
+  $.fn.collapse.Constructor = Collapse
+
+
+  // COLLAPSE NO CONFLICT
+  // ====================
+
+  $.fn.collapse.noConflict = function () {
+    $.fn.collapse = old
+    return this
+  }
+
+
+  // COLLAPSE DATA-API
+  // =================
+
+  $(document).on('click.bs.collapse.data-api', '[data-toggle="collapse"]', function (e) {
+    var $this   = $(this)
+
+    if (!$this.attr('data-target')) e.preventDefault()
+
+    var $target = getTargetFromTrigger($this)
+    var data    = $target.data('bs.collapse')
+    var option  = data ? 'toggle' : $this.data()
+
+    Plugin.call($target, option)
+  })
+
+}(jQuery);
+</script>
+<script>
+window.initializeCodeFolding = function(show) {
+
+  // handlers for show-all and hide all
+  $("#rmd-show-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('show');
+    });
+  });
+  $("#rmd-hide-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('hide');
+    });
+  });
+
+  // index for unique code element ids
+  var currentIndex = 1;
+
+  // select all R code blocks
+  var rCodeBlocks = $('pre.sourceCode, pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.js');
+  rCodeBlocks.each(function() {
+
+    // create a collapsable div to wrap the code in
+    var div = $('<div class="collapse r-code-collapse"></div>');
+    if (show)
+      div.addClass('in');
+    var id = 'rcode-643E0F36' + currentIndex++;
+    div.attr('id', id);
+    $(this).before(div);
+    $(this).detach().appendTo(div);
+
+    // add a show code button right above
+    var showCodeText = $('<span>' + (show ? 'Hide' : 'Code') + '</span>');
+    var showCodeButton = $('<button type="button" class="btn btn-default btn-xs code-folding-btn pull-right"></button>');
+    showCodeButton.append(showCodeText);
+    showCodeButton
+        .attr('data-toggle', 'collapse')
+        .attr('data-target', '#' + id)
+        .attr('aria-expanded', show)
+        .attr('aria-controls', id);
+
+    var buttonRow = $('<div class="row"></div>');
+    var buttonCol = $('<div class="col-md-12"></div>');
+
+    buttonCol.append(showCodeButton);
+    buttonRow.append(buttonCol);
+
+    div.before(buttonRow);
+
+    // update state of button on show/hide
+    div.on('hidden.bs.collapse', function () {
+      showCodeText.text('Code');
+    });
+    div.on('show.bs.collapse', function () {
+      showCodeText.text('Hide');
+    });
+  });
+
+}
+</script>
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+.row { display: flex; }
+.collapse { display: none; }
+.in { display:block }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "hide");
+});
+</script>
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="approach.html"><a href="approach.html"><i class="fa fa-check"></i><b>1.1</b> Approach</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="baseline-assessment.html"><a href="baseline-assessment.html"><i class="fa fa-check"></i><b>2</b> Baseline Assessment</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="population-and-jobs.html"><a href="population-and-jobs.html"><i class="fa fa-check"></i><b>2.1</b> Population and Jobs</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="population-and-jobs.html"><a href="population-and-jobs.html#county-level-analysis"><i class="fa fa-check"></i><b>2.1.1</b> County-level Analysis</a></li>
+<li class="chapter" data-level="2.1.2" data-path="population-and-jobs.html"><a href="population-and-jobs.html#city-level-analysis"><i class="fa fa-check"></i><b>2.1.2</b> City-level Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="green-jobs.html"><a href="green-jobs.html"><i class="fa fa-check"></i><b>2.2</b> Green Jobs</a></li>
+<li class="chapter" data-level="2.3" data-path="ghg-inventory.html"><a href="ghg-inventory.html"><i class="fa fa-check"></i><b>2.3</b> 2005-2016 GHG Inventory</a></li>
+<li class="chapter" data-level="2.4" data-path="origin-destination-commute-analysis.html"><a href="origin-destination-commute-analysis.html"><i class="fa fa-check"></i><b>2.4</b> Origin-Destination Commute Analysis</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="origin-destination-commute-analysis.html"><a href="origin-destination-commute-analysis.html#county-level-analysis-1"><i class="fa fa-check"></i><b>2.4.1</b> County-level Analysis</a></li>
+<li class="chapter" data-level="2.4.2" data-path="origin-destination-commute-analysis.html"><a href="origin-destination-commute-analysis.html#city-level-analysis-1"><i class="fa fa-check"></i><b>2.4.2</b> City-level Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="vehicle-miles-traveled.html"><a href="vehicle-miles-traveled.html"><i class="fa fa-check"></i><b>2.5</b> Vehicle Miles Traveled</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="vehicle-miles-traveled.html"><a href="vehicle-miles-traveled.html#county-level-analysis-2"><i class="fa fa-check"></i><b>2.5.1</b> County-level Analysis</a></li>
+<li class="chapter" data-level="2.5.2" data-path="vehicle-miles-traveled.html"><a href="vehicle-miles-traveled.html#city-level-analysis-2"><i class="fa fa-check"></i><b>2.5.2</b> City-level Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="energy.html"><a href="energy.html"><i class="fa fa-check"></i><b>2.6</b> Energy</a></li>
+<li class="chapter" data-level="2.7" data-path="buildings.html"><a href="buildings.html"><i class="fa fa-check"></i><b>2.7</b> Buildings</a></li>
+<li class="chapter" data-level="2.8" data-path="ghg-forecast.html"><a href="ghg-forecast.html"><i class="fa fa-check"></i><b>2.8</b> GHG Forecast</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="analysis-of-green-economy-strategies.html"><a href="analysis-of-green-economy-strategies.html"><i class="fa fa-check"></i><b>3</b> Analysis of Green Economy Strategies</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="methodology.html"><a href="methodology.html"><i class="fa fa-check"></i><b>3.1</b> Methodology</a></li>
+<li class="chapter" data-level="3.2" data-path="building-utilization.html"><a href="building-utilization.html"><i class="fa fa-check"></i><b>3.2</b> Building Utilization</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="building-utilization.html"><a href="building-utilization.html#strategy-infill-growth"><i class="fa fa-check"></i><b>3.2.1</b> Strategy: Infill Growth</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="building-energy.html"><a href="building-energy.html"><i class="fa fa-check"></i><b>3.3</b> Building Energy</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="building-energy.html"><a href="building-energy.html#strategy-solar-installations"><i class="fa fa-check"></i><b>3.3.1</b> Strategy: Solar Installations</a></li>
+<li class="chapter" data-level="3.3.2" data-path="building-energy.html"><a href="building-energy.html#strategy-energy-storage"><i class="fa fa-check"></i><b>3.3.2</b> Strategy: Energy Storage</a></li>
+<li class="chapter" data-level="3.3.3" data-path="building-energy.html"><a href="building-energy.html#strategy-electrification"><i class="fa fa-check"></i><b>3.3.3</b> Strategy: Electrification</a></li>
+<li class="chapter" data-level="3.3.4" data-path="building-energy.html"><a href="building-energy.html#strategy-demand-response"><i class="fa fa-check"></i><b>3.3.4</b> Strategy: Demand Response</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="employment-growth.html"><a href="employment-growth.html"><i class="fa fa-check"></i><b>3.4</b> Employment Growth</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="employment-growth.html"><a href="employment-growth.html#strategy-job-training"><i class="fa fa-check"></i><b>3.4.1</b> Strategy: Job Training</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="local-jobs.html"><a href="local-jobs.html"><i class="fa fa-check"></i><b>3.5</b> Local Jobs</a>
+<ul>
+<li class="chapter" data-level="3.5.1" data-path="local-jobs.html"><a href="local-jobs.html#strategy-rd-business-growth"><i class="fa fa-check"></i><b>3.5.1</b> Strategy: R&amp;D Business Growth</a></li>
+</ul></li>
+<li class="chapter" data-level="3.6" data-path="vehicle-miles-traveled-1.html"><a href="vehicle-miles-traveled-1.html"><i class="fa fa-check"></i><b>3.6</b> Vehicle Miles Traveled</a>
+<ul>
+<li class="chapter" data-level="3.6.1" data-path="vehicle-miles-traveled-1.html"><a href="vehicle-miles-traveled-1.html#strategy-public-transit"><i class="fa fa-check"></i><b>3.6.1</b> Strategy: Public Transit</a></li>
+<li class="chapter" data-level="3.6.2" data-path="vehicle-miles-traveled-1.html"><a href="vehicle-miles-traveled-1.html#strategy-employer-based-transportation-management"><i class="fa fa-check"></i><b>3.6.2</b> Strategy: Employer-based Transportation Management</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="vehicle-emissions.html"><a href="vehicle-emissions.html"><i class="fa fa-check"></i><b>3.7</b> Vehicle Emissions</a>
+<ul>
+<li class="chapter" data-level="3.7.1" data-path="vehicle-emissions.html"><a href="vehicle-emissions.html#strategy-electric-vehicle-program"><i class="fa fa-check"></i><b>3.7.1</b> Strategy: Electric Vehicle Program</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>4</b> Conclusion</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Stockton Green Economy Report</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="building-energy" class="section level2" number="3.3">
+<h2 number="3.3"><span class="header-section-number">3.3</span> Building Energy</h2>
+<div id="strategy-solar-installations" class="section level3" number="3.3.1">
+<h3 number="3.3.1"><span class="header-section-number">3.3.1</span> Strategy: Solar Installations</h3>
+<p>According to <a href="https://www.drawdown.org/solutions/electricity-generation/rooftop-solar">Project Drawdown</a>, Rooftop Solar is the 10th most impactful carbon reduction strategy globally.</p>
+<p>PG&amp;E has minimum energy bill requirement, so a 90% solar offset is ideal.</p>
+</div>
+<div id="strategy-energy-storage" class="section level3" number="3.3.2">
+<h3 number="3.3.2"><span class="header-section-number">3.3.2</span> Strategy: Energy Storage</h3>
+<p>From an emissions standpoint, energy storage solutions primarily provide benefit through demand response capabilities, as is discussed below. Energy storage also has the co-benefit of providing resilience during power shut-off situations.</p>
+</div>
+<div id="strategy-electrification" class="section level3" number="3.3.3">
+<h3 number="3.3.3"><span class="header-section-number">3.3.3</span> Strategy: Electrification</h3>
+<p>Building electrification refers generally to the conversion of building systems and appliances that are powered directly by fossil fuels into alternative systems and appliances that are powered by electricity, which is becoming increasingly low-carbon. The primary opportunities for electrification are in suburban areas with old homes that have water and space heating powered by natural gas. Household heating fuel type in Stockton from 2018 ACS 1-Yr data is shown below.</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="building-energy.html#cb58-1"></a><span class="co"># acs_vars &lt;-</span></span>
+<span id="cb58-2"><a href="building-energy.html#cb58-2"></a><span class="co">#   listCensusMetadata(</span></span>
+<span id="cb58-3"><a href="building-energy.html#cb58-3"></a><span class="co">#     name = &quot;2018/acs/acs1&quot;,</span></span>
+<span id="cb58-4"><a href="building-energy.html#cb58-4"></a><span class="co">#     type = &quot;variables&quot;</span></span>
+<span id="cb58-5"><a href="building-energy.html#cb58-5"></a><span class="co">#   )</span></span>
+<span id="cb58-6"><a href="building-energy.html#cb58-6"></a><span class="co"># </span></span>
+<span id="cb58-7"><a href="building-energy.html#cb58-7"></a><span class="co"># save(acs_vars, file=&quot;C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_2018.Rdata&quot;)</span></span>
+<span id="cb58-8"><a href="building-energy.html#cb58-8"></a></span>
+<span id="cb58-9"><a href="building-energy.html#cb58-9"></a><span class="kw">load</span>(<span class="st">&quot;C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_2018.Rdata&quot;</span>)</span>
+<span id="cb58-10"><a href="building-energy.html#cb58-10"></a></span>
+<span id="cb58-11"><a href="building-energy.html#cb58-11"></a>heating_fuel &lt;-</span>
+<span id="cb58-12"><a href="building-energy.html#cb58-12"></a><span class="st">  </span><span class="kw">getCensus</span>(</span>
+<span id="cb58-13"><a href="building-energy.html#cb58-13"></a>    <span class="dt">name =</span> <span class="st">&quot;acs/acs1&quot;</span>,</span>
+<span id="cb58-14"><a href="building-energy.html#cb58-14"></a>    <span class="dt">vintage =</span> <span class="dv">2018</span>,</span>
+<span id="cb58-15"><a href="building-energy.html#cb58-15"></a>    <span class="dt">vars =</span> <span class="st">&quot;group(B25040)&quot;</span>,</span>
+<span id="cb58-16"><a href="building-energy.html#cb58-16"></a>    <span class="dt">region =</span> <span class="st">&quot;place:75000&quot;</span>,</span>
+<span id="cb58-17"><a href="building-energy.html#cb58-17"></a>    <span class="dt">regionin =</span> <span class="st">&quot;state:06&quot;</span></span>
+<span id="cb58-18"><a href="building-energy.html#cb58-18"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb58-19"><a href="building-energy.html#cb58-19"></a><span class="st">  </span><span class="kw">select_if</span>(<span class="op">!</span><span class="kw">names</span>(.) <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;GEO_ID&quot;</span>,<span class="st">&quot;state&quot;</span>,<span class="st">&quot;place&quot;</span>,<span class="st">&quot;NAME&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb58-20"><a href="building-energy.html#cb58-20"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span><span class="kw">c</span>(<span class="kw">contains</span>(<span class="st">&quot;EA&quot;</span>),<span class="kw">contains</span>(<span class="st">&quot;MA&quot;</span>),<span class="kw">contains</span>(<span class="st">&quot;M&quot;</span>))) <span class="op">%&gt;%</span></span>
+<span id="cb58-21"><a href="building-energy.html#cb58-21"></a><span class="st">  </span><span class="kw">gather</span>(</span>
+<span id="cb58-22"><a href="building-energy.html#cb58-22"></a>    <span class="dt">key =</span> <span class="st">&quot;variable&quot;</span>,</span>
+<span id="cb58-23"><a href="building-energy.html#cb58-23"></a>    <span class="dt">value =</span> <span class="st">&quot;estimate&quot;</span></span>
+<span id="cb58-24"><a href="building-energy.html#cb58-24"></a>  ) <span class="op">%&gt;%</span></span>
+<span id="cb58-25"><a href="building-energy.html#cb58-25"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb58-26"><a href="building-energy.html#cb58-26"></a>    <span class="dt">label =</span> acs_vars<span class="op">$</span>label[<span class="kw">match</span>(variable,acs_vars<span class="op">$</span>name)]</span>
+<span id="cb58-27"><a href="building-energy.html#cb58-27"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb58-28"><a href="building-energy.html#cb58-28"></a><span class="st">  </span><span class="kw">transmute</span>(</span>
+<span id="cb58-29"><a href="building-energy.html#cb58-29"></a>    <span class="st">`</span><span class="dt">Heating Fuel Type</span><span class="st">`</span> =<span class="st"> </span></span>
+<span id="cb58-30"><a href="building-energy.html#cb58-30"></a><span class="st">      </span><span class="kw">substr</span>(</span>
+<span id="cb58-31"><a href="building-energy.html#cb58-31"></a>        label,</span>
+<span id="cb58-32"><a href="building-energy.html#cb58-32"></a>        <span class="kw">lapply</span>(</span>
+<span id="cb58-33"><a href="building-energy.html#cb58-33"></a>          label, <span class="cf">function</span>(x){</span>
+<span id="cb58-34"><a href="building-energy.html#cb58-34"></a>            <span class="kw">max</span>(<span class="kw">unlist</span>(<span class="kw">gregexpr</span>(<span class="st">&#39;!!&#39;</span>,x)))<span class="op">+</span><span class="dv">2</span></span>
+<span id="cb58-35"><a href="building-energy.html#cb58-35"></a>          }</span>
+<span id="cb58-36"><a href="building-energy.html#cb58-36"></a>        ),</span>
+<span id="cb58-37"><a href="building-energy.html#cb58-37"></a>        <span class="kw">nchar</span>(label)</span>
+<span id="cb58-38"><a href="building-energy.html#cb58-38"></a>      ),</span>
+<span id="cb58-39"><a href="building-energy.html#cb58-39"></a>    <span class="st">`</span><span class="dt">Number of Households</span><span class="st">`</span> =<span class="st"> </span>estimate,</span>
+<span id="cb58-40"><a href="building-energy.html#cb58-40"></a>    <span class="st">`</span><span class="dt">Percent of Households</span><span class="st">`</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(estimate<span class="op">/</span><span class="dv">95557</span><span class="op">*</span><span class="dv">100</span>,<span class="dv">2</span>),<span class="st">&quot;%&quot;</span>)</span>
+<span id="cb58-41"><a href="building-energy.html#cb58-41"></a>  )</span>
+<span id="cb58-42"><a href="building-energy.html#cb58-42"></a></span>
+<span id="cb58-43"><a href="building-energy.html#cb58-43"></a><span class="kw">kable</span>(</span>
+<span id="cb58-44"><a href="building-energy.html#cb58-44"></a>  heating_fuel,</span>
+<span id="cb58-45"><a href="building-energy.html#cb58-45"></a>  <span class="dt">booktabs =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb58-46"><a href="building-energy.html#cb58-46"></a>  <span class="dt">caption =</span> <span class="st">&#39;Heating fuel type for Stockton households. Data from ACS 1-yr, 2018.&#39;</span></span>
+<span id="cb58-47"><a href="building-energy.html#cb58-47"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb58-48"><a href="building-energy.html#cb58-48"></a><span class="st">  </span><span class="kw">kable_styling</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb58-49"><a href="building-energy.html#cb58-49"></a><span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:fuel">Table 24: </span>Heating fuel type for Stockton households. Data from ACS 1-yr, 2018.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Heating Fuel Type
+</th>
+<th style="text-align:right;">
+Number of Households
+</th>
+<th style="text-align:left;">
+Percent of Households
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Total
+</td>
+<td style="text-align:right;">
+95557
+</td>
+<td style="text-align:left;">
+100%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Utility gas
+</td>
+<td style="text-align:right;">
+62508
+</td>
+<td style="text-align:left;">
+65.41%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Bottled, tank, or LP gas
+</td>
+<td style="text-align:right;">
+535
+</td>
+<td style="text-align:left;">
+0.56%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Electricity
+</td>
+<td style="text-align:right;">
+30237
+</td>
+<td style="text-align:left;">
+31.64%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Fuel oil, kerosene, etc.
+</td>
+<td style="text-align:right;">
+125
+</td>
+<td style="text-align:left;">
+0.13%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal or coke
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+0%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Wood
+</td>
+<td style="text-align:right;">
+222
+</td>
+<td style="text-align:left;">
+0.23%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Solar energy
+</td>
+<td style="text-align:right;">
+766
+</td>
+<td style="text-align:left;">
+0.8%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Other fuel
+</td>
+<td style="text-align:right;">
+65
+</td>
+<td style="text-align:left;">
+0.07%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+No fuel used
+</td>
+<td style="text-align:right;">
+1099
+</td>
+<td style="text-align:left;">
+1.15%
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The 65% of households with “Utility gas” represent the opportunity to replace space heating systems with electric alternatives like heat pumps, moving those households over to the “Electricity” category currently at 32%. The other households using other fuels like kerosene or biomass represent a very small number, but targeting these households may be particularly important because of the extra cost-effectiveness of electrification, and the likely co-benefits of improving health outcomes for a relatively more low-income and rural population. The California Public Utilities Commission is in the process of piloting projects to “<a href="http://docs.cpuc.ca.gov/PublishedDocs/Efile/G000/M199/K979/199979978.PDF">Identify Disadvantaged Communities in the San Joaquin Valley and Analyze Economically Feasible Options to Increase Access to Affordable Energy in those Disadvantaged Communities</a>”. Unfortunately, at least <a href="https://www.socalgas.com/1443741594585/Exhibit-5---SoCalGas-Pilot-Project-Proposal-for-California-City--Revised-.pdf">one pilot in California City</a> is moving forward with natural gas infrastructure, seemingly because of bureaucratic issues related to the electricity alternative. We would recommend that the City of Stockton stay actively involved in this CPUC project by providing comments on the upcoming phases and advocating for further pilots in Stockton and its peripheral rural areas to involve electrification.</p>
+<p>The Rocky Mountain Institute produced a report in 2018 titled <a href="https://rmi.org/insight/the-economics-of-electrifying-buildings/">“The Economics of Electrifying Buildings”</a>. This report includes Oakland as the most geographically proximate case study with estimates of average annual tCO2e reduction and net $ savings for every household that converts under different initial conditions, which will be modeled for Stockton. Their overall recommendations include:</p>
+<ul>
+<li><strong>Prioritize rapid electrification of buildings currently using propane and heating oil</strong>. This is more relevant in East Coast case studies, but the possible benefits to Stockton were described above.</li>
+<li><strong>Stop supporting the expansion of the natural gas distribution system, including for new homes</strong>*. Our model will consider the impacts of policies to ban natural gas in new buildings. It will be important to learn from the experience of the City of Berkeley which voted to ban natural gas in new buildings in 2019 but is currently <a href="https://www.npr.org/2019/11/21/781874235/california-restaurant-industry-group-sues-berkeley-over-natural-gas-ban">facing a lawsuit</a> from the California Restaurant Association.</li>
+<li><strong>Bundle demand flexibility programs, new rate designs, and energy efficiency with electrification initiatives</strong>. Stockton should particularly focus on incentives for both creating the local skilled workforce of HVAC contractors, as well as rebates for homeowners. RMI notes: “Heat pump water heaters make up less than 1% of water heater sales today, and their unsubsidized purchase prices are two or more times those of natural gas water heaters. Given the current immaturity of the market for these products, and the potential for significant economies of scale with increasing market share, their costs are likely to decline in the future. The National Renewable Energy Laboratory’s (NREL’s) Electrification Futures Study projects cost declines of 20-38% for air-source heat pumps and 42-48% for heat pump water heaters by 2050. Likewise, in regions where contractors are currently unfamiliar with heat pump products, increasing scale and familiarity may reduce installation costs in the future.” Electrification of specific high-consumption appliances like water and space heaters also may be combined with “smart appliance” capabilities that enable demand response, discussed next.</li>
+</ul>
+<p>The following are case studies of electrification incentive programs from other cities. It is notable that none were found that specifically focus on workforce training, which is an opportunity for Stockton to differentiate itself.</p>
+<ul>
+<li><a href="https://www.smud.org/en">Sacramento Municipal Utility District</a> has an All-Electric Smart Home Program, part of the SMUD Smart Home Program, in which participating homeowners receive the financial incentives for single and multi-family homes shown in the table below. The minimum requirements include: all electric appliances and mechanical systems; no gas line in the home; and no gas service at the property. The public-private partnership has reached more than 1,000 homes and is expected to reach 2,000 by the end of the year.</li>
+</ul>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="building-energy.html#cb59-1"></a>smud &lt;-</span>
+<span id="cb59-2"><a href="building-energy.html#cb59-2"></a><span class="st">  </span><span class="kw">data.frame</span>(</span>
+<span id="cb59-3"><a href="building-energy.html#cb59-3"></a>    <span class="dt">Type =</span> <span class="kw">c</span>(<span class="st">&quot;Single-family unit&quot;</span>,<span class="st">&quot;Multi-family unit&quot;</span>),</span>
+<span id="cb59-4"><a href="building-energy.html#cb59-4"></a>    <span class="st">`</span><span class="dt">Standard Incentive</span><span class="st">`</span> =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;$4,000&quot;</span>,<span class="st">&quot;$1,250&quot;</span>),</span>
+<span id="cb59-5"><a href="building-energy.html#cb59-5"></a>    <span class="st">`</span><span class="dt">Induction cooking appliance bonus</span><span class="st">`</span> =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;$1,000&quot;</span>,<span class="st">&quot;$500&quot;</span>),</span>
+<span id="cb59-6"><a href="building-energy.html#cb59-6"></a>    <span class="st">`</span><span class="dt">Total possible incentives</span><span class="st">`</span> =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;$5,000&quot;</span>,<span class="st">&quot;$1,750&quot;</span>)</span>
+<span id="cb59-7"><a href="building-energy.html#cb59-7"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb59-8"><a href="building-energy.html#cb59-8"></a><span class="st">  </span><span class="kw">rename</span>(</span>
+<span id="cb59-9"><a href="building-energy.html#cb59-9"></a>    <span class="st">`</span><span class="dt">Standard incentive</span><span class="st">`</span> =<span class="st"> </span>Standard.Incentive,</span>
+<span id="cb59-10"><a href="building-energy.html#cb59-10"></a>    <span class="st">`</span><span class="dt">Induction cooking appliance bonus</span><span class="st">`</span> =<span class="st"> </span>Induction.cooking.appliance.bonus,</span>
+<span id="cb59-11"><a href="building-energy.html#cb59-11"></a>    <span class="st">`</span><span class="dt">Total possible incentives</span><span class="st">`</span> =<span class="st"> </span>Total.possible.incentives</span>
+<span id="cb59-12"><a href="building-energy.html#cb59-12"></a>  )</span>
+<span id="cb59-13"><a href="building-energy.html#cb59-13"></a></span>
+<span id="cb59-14"><a href="building-energy.html#cb59-14"></a><span class="kw">kable</span>(</span>
+<span id="cb59-15"><a href="building-energy.html#cb59-15"></a>  smud,</span>
+<span id="cb59-16"><a href="building-energy.html#cb59-16"></a>  <span class="dt">booktabs =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb59-17"><a href="building-energy.html#cb59-17"></a>  <span class="dt">caption =</span> <span class="st">&#39;Financial incentives for single-family and multi-family homes in the SMUD All-Electric Smart Home Program.&#39;</span></span>
+<span id="cb59-18"><a href="building-energy.html#cb59-18"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb59-19"><a href="building-energy.html#cb59-19"></a><span class="st">  </span><span class="kw">kable_styling</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb59-20"><a href="building-energy.html#cb59-20"></a><span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:smud">Table 25: </span>Financial incentives for single-family and multi-family homes in the SMUD All-Electric Smart Home Program.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Type
+</th>
+<th style="text-align:left;">
+Standard incentive
+</th>
+<th style="text-align:left;">
+Induction cooking appliance bonus
+</th>
+<th style="text-align:left;">
+Total possible incentives
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Single-family unit
+</td>
+<td style="text-align:left;">
+$4,000
+</td>
+<td style="text-align:left;">
+$1,000
+</td>
+<td style="text-align:left;">
+$5,000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Multi-family unit
+</td>
+<td style="text-align:left;">
+$1,250
+</td>
+<td style="text-align:left;">
+$500
+</td>
+<td style="text-align:left;">
+$1,750
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><a href="https://www.masscec.com/installer-resources-air-source-heat-pumps">MassCEC</a> provides incentives for residential installation of whole-home air-source heat pumps. Pilot funding for the project is still being allocated so the number of affected homes is not yet recorded. Incentives are based on income category: For &gt;120% of state median income, $2,500; for 80-120%, $3,750; for &lt;80% or affordable housing, $5,000.</li>
+<li><a href="https://cityofpaloalto.org/gov/depts/utl/residents/save_energy_n_water/rebates/heat_pump_water_heater/pilot_program_details.asp">City of Palo Alto Utilities</a> offers rebates with the following eligibility requirements: To participate in the program, you must be a CPAU customer replacing a gas or electric water heater or installing a HPHW in a new or remodeled home; The HPHW must abide by the technical specifications listed by CPAU or must be on the list of Energy Star certified HPHWs.</li>
+</ul>
+<p>To-do:</p>
+<ul>
+<li>Track natural electrification over time</li>
+<li>Model building electrification carbon reduction, cost savings, job creation</li>
+</ul>
+</div>
+<div id="strategy-demand-response" class="section level3" number="3.3.4">
+<h3 number="3.3.4"><span class="header-section-number">3.3.4</span> Strategy: Demand Response</h3>
+<p>DR load reductions are of short duration and are made either the day before or the day of a DR program event. In contrast to energy efficiency and traditional time-of-use measures, DR represents the “need of the hour”- the critical period when businesses can mitigate adverse pricing or power system conditions. For instance, DR is most likely to be requested for a few hours between 12 P.M. and 6 P.M., on a hot summer afternoon, when electric demand is generally highest. The figure below illustrates the performance for an example facility participating in a DR event during the period between 2 P.M. and 6 P.M.</p>
+<p>Company-led initiatives: PG&amp;E documented pilots with <a href="https://www.pge.com/includes/docs/pdfs/mybusiness/energysavingsrebates/demandresponse/cs/HealthCare_CommunityMedicalCenters_DR_CaseStudy.pdf">Community Medical Centers</a> in 2006. The centers identified these measures for the summer’s first DR event:</p>
+<ul>
+<li>Raise chiller temperature 5 degrees F</li>
+<li>Shut down the redundant chiller water loop</li>
+<li>Shut off redundant water pumps</li>
+<li>Shut down some visitor elevators</li>
+<li>Use EMS systems to turn off 50% of non-essential lights</li>
+<li>Shut off booster pumps for outdoor watering</li>
+<li>Shut off one boiler in order to turn off associated fans</li>
+<li>Turn off cooking equipment and serve cold food (sandwiches and salads) in the Visitor Cafeteria</li>
+</ul>
+<p>The largest hospital, whose typical summer peak demand is between 4578 kW and 4664 kW, dropped more than 500 kW over two to six hour periods on three event days.</p>
+<p>A private company, <a href="https://www.ohmconnect.com/how-it-works/impact">OhmConnect</a>, allows individual residential customers to also participate in DR. Stockton could explore cleantech competition in this space or supplementary programs for existing services, such as a focus on introducing more “smart appliances” into the market that can more easily participate in DR. The greatest impact is likely in targeting specific large employers for customized DR programs and rewarding/recognizing them for program outcomes, thereby positioning the local economy as a champion and leader in active energy emissions reduction.</p>
+<p>To-do:</p>
+<ul>
+<li>Model impact of DR</li>
+</ul>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="building-utilization.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="employment-growth.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "none",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "fixed"
+},
+"search": false,
+"info": false
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
