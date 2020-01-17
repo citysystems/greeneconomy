@@ -203,7 +203,7 @@ for(year in 2010:2018){
 }
 
 sjc_projection <-
-  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/SSP_asrc_STATEfiles/DATA-PROCESSED/SPLITPROJECTIONS/CA.csv") %>%
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/SSP_asrc_STATEfiles/DATA-PROCESSED/SPLITPROJECTIONS/CA.csv") %>%
   filter(COUNTY == "077") %>%
   group_by(YEAR) %>%
   summarize(
@@ -287,8 +287,8 @@ pop_emp_sjc_w_projection <-
 #   }) %>%
 #   rbindlist()
 # 
-# save(sjc_wac, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata")
+# save(sjc_wac, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata")
 
 jobs_sjc <-
   sjc_wac %>%
@@ -339,7 +339,7 @@ pop_jobs_sjc_w_projection_table <-
     `Percent Unemployment` = ifelse(is.na(`Percent Unemployment`),"NA",paste0(round(`Percent Unemployment`),"%"))
   )
 
-# save(pop_jobs_sjc_w_projection, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/pop_jobs_sjc_w_projection.Rdata")
+# save(pop_jobs_sjc_w_projection, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/pop_jobs_sjc_w_projection.Rdata")
 
 kable(
   pop_jobs_sjc_w_projection_table,
@@ -430,8 +430,8 @@ The following figure compares the J/ER ratio for SJC and its neighboring countie
 #   }
 # }
 # 
-# save(county_jer,file="C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/county_jer.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/county_jer.Rdata")
+# save(county_jer,file="C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/county_jer.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/county_jer.Rdata")
 
 county_jer %>% 
   filter(County %in% c("San Joaquin","Stanislaus","Alameda","Sacramento","Fresno","Solano","Contra Costa")) %>% 
@@ -451,7 +451,7 @@ The [Quarterly Workforce Indicators](https://www.census.gov/data/developers/data
 
 ```{r qwi}
 label_industry <-
-  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/label_industry.csv")
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/label_industry.csv")
 
 # qwi_sjc <- data.frame(matrix(ncol=5,nrow=0))
 # colnames(qwi_sjc) <- c("year","industry","label","EmpS","EarnS")
@@ -481,8 +481,8 @@ label_industry <-
 #     bind_rows(qwi_sjc,qwi)
 # }
 # 
-# save(qwi_sjc, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/qwi_sjc.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/qwi_sjc.Rdata")
+# save(qwi_sjc, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/qwi_sjc.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/qwi_sjc.Rdata")
 
 qwi_sjc_18 <-
   qwi_sjc %>% 
@@ -657,8 +657,8 @@ pop_emp_stockton_w_projection <-
 #     return(temp)
 #   })
 # 
-# save(stockton_wac, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_wac.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_wac.Rdata")
+# save(stockton_wac, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_wac.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_wac.Rdata")
 
 jobs_stockton <-
   stockton_wac %>% 
@@ -709,7 +709,7 @@ pop_jobs_stockton_w_projection_table <-
     `Percent Unemployment` = ifelse(is.na(`Percent Unemployment`),"NA",paste0(round(`Percent Unemployment`),"%"))
   )
 
-# save(pop_jobs_stockton_w_projection, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/pop_jobs_stockton_w_projection.Rdata")
+# save(pop_jobs_stockton_w_projection, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/pop_jobs_stockton_w_projection.Rdata")
 
 kable(
   pop_jobs_stockton_w_projection_table, 
@@ -773,8 +773,8 @@ Estimation of the average earnings of Stockton jobs is not possible using the QW
 #     return(temp)
 #   })
 # 
-# save(stockton_rac, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_rac.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_rac.Rdata")
+# save(stockton_rac, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_rac.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_rac.Rdata")
 
 jobs_stockton_residents <-
   stockton_rac %>%
@@ -855,7 +855,7 @@ The following six tables filter the full Quarterly Workforce Indicators dataset 
 
 ```{r sjc-jobs}
 green_jobs_classification <- 
-  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/green_jobs_classification.csv")
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/green_jobs_classification.csv")
 
 green_jobs_summary <-
   green_jobs_classification %>% 
@@ -1133,8 +1133,8 @@ The following table shows a preliminary normalization of the 2005 and 2016 GHG e
 #     state_part = "main",
 #     agg_geo = "bg"
 #   )
-# save(ca_wac_2005, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ca_wac_2005.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ca_wac_2005.Rdata")
+# save(ca_wac_2005, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ca_wac_2005.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ca_wac_2005.Rdata")
 
 stockton_jobs_2005 <-
   stockton_bgs_full %>%
@@ -1239,12 +1239,12 @@ The following table shows the counts of jobs in these subcategories that are hel
 #     county_lodes_h <-
 #       ca_lodes[which(ca_lodes$h_tract %in% county_tracts$GEOID),]
 # 
-#     save(county_lodes_h, file = paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract_noroute.Rdata"))
+#     save(county_lodes_h, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract_noroute.Rdata"))
 # 
 #   }
 # }
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_077_2017_tract_noroute.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_077_2017_tract_noroute.Rdata")
 
 sjc_lodes_w_counties <- 
   county_lodes_h %>% 
@@ -1320,7 +1320,7 @@ county_localjobs <- NULL
 
 for(year in 2002:2017){
   for(county in county_neighbors$COUNTYFP){
-    load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract_noroute.Rdata"))
+    load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract_noroute.Rdata"))
     
     county_lodes_w_counties <- 
       county_lodes_h %>% 
@@ -1394,11 +1394,11 @@ The following table shows the counts of jobs in these subcategories for the top 
 #     stockton_lodes_h <-
 #       ca_lodes[which(ca_lodes$h_bg %in% stockton_bgs_full$GEOID),]
 # 
-#     save(stockton_lodes_h, file = paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract_noroute.Rdata"))
+#     save(stockton_lodes_h, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract_noroute.Rdata"))
 # 
 # }
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017_tract_noroute.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017_tract_noroute.Rdata")
 
 stockton_lodes_w_counties <- 
   stockton_lodes_h %>% 
@@ -1577,11 +1577,11 @@ The percentages in the table below should be interpreted as the % of overall job
 #     return(ca_wac)
 #   })
 # 
-# save(ca_wac, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ca_wac.Rdata")
+# save(ca_wac, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ca_wac.Rdata")
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ca_wac.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ca_wac.Rdata")
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017_tract_noroute.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017_tract_noroute.Rdata")
 
 stockton_lodes_h_join_wac <- 
   stockton_lodes_h %>% 
@@ -1803,7 +1803,7 @@ The following table shows commute data for SJC residents from 2011 to 2017, incl
 #         agg_geo = "tract"
 #       )
 #     
-#     save(ca_lodes, file = paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/ca_lodes_",year,"_tract.Rdata"))
+#     save(ca_lodes, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/ca_lodes_",year,"_tract.Rdata"))
 # 
 #     county_tracts <-
 #       ca_tracts %>%
@@ -1847,7 +1847,7 @@ The following table shows commute data for SJC residents from 2011 to 2017, incl
 #       county_lodes_h_route %>%
 #       filter(duration < 180)
 # 
-#     save(county_lodes_h_route,county_lodes_h_filter, file = paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
+#     save(county_lodes_h_route,county_lodes_h_filter, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
 #   }
 # }
 
@@ -1857,9 +1857,9 @@ The following table shows commute data for SJC residents from 2011 to 2017, incl
 #   for(county in c("013")){
 #     print(paste0(year,"-",county))
 # 
-#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
+#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
 # 
-#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
+#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
 # 
 #     travel_time_mode <-
 #       getCensus(
@@ -1995,7 +1995,7 @@ The following table shows commute data for SJC residents from 2011 to 2017, incl
 #         )
 #       )
 # 
-#     save(county_commute_vmt_tractmode,file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
+#     save(county_commute_vmt_tractmode,file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
 #   }
 # }
 #
@@ -2006,9 +2006,9 @@ The following table shows commute data for SJC residents from 2011 to 2017, incl
 # 
 #     print(paste0(year,"-",county))
 # 
-#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
+#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
 # 
-#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/acs1_vars_",year,".Rdata"))
+#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_",year,".Rdata"))
 # 
 #     travel_time_mode <-
 #     getCensus(
@@ -2143,8 +2143,8 @@ The following table shows commute data for SJC residents from 2011 to 2017, incl
 #   }
 # }
 # 
-# save(county_commute_vmt_countymode, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_countymode.Rdata")
-# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_countymode.Rdata")
+# save(county_commute_vmt_countymode, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_countymode.Rdata")
+# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_countymode.Rdata")
 # 
 # county_commute_vmt_countymode %>% 
 #   filter(jobs_car != 0) %>% 
@@ -2157,9 +2157,9 @@ The following table shows commute data for SJC residents from 2011 to 2017, incl
 #   ) +
 #   geom_line()
 # 
-# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
+# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
 # 
-# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_countymode.Rdata")
+# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_countymode.Rdata")
 # 
 # county_commute_vmt_compare <-
 #   rbind(
@@ -2181,7 +2181,7 @@ The following table shows commute data for SJC residents from 2011 to 2017, incl
 #   ) +
 #   geom_line()
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
 
 county_commute_vmt_tractmode_table <-
   county_commute_vmt_tractmode %>% 
@@ -2239,7 +2239,7 @@ One of the possible contributions to an increasing VMT/job isn't necessarily fur
 #     
 #     print(paste0(year,"-",county))
 #     
-#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/acs1_vars_",year,".Rdata"))
+#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_",year,".Rdata"))
 #     
 #     travel_time_mode <-
 #     getCensus(
@@ -2333,8 +2333,8 @@ One of the possible contributions to an increasing VMT/job isn't necessarily fur
 #   }
 # }
 # 
-# save(county_modeshare, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_modeshare.Rdata")
-# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_modeshare.Rdata")
+# save(county_modeshare, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_modeshare.Rdata")
+# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_modeshare.Rdata")
 # 
 # county_modeshare %>% 
 #   filter(county %in% c("077","001","013","067","099")) %>% 
@@ -2425,10 +2425,10 @@ The following graph shows the distribution of workplaces by distance from home f
 #     stockton_lodes_h_route %>%
 #     filter(duration < 180)
 #   
-#   save(stockton_lodes_h_route,stockton_lodes_h_filter, file = paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
+#   save(stockton_lodes_h_route,stockton_lodes_h_filter, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
 # }
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017_tract.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017_tract.Rdata")
 
 ggplot(
   stockton_lodes_h_filter, 
@@ -2484,7 +2484,7 @@ $~$
 Similar to the county-level analysis, we calculated the change in VMT/job over time, which might give more important relative insight given the many assumptions that go into the specific quantity of VMTs in any given year.
 
 ```{r stockton-commute-vmt-table}
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
 
 stockton_commute_vmt_tractmode_table <-
   stockton_commute_vmt_tractmode %>% 
@@ -2517,9 +2517,9 @@ The following figure compares Stockton and SJC VMT/job. The trends are similar, 
 # for(year in 2011:2017){
 #     print(year)
 # 
-#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
+#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
 # 
-#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
+#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
 # 
 #     travel_time_mode <-
 #       getCensus(
@@ -2658,7 +2658,7 @@ The following figure compares Stockton and SJC VMT/job. The trends are similar, 
 #         )
 #       )
 # 
-#     save(stockton_commute_vmt_bgmode,file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_bgmode.Rdata")
+#     save(stockton_commute_vmt_bgmode,file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_bgmode.Rdata")
 # }
 #
 # stockton_commute_vmt_tractmode <- NULL
@@ -2666,9 +2666,9 @@ The following figure compares Stockton and SJC VMT/job. The trends are similar, 
 # for(year in 2011:2017){
 #     print(year)
 # 
-#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata"))
+#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata"))
 # 
-#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
+#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
 # 
 #     travel_time_mode <-
 #       getCensus(
@@ -2803,9 +2803,9 @@ The following figure compares Stockton and SJC VMT/job. The trends are similar, 
 #         )
 #       )
 # 
-#     save(stockton_commute_vmt_tractmode,file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
+#     save(stockton_commute_vmt_tractmode,file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
 # }
-# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
+# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
 # 
 # stockton_commute_vmt_tractmode %>%
 #   ggplot(
@@ -2822,9 +2822,9 @@ The following figure compares Stockton and SJC VMT/job. The trends are similar, 
 # 
 #   print(year)
 # 
-#   load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata"))
+#   load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata"))
 # 
-#   load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/acs1_vars_",year,".Rdata"))
+#   load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_",year,".Rdata"))
 # 
 #   travel_time_mode <-
 #     getCensus(
@@ -2957,8 +2957,8 @@ The following figure compares Stockton and SJC VMT/job. The trends are similar, 
 #       )
 # }
 # 
-# save(stockton_commute_vmt_countymode, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_countymode.Rdata")
-# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_countymode.Rdata")
+# save(stockton_commute_vmt_countymode, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_countymode.Rdata")
+# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_countymode.Rdata")
 # 
 # stockton_commute_vmt_countymode %>%
 #   ggplot(
@@ -2969,11 +2969,11 @@ The following figure compares Stockton and SJC VMT/job. The trends are similar, 
 #   ) +
 #   geom_line()
 # 
-# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_bgmode.Rdata")
+# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_bgmode.Rdata")
 # 
-# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
+# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
 # 
-# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_countymode.Rdata")
+# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_countymode.Rdata")
 # 
 # stockton_commute_vmt_compare <-
 #   rbind(
@@ -3021,9 +3021,9 @@ $~$
 The following figure compares the percent of car-dependent workers who carpool in Stockton and SJC. Stockton workers overall are more likely to carpool than SJC workers overall, but the trends are again similar between Stockton and SJC, with a decline in carpooling in the last two years of data.
 
 ```{r stockton-county-commute-vmt-compare, fig.cap="Percent of car-dependent commuters traveling by carpool, Stockton vs. SJC, 2011 to 2017. Data from LODES and ACS."}
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
 
 stockton_county_commute_vmt_compare <-
   rbind(
@@ -3058,7 +3058,7 @@ We estimated the total and average GHG emissions for Stockton workers commuting 
 The following table is sorted by total annual GHG from transportation.
 
 ```{r ghg}
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017.Rdata")
 
 stockton_lodes_h_counties_ghg <- 
   stockton_lodes_h_mode %>%
@@ -3131,9 +3131,9 @@ After transportation, buildings are the next largest source of emissions based o
 ```{r zcta, fig.cap = "Zip code tabulation areas used to represent Stockton population estimates. The red outline is the official city boundary."}
 zcta <- zctas(starts_with="95") %>% 
   mutate(ZCTA5CE10 = as.numeric(ZCTA5CE10))
-# zips_stockton <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ZipCodes/ZipCodes.shp") %>% st_transform(st_crs(zcta)) #this was downloaded from Stockton GIS site to do a quick visual check of the difference between ZCTA and zip code. We determined they were pretty much the same.
+# zips_stockton <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ZipCodes/ZipCodes.shp") %>% st_transform(st_crs(zcta)) #this was downloaded from Stockton GIS site to do a quick visual check of the difference between ZCTA and zip code. We determined they were pretty much the same.
 
-stockton_boundary_influence <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/SpheresOfInfluence/SpheresOfInfluence.shp", quiet = TRUE) %>% 
+stockton_boundary_influence <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/SpheresOfInfluence/SpheresOfInfluence.shp", quiet = TRUE) %>% 
   filter(SPHERE == "STOCKTON") %>% 
   st_transform(st_crs(zcta)) #stockton boundary is legit but really spotty, so i prefer using sphere of influence from the County GIS page.
 
@@ -3243,8 +3243,8 @@ pge_elec_emissions_factor <-
 #     TCO2EPERCUST = TOTALTCO2E/TOTALCUSTOMERS
 #   )
 # 
-# save(pge_data, file= "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_pge.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_pge.Rdata")
+# save(pge_data, file= "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_pge.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_pge.Rdata")
 
 summary_TCO2E_average <- 
   pge_data %>% 
@@ -3393,13 +3393,13 @@ We used the [Cal-Adapt Degree Day tool](https://cal-adapt.org/tools/degree-days)
 
 ```{r hdd-cdd, fig.cap="Stockton heating and cooling degree days under RCP 4.5 scenario, 2010 to 2040. Data from Cal-Adapt."}
 hdd <- 
-  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/hdd.csv") %>% 
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/hdd.csv") %>% 
   transmute(
     YEAR = year,
     hdd = degree_days
   )
 cdd <- 
-  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/cdd.csv") %>% 
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/cdd.csv") %>% 
   filter(model == "CanESM2") %>% 
   transmute(
     YEAR = year,
@@ -3709,7 +3709,7 @@ zcta_stockton_joined <-
 #below I've brought in all the code from stockton_bldg.R, but it can all be skipped by going to the load() of stockton_bldg.Rdata at the bottom. Kevin, whatever refinements you've made, go ahead and make them here.
 
 # sjc_bldg <- 
-#   read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/ca_06077_footprints.csv") %>% 
+#   read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/ca_06077_footprints.csv") %>% 
 #   st_as_sf(wkt = "WKT") %>% 
 #   st_set_crs(4326) %>% 
 #   st_transform(st_crs(zcta_stockton)) %>% 
@@ -3719,7 +3719,7 @@ zcta_stockton_joined <-
 #   sjc_bldg[which(sjc_bldg$id %in% st_centroid(sjc_bldg)[stockton_boundary_influence,]$id),]
 # 
 # sjc_parcels <- 
-#   st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Parcels/Parcels.shp") %>% 
+#   st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Parcels/Parcels.shp") %>% 
 #   st_transform(st_crs(zcta_stockton))
 # 
 # sjc_parcels_valid <- 
@@ -3735,12 +3735,12 @@ zcta_stockton_joined <-
 #   st_set_geometry(NULL)
 # 
 # sjc_zoning <- 
-#   st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Zoning/Zoning.shp") %>% 
+#   st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Zoning/Zoning.shp") %>% 
 #   st_transform(st_crs(zcta_stockton)) %>% 
 #   filter(ZNLABEL != "STOCKTON")
 # 
 # stockton_zoning <- 
-#   st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Stockton_Zoning/Zoning.shp") %>% 
+#   st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Stockton_Zoning/Zoning.shp") %>% 
 #   st_transform(st_crs(zcta_stockton))
 # 
 # bldg_zoning_join <- 
@@ -3774,7 +3774,7 @@ zcta_stockton_joined <-
 #   dplyr::select(ZIPCODE, id) %>% 
 #   st_set_geometry(NULL)
 # 
-# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/tax_sjc.Rdata")
+# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/tax_sjc.Rdata")
 # 
 # tax_sjc <- 
 #   tax_sjc %>% 
@@ -3809,16 +3809,16 @@ zcta_stockton_joined <-
 #       )
 #   )
 # 
-# save(stockton_bldg_final, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
+# save(stockton_bldg_final, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
 
 # stockton_bldg_17 <- 
-#   readOGR(dsn = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/Stockton2017", layer = "Stockton") %>% 
+#   readOGR(dsn = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/Stockton2017", layer = "Stockton") %>% 
 #   st_as_sf() %>% 
 #   st_transform(st_crs(stockton_bldg_final))
 # 
-# save(stockton_bldg_17, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/stockton_bldg_17.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/stockton_bldg_17.Rdata")
+# save(stockton_bldg_17, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/stockton_bldg_17.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/stockton_bldg_17.Rdata")
 
 #match height from 2017 data
 # bldg_join <-
@@ -3835,8 +3835,8 @@ load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USB
 #   ) %>%
 #   left_join(stockton_bldg_final %>% st_set_geometry(NULL),by="id")
 # 
-# save(bldg_join, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/bldg_join.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/bldg_join.Rdata")
+# save(bldg_join, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/bldg_join.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/bldg_join.Rdata")
 
 bldg_join <-
   bldg_join %>% 
@@ -4387,7 +4387,7 @@ Along these lines, we were particularly interested evaluating these programs in 
 
 ```{r luskin}
 luskin <- 
-  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/luskin.csv") %>% 
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/luskin.csv") %>% 
   mutate(
     npv = 
       map2(energysavings, lifetime, function(x, y){
@@ -4470,9 +4470,9 @@ Building electrification refers generally to the conversion of building systems 
 #     type = "variables"
 #   )
 # 
-# save(acs_vars, file="C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/acs1_vars_2018.Rdata")
+# save(acs_vars, file="C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_2018.Rdata")
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/acs1_vars_2018.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_2018.Rdata")
 
 heating_fuel <-
   getCensus(
@@ -4634,6 +4634,6 @@ San Francisco Bay Area, CA
 
 
 ```{r save}
-save.image(file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_greeneconomy.Rdata")
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_greeneconomy.Rdata")
+save.image(file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_greeneconomy.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_greeneconomy.Rdata")
 ```
