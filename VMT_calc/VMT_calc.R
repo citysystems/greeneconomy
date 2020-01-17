@@ -739,3 +739,6 @@ mapview(stockton_boundary_influence_milebuffer) + mapview(location_VMT, zcol = "
 mapview(stockton_boundary_influence_milebuffer) + mapview(location_VMT, cex = "VMT_total")
 mapview(location_VMT, cex = "VMT_total")
 mapview(VMT_all, zcol = c("VMT_sum_recorded"), legend = TRUE) + mapview(location_VMT, cex = "VMT_total", legend = TRUE)
+
+# save.image(file = "C:/Users/Derek/Desktop/non_work_VMT_complete.RData")
+# load("C:/Users/Derek/Desktop/non_work_VMT_complete.RData")
