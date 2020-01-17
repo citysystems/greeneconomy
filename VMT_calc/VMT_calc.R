@@ -323,7 +323,7 @@ SanJoaquin_Cities_Vector <- unique(safegraphplaces_SJ$city)[c(3,5,6,12,18,23,31,
 
 # This for loop analyses the VMT by origin and destination, per month.
 
-for(counterMonth in 1:3){
+for(counterMonth in 1:12){
   
   # Loading the m_patterns_new data. This includes "m_origin_matrix_sf", "m_dest_matrix_sf" and "m_patterns_new".
   # This is done for each of the 12 months of the year.
@@ -366,6 +366,8 @@ for(counterMonth in 1:3){
     m_dest_matrix_sf[m_dest_matrix_sf$full_address == missing_latlong_index, "latitude"] <- as.numeric(as.character(resdf["lat"]))
     
   }
+  
+  print("missing_latlong_index")
   
   locations_of_consideration <- rbind(locations_of_consideration, st_sf(st_as_sf(m_dest_matrix_sf[!is.na(m_dest_matrix_sf$longitude), ],
                                                                                  coords = c("longitude", "latitude"), crs = 4326) ) )
@@ -430,6 +432,8 @@ for(counterMonth in 1:3){
   colnames(nonStocktonDest_proportion_recorded) <- c("locations", "nonStocktonDest_proportion_recorded")
   
   # This for loop performs the VMT analysis for each of Stockton's block groups.
+  
+  print("counterVMT")
   
   for(counterVMT in 1:dest_num){
     
@@ -517,18 +521,12 @@ for(counterMonth in 1:3){
   
   k_withinStocktonBuffer <- sum( as.numeric(StocktonDest_proportion_recorded_narm[,"StocktonDest_proportion_recorded"] ) * (loc_of_cons_proportion_recorded[, (9 + counterMonth)] + loc_of_cons_proportion_recorded[, (21 + counterMonth)])[, 1] / sum((loc_of_cons_proportion_recorded[, (9 + counterMonth)] + loc_of_cons_proportion_recorded[, (21 + counterMonth)])[,1]) )
   
-  print(k_withinStocktonBuffer)
-  
   # Proportion value for outside of the Stockton 1-mile buffer
   
   nonStocktonDest_proportion_recorded_narm <- nonStocktonDest_proportion_recorded[!is.na(nonStocktonDest_proportion_recorded$locations), ]
   loc_of_cons_proportion_nonrecorded <- locations_of_consideration[(start_counter + 1):end_counter, ][(locations_of_consideration[(start_counter + 1):end_counter,]$full_address %in% nonStocktonDest_proportion_recorded_narm$locations),]
   
   k_outsideStocktonBuffer <- sum( as.numeric(nonStocktonDest_proportion_recorded_narm[,"nonStocktonDest_proportion_recorded"]) * (loc_of_cons_proportion_nonrecorded[, (9 + counterMonth)] + loc_of_cons_proportion_nonrecorded[, (21 + counterMonth)])[, 1] / sum((loc_of_cons_proportion_nonrecorded[, (9 + counterMonth)] + loc_of_cons_proportion_nonrecorded[, (21 + counterMonth)])[,1]) )
-  
-  print(k_outsideStocktonBuffer)
-  
-  print("---")
   
   # save.image(file = "C:/Users/Derek/Desktop/save_debug_checkpoint1.RData")
   # load("C:/Users/Derek/Desktop/save_debug_checkpoint3.RData")
@@ -579,6 +577,8 @@ for(counterMonth in 1:3){
   
   loc_of_cons_nonrecordVMT <- locations_of_consideration[(start_counter + 1):end_counter, ][!(locations_of_consideration[(start_counter + 1):end_counter, ]$full_address %in% dest_amenities_matrix$name_address) & locations_of_consideration[(start_counter + 1):end_counter, ]$within_StocktonBuffer == TRUE,]$full_address
   
+  print("location_nonrecordedVMT")
+  
   for (location_nonrecordedVMT in loc_of_cons_nonrecordVMT){
     
     loc_of_cons_row <- locations_of_consideration[(start_counter + 1):end_counter, ][locations_of_consideration[(start_counter + 1):end_counter, ]$full_address == location_nonrecordedVMT, ]
@@ -619,6 +619,32 @@ for(counterMonth in 1:3){
   
   # save.image(file = "C:/Users/Derek/Desktop/save_debug_checkpoint2.RData")
   # load("C:/Users/Derek/Desktop/save_debug_checkpoint2.RData")
+
+  if(counterMonth == 1){
+    save.image(file = "C:/Users/Derek/Desktop/save_checkpoint_m1.RData")
+  } else if(counterMonth == 2){
+      save.image(file = "C:/Users/Derek/Desktop/save_checkpoint_m2.RData")
+  } else if(counterMonth == 3){
+      save.image(file = "C:/Users/Derek/Desktop/save_checkpoint_m3.RData")
+  } else if(counterMonth == 4){
+      save.image(file = "C:/Users/Derek/Desktop/save_checkpoint_m4.RData")
+  } else if(counterMonth == 5){
+      save.image(file = "C:/Users/Derek/Desktop/save_checkpoint_m5.RData")
+  } else if(counterMonth == 6){
+      save.image(file = "C:/Users/Derek/Desktop/save_checkpoint_m6.RData")
+  } else if(counterMonth == 7){
+      save.image(file = "C:/Users/Derek/Desktop/save_checkpoint_m7.RData")
+  } else if(counterMonth == 8){
+      save.image(file = "C:/Users/Derek/Desktop/save_checkpoint_m8.RData")
+  } else if(counterMonth == 9){
+      save.image(file = "C:/Users/Derek/Desktop/save_checkpoint_m9.RData")
+  } else if(counterMonth == 10){
+      save.image(file = "C:/Users/Derek/Desktop/save_checkpoint_m10.RData")
+  } else if(counterMonth == 11){
+      save.image(file = "C:/Users/Derek/Desktop/save_checkpoint_m11.RData")
+  } else if(counterMonth == 12){
+      save.image(file = "C:/Users/Derek/Desktop/save_checkpoint_m12.RData")
+  }
   
 }
 
@@ -640,7 +666,7 @@ save(VMT_all, file = "C:/Users/Derek/Desktop/VMT_all.RData")
 
 VMT_all_mapview <- mapview(VMT_all, zcol = c("VMT_sum_all", "VMT_norm"), legend = TRUE)
 
-mapshot(VMT_all_mapview, url = "S:/CCF/dashboard/Stockton_Safegraph_VMT.html")
+mapshot(VMT_all_mapview, url = "C:/Users/Derek/Desktop/Stockton_Safegraph_VMT.html")
 # mapshot(VMT_all_mapview, url = "S:/CCF/dashboard/Stockton_Safegraph_VMT.html")
 
 VMT_lessthan1.25M <- nrow(VMT_all[VMT_all$VMT_sum_all < 1250000, ])
