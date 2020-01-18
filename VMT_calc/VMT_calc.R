@@ -683,8 +683,24 @@ VMT_per_person_30kplus <- nrow(VMT_all[VMT_all$VMT_norm >= 30000 , ])
 
 # Operations for VMT mapping of Business Destinations
 
+locations_of_consideration_fix <- locations_of_consideration
+
+count <- 0
+
+for(full_address_iter in unique(locations_of_consideration$full_address)){
+  
+  # full_address_iter <- unique(locations_of_consideration$full_address)[6969]
+  
+  count <- count + 1
+  print(count)
+  
+  loc_of_cons_placeholder <- locations_of_consideration_fix[locations_of_consideration_fix$full_address == full_address_iter,]
+  locations_of_consideration_fix[locations_of_consideration_fix$full_address == full_address_iter, "geometry"] <- loc_of_cons_placeholder[1, "geometry"]
+  
+}
+
 location_VMT <- 
-  locations_of_consideration %>%
+  locations_of_consideration_fix %>%
   group_by(full_address) %>%
   dplyr::summarize(
     location_name = first(location_name),
@@ -735,10 +751,16 @@ location_VMT <- location_VMT[location_VMT$VMT_total != 0,]
 
 # Mapping Attempts
 
-mapview(stockton_boundary_influence_milebuffer) + mapview(location_VMT, zcol = "VMT_total", at = c(seq(0, 1000000, 10000), 5000000), legend = TRUE)
-mapview(stockton_boundary_influence_milebuffer) + mapview(location_VMT, cex = "VMT_total")
-mapview(location_VMT, cex = "VMT_total")
-mapview(VMT_all, zcol = c("VMT_sum_recorded"), legend = TRUE) + mapview(location_VMT, cex = "VMT_total", legend = TRUE)
+loc_of_cons_mapview <- mapview(stockton_boundary_influence_milebuffer, legend = TRUE) + mapview(location_VMT, zcol = "VMT_total", legend = TRUE)
+loc_of_cons_mapview
+mapshot(loc_of_cons_mapview, url = "C:/Users/Derek/Desktop/locations_of_consideration_VMT.html")
+
+location_VMT_sorted <- location_VMT[with(location_VMT, order(-VMT_total)),]
+save(location_VMT_sorted, file = "C:/Users/Derek/Desktop/location_VMT_sorted.RData")
+
+# mapview(stockton_boundary_influence_milebuffer) + mapview(location_VMT, zcol = "VMT_total", at = c(seq(0, 1000000, 10000), 5000000), legend = TRUE)
+# mapview(location_VMT, zcol = "VMT_total", legend = TRUE)
+# mapview(VMT_all, zcol = c("VMT_sum_recorded"), legend = TRUE) + mapview(location_VMT, cex = "VMT_total", legend = TRUE)
 
 # save.image(file = "C:/Users/Derek/Desktop/non_work_VMT_complete.RData")
 # load("C:/Users/Derek/Desktop/non_work_VMT_complete.RData")
