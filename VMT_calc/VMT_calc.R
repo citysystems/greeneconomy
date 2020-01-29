@@ -65,8 +65,8 @@ safegraphplaces_CA_edit <- safegraphplaces_cleanse(safegraphplaces_CA)
 # The following code uploads the data from the CCF package and uses this data to answer the questions below.
 ### load("G:/My Drive/Stanford City Systems - Greg's Summer Work/00 Complete Communities Framework (CCF)/03 CCF Survey/month_patterns_join_all.RData")
 ### load("G:/My Drive/Stanford City Systems - Greg's Summer Work/00 Complete Communities Framework (CCF)/03 CCF Survey/pre_survey.RData")
-load("G:/My Drive/Stanford City Systems - Greg's Summer Work/00 Complete Communities Framework (CCF)/03 CCF Survey/amenities_persubcat_perblockgroup.RData")
-load("G:/My Drive/Stanford City Systems - Greg's Summer Work/00 Complete Communities Framework (CCF)/03 CCF Survey/ca_blockgroups_pop.RData")
+load("C:/Users/Derek/Desktop/CCF_survey_folder/amenities_persubcat_perblockgroup.RData")
+load("C:/Users/Derek/Desktop/CCF_survey_folder/ca_blockgroups_pop.RData")
 
 # The following code uploads scripts from the Stockton Green Economt Project - VMT Analysis.
 source("C:/Users/Derek/Documents/GitHub/greeneconomy/VMT_calc/VMT_calc_functions/home_panel_summary.R")
@@ -216,6 +216,8 @@ VMT_considerations <- 3
 months_considerations <- months_in_year * VMT_considerations
 
 # Creation of the origin matrices for all of Stockton's 205 origins.
+# Home panel summary of '1' was chosen. For this part of the analysis, it doesn't matter which number is chosen.
+# All that is necessary is that Stockton's total population is chosen.
 
 m_hps <- home_panel_summary(1)
 pop_bg_stockton <- pop_blockgroup_stockton(m_hps)
