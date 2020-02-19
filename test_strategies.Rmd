@@ -1,0 +1,155 @@
+---
+title: "Stockton Green Economy Report"
+author: "City Systems"
+date: "Last Updated: February 2020"
+output: 
+  bookdown::gitbook:
+    df_print: paged
+    includes:
+      in_header: header.html
+    config:
+      toc:
+        collapse: none
+        scroll_highlight: yes
+        before: null
+        after: null
+      toolbar:
+        position: fixed
+      edit : null
+      download: null
+      search: yes
+      fontsettings:
+        theme: white
+        family: sans
+        size: 2
+      sharing:
+        facebook: no
+        github: no
+        twitter: no
+        linkedin: no
+        weibo: no
+        instapaper: no
+        vk: no
+        all: no
+      info: no
+editor_options: 
+  chunk_output_type: inline
+---
+
+# Test
+
+## Building Utilization
+
+Building Utilization refers to the amount of building space used per person throughout their daily activities. Specific types of building energy uses like heating and cooling are proportional to space use, and strategies to reduce the amount of space required per person, whether at home or at work, that do not sacrifice comfort can be effective ways to reduce emissions. However, the more profound impact of space efficiency is the densification of all urban activities, which may have an even greater emissions impact by reducing travel distances, as well as many potential social co-benefits. 
+
+### Revise zoning codes in medium to large cities to facilitate upzoning
+| Location | Oregon |
+|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Details | HB 2001 legalizes the development of duplexes on residential land currently zoned for single-family housing in all communities of 10,000 or more. It also allows for the construction of three- to four-unit homes on single family-zoned land in cities of 25,000 or more. |
+| Links | [Oregon Legislative Assembly](https://olis.leg.state.or.us/liz/2019R1/Downloads/MeasureDocument/HB2001/B-Engrossed) |
+| Implementation Costs | N/A |
+| Impact Factor | Fiscally, [50% of Oregon households](https://www.oregon.gov/OHA/PH/ABOUT/Documents/indicators/rentburden.pdf) are rent burdened while [23%](https://nlihc.org/sites/default/files/SHP_OR.pdf) of renter households are extremely low income. These individuals will likely see the biggest impact. However, the law applies to cities of over 10,000. As of the 2010 Census, 2,208,732 Oregonians, which constitute 57.65% of the state’s population, live in such communities. |
+| Scalable Potential | Much of Stockton is [low density residential](https://stocktonca.mapgeo.io/datasets/properties?abuttersDistance=100&latlng=37.973764%2C-121.284422&themes=%22%5B%5C%22zoning%5C%22%5D%22&zoom=12). |
+| Similar | [Minneapolis 2040](https://minneapolis2040.com/)<br>[California SB50 (did not pass)](https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=201920200SB50) |
+
+### Eliminate minimum parking
+| Location | Buffalo, NY |
+|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Details | Developers are no longer required to build a certain number of parking spaces for commercial or residential projects, regardless of whether or not there are mass transit options nearby or if the tenants even need them. |
+| Links | [Buffalo Green Code Land Use Plan](http://www.oneregionforward.org/plan/the-buffalo-green-code-draft-land-use-plan/) |
+| Implementation Costs | N/A |
+| Impact Factor | 28% of land area in Buffalo’s city center is devoted to parking but only 63% of parking spaces are occupied on an average weekday. |
+| Scalable Potential | According to [Stockton’s zoning ordinance](http://qcode.us/codes/stockton/view.php?topic=16-3-16_64-16_64_040&frames=on), large shopping centers must build 1 parking space per 250 square feet of retail space. [Anecdotal evidence](https://stocktoncitylimits.com/2013/12/31/why-are-stocktons-parking-lots-so-big-and-empty/) suggests that this is too much space, even during peak hours. Similarly inefficient standards include that colleges and universities must have 1 parking space per classroom plus 0.75 spaces per student. |
+| Similar | [Minneapolis 2040](https://minneapolis2040.com/)<br>[San Francisco, CA](https://usa.streetsblog.org/2018/12/17/san-francisco-eliminates-parking-minimums/)<br>[Hartford, CT](https://usa.streetsblog.org/2017/12/13/hartford-eliminates-parking-minimums-citywide/)
+ |
+ 
+## Appendix A: Index of Case Studies by Place
+
+**Arizona**
+
+- Engage automobile manufacturers as stakeholders in the EV market
+
+**Austin, TX**
+
+- Partner with transportation network companies (TNCs) to offer first/last mile discount programs for transit riders
+
+**Belgrade, Serbia**
+
+- Revise energy standards for public buildings and create a fund to implement energy savings product
+
+**Bridgeport, CT**
+
+- Provide training and coaching for low-income workers, rather than unemployed workers
+
+**Buffalo, NY**
+
+- [Eliminate minimum parking](#revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning)
+
+**California**
+
+Encourage accessory dwelling units
+Revise zoning codes in medium to large cities to facilitate upzoning.
+Centennial, CO
+Partner with transportation network companies (TNCs) to offer first/last mile discount programs for transit riders
+Dayton, OH
+Provide training and coaching for low-income workers, rather than unemployed workers
+Georgia
+Pursue public-private partnerships for commercial development
+Hartford, CT
+Eliminate minimum parking
+Enable property-assessed clean energy (PACE) financing
+King County, WA
+Give carpoolers priority parking at transit stops
+Los Angeles, CA
+Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements
+Provide green-oriented job training and education pathways.
+Provide commercial rebates for commercial truck users to replace their diesel vehicles with electric vehicles
+Madrid, Spain
+Ban certain areas from most driving vehicles.
+Milwaukee, WI
+Set energy savings standards on all public buildings and provide financial and technical assistance for commercial private sector energy savings
+Minneapolis, MN
+Revise zoning codes in medium to large cities to facilitate upzoning.
+Eliminate minimum parking
+Rezone areas around transit stations and commercial corridors to allow for high-density residential development
+Montgomery County, OH
+Fund economic development using equity criteria
+Nebraska
+Provide state tax credits to investors in early-stage high-tech companies.
+New York, NY
+Encourage micro-units
+Offer continued training and support post-employment. 
+Charge for parking
+Offset negative externalities of traffic through tolls
+Oklahoma City, OK
+Charge for parking
+Oregon
+Revise zoning codes in medium to large cities to facilitate upzoning.
+Pasadena, CA
+Charge for parking
+Pinellas County, FL
+Partner with transportation network companies (TNCs) to offer first/last mile discount programs for transit riders
+San Diego, CA
+Provide training and coaching for low-income workers, rather than unemployed workers
+San Francisco, CA
+Eliminate minimum parking
+Encourage micro-units
+Provide a density bonus for affordable housing
+Use green infrastructure to improve stormwater management
+Ban certain areas from most driving vehicles.
+San Francisco Bay Area, CA
+Provide grants to income eligible residents for the replacement of high-emission cars with low-emission cars
+Encourage accessory dwelling units
+Encourage carsharing strategies
+Seattle, WA
+Encourage accessory dwelling units
+Offset negative externalities of traffic through tolls
+Tyson, VA
+Rezone areas around transit stations and commercial corridors to allow for high-density residential development
+USA (National)
+Develop public employment program
+Encourage mortgage refinancing
+Offer job creation tax credit
+Create a scholarship fund for students wishing to pursue eco-conscious careers.
+Vancouver, Canada
+Encourage micro-units
