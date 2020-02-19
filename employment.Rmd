@@ -1,0 +1,237 @@
+```{r}
+library(censusapi)
+library(tidyverse)
+Sys.setenv(CENSUS_KEY="c8aa67e4086b4b5ce3a8717f59faa9a28f611dab")
+```
+
+```{r}
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_2017.Rdata")
+```
+
+EMPLOYMENT STATUS
+```{r}
+acs5subjectemp <-
+  getCensus(
+    name = "acs/acs5/subject",
+    vintage = 2018,
+    vars = c("S2301_C01_001E","S2301_C02_001E","S2301_C03_001E","S2301_C04_001E"),
+    region = "county:077",
+    regionin = "state:06"
+  ) %>%
+  mutate(
+    Population16andOlder = S2301_C01_001E,
+    PercLaborForceParticipation = S2301_C02_001E,
+    PercEmployedResidents = S2301_C03_001E,
+    LaborForceParticipation = PercLaborForceParticipation/100*Population16andOlder,
+    EmployedResidents = PercEmployedResidents/100*Population16andOlder,
+    UnemploymentRate = S2301_C04_001E
+  ) %>%
+  dplyr::select(
+    Population16andOlder,
+    PercLaborForceParticipation,
+    PercEmployedResidents,
+    LaborForceParticipation,
+    EmployedResidents,
+    UnemploymentRate
+  )
+```
+
+MEANS OF TRANSPORTATION TO WORK BY CLASS OF WORKER
+```{r}
+acs5emp1 <-
+  getCensus(
+    name = "acs/acs5",
+    vintage = 2017,
+    vars = c("B08128_001E","B08128_002E","B08128_003E","B08128_004E"),
+    region = "county:077",
+    regionin = "state:06"
+  ) %>% 
+  select_if(!names(.) %in% c("GEO_ID","state","county","NAME")) %>%
+  dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
+  gather(
+    key = "variable",
+    value = "estimate"
+  ) %>%
+  mutate(
+    label = acs_vars$label[match(variable,acs_vars$name)]
+  ) %>% 
+  select(-variable)
+```
+
+FULL-TIME, YEAR-ROUND WORK STATUS IN THE PAST 12 MONTHS BY AGE FOR THE POPULATION 16 YEARS AND OVER.
+```{r}
+acs5emp2 <-
+  getCensus(
+    name = "acs/acs5",
+    vintage = 2017,
+    vars = "group(B23027)",
+    region = "county:077",
+    regionin = "state:06"
+  ) %>% 
+  select_if(!names(.) %in% c("GEO_ID","state","county","NAME")) %>%
+  dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
+  gather(
+    key = "variable",
+    value = "estimate"
+  ) %>%
+  mutate(
+    label = acs_vars$label[match(variable,acs_vars$name)]
+  ) %>% 
+  select(-variable) %>% 
+  separate(
+    label,
+    into = c(NA,NA,NA,"work","work2"),
+    sep = "!!"
+  )
+
+tot_work <-
+  acs5emp2 %>% 
+  filter(!is.na(work2)) %>% 
+  dplyr::select(estimate) %>% 
+  sum()
+
+tot_fulltime <-
+  acs5emp2 %>% 
+  filter(work2=="Worked full-time year-round") %>% 
+  dplyr::select(estimate) %>% 
+  sum()
+```
+
+MARITAL STATUS BY SEX BY LABOR FORCE PARTICIPATION
+Best match so far -- only off by a few hundred (within rounding error). Seems to be counting armed forces, which S2301 might include. 
+```{r}
+acs5emp3 <-
+  getCensus(
+    name = "acs/acs5",
+    vintage = 2017,
+    vars = "group(B12006)",
+    region = "county:077",
+    regionin = "state:06"
+  ) %>% 
+  select_if(!names(.) %in% c("GEO_ID","state","county","NAME")) %>%
+  dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
+  gather(
+    key = "variable",
+    value = "estimate"
+  ) %>%
+  mutate(
+    label = acs_vars$label[match(variable,acs_vars$name)]
+  ) %>% 
+  select(-variable) %>% 
+  separate(
+    label,
+    into = c(NA,NA,"marital","sex","participate","work"),
+    sep = "!!"
+  )
+
+tot_labor <-
+  acs5emp3 %>% 
+  filter(participate == "In labor force") %>% 
+  filter(is.na(work)) %>% 
+  select(estimate) %>% 
+  sum()
+
+tot_employed_or_military <-
+  acs5emp3 %>% 
+  filter(work == "Employed or in Armed Forces") %>% 
+  select(estimate) %>% 
+  sum()
+```
+
+EMPLOYMENT STATUS FOR THE POPULATION 16 YEARS AND OVER
+Seems to be best match. S2301 "Labor Force Participation" appears to include armed forces. "Employment" does not include armed forces, which is what we would want for this analysis anyway.
+```{r}
+acs5emp4 <-
+  getCensus(
+    name = "acs/acs5",
+    vintage = 2018,
+    vars = "group(B23025)",
+    region = "county:077",
+    regionin = "state:06"
+  ) %>% 
+  select_if(!names(.) %in% c("GEO_ID","state","county","NAME")) %>%
+  dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
+  gather(
+    key = "variable",
+    value = "estimate"
+  ) %>%
+  mutate(
+    label = acs_vars$label[match(variable,acs_vars$name)]
+  ) %>% 
+  select(-variable) %>% 
+  separate(
+    label,
+    into = c(NA,NA,"participate","type","work"),
+    sep = "!!"
+  )
+
+tot_labor <-
+  acs5emp4 %>% 
+  filter(participate == "In labor force") %>% 
+  filter(is.na(type)) %>% 
+  select(estimate) %>% 
+  sum()
+
+tot_employed <-
+  acs5emp4 %>% 
+  filter(work == "Employed") %>% 
+  select(estimate) %>% 
+  sum()
+```
+
+```{r}
+acs5emp4 <-
+  getCensus(
+    name = "acs/acs5",
+    vintage = 2018,
+    vars = "group(B23025)",
+    region = "block group:*",
+    regionin = "state:06+county:077"
+  ) %>% 
+  mutate(
+      bg = paste0(state,county,tract,block_group)
+  ) %>% 
+  select_if(!names(.) %in% c("GEO_ID","state","county","tract","block_group","NAME")) %>%
+  dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
+  gather(
+    key = "variable",
+    value = "estimate",
+    -bg
+  ) %>%
+  mutate(
+    label = acs_vars$label[match(variable,acs_vars$name)]
+  ) %>% 
+  select(-variable) %>% 
+  separate(
+    label,
+    into = c(NA,NA,"participate","type","work"),
+    sep = "!!"
+  )
+
+tot_labor <-
+  acs5emp4 %>% 
+  filter(participate == "In labor force") %>% 
+  filter(is.na(type)) %>% 
+  select(estimate) %>% 
+  sum()
+
+tot_employed <-
+  acs5emp4 %>% 
+  filter(work == "Employed") %>% 
+  select(estimate) %>% 
+  sum()
+
+employed_bgs <-
+  acs5emp4 %>% 
+  filter(work == "Employed")
+
+sjc_bgs <- block_groups("CA") %>% 
+  filter(COUNTYFP == "077")
+
+sjc_bgs %>% 
+  left_join(
+    employed_bgs,
+    by = c("GEOID"="bg")
+  ) %>% 
+  mapview(zcol="estimate")
+```
