@@ -1,0 +1,242 @@
+---
+title: "Stockton Green Economy Report"
+author: "City Systems"
+date: "Last Updated: February 2020"
+output: 
+  bookdown::gitbook:
+    df_print: paged
+    includes:
+      in_header: header.html
+    config:
+      toc:
+        collapse: none
+        scroll_highlight: yes
+        before: null
+        after: null
+      toolbar:
+        position: fixed
+      edit : null
+      download: null
+      search: yes
+      fontsettings:
+        theme: white
+        family: sans
+        size: 2
+      sharing:
+        facebook: no
+        github: no
+        twitter: no
+        linkedin: no
+        weibo: no
+        instapaper: no
+        vk: no
+        all: no
+      info: no
+editor_options: 
+  chunk_output_type: inline
+---
+
+# Test ADU
+
+```{r}
+library(censusapi)
+library(tidyverse)
+library(tigris)
+library(sf)
+library(mapview)
+library(raster)
+library(lwgeom)
+mapviewOptions(
+  basemaps = "OpenStreetMap"
+)
+options(
+  tigris_class = "sf",
+  tigris_use_cache = TRUE
+)
+```
+
+```{r}
+projection <- "+proj=utm +zone=10 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=ft +no_defs"
+```
+
+```{r}
+# sjc_bldg <-
+#   read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/ca_06077_footprints.csv") %>%
+#   st_as_sf(wkt = "WKT") %>%
+#   st_set_crs(4326) %>%
+#   st_transform(projection) %>%
+#   mutate(id = row_number())
+# 
+# stockton_boundary_influence_projected <-
+#   stockton_boundary_influence %>% 
+#   st_transform(projection)
+# 
+# stockton_bldg <-
+#   sjc_bldg[which(sjc_bldg$id %in% st_centroid(sjc_bldg)[stockton_boundary_influence_projected,]$id),]
+# 
+sjc_parcels <-
+  st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Parcels/Parcels.shp") %>%
+  st_transform(projection) %>%
+  st_make_valid()
+
+stockton_parcels <-
+  sjc_parcels[stockton_boundary_influence_projected,]
+
+stockton_parcels_extended <-
+  sjc_parcels[st_buffer(stockton_boundary_influence_projected,500),]
+
+# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ca_blocks_lite.Rdata")
+# 
+# stockton_blocks <- st_transform(ca_blocks_lite,projection)[stockton_boundary_influence_projected,]
+#   
+# save(stockton_blocks, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_blocks.Rdata")
+```
+
+```{r}
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/bldg_join.Rdata")
+
+bldg_join <-
+  bldg_join %>% 
+  mutate(
+    stories_by_height =
+      case_when(
+        GEOID == "060770039001" ~ 1, #Naval b ase
+        is.na(Height) & is.na(stories) ~ 1,
+        is.na(Height) ~ round(stories),
+        !is.na(stories) ~ round(stories),
+        Height < mean(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==1),]$Height) + sd(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==1),]$Height) ~ 1,
+        Height < mean(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==2),]$Height) + sd(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==2),]$Height) ~ 2,
+        Height < mean(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==3),]$Height) + sd(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==3),]$Height) ~ 3,
+        Height < mean(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==4),]$Height) + sd(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==4),]$Height) ~ 4,
+        TRUE ~ round(Height/5)
+      ),
+    bldg_tot =
+      bldgground*stories_by_height
+  ) %>% 
+  st_transform(projection)
+```
+
+```{r}
+residential_bldg <-
+  bldg_join %>% 
+  filter(ZONING == "R")
+```
+
+```{r}
+yard_setbacks <-
+  stockton_parcels %>%
+  filter(APN %in% residential_bldg$APN)
+  st_buffer(-4) # 4ft yard setback
+
+house_setback <-
+  residential_bldg %>%
+  st_buffer(6) #6 ft house setback
+
+adu_available_land <- #cuts out yard after considering setbacks
+  st_difference(yard_setbacks, st_union(house_setback))
+
+yard_separation <- #separates front and back yards into separate shapes
+  adu_available_land %>%
+  as_Spatial() %>%
+  sp::disaggregate() %>%
+  st_as_sf() %>% 
+  mutate(
+    yard_area = st_area(.) %>% as.numeric()
+  )
+
+save(yard_setbacks, house_setback, adu_available_land, yard_separation, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/yard_separation.Rdata")
+```
+
+```{r}
+# This creates the merged parcel shapes, so you can know that a parcel touches a street edge if it shares an edge with the block it's part of. the buffers are first filling in some small slivers, and then producing an end block shape that is 1ft inset from the original.
+stockton_parcels_dissolve <-
+  stockton_parcels_extended %>% 
+  summarize() %>% 
+  st_buffer(3) %>% 
+  st_buffer(-4)
+
+# This creates the clips of each parcel with the block shapes from the previous line. because of the -1ft buffer, this creates little 1ft leftover crusts.
+street_edges <- 
+  stockton_parcels %>%
+  filter(APN %in% residential_bldg$APN) %>% 
+  mutate(
+    parcel_area = st_area(.) %>% as.numeric()
+  ) %>% 
+  st_difference(stockton_parcels_dissolve)
+
+# Note that borders with water or green space may be incorrectly identified as street edges with this method. in EPA there are almost always buffer parcels for the baylands which prevent this from happening, but this may need to be addressed as a check on suspected throughlots using the street method, same as how the corner lot cases likely need to be sent to the street method.
+
+# This creates a shapefile of original parcel shapes, but with the filed called "street_edges" that counts the number of distinct crusts that were created. for most normal cases, this will be 1. however note that corner lots, and parcels completely surrounded by streets, are also 1 crust. generally the expectation is that if you have more than 1 crust, you're some kind of throughlot or outlier condition.
+parcels_number_of_edges <-
+  street_edges %>% 
+  as_Spatial() %>%
+  sp::disaggregate() %>%
+  st_as_sf() %>% 
+  group_by(APN) %>% 
+  summarize(street_edges = as.numeric(n())) %>%
+  st_set_geometry(NULL) %>% 
+  left_join(stockton_parcels, by = "APN") %>% 
+  st_as_sf()
+
+mapview(parcels_number_of_edges, zcol="street_edges")
+
+# Reviewing the throughlot cases can lead to manual identification of false positives, but this may not be worth the time to do. for now, this sets aside all cases of 2+ crusts to be treated in a separate analysis, since you'd need to treat throughlots separately anyway.
+through_lots_or_misc <-
+  street_edges %>% 
+  as_Spatial() %>%
+  sp::disaggregate() %>%
+  st_as_sf() %>% 
+  group_by(APN) %>% 
+  summarize(count = n()) %>% 
+  filter(count > 1) %>% 
+  st_set_geometry(NULL) %>% 
+  left_join(stockton_parcels, by = "APN") %>% 
+  st_as_sf()
+
+# This takes advantage of the convex hull operation to find bent crusts. 15% seems to be roughly the right ratio of the convex hull shape area to original parcel area to identify true corner conditions, but this will have some false positives and false negatives. these corner cases are set aside for now, likely need to be sent to the street matching script.
+corner_edges <-
+  street_edges %>%
+  filter(!APN %in% through_lots_or_misc$APN) %>% 
+  st_convex_hull() %>% 
+  mutate(
+    edge_area = st_area(.) %>% as.numeric()
+  ) %>% 
+  filter(edge_area > parcel_area*0.15)
+
+# This filters to the remaining one-crust parcels that are SFR. 
+normal_residential_parcels <-
+  street_edges %>% 
+  filter(!APN %in% through_lots_or_misc$APN) %>% 
+  filter(!APN %in% corner_edges$APN) %>% 
+  st_centroid() %>% 
+  as.data.frame() %>% 
+  rename(front_point = geometry) %>% 
+  left_join(stockton_parcels, by = "APN") %>%
+  as.data.frame() %>% 
+  rename(parcel_geometry = geometry) %>% 
+  right_join(residential_bldg %>% st_centroid(), by = "APN") %>%
+  as.data.frame() %>% 
+  st_as_sf()
+
+normal_residential_parcels_distance <-
+  normal_residential_parcels %>% 
+  rename(building_centroid = WKT) %>% 
+  mutate(
+    distance_bldg_front =
+      1:nrow(normal_residential_parcels) %>% 
+      map(function(row){
+        st_distance(normal_residential_parcels$front_point[row],normal_residential_parcels$building_centroid[row]) %>% 
+          as.numeric()
+      })
+  )
+
+normal_residential_parcels_yards <-
+  normal_residential_parcels_distance %>% 
+  arrange(APN, distance_bldg_front) %>% 
+  filter(!duplicated(APN)) %>% 
+  right_join(yard_separation, by = "APN")
+  st_as_sf()
+
+mapview(normal_residential_parcels_distance %>% st_set_geometry("parcel_geometry"))+mapview(normal_residential_parcels_distance)
+```
+
