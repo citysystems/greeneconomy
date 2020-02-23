@@ -3720,13 +3720,13 @@ zcta_stockton_joined <-
 # 
 # sjc_parcels <- 
 #   st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Parcels/Parcels.shp") %>% 
-#   st_transform(st_crs(zcta_stockton))
+#   st_transform(st_crs(zcta_stockton)) %>% 
+#   st_make_valid()
 # 
-# sjc_parcels_valid <- 
-#   st_make_valid(sjc_parcels)
+# save(sjc_parcels, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Parcels/sjc_parcels.Rdata")
 # 
 # stockton_parcels <- 
-#   sjc_parcels_valid[stockton_boundary_influence,]
+#   sjc_parcels[stockton_boundary_influence,]
 # 
 # bldg_parcel_join <- 
 #   st_join(st_centroid(stockton_bldg), stockton_parcels) %>%
@@ -3798,29 +3798,27 @@ zcta_stockton_joined <-
 #       ),
 #     ZIPCODE = as.numeric(ZIPCODE),
 #     ZONING = 
-#       ifelse(
-#         type > 0 & type < 20, 
-#         "R", 
-#         ifelse(
-#           type > 20 & type < 50, 
-#           "C",
-#           "O"
-#         )
+#       case_when(
+#         substr(ZONE,1,1) == "R" ~ "R",
+#         substr(ZONE,1,2) == "(R" ~ "R",
+#         substr(ZONE,1,1) %in% c("C","P","M","U") ~ "C", 
+#         substr(ZONE,1,2) %in% c("(C","(P") ~ "C",
+#         TRUE ~ "O"
 #       )
 #   )
 # 
 # save(stockton_bldg_final, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
-
+# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
+# 
 # stockton_bldg_17 <- 
 #   readOGR(dsn = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/Stockton2017", layer = "Stockton") %>% 
 #   st_as_sf() %>% 
 #   st_transform(st_crs(stockton_bldg_final))
 # 
 # save(stockton_bldg_17, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/stockton_bldg_17.Rdata")
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/stockton_bldg_17.Rdata")
+# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/stockton_bldg_17.Rdata")
 
-#match height from 2017 data
+# # match height from 2017 data
 # bldg_join <-
 #   stockton_bldg_final %>%
 #   st_join(
@@ -3835,32 +3833,32 @@ load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuilding
 #   ) %>%
 #   left_join(stockton_bldg_final %>% st_set_geometry(NULL),by="id")
 # 
+# bldg_join <-
+#   bldg_join %>% 
+#   mutate(
+#     stories_by_height =
+#       case_when(
+#         GEOID == "060770039001" ~ 1, #Naval base
+#         is.na(Height) & is.na(stories) ~ 1,
+#         is.na(Height) ~ round(stories),
+#         !is.na(stories) ~ round(stories),
+#         Height < mean(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==1),]$Height) + sd(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==1),]$Height) ~ 1,
+#         Height < mean(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==2),]$Height) + sd(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==2),]$Height) ~ 2,
+#         Height < mean(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==3),]$Height) + sd(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==3),]$Height) ~ 3,
+#         Height < mean(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==4),]$Height) + sd(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==4),]$Height) ~ 4,
+#         TRUE ~ round(Height/5)
+#       ),
+#     bldg_tot =
+#       bldgground*stories_by_height
+#   )
+# # 6033 unmatched when using -1m buffer. #2637 of those did not have assessor stories data, set to 1F. Of other 3396, 2090 1F, 1248 2F, 58 3F.
+# # 70757 had both 2017 heights and assessor stories data, go with assessor stories data. 51676 had assessor stories = 1, kept at 1F. 18974 had assessor stories = 2, kept at 2F. 107 had assessor stories > 2, set to 2.5F.
+# # mean height for assessor 1F: 11.30, sd 1.63. mean height for assessor 2F: 13.98, sd 2.25. mean height for assessor 3F: 15.39, sd 2.99. mean height for assessor 4F: 14.42, sd 5.35.
+# # 24660 had no assessor stories data but had 2017 heights, use mean + 1 sd from above as thresholds. 1F: 12.92. 2F: 16.23. 3F: 18.38. 4F: 19.77
+# # 15991 1F, 5642 2F, 908 3F, 1512 4F, 541 5F, 29 6F, 12 7F, 15 8F, 4 9F, 5 10F, 1 12F.
+# 
 # save(bldg_join, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/bldg_join.Rdata")
 load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/bldg_join.Rdata")
-
-bldg_join <-
-  bldg_join %>% 
-  mutate(
-    stories_by_height =
-      case_when(
-        GEOID == "060770039001" ~ 1, #Naval b ase
-        is.na(Height) & is.na(stories) ~ 1,
-        is.na(Height) ~ round(stories),
-        !is.na(stories) ~ round(stories),
-        Height < mean(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==1),]$Height) + sd(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==1),]$Height) ~ 1,
-        Height < mean(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==2),]$Height) + sd(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==2),]$Height) ~ 2,
-        Height < mean(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==3),]$Height) + sd(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==3),]$Height) ~ 3,
-        Height < mean(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==4),]$Height) + sd(bldg_join[which(!is.na(bldg_join$Height)&round(bldg_join$stories)==4),]$Height) ~ 4,
-        TRUE ~ round(Height/5)
-      ),
-    bldg_tot =
-      bldgground*stories_by_height
-  )
-#6033 unmatched when using -1m buffer. #2637 of those did not have assessor stories data, set to 1F. Of other 3396, 2090 1F, 1248 2F, 58 3F.
-#70757 had both 2017 heights and assessor stories data, go with assessor stories data. 51676 had assessor stories = 1, kept at 1F. 18974 had assessor stories = 2, kept at 2F. 107 had assessor stories > 2, set to 2.5F.
-# mean height for assessor 1F: 11.30, sd 1.63. mean height for assessor 2F: 13.98, sd 2.25. mean height for assessor 3F: 15.39, sd 2.99. mean height for assessor 4F: 14.42, sd 5.35. 
-#24660 had no assessor stories data but had 2017 heights, use mean + 1 sd from above as thresholds. 1F: 12.92. 2F: 16.23. 3F: 18.38. 4F: 19.77
-#15991 1F, 5642 2F, 908 3F, 1512 4F, 541 5F, 29 6F, 12 7F, 15 8F, 4 9F, 5 10F, 1 12F.
 
 bg_bldg <-
   bldg_join %>% 
@@ -4346,7 +4344,7 @@ Building Utilization refers to the amount of building space used per person thro
 | Links | [Oregon Legislative Assembly](https://olis.leg.state.or.us/liz/2019R1/Downloads/MeasureDocument/HB2001/B-Engrossed) |
 | Implementation Costs | N/A |
 | Impact Factor | Fiscally, [50% of Oregon households](https://www.oregon.gov/OHA/PH/ABOUT/Documents/indicators/rentburden.pdf) are rent burdened while [23%](https://nlihc.org/sites/default/files/SHP_OR.pdf) of renter households are extremely low income. These individuals will likely see the biggest impact. However, the law applies to cities of over 10,000. As of the 2010 Census, 2,208,732 Oregonians, which constitute 57.65% of the state’s population, live in such communities. |
-| Scalable Potential | Much of Stockton is [low density residential](https://stocktonca.mapgeo.io/datasets/properties?abuttersDistance=100&latlng=37.973764%2C-121.284422&themes=%22%5B%5C%22zoning%5C%22%5D%22&zoom=12). |
+| Scalable Potential | According to tax assessor records, `r bldg_join %>% filter(type==10) %>% nrow()` parcels have detached single-family residences. It is not yet clear what the impact of upzoning change is on actual development in other cities over multiple years, but these parcels could be potential candidates for suburban infill development. |
 | Similar | [Minneapolis 2040](https://minneapolis2040.com/)<br>[California SB50 (did not pass)](https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=201920200SB50) |
 
 ### Eliminate minimum parking
