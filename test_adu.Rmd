@@ -451,8 +451,8 @@ go_buffer <-
 churro_fail <- NULL
 
 go_collected_buildable_area <- NULL
-for(parcelRow in 38622:nrow(go)){
-# for(parcelRow in 2006:3000){
+# for(parcelRow in 38622:nrow(go)){
+for(parcelRow in 38621){
   
   print(parcelRow)
   cbuffer <- go[parcelRow,]
@@ -470,6 +470,7 @@ for(parcelRow in 38622:nrow(go)){
     
     for(point in 1:(nrow(parcel_coords)-1)){
       
+      # print(point)
       pt1 <- parcel_coords[point,1:2]
       pt2 <- parcel_coords[point+1,1:2]
       
@@ -657,7 +658,10 @@ for(parcelRow in 38622:nrow(go)){
   } else {
     go_adus_merge <-
       go_adus %>%
-        summarise() %>%
+        st_make_valid() %>% 
+        st_buffer(0.1) %>% 
+        st_buffer(-0.1) %>% 
+        summarise() %>% # can throw a self-intersection error
         mutate(
           APN = go$APN[parcelRow],
           parcelRow = parcelRow,
@@ -699,7 +703,7 @@ clean_buildable_area <-
 ```
 
 ```{r}
-save.image(file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ADU/test_adu_save3.Rdata")
+# save.image(file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ADU/test_adu_save3.Rdata")
 # load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ADU/test_adu_save3.Rdata")
 ```
 
