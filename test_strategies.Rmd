@@ -44,71 +44,64 @@ Building Utilization refers to the amount of building space used per person thro
 
 ### Revise zoning codes in medium to large cities to facilitate upzoning
 | Location | Oregon |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | HB 2001 legalizes the development of duplexes on residential land currently zoned for single-family housing in all communities of 10,000 or more. It also allows for the construction of three- to four-unit homes on single family-zoned land in cities of 25,000 or more. |
 | Links | [Oregon Legislative Assembly](https://olis.leg.state.or.us/liz/2019R1/Downloads/MeasureDocument/HB2001/B-Engrossed) |
-| Implementation Costs | N/A |
-| Impact Factor | Fiscally, [50% of Oregon households](https://www.oregon.gov/OHA/PH/ABOUT/Documents/indicators/rentburden.pdf) are rent burdened while [23%](https://nlihc.org/sites/default/files/SHP_OR.pdf) of renter households are extremely low income. These individuals will likely see the biggest impact. However, the law applies to cities of over 10,000. As of the 2010 Census, 2,208,732 Oregonians, which constitute 57.65% of the state’s population, live in such communities. |
+| Implementation Costs & Impact Factor | Besides legislative work, No implementation costs. Fiscally, [50% of Oregon households](https://www.oregon.gov/OHA/PH/ABOUT/Documents/indicators/rentburden.pdf) are rent burdened while [23%](https://nlihc.org/sites/default/files/SHP_OR.pdf) of renter households are extremely low income. These individuals will likely see the biggest impact. However, the law applies to cities of over 10,000. As of the 2010 Census, 2,208,732 Oregonians, which constitute 57.65% of the state’s population, live in such communities. |
 | Scalable Potential | According to tax assessor records, `bldg_join %>% filter(type==10) %>% nrow()` parcels have detached single-family residences. It is not yet clear what the impact of upzoning change is on actual development in other cities over multiple years, but these parcels could be potential candidates for suburban infill development. |
 | Similar | [Minneapolis 2040](https://minneapolis2040.com/)<br>[California SB50 (did not pass)](https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=201920200SB50) |
 
 ### Eliminate minimum parking
 | Location | Buffalo, NY |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | Developers are no longer required to build a certain number of parking spaces for commercial or residential projects, regardless of whether or not there are mass transit options nearby or if the tenants even need them. |
 | Links | [Buffalo Green Code Land Use Plan](http://www.oneregionforward.org/plan/the-buffalo-green-code-draft-land-use-plan/) |
-| Implementation Costs | N/A |
-| Impact Factor | 28% of land area in Buffalo’s city center is devoted to parking but only 63% of parking spaces are occupied on an average weekday. |
+| Implementation Costs & Impact Factor | Besides legislative work, no implementation costs. 28% of land area in Buffalo’s city center is devoted to parking but only 63% of parking spaces are occupied on an average weekday. |
 | Scalable Potential | According to [Stockton’s zoning ordinance](http://qcode.us/codes/stockton/view.php?topic=16-3-16_64-16_64_040&frames=on), large shopping centers must build 1 parking space per 250 square feet of retail space. [Anecdotal evidence](https://stocktoncitylimits.com/2013/12/31/why-are-stocktons-parking-lots-so-big-and-empty/) suggests that this is too much space, even during peak hours. Similarly inefficient standards include that colleges and universities must have 1 parking space per classroom plus 0.75 spaces per student. |
 | Similar | [Minneapolis 2040](https://minneapolis2040.com/)<br>[San Francisco, CA](https://usa.streetsblog.org/2018/12/17/san-francisco-eliminates-parking-minimums/)<br>[Hartford, CT](https://usa.streetsblog.org/2017/12/13/hartford-eliminates-parking-minimums-citywide/) |
  
 ### Encourage accessory dwelling units
 | Location | California |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | The 2019 California state legislative cycle passed progressive accessory dwelling unit (ADU) laws that, among other changes, supercede local to allow ADUs to be built on every single family parcel. Counties and cities in the Bay Area are in the process of updating their local ADU ordinances as well as offering many proactive resources to encourage ADU development and streamline the permitting process. |
 | Links | [San Mateo County, CA](https://secondunitcentersmc.org)<br>[Napa and Sonoma County, CA](https://napasonomaadu.org)<br>[San Jose, CA](https://www.sanjoseca.gov/business/development-services-permit-center/accessory-dwelling-units-adus) |
-| Implementation Costs | N/A |
-| Impact Factor | Aggregating single unit detached and attached, California has over 8,400,000 units. |
+| Implementation Costs & Impact Factor | Besides legislative work, no implementation costs. Aggregating single unit detached and attached, California has over 8,400,000 units. |
 | Scalable Potential | See Chapter 4. |
 | Similar | [Seattle, WA](https://www.seattle.gov/Documents/Departments/Council/MAIN_ADU_FEIS_2018.pdf) |
 
 ### Encourage micro-units
 | Location | San Francisco, CA |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | In 2011, SFHAC worked with District 8 Supervisor Scott Wiener to pass legislation that allows for the construction of micro-units, also known as “efficiency dwelling units.” The legislation allows for units as small as 220 square feet comprised of 150 square feet of living space, plus a bathroom and kitchen. |
 | Links | [San Francisco Planning](https://sfplanning.org/sites/default/files/documents/legis/code-summaries/120996_Cap_on_Efficiency_Dwelling_Units.pdf) |
-| Implementation Costs | N/A |
-| Impact Factor | Assuming this will be in San Francisco and one will pay 30% of their income on the unit at the suggested price of $1,400, this could impact 69.5% of San Francisco households. |
+| Implementation Costs & Impact Factor | Besides legislative work, no implementation costs. Assuming this will be in San Francisco and one will pay 30% of their income on the unit at the suggested price of \$1,400, this could impact 69.5% of San Francisco households. |
 | Scalable Potential | Assuming the same development costs and that one will pay 30% of their income on the unit, then this could impact 48.68% of Stockton households. Assuming the same development costs and that one will not save 20% of their income (as recommended) but instead spends it on housing e.g. 50% of their income goes towards housing, then this could impact 62.3% of Stockton households. |
 | Similar | [ShareNYC](https://www1.nyc.gov/site/hpd/about/projects-detail.page?project=ShareNYC)<br>[Vancouver, Canada](https://guidelines.vancouver.ca/D015.pdf) |
 
 ### Provide a density bonus for affordable housing
 | Location | San Francisco, CA |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | The 100% Affordable Housing Bonus Program, passed in 2016, provides a 30-foot height bonus for housing developments that completely consist of affordable housing for low- or very low-income households. |
 | Links | [HOME-SF](https://sfplanning.org/home-sf) |
-| Implementation Costs | N/A |
-| Impact Factor | Technically affordable housing is for those with the median income or below. For San Francisco, this would then apply to over 440,000 individuals. |
+| Implementation Costs & Impact Factor | Besides legislative work, no implementation costs. A poorly designed program can disincentivize development overall. Technically affordable housing is for those with the median income or below. For San Francisco, this would then apply to over 440,000 individuals. |
 | Scalable Potential | There are currently over 150,000 individuals living below the median income in Stockton. |
 | Similar | [Arlington, VA Affordable Housing Density Bonus Program](https://arlingtonva.s3.dualstack.us-east-1.amazonaws.com/wp-content/uploads/sites/38/2016/09/ACZOSection36.pdf) (Section H-7) |
 
 ### Develop a shared equity program for high-density housing 
 | Location | Davis, CA |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | Shared equity housing is a model used by nonprofit housing associations and municipalities targeting first-time buyers, those with bad loan or credit history, and those who can’t afford downpayments. Typically, a nonprofit or government entity provides a subsidy to lower the cost of purchase through shared appreciation loans, which are second mortgages provided by a public agency that buyers repay in full at the time of resale along with a percentage of home value appreciation. These funds are reinvested to make home ownership more affordable to another low-income buyer. |
 | Links | [Urban Insitute](https://www.urban.org/research/publication/shared-equity-homeownership-evaluation-case-study-dos-pinos-housing-cooperative) |
-| Implementation Costs | The Davis cooperative is independently run. In San Francisco, the Mayor's Office BMR program subsidies homes at about $250,000 below their appraised value. |
-| Impact Factor | According to the [Urban Institute](https://www.urban.org/research/publication/sharing-equity-future-generations-evaluation-long-term-affordable-homeownership-programs-usa), homes that were passed between shared equity owners remained affordable over time, delinquency and foreclosure rates were low, and families who sold their homes were able to use the proceeds to purchase market-rate homes. |
+| Implementation Costs & Impact Factor | The Davis cooperative is independently run. In San Francisco, the Mayor's Office BMR program subsidies homes at about $250,000 below their appraised value. According to the [Urban Institute](https://www.urban.org/research/publication/sharing-equity-future-generations-evaluation-long-term-affordable-homeownership-programs-usa), homes that were passed between shared equity owners remained affordable over time, delinquency and foreclosure rates were low, and families who sold their homes were able to use the proceeds to purchase market-rate homes. |
 | Scalable Potential | Stockton's Economic Devleopment Department or the Housing Authority of San Joaquin County could initiate such a program. |
 | Similar | [San Francisco Citywide Inclusionary Affordable Housing Program](https://www.urban.org/research/publication/shared-equity-homeownership-evaluation-case-study-san-francisco-citywide-inclusionary-affordable-housing-program) |
 
 ### Match homeowners with vacant spaces with individuals looking for affordable housing
 | Location | San Mateo County, CA  |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | The San Mateo Home Sharing Program is funded by the Department of Housing. The program matches providers with seekers and must live in San Mateo County. They accept housing vouchers through the program. Most rents range from \$600 to \$1500. Some individuals participating in the program also participate in household chores as a way to pay their rent. |
 | Links | [HIP Housing](https://housing.smcgov.org/sites/housing.smcgov.org/files/FAQS%20HomeSharing%202.2019.pdf) |
-| Implementation Costs | The program is run by nonprofit HIP Housing. |
-| Impact Factor | The average length of stay is 3 years. Since the program's inception in 1979, 65,000 individuals have participated. |
+| Implementation Costs & Impact Factor | The program is run by nonprofit HIP Housing. The average length of stay is 3 years. Since the program's inception in 1979, 65,000 individuals have participated. |
 | Scalable Potential | A similar nonprofit could organize in Stockton. |
 | Similar | [Santa Clara County Housing Sharing Program, operated by Catholic Charities](https://www.catholiccharitiesscc.org/house-sharing) |
 
@@ -118,65 +111,75 @@ This domain covers all strategies that reduce the amount of energy use in buildi
 
 ### Set energy savings standards on all public buildings and provide financial and technical assistance for commercial private sector energy savings
 | Location | Milwaukee, WI |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Details | Using a five-pronged strategy, the City of Milwaukee has: (1) Established efficiency targets (20% reduction over a decade in participating buildings); (2) Offered incentives and financing through leveraging private capital to supply upfront funding for improvements and collects payments through a voluntary municipal special charge; (3) Set a 20% reduction target in government buildings
-Provides training to support building owner and occupant actions; and (4) Provided technical services to identify energy efficient equipment and train workforce to support building operations.
- |
+|:------|:-------------------------------------------------------------------|
+| Details | Using a five-pronged strategy, the City of Milwaukee has: (1) Established efficiency targets (20% reduction over a decade in participating buildings); (2) Offered incentives and financing through leveraging private capital to supply upfront funding for improvements and collects payments through a voluntary municipal special charge; (3) Set a 20% reduction target in government buildings; (4) Provides training to support building owner and occupant actions; and (5) Provided technical services to identify energy efficient equipment and train workforce to support building operations. |
 | Links | [Better Buildings Challenge](https://city.milwaukee.gov/bbc) |
-| Implementation Costs | [Originally a $750,000 grant](https://city.milwaukee.gov/bbc/History) |
-| Impact Factor | The [program](https://city.milwaukee.gov/bbc) affected 133 buildings, totaling 14,660,008 square feet, and led to $2,418,061 in annual savings. |
+| Implementation Costs & Impact Factor | [Originally a $750,000 grant](https://city.milwaukee.gov/bbc/History), the [program](https://city.milwaukee.gov/bbc) has since affected 133 buildings, totaling 14,660,008 square feet, and led to $2,418,061 in annual savings. |
 | Scalable Potential | See Chapter 4. |
 | Similar | [San Jose, CA Energy and Water Building Performance Ordinance](https://www.sanjoseca.gov/your-government/departments-offices/environmental-services/climate-smart-san-jos/energy-and-water-building-performance-ordinance) |
 
 ### Create a fund to implement energy savings projects
 | Location | Boston, MA |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | In 2018, the City of Boston plans to launched Renew Boston Trust, which aims to use a market-based, self-funding model to increase energy efficiency investments and climate resiliency in its commercial and municipal buildings, nonprofit institutions, and multi-family properties. |
 | Links | [Renew Boston Trust](https://www.boston.gov/environment-and-energy/renew-boston-trust) |
-| Implementation Costs | Phase Two involves more than \$40 million of energy conservation measures. |
-| Impact Factor | TBD |
+| Implementation Costs & Impact Factor | Phase Two involves more than \$40 million of energy conservation measures. Results are TBD. |
 | Scalable Potential | Stockton's Department of Public Works could develop a similar initiative. |
-| Similar | [New York City Energy Efficiency Corporation](https://www.nyceec.com/)<br>
-[London Green Fund](https://www.london.gov.uk/what-we-do/funding/european-regional-development-fund/london-green-fund)<br>
-[Sustainable Melbourne Fund](https://sustainableaustraliafund.com.au/)<br>
-[The Atmospheric Fund, Toronto](https://taf.ca/) |
+| Similar | [New York City Energy Efficiency Corporation](https://www.nyceec.com/)<br>[London Green Fund](https://www.london.gov.uk/what-we-do/funding/european-regional-development-fund/london-green-fund)<br>[Sustainable Melbourne Fund](https://sustainableaustraliafund.com.au/)<br>[The Atmospheric Fund, Toronto](https://taf.ca/) |
 
 ### Enable property-assessed clean energy (PACE) financing
 | Location | Hartford, CT |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | A private company in Hartford operating a mixed-use housing and retail space privately financed a $1 million energy renovation project and paid back the loan through property tax reassessment. Greenworks Lending provided the upfront capital for rooftop solar, fuel cell energy storage, and installation of microgrid. The loan was repaid as a line item assessment of the property tax bill. |
 | Links | [Better Buildings Initiative](https://betterbuildingsinitiative.energy.gov/implementation-models/commercial-pace-financing-microgrid-mixed-use-building) |
-| Implementation Costs | $1 million |
-| Impact Factor | Year 1: $316,927 savings |
+| Implementation Costs & Impact Factor | \$1 million; In Year 1, $316,927 savings |
 | Scalable Potential | Stockton has [multiple existing PACE programs](http://www.stocktonca.gov/government/departments/econDev/eDevBusRes.html). |
-| Similar | [GreenFinanceSF](https://sfenvironment.org/article/financing/greenfinancesf-commercial-pace-program)<br>
-[Los Angeles County PACE](http://pace.lacounty.gov/)<br>
-[Set the PACE St. Louis](http://setthepacestlouis.com/)<br>
-[Chicago PACE](https://www.chicagopace.org/)<br>
-[Arlington C-PACE](https://arlington-pace.us/)<br>
-[Milwaukee PACE](https://city.milwaukee.gov/bbc/services/PACE-Financing) |
+| Similar | [GreenFinanceSF](https://sfenvironment.org/article/financing/greenfinancesf-commercial-pace-program)<br>[Los Angeles County PACE](http://pace.lacounty.gov/)<br>[Set the PACE St. Louis](http://setthepacestlouis.com/)<br>[Chicago PACE](https://www.chicagopace.org/)<br>[Arlington C-PACE](https://arlington-pace.us/)<br>[Milwaukee PACE](https://city.milwaukee.gov/bbc/services/PACE-Financing) |
 
 ### Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements
 | Location | Los Angeles County, CA |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | The Los Angeles Department of Water & Power runs multiple energy efficiency programs in three broad categories. Mass market programs generally serve residential customers and encourage them to upgrade to energy efficient appliances, with a few exceptions. Commercial, industrial, and institutional (CII) programs generally serve large nonresidential customers and range in scope from simple lighting upgrades to entire building overhauls. Lastly, cross-cutting programs serve a wide variety of customer types and employ broad strategies for achieving energy savings (e.g., planting street trees, informing updates to building codes, customer outreach, etc.). |
 | Links | [Economic Benefits of Energy Efficiency Programs: A Case Study of Investments by the Los Angeles Department of Water & Power](https://innovation.luskin.ucla.edu/wp-content/uploads/2019/03/Economic_Benefits_of_Energy_Efficiency_Programs.pdf) |
 | Implementation Costs & Impact Factor | [See table](https://docs.google.com/spreadsheets/d/1qkdGbvYQW0-jtMELTW88zN5dObpmVcHQqJuyeIpI2Kg/edit?usp=sharing). |
 | Scalable Potential | See Chapter 4. |
-| Similar | [Austin Energy](https://savings.austinenergy.com/rebates/residential/offerings/home-improvements/weatherization/)<br>
-[100 Homes, 100 Days, Birmingham, AL](https://www.birminghamal.gov/2018/08/03/everything-you-need-to-know-about-the-100-homes-100-days-program/)<br>
-[HomeWise, Seattle, WA](http://www.seattle.gov/light/assistance/assistance.asp) |
+| Similar | [Austin Energy](https://savings.austinenergy.com/rebates/residential/offerings/home-improvements/weatherization/)<br>[100 Homes, 100 Days, Birmingham, AL](https://www.birminghamal.gov/2018/08/03/everything-you-need-to-know-about-the-100-homes-100-days-program/)<br>[HomeWise, Seattle, WA](http://www.seattle.gov/light/assistance/assistance.asp) |
 
 ### Use green infrastructure to improve stormwater management
 | Location | San Francisco, CA |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Details | Green Infrastructure is a method of reducing stormwater and pollution burden from stormwater systems. It does this through the creation of micro urban watersheds that have the potential to decrease erosion, improve air quality, increase land value, and reduce urban heat effects (thereby also reducing cooling loads). 
- |
+|:------|:-------------------------------------------------------------------|
+| Details | Green Infrastructure is a method of reducing stormwater and pollution burden from stormwater systems. It does this through the creation of micro urban watersheds that have the potential to decrease erosion, improve air quality, increase land value, and reduce urban heat effects (thereby also reducing cooling loads). |
 | Links | [SFWater](https://sfwater.org/modules/showdocument.aspx?documentid=13249) |
 | Implementation Costs & Impact Factor | Contingent upon site. [See table](https://docs.google.com/spreadsheets/d/1Z1Q1j1GJpgI8-M9XGKHMgTds0wqyB-twr-RLR7xX-JU/edit#gid=414331495).
 | Scalable Potential | There are several key risks to Stockton’s water quality, most of which are tied to Stockton historic and present manufacturing activities. The Sharpe Army Depot and McCormick & Baxter Creosoting Company are both listed on the Environmental Protection Agencies National Priorities List, indicating they are a high priority superfund site. The EPA has identified additional sites of concern including Stockton Iron Works, Colberg Boat Works, Norge Cleaning Village, and Brea Agricultural Services. Two additonal sites, Stockton Naval Communications Station and the General Services Administration, are both located at the Naval Supply Center at Rough and Ready Island. As a result of these sites, as well as agricultural run-off and other sources, Stockton has elevated levels of Arsenic that are, on average, 4.5 times higher than recommended levels. [Read more](https://docs.google.com/document/d/1O8eMspahozBkoB3-uIw3Azvwyv6xEJvca1XV76TwgFY/edit). |
-| Similar | [Hunts Point, NY](https://static1.squarespace.com/static/561dcdc6e4b039470e9afc00/t/5d435f106f6e7a0001f5b304/1564696351697/HuntsPoint_EarthEconomics_062719-1.pdf)<br>
-[NE Siskiyou Green Street, Portland, OR](https://www.urbanraindesign.com/ne-siskiyou)<br> |
+| Similar | [Hunts Point, NY](https://static1.squarespace.com/static/561dcdc6e4b039470e9afc00/t/5d435f106f6e7a0001f5b304/1564696351697/HuntsPoint_EarthEconomics_062719-1.pdf)<br>[NE Siskiyou Green Street, Portland, OR](https://www.urbanraindesign.com/ne-siskiyou)<br> |
+
+### Provide incentives for households to install on-site batteries, particularly for vulnerable customers
+| Location | California |
+|:------|:-------------------------------------------------------------------|
+| Details | Recent increases in wildfires and grid outages has meant that large swathes of California are at greater risk of losing power. As a result, the California Public Utilities Commission has launched the Self-Generation Incentive Program, which provides funding for low-income, medically vulnerable, and other select groups who live in Tier 2 and 3 "High Fire Threat Districts." |
+| Links | [Green Tech Media](https://www.greentechmedia.com/articles/read/california-finalizes-plan-shifting-key-energy-storage-incentive-toward-blac) |
+| Implementation Costs & Impact Factor | $613 million over four years. As of 2016, 2,178 projects have been completed representing 450 MW of capacity. |
+| Scalable Potential | Unlikely given fire zone parameters, but incentives are still possible. |
+| Similar | [Go Solar California](https://www.gosolarcalifornia.ca.gov/consumers/taxcredits.php)
+
+### Implement "reach" codes which go beyond state minimum requirements for energy use in building design and construction
+| Location | San Jose, CA  |
+|:------|:-------------------------------------------------------------------|
+| Details | San Jose's reach code aims to make zero-emission electric buildings the default for San Jose. This would include low emission heating, additional charging infrastructure for electric vehicles, and photovoltaic cells on roofs. |
+| Links | [National Resource Defense Council](https://www.nrdc.org/experts/pierre-delforge/san-joses-proposed-building-reach-code-explained) |
+| Implementation Costs & Impact Factor | By [LEED standards]http://www.greenspacebuildings.com/wp-content/uploads/2011/05/Kats-Green-Buildings-Cost.pdf) (See Figure 3 in PDF), the cost is ten times less than the benefits. |
+| Scalable Potential | Contingent upon content of codes |
+| Similar | [Palo Alto, CA](https://cityofpaloalto.org/gov/depts/ds/green_building/2019_energy_reach_code_study.asp)
+
+### Use waste to produce electricity
+| Location | Hayward, CA  |
+|:------|:-------------------------------------------------------------------|
+| Details | Biogas uses methane and carbon dioxide and converts it into clean gas that can be piped straight into residential facilities for use. The facility involved in the treatment process is powered through the gas and excess electricity from the process is used at other City facilities. |
+| Links | [City of Hayward](https://www.hayward-ca.gov/your-government/departments/utilities-environmental-services/co-generation-power) |
+| Implementation Costs & Impact Factor | Depends on the scale of the project but by one estimate, the cost is about $4,500 per acverage kilowatt generated for plants that generate more than 50 kilowatts. |
+| Scalable Potential | Large agricultural industry proximal to Stockton could provide a steady supply of fuel. |
+| Similar | [Glendale, CA](https://www.glendaleca.gov/government/departments/glendale-water-and-power/biogas-renewable-generation-project)
 
 ## Employment Growth
 
@@ -184,32 +187,27 @@ This domain covers strategies with the outcome of increasing the employment rate
 
 ### Provide training and coaching for low-income workers, rather than unemployed workers
 | Location | Dayton, OH |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | The Workforce Advancement and Support Center (WASC) offered participating workers intensive employment retention and advancement services, including career coaching and access to skills training. It also offered them easier access to work support, in an effort to increase their incomes in the short run and help stabilize their employment. The program was found to be most effective in cities with the lowest baseline of work support. |
 | Links | [Strategies to Help Low-Wage Workers Advance](https://www.mdrc.org/sites/default/files/full_627.pdf) |
 | Implementation Costs | Based on a [New York City program](http://www.nyc.gov/html/sbs/downloads/pdf/presentation_wasc.pdf), start-up costs of \$615,000 plus three years of \$1.85 million each. |
 | Impact Factor | [Bridgeport and Dayton](https://www.mdrc.org/sites/default/files/full_627.pdf) experienced 16% increased participation in education and training. Dayton experienced 8% increase in earnings by Year 3. |
 | Scalable Potential | Stockton's Economic Development Department could operate a similar program. |
-| Similar | San Diego, CA<br>
-Bridgeport, CT |
+| Similar | San Diego, CA<br>Bridgeport, CT |
 
 ### Provide green-oriented job training and education pathways
 | Location | Richmond, CA |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Details | The construction component of [Richmond BUILD's](http://www.ci.richmond.ca.us/1243/RichmondBUILD) main track is a pre-apprenticeship program. About 25% of the program’s placements have been into formal building trades apprenticeship programs. Furthermore, after the completion of the 15-week training program, Richmond BUILD partners with employers to provide on-the-job training, funding half of graduates’ wages for a probationary period of 12 weeks.|
+|:------|:-------------------------------------------------------------------|
+| Details | The construction component of [Richmond BUILD's](http://www.ci.richmond.ca.us/1243/RichmondBUILD) main track is a pre-apprenticeship program. About 25% of the program's placements have been into formal building trades apprenticeship programs. Furthermore, after the completion of the 15-week training program, Richmond BUILD partners with employers to provide on-the-job training, funding half of graduates' wages for a probationary period of 12 weeks.|
 | Links | [Making Green Work](https://ellabakercenter.org/sites/default/files/downloads/making-green-work.pdf) |
 | Implementation Costs | Between \$5,000 and \$6,000 per student |
 | Impact Factor | Richmond BUILD yielded a 90% job placement rate (average starting wage rate at $15/hr). 30% of participants have a history with the legal system, and there are 35 available seats in each class. |
 | Scalable Potential | See Chapter 4. |
-| Similar | [CDTech Green Corps, Los Angeles, CA](http://www.cdtech.org/)<br>
-[East Los Angeles Skills Center](https://www.eastlaskillscenter.org/)<br>
-[Los Angeles Trade-Technical College](http://www.lattc.edu/)<br>
-[Oakland Green Jobs Corps](https://www.cypressmandela.org/)<br>
-[JobTrain, Menlo Park, CA](http://www.jobtrainworks.org/) |
+| Similar | [CDTech Green Corps, Los Angeles, CA](http://www.cdtech.org/)<br>[East Los Angeles Skills Center](https://www.eastlaskillscenter.org/)<br>[Los Angeles Trade-Technical College](http://www.lattc.edu/)<br>[Oakland Green Jobs Corps](https://www.cypressmandela.org/)<br>[JobTrain, Menlo Park, CA](http://www.jobtrainworks.org/) |
 
 ### Create a scholarship fund for students wishing to pursue eco-conscious careers
 | Location | N/A |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | San Joaquin Delta Community College does not require that you have a GED or High School diploma to attend. However, if you do not have a GED/High School Diploma, you are not eligible for federally funded student aid. Tuition is $46.00 per unit, which may represent a barrier for some students. If a fund were created that did not require GED/High School Diploma eligibility for financial aid and was targeted towards those pursuing environmentally-oriented careers, then it would incentivize more to pursue those careers. |
 | Links | [Low-Skill Workers’ Access to Quality Green Jobs](https://www.urban.org/sites/default/files/publication/32921/412096-Low-Skill-Workers-Access-to-Quality-Green-Jobs.PDF) |
 | Implementation Costs & Impact Factor | Contingent upon demand for eco-conscious jobs |
@@ -217,21 +215,20 @@ Bridgeport, CT |
 
 ### Offer continued training and support post-employment
 | Location | New York, NY |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | WorkAdvance is a sector-based workforce development model that continues training and support post-employment. The developers of the program focused on sectors with strong demand for entry-level and middle-skill employees and relatively short training time. For this program, they focused on transportation & manufacturing, IT, environmental remediation, and healthcare. The program itself has five components including: (1) Intensive screening of program applicants for motivation and readiness; (2) Sector appropriate pre-employment and career readiness, including orientation to the sector and career advancement coaching; (3) Sector-specific occupational skills training aligned with employer needs and leading to certifications that are in demand in the regional labor market; (4) Sector-specific job development and placement services based on strong relationships with employers; and (5) Post-employment retention and advancement services, including ongoing contact, coaching, skills training, and rapid reemployment help if needed. |
 | Links | [MRDC Policy Brief](https://www.mdrc.org/sites/default/files/WorkAdvance_2016_PolicyBrief.pdf) |
 | Implementation Costs & Impact Factor | [See table](https://docs.google.com/spreadsheets/d/1a3yOtNb3r3SD4LnSfBDs70Mre4OpmGM53iFZc9dxMkc/edit#gid=0). |
 | Scalable Potential | According to the 2013-2017 ACS, the number of Stockton residents that are high school graduates and possess a GED or have less than a high school education is over 75,000. |
-| Similar | [Towards Employment, Cleveland, OH](https://www.towardsemployment.org/)<br>
-[Madison Strategies Group, Tulsa, OK](http://www.madisonstrategies.org/) |
+| Similar | [Towards Employment, Cleveland, OH](https://www.towardsemployment.org/)<br>[Madison Strategies Group, Tulsa, OK](http://www.madisonstrategies.org/) |
 
 ## Local Jobs
 
-This domain includes strategies with the outcome of increasing the number of jobs based in Stockton. This is distinct from the previous section because local job creation may be attracting companies and workers who aren’t necessarily Stockton residents, so as to increase the jobs to employed residents ratio.
+This domain includes strategies with the outcome of increasing the number of jobs based in Stockton. This is distinct from the previous section because local job creation may be attracting companies and workers who aren't necessarily Stockton residents, so as to increase the jobs to employed residents ratio.
 
 ### Offer job creation tax credit
 | Location | N/A |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | Taxpayers with 20 or fewer employees at the end of the preceding taxable year may qualify for a nonrefundable new jobs credit against the personal income tax and corporation franchise and income taxes for each new qualified employee that is hired. It is equal to $3,000 for each net increase in qualified full-time employees from the previous taxable year. There have been several proposals for implementing a similar system with local corporate taxes. |
 | Links | [NCSL](https://www.ncsl.org/research/financial-services-and-commerce/job-creation-tax-credits.aspx#California) |
 | Implementation Costs | Depends on the size of tax credit expansion |
@@ -241,10 +238,9 @@ This domain includes strategies with the outcome of increasing the number of job
 
 ### Encourage mortgage refinancing
 | Location | N/A |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | Mortgage refinancing encourages consumers to take out a new loan to take advantage of lower interest rates. This creates a wealth effect whereby they develop greater disposable income. From a Keynesian perspective, this leads to more consumer spending in the local economy. The corollary to this is that growth in aggregate demand leads to job growth, or at least stability. HUD has a class on First-Time Homebuyer Education and Counseling. |
-| Links | [Regional Heterogeneity and the Refinancing Channel of Monetary Policy](http://economics.mit.edu/files/15731)<br>
-[Low Interest Rates Boost Household Consumption](https://voxeu.org/article/low-interest-rates-can-boost-households-consumption) |
+| Links | [Regional Heterogeneity and the Refinancing Channel of Monetary Policy](http://economics.mit.edu/files/15731)<br>[Low Interest Rates Boost Household Consumption](https://voxeu.org/article/low-interest-rates-can-boost-households-consumption) |
 | Implementation Costs | N/A |
 | Impact Factor | One program has been a HUD first-time home buyer program. The results can be found here. |
 | Scalable Potential | According to [Zillow](https://www.zillow.com/stockton-ca/home-values/), 1.1% of Stockton homes are delinquent on their mortgages while 6.6% of homes have negative equity. |
@@ -252,30 +248,20 @@ This domain includes strategies with the outcome of increasing the number of job
 
 ### Develop public employment program
 | Location | N/A |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Details | A public employment program places unemployed, willing-to-work, workers in in-demand jobs across the community.
-In post-Keynesian thought, the job creation element of a public employment program is two-fold. On one hand, you are giving participants a job. On the other hand, their increase in discretionary income leads to greater aggregate spending and by extension, an increase demand for employment in sectors where money is being spent. Additionally, due to macroeconomic overemployment, it is important to target such a program to those who experience structural unemployment, not frictional. |
-| Links | [General Equilibrium Effects of (Improving) Public Employment Programs: Experimental Evidence](https://www.nber.org/papers/w23838.pdf)<br>
-[Labor Market Considerations for a National Job Guarantee](https://www.brookings.edu/wp-content/uploads/2018/12/JobGuarantee_FP_web_20190206.pdf) |
+|:------|:-------------------------------------------------------------------|
+| Details | A public employment program places unemployed, willing-to-work, workers in in-demand jobs across the community. In post-Keynesian thought, the job creation element of a public employment program is two-fold. On one hand, you are giving participants a job. On the other hand, their increase in discretionary income leads to greater aggregate spending and by extension, an increase demand for employment in sectors where money is being spent. Additionally, due to macroeconomic overemployment, it is important to target such a program to those who experience structural unemployment, not frictional. |
+| Links | [General Equilibrium Effects of (Improving) Public Employment Programs: Experimental Evidence](https://www.nber.org/papers/w23838.pdf)<br>[Labor Market Considerations for a National Job Guarantee](https://www.brookings.edu/wp-content/uploads/2018/12/JobGuarantee_FP_web_20190206.pdf) |
 | Implementation Costs | See table. |
-| Impact Factor | Assuming that there wouldn’t be a resulting increase in labor force participation (unlikely), this could impact 18,541. Keep in mind that this would mean exceeding full employment. |
+| Impact Factor | Assuming that there wouldn't be a resulting increase in labor force participation (unlikely), this could impact 18,541. Keep in mind that this would mean exceeding full employment. |
 | Scalable Potential | According to CAP data, the ratio of children under 5 to available childcare slots in Stockton is 6.5. This would necessitate growth in the childcare industry. The Old Age Dependency ratio is 20.3, suggesting that the demand for healthcare services will rise in Stockton, even though there is a statewide shortage of healthcare workers. Most theorized public employment programs, particularly those that occur on a federal level, do mention the importance of building/rebuilding infrastructure. |
 | Similar |  |
 
 ### Provide state tax credits to investors in early-stage high-tech companies
 | Location | Nebraska |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | By making these credits refundable, the State of Nebraska Angel Investment Tax Credit has effectively subsidized the angel investment. If a qualified investor makes a qualified investment of \$100,000 in a Nebraska start-up company, and receives Nebraska’s 40% angel investment credit, that investor would receive \$40,000 in cash (in reduced taxes or direct payment) from the state. |
 | Links | [Tax Credit Program Report](https://nebraskalegislature.gov/FloorDocs/105/PDF/Agencies/Economic_Development__Department_of/161_20171114-090352.pdf) |
-| Implementation Costs | Between 2011 and 2016:<br>
-Investments: \$54,884,750<br>
-Investments (#): 614<br>
-Investment (mean): \$89,389<br>
-Credits: \$19,156,848<br>
-Credits: 614<br>
-Credits (mean): \$31,200<br>
-Note certain businesses received multiple credits.
- |
+| Implementation Costs | Between 2011 and 2016:<br>Investments: \$54,884,750<br>Investments (#): 614<br>Investment (mean): \$89,389<br>Credits: \$19,156,848<br>Credits: 614<br>Credits (mean): \$31,200<br>Note certain businesses received multiple credits. |
 | Impact Factor | Of the 50 businesses that responded to the follow-up survey, 35 reported that they created new jobs, 12 reported they did not, and 3 did not respond. The average number of new jobs created was 11.5. |
 | Scalable Potential | Stockton has 15,215 businesses with 19 employees or fewer, that employ a total of 55,345 individuals. They are broken down into the following industries: |
 | Similar |  |
@@ -304,69 +290,5 @@ Note certain businesses received multiple credits.
 
 **California**
 
-Encourage accessory dwelling units
-Revise zoning codes in medium to large cities to facilitate upzoning.
-Centennial, CO
-Partner with transportation network companies (TNCs) to offer first/last mile discount programs for transit riders
-Dayton, OH
-Provide training and coaching for low-income workers, rather than unemployed workers
-Georgia
-Pursue public-private partnerships for commercial development
-Hartford, CT
-Eliminate minimum parking
-Enable property-assessed clean energy (PACE) financing
-King County, WA
-Give carpoolers priority parking at transit stops
-Los Angeles, CA
-Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements
-Provide green-oriented job training and education pathways.
-Provide commercial rebates for commercial truck users to replace their diesel vehicles with electric vehicles
-Madrid, Spain
-Ban certain areas from most driving vehicles.
-Milwaukee, WI
-Set energy savings standards on all public buildings and provide financial and technical assistance for commercial private sector energy savings
-Minneapolis, MN
-Revise zoning codes in medium to large cities to facilitate upzoning.
-Eliminate minimum parking
-Rezone areas around transit stations and commercial corridors to allow for high-density residential development
-Montgomery County, OH
-Fund economic development using equity criteria
-Nebraska
-Provide state tax credits to investors in early-stage high-tech companies.
-New York, NY
-Encourage micro-units
-Offer continued training and support post-employment. 
-Charge for parking
-Offset negative externalities of traffic through tolls
-Oklahoma City, OK
-Charge for parking
-Oregon
-Revise zoning codes in medium to large cities to facilitate upzoning.
-Pasadena, CA
-Charge for parking
-Pinellas County, FL
-Partner with transportation network companies (TNCs) to offer first/last mile discount programs for transit riders
-San Diego, CA
-Provide training and coaching for low-income workers, rather than unemployed workers
-San Francisco, CA
-Eliminate minimum parking
-Encourage micro-units
-Provide a density bonus for affordable housing
-Use green infrastructure to improve stormwater management
-Ban certain areas from most driving vehicles.
-San Francisco Bay Area, CA
-Provide grants to income eligible residents for the replacement of high-emission cars with low-emission cars
-Encourage accessory dwelling units
-Encourage carsharing strategies
-Seattle, WA
-Encourage accessory dwelling units
-Offset negative externalities of traffic through tolls
-Tyson, VA
-Rezone areas around transit stations and commercial corridors to allow for high-density residential development
-USA (National)
-Develop public employment program
-Encourage mortgage refinancing
-Offer job creation tax credit
-Create a scholarship fund for students wishing to pursue eco-conscious careers.
-Vancouver, Canada
-Encourage micro-units
+- Encourage accessory dwelling units
+- Revise zoning codes in medium to large cities to facilitate upzoning.
