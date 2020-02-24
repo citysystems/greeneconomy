@@ -425,6 +425,22 @@ length <- 20
 width <- 8
 increment <- 2
 
+sspz <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/sspzboundary/sspzboundary.shp") %>% 
+  st_transform(projection)
+
+sspz_parcels <- normal_residential_parcels_yards[which(normal_residential_parcels_yards$APN %in% st_centroid(normal_residential_parcels_yards)[sspz,]$APN),]
+
+non_sspz_parcels <-
+  normal_residential_parcels_yards %>% 
+  filter(!APN %in% sspz_parcels$APN)
+
+go <- rbind(
+  sspz_parcels,
+  non_sspz_parcels
+) %>% 
+  st_set_geometry("yard_geometry")
+  
+
 go <- normal_residential_parcels_yards
 
 go_buffer <- 
@@ -435,8 +451,8 @@ go_buffer <-
 churro_fail <- NULL
 
 go_collected_buildable_area <- NULL
-# for(parcelRow in 1:nrow(go)){
-for(parcelRow in 101:2000){
+for(parcelRow in 38622:nrow(go)){
+# for(parcelRow in 2006:3000){
   
   print(parcelRow)
   cbuffer <- go[parcelRow,]
@@ -446,11 +462,11 @@ for(parcelRow in 101:2000){
     go_buffer[parcelRow,] %>%
     st_coordinates()
   
+  start <- proc.time()
+  
   if(is_empty(parcel_coords)){
     parcel_coords <- NULL
   } else{
-    
-    start <- proc.time()
     
     for(point in 1:(nrow(parcel_coords)-1)){
       
@@ -678,6 +694,16 @@ clean_buildable_area <-
 ```
 
 ```{r}
-# save.image(file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ADU/test_adu_save3.Rdata")
+# save(go_collected_buildable_area, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ADU/sspz.Rdata")
+# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ADU/sspz.Rdata")
+```
+
+```{r}
+save.image(file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ADU/test_adu_save3.Rdata")
 # load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ADU/test_adu_save3.Rdata")
+```
+
+```{r}
+# save.image(file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ADU/test_adu_save4.Rdata")
+# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ADU/test_adu_save4.Rdata")
 ```
