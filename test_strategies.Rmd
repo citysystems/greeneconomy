@@ -177,7 +177,7 @@ This domain covers all strategies that reduce the amount of energy use in buildi
 |:------|:-------------------------------------------------------------------|
 | Details | Biogas uses methane and carbon dioxide and converts it into clean gas that can be piped straight into residential facilities for use. The facility involved in the treatment process is powered through the gas and excess electricity from the process is used at other City facilities. |
 | Links | [City of Hayward](https://www.hayward-ca.gov/your-government/departments/utilities-environmental-services/co-generation-power) |
-| Implementation Costs & Impact Factor | Depends on the scale of the project but by one estimate, the cost is about $4,500 per acverage kilowatt generated for plants that generate more than 50 kilowatts. |
+| Implementation Costs & Impact Factor | Depends on the scale of the project but by one estimate, the cost is about $4,500 per kilowatt generated for plants that generate more than 50 kilowatts. |
 | Scalable Potential | Large agricultural industry proximal to Stockton could provide a steady supply of fuel. |
 | Similar | [Glendale, CA](https://www.glendaleca.gov/government/departments/glendale-water-and-power/biogas-renewable-generation-project)
 
@@ -190,8 +190,7 @@ This domain covers strategies with the outcome of increasing the employment rate
 |:------|:-------------------------------------------------------------------|
 | Details | The Workforce Advancement and Support Center (WASC) offered participating workers intensive employment retention and advancement services, including career coaching and access to skills training. It also offered them easier access to work support, in an effort to increase their incomes in the short run and help stabilize their employment. The program was found to be most effective in cities with the lowest baseline of work support. |
 | Links | [Strategies to Help Low-Wage Workers Advance](https://www.mdrc.org/sites/default/files/full_627.pdf) |
-| Implementation Costs | Based on a [New York City program](http://www.nyc.gov/html/sbs/downloads/pdf/presentation_wasc.pdf), start-up costs of \$615,000 plus three years of \$1.85 million each. |
-| Impact Factor | [Bridgeport and Dayton](https://www.mdrc.org/sites/default/files/full_627.pdf) experienced 16% increased participation in education and training. Dayton experienced 8% increase in earnings by Year 3. |
+| Implementation Costs & Impact Factor | Based on a [New York City program](http://www.nyc.gov/html/sbs/downloads/pdf/presentation_wasc.pdf), start-up costs of \$615,000 plus three years of \$1.85 million each. [Bridgeport and Dayton](https://www.mdrc.org/sites/default/files/full_627.pdf) experienced 16% increased participation in education and training. Dayton experienced 8% increase in earnings by Year 3. |
 | Scalable Potential | Stockton's Economic Development Department could operate a similar program. |
 | Similar | San Diego, CA<br>Bridgeport, CT |
 
@@ -200,8 +199,7 @@ This domain covers strategies with the outcome of increasing the employment rate
 |:------|:-------------------------------------------------------------------|
 | Details | The construction component of [Richmond BUILD's](http://www.ci.richmond.ca.us/1243/RichmondBUILD) main track is a pre-apprenticeship program. About 25% of the program's placements have been into formal building trades apprenticeship programs. Furthermore, after the completion of the 15-week training program, Richmond BUILD partners with employers to provide on-the-job training, funding half of graduates' wages for a probationary period of 12 weeks.|
 | Links | [Making Green Work](https://ellabakercenter.org/sites/default/files/downloads/making-green-work.pdf) |
-| Implementation Costs | Between \$5,000 and \$6,000 per student |
-| Impact Factor | Richmond BUILD yielded a 90% job placement rate (average starting wage rate at $15/hr). 30% of participants have a history with the legal system, and there are 35 available seats in each class. |
+| Implementation Costs & Impact Factor | Richmond BUILD spends between \$5,000 and \$6,000 per student and yielded a 90% job placement rate (average starting wage rate at $15/hr). 30% of participants have a history with the legal system, and there are 35 available seats in each class. |
 | Scalable Potential | See Chapter 4. |
 | Similar | [CDTech Green Corps, Los Angeles, CA](http://www.cdtech.org/)<br>[East Los Angeles Skills Center](https://www.eastlaskillscenter.org/)<br>[Los Angeles Trade-Technical College](http://www.lattc.edu/)<br>[Oakland Green Jobs Corps](https://www.cypressmandela.org/)<br>[JobTrain, Menlo Park, CA](http://www.jobtrainworks.org/) |
 

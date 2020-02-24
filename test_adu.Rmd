@@ -831,5 +831,3 @@ mapview(sspz, alpha.region=0, legend = FALSE) +
 # save.image(file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/test_adu_save4.Rdata")
 # load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/test_adu_save4.Rdata")
 ```
-
-
