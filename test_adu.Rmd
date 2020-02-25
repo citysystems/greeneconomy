@@ -452,8 +452,8 @@ go_buffer <-
 churro_fail <- NULL
 
 go_collected_buildable_area <- NULL
-# for(parcelRow in 38622:nrow(go)){
-for(parcelRow in 38621){
+for(parcelRow in 57125:78156){
+# for(parcelRow in 38621){
   
   print(parcelRow)
   cbuffer <- go[parcelRow,]
@@ -675,6 +675,8 @@ for(parcelRow in 38621){
     rbind(
       go_adus_merge
     )
+  
+  if(parcelRow%%1000 == 0) save(go_collected_buildable_area, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ADU/go_collected_buildable_area.Rdata")
 }
 ```
 
@@ -712,13 +714,13 @@ sspz_buildable_area_filtered <-
 ```
 
 ```{r}
-# save(sspz_buildable_area, sspz_buildable_area_filtered, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/sspz.Rdata")
-# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/sspz.Rdata")
+# save(go_collected_buildable_area, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ADU/go_collected_buildable_area.Rdata")
+# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ADU/go_collected_buildable_area.Rdata")
 ```
 
 ```{r}
 # save.image(file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/test_adu_save3.Rdata")
-# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/test_adu_save3.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ADU/test_adu_save3.Rdata")
 ```
 
 ```{r}
