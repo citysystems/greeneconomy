@@ -48,7 +48,7 @@ Building Utilization refers to the amount of building space used per person thro
 | Details | HB 2001 legalizes the development of duplexes on residential land currently zoned for single-family housing in all communities of 10,000 or more. It also allows for the construction of three- to four-unit homes on single family-zoned land in cities of 25,000 or more. |
 | Links | [Oregon Legislative Assembly](https://olis.leg.state.or.us/liz/2019R1/Downloads/MeasureDocument/HB2001/B-Engrossed) |
 | Implementation Costs & Impact Factor | Besides legislative work, No implementation costs. Fiscally, [50% of Oregon households](https://www.oregon.gov/OHA/PH/ABOUT/Documents/indicators/rentburden.pdf) are rent burdened while [23%](https://nlihc.org/sites/default/files/SHP_OR.pdf) of renter households are extremely low income. These individuals will likely see the biggest impact. However, the law applies to cities of over 10,000. As of the 2010 Census, 2,208,732 Oregonians, which constitute 57.65% of the state’s population, live in such communities. |
-| Scalable Potential | According to tax assessor records, `bldg_join %>% filter(type==10) %>% nrow()` parcels have detached single-family residences. It is not yet clear what the impact of upzoning change is on actual development in other cities over multiple years, but these parcels could be potential candidates for suburban infill development. |
+| Scalable Potential | According to tax assessor records, over 65,000 parcels have detached single-family residences. It is not yet clear what the impact of upzoning change is on actual development in other cities over multiple years, but these parcels could be potential candidates for suburban infill development. |
 | Similar | [Minneapolis 2040](https://minneapolis2040.com/)<br>[California SB50 (did not pass)](https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=201920200SB50) |
 
 ### Eliminate minimum parking
@@ -92,7 +92,7 @@ Building Utilization refers to the amount of building space used per person thro
 |:------|:-------------------------------------------------------------------|
 | Details | Shared equity housing is a model used by nonprofit housing associations and municipalities targeting first-time buyers, those with bad loan or credit history, and those who can’t afford downpayments. Typically, a nonprofit or government entity provides a subsidy to lower the cost of purchase through shared appreciation loans, which are second mortgages provided by a public agency that buyers repay in full at the time of resale along with a percentage of home value appreciation. These funds are reinvested to make home ownership more affordable to another low-income buyer. |
 | Links | [Urban Insitute](https://www.urban.org/research/publication/shared-equity-homeownership-evaluation-case-study-dos-pinos-housing-cooperative) |
-| Implementation Costs & Impact Factor | The Davis cooperative is independently run. In San Francisco, the Mayor's Office BMR program subsidies homes at about $250,000 below their appraised value. According to the [Urban Institute](https://www.urban.org/research/publication/sharing-equity-future-generations-evaluation-long-term-affordable-homeownership-programs-usa), homes that were passed between shared equity owners remained affordable over time, delinquency and foreclosure rates were low, and families who sold their homes were able to use the proceeds to purchase market-rate homes. |
+| Implementation Costs & Impact Factor | The Davis cooperative is independently run. In San Francisco, the Mayor's Office BMR program subsidizes homes at about $250,000 below their appraised value. According to the [Urban Institute](https://www.urban.org/research/publication/sharing-equity-future-generations-evaluation-long-term-affordable-homeownership-programs-usa), homes that were passed between shared equity owners remained affordable over time, delinquency and foreclosure rates were low, and families who sold their homes were able to use the proceeds to purchase market-rate homes. |
 | Scalable Potential | Stockton's Economic Devleopment Department or the Housing Authority of San Joaquin County could initiate such a program. |
 | Similar | [San Francisco Citywide Inclusionary Affordable Housing Program](https://www.urban.org/research/publication/shared-equity-homeownership-evaluation-case-study-san-francisco-citywide-inclusionary-affordable-housing-program) |
 
@@ -108,6 +108,15 @@ Building Utilization refers to the amount of building space used per person thro
 ## Building Energy
 
 This domain covers all strategies that reduce the amount of energy use in buildings, which tend to be concentrated in heating or cooling loads but also include lighting and other plug loads. This domain also includes localized power generation and storage, as well as electrification strategies that switch gas use to electricity use where the electricity grid has fewer emissions.
+
+### Promote a Solar Renewable Energy Certificate program
+| Location |  Washington, DC |
+|:------|:-------------------------------------------------------------------|
+| Details | Solar Renewable Energy Certificates (SREC) show that a certain amount of electricity was produced using solar. SRECs can be sold back to utilities so they can meet sustainability requirements that are set by each state. This system is contingent on state-level sustainability requirements. |
+| Links | [Solar United Neighbors](https://www.solarunitedneighbors.org/learn-the-issues/solar-incentives/solar-renewable-energy-credits-srecs/)<br>[Database of State Incentives for Renewables & Efficiency](https://programs.dsireusa.org/system/program/detail/5686) |
+| Implementation Costs & Impact Factor | Depends on the energy market, but SRECs can go for as high as \$440 in Washington, DC or as low as \$7.50 in Ohio. |
+| Scalable Potential | System exists in California. |
+| Similar | [California Solar Initiative Rebates ](https://www.gosolarcalifornia.ca.gov/csi/rebates.php) |
 
 ### Set energy savings standards on all public buildings and provide financial and technical assistance for commercial private sector energy savings
 | Location | Milwaukee, WI |
@@ -201,7 +210,7 @@ This domain covers strategies with the outcome of increasing the employment rate
 | Links | [Making Green Work](https://ellabakercenter.org/sites/default/files/downloads/making-green-work.pdf) |
 | Implementation Costs & Impact Factor | Richmond BUILD spends between \$5,000 and \$6,000 per student and yielded a 90% job placement rate (average starting wage rate at $15/hr). 30% of participants have a history with the legal system, and there are 35 available seats in each class. |
 | Scalable Potential | See Chapter 4. |
-| Similar | [CDTech Green Corps, Los Angeles, CA](http://www.cdtech.org/)<br>[East Los Angeles Skills Center](https://www.eastlaskillscenter.org/)<br>[Los Angeles Trade-Technical College](http://www.lattc.edu/)<br>[Oakland Green Jobs Corps](https://www.cypressmandela.org/)<br>[JobTrain, Menlo Park, CA](http://www.jobtrainworks.org/) |
+| Similar | [CDTech Green Corps, Los Angeles, CA](http://www.cdtech.org/)<br>[East Los Angeles Skills Center](https://www.eastlaskillscenter.org/)<br>[Los Angeles Trade-Technical College](http://www.lattc.edu/)<br>[Oakland Green Jobs Corps](https://www.cypressmandela.org/)<br>[JobTrain, Menlo Park, CA](http://www.jobtrainworks.org/)<br>[Green Jobs Boston](https://sites.google.com/site/greenjobsboston/home)<br>[Win-Win, New York City, NY](https://www.nycservice.org/organizations/936) |
 
 ### Create a scholarship fund for students wishing to pursue eco-conscious careers
 | Location | N/A |
@@ -212,7 +221,7 @@ This domain covers strategies with the outcome of increasing the employment rate
 | Scalable Potential | San Joaquin Delta College or Stockton Scholars could explore this idea. |
 
 ### Offer continued training and support post-employment
-| Location | New York, NY |
+| Location | New York City, NY |
 |:------|:-------------------------------------------------------------------|
 | Details | WorkAdvance is a sector-based workforce development model that continues training and support post-employment. The developers of the program focused on sectors with strong demand for entry-level and middle-skill employees and relatively short training time. For this program, they focused on transportation & manufacturing, IT, environmental remediation, and healthcare. The program itself has five components including: (1) Intensive screening of program applicants for motivation and readiness; (2) Sector appropriate pre-employment and career readiness, including orientation to the sector and career advancement coaching; (3) Sector-specific occupational skills training aligned with employer needs and leading to certifications that are in demand in the regional labor market; (4) Sector-specific job development and placement services based on strong relationships with employers; and (5) Post-employment retention and advancement services, including ongoing contact, coaching, skills training, and rapid reemployment help if needed. |
 | Links | [MRDC Policy Brief](https://www.mdrc.org/sites/default/files/WorkAdvance_2016_PolicyBrief.pdf) |
@@ -234,52 +243,65 @@ This domain includes strategies with the outcome of increasing the number of job
 | Similar | [Columbus, OH](https://www.columbus.gov/development/economic-development/Business-Attraction---Expansion/) |
 
 ### Encourage mortgage refinancing
-| Location | N/A |
+| Location | San Francisco, CA |
 |:------|:-------------------------------------------------------------------|
 | Details | Mortgage refinancing encourages consumers to take out a new loan to take advantage of lower interest rates. This creates a wealth effect whereby they develop greater disposable income. From a Keynesian perspective, this leads to more consumer spending in the local economy. The corollary to this is that growth in aggregate demand leads to job growth, or at least stability. HUD has a class on First-Time Homebuyer Education and Counseling. |
-| Links | [Regional Heterogeneity and the Refinancing Channel of Monetary Policy](http://economics.mit.edu/files/15731)<br>[Low Interest Rates Boost Household Consumption](https://voxeu.org/article/low-interest-rates-can-boost-households-consumption) |
-| Implementation Costs | N/A |
-| Impact Factor | One program has been a HUD first-time home buyer program. The results can be found here. |
+| Links | [Regional Heterogeneity and the Refinancing Channel of Monetary Policy](http://economics.mit.edu/files/15731)<br>[Low Interest Rates Boost Household Consumption](https://voxeu.org/article/low-interest-rates-can-boost-households-consumption)<br>[San Francisco Mayor's Office of Housing and Community Development](https://sfmohcd.org/refinancing) |
+| Implementation Costs & Impact Factor | N/A |
+| Impact Factor | [See results](https://docs.google.com/document/d/1OCGHkK8pjBE9zpFcQugDnIXFsLAYPNk7v2rsQ-A_Nj8/edit) for a HUD first-time home buyer program. |
 | Scalable Potential | According to [Zillow](https://www.zillow.com/stockton-ca/home-values/), 1.1% of Stockton homes are delinquent on their mortgages while 6.6% of homes have negative equity. |
-| Similar |  |
+| Similar | [Dublin, CA](https://dublin.ca.gov/470/Refinancing)<br>[Chicago Department of Housing](https://www.chicago.gov/city/en/depts/doh/provdrs/homeowners/svcs/refinancing-of-affordable-units.html) |
 
 ### Develop public employment program
-| Location | N/A |
+| Location | San Francisco, CA |
 |:------|:-------------------------------------------------------------------|
 | Details | A public employment program places unemployed, willing-to-work, workers in in-demand jobs across the community. In post-Keynesian thought, the job creation element of a public employment program is two-fold. On one hand, you are giving participants a job. On the other hand, their increase in discretionary income leads to greater aggregate spending and by extension, an increase demand for employment in sectors where money is being spent. Additionally, due to macroeconomic overemployment, it is important to target such a program to those who experience structural unemployment, not frictional. |
-| Links | [General Equilibrium Effects of (Improving) Public Employment Programs: Experimental Evidence](https://www.nber.org/papers/w23838.pdf)<br>[Labor Market Considerations for a National Job Guarantee](https://www.brookings.edu/wp-content/uploads/2018/12/JobGuarantee_FP_web_20190206.pdf) |
-| Implementation Costs | See table. |
-| Impact Factor | Assuming that there wouldn't be a resulting increase in labor force participation (unlikely), this could impact 18,541. Keep in mind that this would mean exceeding full employment. |
+| Links | [JobsNOW!, San Francisco Human Services Agency](https://www.sfhsa.org/services/jobs-money/jobsnow)<br>[General Equilibrium Effects of (Improving) Public Employment Programs: Experimental Evidence](https://www.nber.org/papers/w23838.pdf)<br>[Labor Market Considerations for a National Job Guarantee](https://www.brookings.edu/wp-content/uploads/2018/12/JobGuarantee_FP_web_20190206.pdf) |
+| Implementation Costs & Impact Factor | [See table](https://docs.google.com/spreadsheets/d/1wRfHpgLv4xkIYSVeNFy-1X3LqU5UAzVUOMWzD9nOe30/edit). Assuming that there wouldn't be a resulting increase in labor force participation (unlikely), this could impact about 18,000 individuals. Keep in mind that this would mean exceeding full employment. |
 | Scalable Potential | According to CAP data, the ratio of children under 5 to available childcare slots in Stockton is 6.5. This would necessitate growth in the childcare industry. The Old Age Dependency ratio is 20.3, suggesting that the demand for healthcare services will rise in Stockton, even though there is a statewide shortage of healthcare workers. Most theorized public employment programs, particularly those that occur on a federal level, do mention the importance of building/rebuilding infrastructure. |
-| Similar |  |
+| Similar | [RecycleForce, Indianapolis](https://www.brightmarkenergy.com/recycleforce) |
 
-### Provide state tax credits to investors in early-stage high-tech companies
+### Provide tax credits to investors in advanced industries
 | Location | Nebraska |
 |:------|:-------------------------------------------------------------------|
 | Details | By making these credits refundable, the State of Nebraska Angel Investment Tax Credit has effectively subsidized the angel investment. If a qualified investor makes a qualified investment of \$100,000 in a Nebraska start-up company, and receives Nebraska’s 40% angel investment credit, that investor would receive \$40,000 in cash (in reduced taxes or direct payment) from the state. |
 | Links | [Tax Credit Program Report](https://nebraskalegislature.gov/FloorDocs/105/PDF/Agencies/Economic_Development__Department_of/161_20171114-090352.pdf) |
-| Implementation Costs | Between 2011 and 2016:<br>Investments: \$54,884,750<br>Investments (#): 614<br>Investment (mean): \$89,389<br>Credits: \$19,156,848<br>Credits: 614<br>Credits (mean): \$31,200<br>Note certain businesses received multiple credits. |
-| Impact Factor | Of the 50 businesses that responded to the follow-up survey, 35 reported that they created new jobs, 12 reported they did not, and 3 did not respond. The average number of new jobs created was 11.5. |
-| Scalable Potential | Stockton has 15,215 businesses with 19 employees or fewer, that employ a total of 55,345 individuals. They are broken down into the following industries: |
-| Similar |  |
+| Implementation Costs & Impact Factor | Between 2011 and 2016,<br>Investments: \$54,884,750<br>Investments (#): 614<br>Investment (mean): \$89,389<br>Credits: \$19,156,848<br>Credits: 614<br>Credits (mean): \$31,200<br>Note certain businesses received multiple credits. Of the 50 businesses that responded to the follow-up survey, 35 reported that they created new jobs, 12 reported they did not, and 3 did not respond. The average number of new jobs created was 11.5. |
+| Scalable Potential | Stockton has over 15,000 businesses with 19 employees or fewer, that employ a total of 55,000 individuals. They are broken down by industry as seen [here](https://docs.google.com/spreadsheets/d/15RHLcStF8-YZpp1lp8KHChaGXvK9weAGsgg8MktYK8Q/edit#gid=2038112866). |
+| Similar | [Colorado Advanced Industry Investment Tax Credit](https://choosecolorado.com/doing-business/incentives-financing/advanced-industry-investment-tax-credit/) |
+
+### Provide tax credits to investors in community development corporations
+| Location | Pennsylvania |
+|:------|:-------------------------------------------------------------------|
+| Details | The program is broken down into four other subparts: The Neighborhood Partnership Program, Special Priorities Program, Charitable Food Program and the Enterprise Zone Tax Credit. Neighborhood organizations must apply to the program by documenting that they have the capacity to complete the proposed project, confirm their collaborations, demonstrate the need for the project and provide required documentation. Eligible projects must serve distressed areas or support neighborhood conservation in a number of focus areas within community development. Any businesses in the state are then eligible to donate to an eligible project and receive up to a 55% tax credit.  |
+| Links | [Neighborhood Assistance Program](https://dced.pa.gov/programs/neighborhood-assistance-program-nap/) |
+| Implementation Costs & Impact Factor | Thirty-six million in tax credits is budgeted each year for Neighborhood Assistance Program. According to [this article](http://cedamichigan.org/2019/05/community-investment-tax-credit-programs-catalysts-for-locally-driven-solutions/), in the Lawrenceville neighborhood of Pittsburgh, NAP helped facilitate 36 new neighborhood businesses in two years, development of 120 new housing units worth \$30 million, development of 45,000 square feet of commercial space worth \$9 million, and an average \$2,900 in real estate tax revenue on previously vacant parcels. |
+| Scalable Potential | The [Reinvent South Stockton Coalition](https://rsscoalition.org/) is an example of a local CDC that can be supported by such a program. |
+| Similar | [Massachusetts Community Investment Tax Credit](https://macdc.org/how-it-works) |
+
+### Pursue public-private partnerships for commercial development
+| Location | Georgia |
+|:------|:-------------------------------------------------------------------|
+| Details | Georgia partnered with Kia to develop a manufacturing plant that suited the needs of the company. No appropriate size plot existed so, Georgia purchased multiple adjacent plots near deepwater ports and leased them to Kia at a low sum. Quick Start, Georgia's innovative workforce training and development program, developed a specific program just for the needs of Kia. |
+| Links | [Georgia's Successful Partnership with Kia Serves as Model for Efficiency and Job Growth](https://www.georgia.org/sites/default/files/wp-uploads/2014/08/Kia_Case_Study_Final.pdf) |
+| Implementation Costs & Impact Factor | \$9,000,000-$15,000,000 in Job Tax Credits; \$80,700,000 in Department of Transportation capital projects; Direct creation of 3000+ jobs |
+| Scalable Potential | Stockton brownfields could be valuable opportunities for large capital projects or commercial development, combining private investment and public facilitation of brownfield remediation. |
+| Similar | [Massachusetts Community Investment Tax Credit](https://macdc.org/how-it-works) |
+
  
 ## Appendix A: Index of Case Studies by Place
 
 **Arizona**
 
-- Engage automobile manufacturers as stakeholders in the EV market
+- [Engage automobile manufacturers as stakeholders in the EV market](engage-automobile-manufacturers-as-stakeholders-in-the-ev-market)
 
 **Austin, TX**
 
 - Partner with transportation network companies (TNCs) to offer first/last mile discount programs for transit riders
 
-**Belgrade, Serbia**
-
-- Revise energy standards for public buildings and create a fund to implement energy savings product
-
 **Bridgeport, CT**
 
-- Provide training and coaching for low-income workers, rather than unemployed workers
+- [Provide training and coaching for low-income workers, rather than unemployed workers](provide-training-and-coaching-for-low-income-workers-rather-than-unemployed-workers)
 
 **Buffalo, NY**
 
@@ -287,5 +309,5 @@ This domain includes strategies with the outcome of increasing the number of job
 
 **California**
 
-- Encourage accessory dwelling units
-- Revise zoning codes in medium to large cities to facilitate upzoning.
+- [Encourage accessory dwelling units](encourage-accessory-dwelling-units)
+- [Revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning](revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning)
