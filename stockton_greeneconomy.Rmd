@@ -210,7 +210,7 @@ for(year in 2010:2018){
 }
 
 sjc_projection <-
-  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/SSP_asrc_STATEfiles/DATA-PROCESSED/SPLITPROJECTIONS/CA.csv") %>%
+  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/SSP_asrc_STATEfiles/DATA-PROCESSED/SPLITPROJECTIONS/CA.csv") %>%
   filter(COUNTY == "077") %>%
   group_by(YEAR) %>%
   summarize(
@@ -294,8 +294,8 @@ pop_emp_sjc_w_projection <-
 #   }) %>%
 #   rbindlist()
 # 
-# save(sjc_wac, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata")
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata")
+# save(sjc_wac, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/sjc_wac.Rdata")
 
 jobs_sjc <-
   sjc_wac %>%
@@ -346,7 +346,7 @@ pop_jobs_sjc_w_projection_table <-
     `Percent Unemployment` = ifelse(is.na(`Percent Unemployment`),"NA",paste0(round(`Percent Unemployment`),"%"))
   )
 
-# save(pop_jobs_sjc_w_projection, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/pop_jobs_sjc_w_projection.Rdata")
+# save(pop_jobs_sjc_w_projection, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/pop_jobs_sjc_w_projection.Rdata")
 
 kable(
   pop_jobs_sjc_w_projection_table,
@@ -437,8 +437,8 @@ The following figure compares the J/ER ratio for SJC and its neighboring countie
 #   }
 # }
 # 
-# save(county_jer,file="C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/county_jer.Rdata")
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/county_jer.Rdata")
+# save(county_jer,file="C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/county_jer.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/county_jer.Rdata")
 
 county_jer %>% 
   filter(County %in% c("San Joaquin","Stanislaus","Alameda","Sacramento","Fresno","Solano","Contra Costa")) %>% 
@@ -458,7 +458,7 @@ The [Quarterly Workforce Indicators](https://www.census.gov/data/developers/data
 
 ```{r qwi}
 label_industry <-
-  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/label_industry.csv")
+  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/label_industry.csv")
 
 # qwi_sjc <- data.frame(matrix(ncol=5,nrow=0))
 # colnames(qwi_sjc) <- c("year","industry","label","EmpS","EarnS")
@@ -488,8 +488,8 @@ label_industry <-
 #     bind_rows(qwi_sjc,qwi)
 # }
 # 
-# save(qwi_sjc, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/qwi_sjc.Rdata")
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/qwi_sjc.Rdata")
+# save(qwi_sjc, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/qwi_sjc.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/qwi_sjc.Rdata")
 
 qwi_sjc_18 <-
   qwi_sjc %>% 
@@ -664,8 +664,8 @@ pop_emp_stockton_w_projection <-
 #     return(temp)
 #   })
 # 
-# save(stockton_wac, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_wac.Rdata")
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_wac.Rdata")
+# save(stockton_wac, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_wac.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_wac.Rdata")
 
 jobs_stockton <-
   stockton_wac %>% 
@@ -716,7 +716,7 @@ pop_jobs_stockton_w_projection_table <-
     `Percent Unemployment` = ifelse(is.na(`Percent Unemployment`),"NA",paste0(round(`Percent Unemployment`),"%"))
   )
 
-# save(pop_jobs_stockton_w_projection, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/pop_jobs_stockton_w_projection.Rdata")
+# save(pop_jobs_stockton_w_projection, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/pop_jobs_stockton_w_projection.Rdata")
 
 kable(
   pop_jobs_stockton_w_projection_table, 
@@ -780,8 +780,8 @@ Estimation of the average earnings of Stockton jobs is not possible using the QW
 #     return(temp)
 #   })
 # 
-# save(stockton_rac, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_rac.Rdata")
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_rac.Rdata")
+# save(stockton_rac, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_rac.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_rac.Rdata")
 
 jobs_stockton_residents <-
   stockton_rac %>%
@@ -862,7 +862,7 @@ The following six tables filter the full Quarterly Workforce Indicators dataset 
 
 ```{r sjc-jobs}
 green_jobs_classification <- 
-  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/green_jobs_classification.csv")
+  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/green_jobs_classification.csv")
 
 green_jobs_summary <-
   green_jobs_classification %>% 
@@ -1140,8 +1140,8 @@ The following table shows a preliminary normalization of the 2005 and 2016 GHG e
 #     state_part = "main",
 #     agg_geo = "bg"
 #   )
-# save(ca_wac_2005, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ca_wac_2005.Rdata")
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ca_wac_2005.Rdata")
+# save(ca_wac_2005, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ca_wac_2005.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ca_wac_2005.Rdata")
 
 stockton_jobs_2005 <-
   stockton_bgs_full %>%
@@ -1246,12 +1246,12 @@ The following table shows the counts of jobs in these subcategories that are hel
 #     county_lodes_h <-
 #       ca_lodes[which(ca_lodes$h_tract %in% county_tracts$GEOID),]
 # 
-#     save(county_lodes_h, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract_noroute.Rdata"))
+#     save(county_lodes_h, file = paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract_noroute.Rdata"))
 # 
 #   }
 # }
 
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_077_2017_tract_noroute.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_077_2017_tract_noroute.Rdata")
 
 sjc_lodes_w_counties <- 
   county_lodes_h %>% 
@@ -1327,7 +1327,7 @@ county_localjobs <- NULL
 
 for(year in 2002:2017){
   for(county in county_neighbors$COUNTYFP){
-    load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract_noroute.Rdata"))
+    load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract_noroute.Rdata"))
     
     county_lodes_w_counties <- 
       county_lodes_h %>% 
@@ -1401,11 +1401,11 @@ The following table shows the counts of jobs in these subcategories for the top 
 #     stockton_lodes_h <-
 #       ca_lodes[which(ca_lodes$h_bg %in% stockton_bgs_full$GEOID),]
 # 
-#     save(stockton_lodes_h, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract_noroute.Rdata"))
+#     save(stockton_lodes_h, file = paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract_noroute.Rdata"))
 # 
 # }
 
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017_tract_noroute.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017_tract_noroute.Rdata")
 
 stockton_lodes_w_counties <- 
   stockton_lodes_h %>% 
@@ -1584,11 +1584,11 @@ The percentages in the table below should be interpreted as the % of overall job
 #     return(ca_wac)
 #   })
 # 
-# save(ca_wac, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ca_wac.Rdata")
+# save(ca_wac, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ca_wac.Rdata")
 
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ca_wac.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ca_wac.Rdata")
 
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017_tract_noroute.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017_tract_noroute.Rdata")
 
 stockton_lodes_h_join_wac <- 
   stockton_lodes_h %>% 
@@ -1810,7 +1810,7 @@ The following table shows commute data for SJC residents from 2011 to 2017, incl
 #         agg_geo = "tract"
 #       )
 #     
-#     save(ca_lodes, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/ca_lodes_",year,"_tract.Rdata"))
+#     save(ca_lodes, file = paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/ca_lodes_",year,"_tract.Rdata"))
 # 
 #     county_tracts <-
 #       ca_tracts %>%
@@ -1854,7 +1854,7 @@ The following table shows commute data for SJC residents from 2011 to 2017, incl
 #       county_lodes_h_route %>%
 #       filter(duration < 180)
 # 
-#     save(county_lodes_h_route,county_lodes_h_filter, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
+#     save(county_lodes_h_route,county_lodes_h_filter, file = paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
 #   }
 # }
 
@@ -1864,9 +1864,9 @@ The following table shows commute data for SJC residents from 2011 to 2017, incl
 #   for(county in c("013")){
 #     print(paste0(year,"-",county))
 # 
-#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
+#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
 # 
-#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
+#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
 # 
 #     travel_time_mode <-
 #       getCensus(
@@ -2002,7 +2002,7 @@ The following table shows commute data for SJC residents from 2011 to 2017, incl
 #         )
 #       )
 # 
-#     save(county_commute_vmt_tractmode,file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
+#     save(county_commute_vmt_tractmode,file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
 #   }
 # }
 #
@@ -2013,9 +2013,9 @@ The following table shows commute data for SJC residents from 2011 to 2017, incl
 # 
 #     print(paste0(year,"-",county))
 # 
-#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
+#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_lodes_",county,"_",year,"_tract.Rdata"))
 # 
-#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_",year,".Rdata"))
+#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/acs1_vars_",year,".Rdata"))
 # 
 #     travel_time_mode <-
 #     getCensus(
@@ -2150,8 +2150,8 @@ The following table shows commute data for SJC residents from 2011 to 2017, incl
 #   }
 # }
 # 
-# save(county_commute_vmt_countymode, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_countymode.Rdata")
-# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_countymode.Rdata")
+# save(county_commute_vmt_countymode, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_countymode.Rdata")
+# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_countymode.Rdata")
 # 
 # county_commute_vmt_countymode %>% 
 #   filter(jobs_car != 0) %>% 
@@ -2164,9 +2164,9 @@ The following table shows commute data for SJC residents from 2011 to 2017, incl
 #   ) +
 #   geom_line()
 # 
-# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
+# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
 # 
-# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_countymode.Rdata")
+# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_countymode.Rdata")
 # 
 # county_commute_vmt_compare <-
 #   rbind(
@@ -2188,7 +2188,7 @@ The following table shows commute data for SJC residents from 2011 to 2017, incl
 #   ) +
 #   geom_line()
 
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
 
 county_commute_vmt_tractmode_table <-
   county_commute_vmt_tractmode %>% 
@@ -2246,7 +2246,7 @@ One of the possible contributions to an increasing VMT/job isn't necessarily fur
 #     
 #     print(paste0(year,"-",county))
 #     
-#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_",year,".Rdata"))
+#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/acs1_vars_",year,".Rdata"))
 #     
 #     travel_time_mode <-
 #     getCensus(
@@ -2340,8 +2340,8 @@ One of the possible contributions to an increasing VMT/job isn't necessarily fur
 #   }
 # }
 # 
-# save(county_modeshare, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_modeshare.Rdata")
-# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_modeshare.Rdata")
+# save(county_modeshare, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_modeshare.Rdata")
+# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_modeshare.Rdata")
 # 
 # county_modeshare %>% 
 #   filter(county %in% c("077","001","013","067","099")) %>% 
@@ -2432,10 +2432,10 @@ The following graph shows the distribution of workplaces by distance from home f
 #     stockton_lodes_h_route %>%
 #     filter(duration < 180)
 #   
-#   save(stockton_lodes_h_route,stockton_lodes_h_filter, file = paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
+#   save(stockton_lodes_h_route,stockton_lodes_h_filter, file = paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
 # }
 
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017_tract.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017_tract.Rdata")
 
 ggplot(
   stockton_lodes_h_filter, 
@@ -2491,7 +2491,7 @@ $~$
 Similar to the county-level analysis, we calculated the change in VMT/job over time, which might give more important relative insight given the many assumptions that go into the specific quantity of VMTs in any given year.
 
 ```{r stockton-commute-vmt-table}
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
 
 stockton_commute_vmt_tractmode_table <-
   stockton_commute_vmt_tractmode %>% 
@@ -2524,9 +2524,9 @@ The following figure compares Stockton and SJC VMT/job. The trends are similar, 
 # for(year in 2011:2017){
 #     print(year)
 # 
-#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
+#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,".Rdata"))
 # 
-#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
+#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
 # 
 #     travel_time_mode <-
 #       getCensus(
@@ -2665,7 +2665,7 @@ The following figure compares Stockton and SJC VMT/job. The trends are similar, 
 #         )
 #       )
 # 
-#     save(stockton_commute_vmt_bgmode,file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_bgmode.Rdata")
+#     save(stockton_commute_vmt_bgmode,file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_bgmode.Rdata")
 # }
 #
 # stockton_commute_vmt_tractmode <- NULL
@@ -2673,9 +2673,9 @@ The following figure compares Stockton and SJC VMT/job. The trends are similar, 
 # for(year in 2011:2017){
 #     print(year)
 # 
-#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata"))
+#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata"))
 # 
-#     load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
+#     load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/acs5_vars_",year,".Rdata"))
 # 
 #     travel_time_mode <-
 #       getCensus(
@@ -2810,9 +2810,9 @@ The following figure compares Stockton and SJC VMT/job. The trends are similar, 
 #         )
 #       )
 # 
-#     save(stockton_commute_vmt_tractmode,file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
+#     save(stockton_commute_vmt_tractmode,file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
 # }
-# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
+# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
 # 
 # stockton_commute_vmt_tractmode %>%
 #   ggplot(
@@ -2829,9 +2829,9 @@ The following figure compares Stockton and SJC VMT/job. The trends are similar, 
 # 
 #   print(year)
 # 
-#   load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata"))
+#   load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_",year,"_tract.Rdata"))
 # 
-#   load(paste0("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_",year,".Rdata"))
+#   load(paste0("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/acs1_vars_",year,".Rdata"))
 # 
 #   travel_time_mode <-
 #     getCensus(
@@ -2964,8 +2964,8 @@ The following figure compares Stockton and SJC VMT/job. The trends are similar, 
 #       )
 # }
 # 
-# save(stockton_commute_vmt_countymode, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_countymode.Rdata")
-# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_countymode.Rdata")
+# save(stockton_commute_vmt_countymode, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_countymode.Rdata")
+# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_countymode.Rdata")
 # 
 # stockton_commute_vmt_countymode %>%
 #   ggplot(
@@ -2976,11 +2976,11 @@ The following figure compares Stockton and SJC VMT/job. The trends are similar, 
 #   ) +
 #   geom_line()
 # 
-# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_bgmode.Rdata")
+# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_bgmode.Rdata")
 # 
-# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
+# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
 # 
-# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_countymode.Rdata")
+# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_countymode.Rdata")
 # 
 # stockton_commute_vmt_compare <-
 #   rbind(
@@ -3028,9 +3028,9 @@ $~$
 The following figure compares the percent of car-dependent workers who carpool in Stockton and SJC. Stockton workers overall are more likely to carpool than SJC workers overall, but the trends are again similar between Stockton and SJC, with a decline in carpooling in the last two years of data.
 
 ```{r stockton-county-commute-vmt-compare, fig.cap="Percent of car-dependent commuters traveling by carpool, Stockton vs. SJC, 2011 to 2017. Data from LODES and ACS."}
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_commute_vmt_tractmode.Rdata")
 
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/county_commute_vmt_tractmode.Rdata")
 
 stockton_county_commute_vmt_compare <-
   rbind(
@@ -3065,7 +3065,7 @@ We estimated the total and average GHG emissions for Stockton workers commuting 
 The following table is sorted by total annual GHG from transportation.
 
 ```{r ghg}
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017.Rdata")
 
 stockton_lodes_h_counties_ghg <- 
   stockton_lodes_h_mode %>%
@@ -3138,9 +3138,9 @@ After transportation, buildings are the next largest source of emissions based o
 ```{r zcta, fig.cap = "Zip code tabulation areas used to represent Stockton population estimates. The red outline is the official city boundary."}
 zcta <- zctas(starts_with="95") %>% 
   mutate(ZCTA5CE10 = as.numeric(ZCTA5CE10))
-# zips_stockton <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ZipCodes/ZipCodes.shp") %>% st_transform(st_crs(zcta)) #this was downloaded from Stockton GIS site to do a quick visual check of the difference between ZCTA and zip code. We determined they were pretty much the same.
+# zips_stockton <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ZipCodes/ZipCodes.shp") %>% st_transform(st_crs(zcta)) #this was downloaded from Stockton GIS site to do a quick visual check of the difference between ZCTA and zip code. We determined they were pretty much the same.
 
-stockton_boundary_influence <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/SpheresOfInfluence/SpheresOfInfluence.shp", quiet = TRUE) %>% 
+stockton_boundary_influence <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/SpheresOfInfluence/SpheresOfInfluence.shp", quiet = TRUE) %>% 
   filter(SPHERE == "STOCKTON") %>% 
   st_transform(st_crs(zcta)) #stockton boundary is legit but really spotty, so i prefer using sphere of influence from the County GIS page.
 
@@ -3250,8 +3250,8 @@ pge_elec_emissions_factor <-
 #     TCO2EPERCUST = TOTALTCO2E/TOTALCUSTOMERS
 #   )
 # 
-# save(pge_data, file= "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_pge.Rdata")
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_pge.Rdata")
+# save(pge_data, file= "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_pge.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_pge.Rdata")
 
 summary_TCO2E_average <- 
   pge_data %>% 
@@ -3400,13 +3400,13 @@ We used the [Cal-Adapt Degree Day tool](https://cal-adapt.org/tools/degree-days)
 
 ```{r hdd-cdd, fig.cap="Stockton heating and cooling degree days under RCP 4.5 scenario, 2010 to 2040. Data from Cal-Adapt."}
 hdd <- 
-  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/hdd.csv") %>% 
+  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/hdd.csv") %>% 
   transmute(
     YEAR = year,
     hdd = degree_days
   )
 cdd <- 
-  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/cdd.csv") %>% 
+  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/cdd.csv") %>% 
   filter(model == "CanESM2") %>% 
   transmute(
     YEAR = year,
@@ -3716,7 +3716,7 @@ zcta_stockton_joined <-
 #below I've brought in all the code from stockton_bldg.R, but it can all be skipped by going to the load() of stockton_bldg.Rdata at the bottom. Kevin, whatever refinements you've made, go ahead and make them here.
 
 # sjc_bldg <- 
-#   read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/ca_06077_footprints.csv") %>% 
+#   read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/ca_06077_footprints.csv") %>% 
 #   st_as_sf(wkt = "WKT") %>% 
 #   st_set_crs(4326) %>% 
 #   st_transform(st_crs(zcta_stockton)) %>% 
@@ -3726,11 +3726,11 @@ zcta_stockton_joined <-
 #   sjc_bldg[which(sjc_bldg$id %in% st_centroid(sjc_bldg)[stockton_boundary_influence,]$id),]
 # 
 # sjc_parcels <- 
-#   st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Parcels/Parcels.shp") %>% 
+#   st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Parcels/Parcels.shp") %>% 
 #   st_transform(st_crs(zcta_stockton)) %>% 
 #   st_make_valid()
 # 
-# save(sjc_parcels, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Parcels/sjc_parcels.Rdata")
+# save(sjc_parcels, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Parcels/sjc_parcels.Rdata")
 # 
 # stockton_parcels <- 
 #   sjc_parcels[stockton_boundary_influence,]
@@ -3742,12 +3742,12 @@ zcta_stockton_joined <-
 #   st_set_geometry(NULL)
 # 
 # sjc_zoning <- 
-#   st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Zoning/Zoning.shp") %>% 
+#   st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Zoning/Zoning.shp") %>% 
 #   st_transform(st_crs(zcta_stockton)) %>% 
 #   filter(ZNLABEL != "STOCKTON")
 # 
 # stockton_zoning <- 
-#   st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Stockton_Zoning/Zoning.shp") %>% 
+#   st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Stockton_Zoning/Zoning.shp") %>% 
 #   st_transform(st_crs(zcta_stockton))
 # 
 # bldg_zoning_join <- 
@@ -3781,7 +3781,7 @@ zcta_stockton_joined <-
 #   dplyr::select(ZIPCODE, id) %>% 
 #   st_set_geometry(NULL)
 # 
-# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/tax_sjc.Rdata")
+# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/tax_sjc.Rdata")
 # 
 # tax_sjc <- 
 #   tax_sjc %>% 
@@ -3814,16 +3814,16 @@ zcta_stockton_joined <-
 #       )
 #   )
 # 
-# save(stockton_bldg_final, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
-# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
+# save(stockton_bldg_final, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_bldg.Rdata")
 # 
 # stockton_bldg_17 <- 
-#   readOGR(dsn = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/Stockton2017", layer = "Stockton") %>% 
+#   readOGR(dsn = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/Stockton2017", layer = "Stockton") %>% 
 #   st_as_sf() %>% 
 #   st_transform(st_crs(stockton_bldg_final))
 # 
-# save(stockton_bldg_17, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/stockton_bldg_17.Rdata")
-# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/stockton_bldg_17.Rdata")
+# save(stockton_bldg_17, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/stockton_bldg_17.Rdata")
+# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/stockton_bldg_17.Rdata")
 
 # # match height from 2017 data
 # bldg_join <-
@@ -3864,8 +3864,8 @@ zcta_stockton_joined <-
 # # 24660 had no assessor stories data but had 2017 heights, use mean + 1 sd from above as thresholds. 1F: 12.92. 2F: 16.23. 3F: 18.38. 4F: 19.77
 # # 15991 1F, 5642 2F, 908 3F, 1512 4F, 541 5F, 29 6F, 12 7F, 15 8F, 4 9F, 5 10F, 1 12F.
 # 
-# save(bldg_join, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/bldg_join.Rdata")
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/bldg_join.Rdata")
+# save(bldg_join, file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/bldg_join.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/bldg_join.Rdata")
 
 bg_bldg <-
   bldg_join %>% 
@@ -4346,53 +4346,66 @@ Building Utilization refers to the amount of building space used per person thro
 
 ### Revise zoning codes in medium to large cities to facilitate upzoning
 | Location | Oregon |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | HB 2001 legalizes the development of duplexes on residential land currently zoned for single-family housing in all communities of 10,000 or more. It also allows for the construction of three- to four-unit homes on single family-zoned land in cities of 25,000 or more. |
 | Links | [Oregon Legislative Assembly](https://olis.leg.state.or.us/liz/2019R1/Downloads/MeasureDocument/HB2001/B-Engrossed) |
-| Implementation Costs | N/A |
-| Impact Factor | Fiscally, [50% of Oregon households](https://www.oregon.gov/OHA/PH/ABOUT/Documents/indicators/rentburden.pdf) are rent burdened while [23%](https://nlihc.org/sites/default/files/SHP_OR.pdf) of renter households are extremely low income. These individuals will likely see the biggest impact. However, the law applies to cities of over 10,000. As of the 2010 Census, 2,208,732 Oregonians, which constitute 57.65% of the state’s population, live in such communities. |
+| Implementation Costs & Impact Factor | Besides legislative work, No implementation costs. Fiscally, [50% of Oregon households](https://www.oregon.gov/OHA/PH/ABOUT/Documents/indicators/rentburden.pdf) are rent burdened while [23%](https://nlihc.org/sites/default/files/SHP_OR.pdf) of renter households are extremely low income. These individuals will likely see the biggest impact. However, the law applies to cities of over 10,000. As of the 2010 Census, 2,208,732 Oregonians, which constitute 57.65% of the state’s population, live in such communities. |
 | Scalable Potential | According to tax assessor records, `r bldg_join %>% filter(type==10) %>% nrow()` parcels have detached single-family residences. It is not yet clear what the impact of upzoning change is on actual development in other cities over multiple years, but these parcels could be potential candidates for suburban infill development. |
 | Similar | [Minneapolis 2040](https://minneapolis2040.com/)<br>[California SB50 (did not pass)](https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=201920200SB50) |
 
 ### Eliminate minimum parking
 | Location | Buffalo, NY |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | Developers are no longer required to build a certain number of parking spaces for commercial or residential projects, regardless of whether or not there are mass transit options nearby or if the tenants even need them. |
 | Links | [Buffalo Green Code Land Use Plan](http://www.oneregionforward.org/plan/the-buffalo-green-code-draft-land-use-plan/) |
-| Implementation Costs | N/A |
-| Impact Factor | 28% of land area in Buffalo’s city center is devoted to parking but only 63% of parking spaces are occupied on an average weekday. |
+| Implementation Costs & Impact Factor | Besides legislative work, no implementation costs. 28% of land area in Buffalo’s city center is devoted to parking but only 63% of parking spaces are occupied on an average weekday. |
 | Scalable Potential | According to [Stockton’s zoning ordinance](http://qcode.us/codes/stockton/view.php?topic=16-3-16_64-16_64_040&frames=on), large shopping centers must build 1 parking space per 250 square feet of retail space. [Anecdotal evidence](https://stocktoncitylimits.com/2013/12/31/why-are-stocktons-parking-lots-so-big-and-empty/) suggests that this is too much space, even during peak hours. Similarly inefficient standards include that colleges and universities must have 1 parking space per classroom plus 0.75 spaces per student. |
-| Similar | [Minneapolis 2040](https://minneapolis2040.com/)<br>[San Francisco, CA](https://usa.streetsblog.org/2018/12/17/san-francisco-eliminates-parking-minimums/)<br>[Hartford, CT](https://usa.streetsblog.org/2017/12/13/hartford-eliminates-parking-minimums-citywide/)
-
+| Similar | [Minneapolis 2040](https://minneapolis2040.com/)<br>[San Francisco, CA](https://usa.streetsblog.org/2018/12/17/san-francisco-eliminates-parking-minimums/)<br>[Hartford, CT](https://usa.streetsblog.org/2017/12/13/hartford-eliminates-parking-minimums-citywide/) |
+ 
 ### Encourage accessory dwelling units
 | Location | California |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Details | The 2019 California state legislative cycle resulted in some progressive accessory dwelling unit (ADU) laws that, among other changes, supercede local to allow ADUs to be built on every single family parcel. Counties and cities in the Bay Area are in the process of updating their local ADU ordinances as well as offering many proactive resources to encourage ADU development and streamline the permitting process. |
+|:------|:-------------------------------------------------------------------|
+| Details | The 2019 California state legislative cycle passed progressive accessory dwelling unit (ADU) laws that, among other changes, supercede local to allow ADUs to be built on every single family parcel. Counties and cities in the Bay Area are in the process of updating their local ADU ordinances as well as offering many proactive resources to encourage ADU development and streamline the permitting process. |
 | Links | [San Mateo County, CA](https://secondunitcentersmc.org)<br>[Napa and Sonoma County, CA](https://napasonomaadu.org)<br>[San Jose, CA](https://www.sanjoseca.gov/business/development-services-permit-center/accessory-dwelling-units-adus) |
-| Implementation Costs | N/A |
-| Impact Factor | Aggregating single unit detached and attached, California has [8,451,340 units](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?src=CF). |
-| Scalable Potential | Because this is a statewide bill, Stockton is currently eligible. It is mostly a matter of encouraging the construction of ADUs on a municipal level. Aggregating single unit detached and attached, Stockton has [69,524 single units](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?src=CF) detached and attached. |
+| Implementation Costs & Impact Factor | Besides legislative work, no implementation costs. Aggregating single unit detached and attached, California has over 8,400,000 units. |
+| Scalable Potential | See Chapter 4. |
 | Similar | [Seattle, WA](https://www.seattle.gov/Documents/Departments/Council/MAIN_ADU_FEIS_2018.pdf) |
 
 ### Encourage micro-units
 | Location | San Francisco, CA |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | In 2011, SFHAC worked with District 8 Supervisor Scott Wiener to pass legislation that allows for the construction of micro-units, also known as “efficiency dwelling units.” The legislation allows for units as small as 220 square feet comprised of 150 square feet of living space, plus a bathroom and kitchen. |
 | Links | [San Francisco Planning](https://sfplanning.org/sites/default/files/documents/legis/code-summaries/120996_Cap_on_Efficiency_Dwelling_Units.pdf) |
-| Implementation Costs | N/A |
-| Impact Factor | Assuming this will be in San Francisco and one will pay 30% of their income on the unit at the suggested price of $1,400, this could impact 69.5% of San Francisco households. |
-| Scalable Potential | Assuming the same development costs and that one will pay 30% of their income on the unit, then this could impact 48.68% of Stockton households. Assuming the same development costs and that one will not save 20% of their income (as recommended) but instead spends it on housing e.g. 50% of their income goes towards housing, then this could impact 62.30% of Stockton households. |
+| Implementation Costs & Impact Factor | Besides legislative work, no implementation costs. Assuming this will be in San Francisco and one will pay 30% of their income on the unit at the suggested price of \$1,400, this could impact 69.5% of San Francisco households. |
+| Scalable Potential | Assuming the same development costs and that one will pay 30% of their income on the unit, then this could impact 48.68% of Stockton households. Assuming the same development costs and that one will not save 20% of their income (as recommended) but instead spends it on housing e.g. 50% of their income goes towards housing, then this could impact 62.3% of Stockton households. |
 | Similar | [ShareNYC](https://www1.nyc.gov/site/hpd/about/projects-detail.page?project=ShareNYC)<br>[Vancouver, Canada](https://guidelines.vancouver.ca/D015.pdf) |
 
 ### Provide a density bonus for affordable housing
 | Location | San Francisco, CA |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | The 100% Affordable Housing Bonus Program, passed in 2016, provides a 30-foot height bonus for housing developments that completely consist of affordable housing for low- or very low-income households. |
 | Links | [HOME-SF](https://sfplanning.org/home-sf) |
-| Implementation Costs | N/A |
-| Impact Factor | Technically affordable housing is for those with the median income or below. For San Francisco, this would then apply to 442,181 individuals. |
-| Scalable Potential | There are currently 155,248 individuals living below the median income in Stockton. |
-| Similar |  |
+| Implementation Costs & Impact Factor | Besides legislative work, no implementation costs. A poorly designed program can disincentivize development overall. Technically affordable housing is for those with the median income or below. For San Francisco, this would then apply to over 440,000 individuals. |
+| Scalable Potential | There are currently over 150,000 individuals living below the median income in Stockton. |
+| Similar | [Arlington, VA Affordable Housing Density Bonus Program](https://arlingtonva.s3.dualstack.us-east-1.amazonaws.com/wp-content/uploads/sites/38/2016/09/ACZOSection36.pdf) (Section H-7) |
+
+### Develop a shared equity program for high-density housing 
+| Location | Davis, CA |
+|:------|:-------------------------------------------------------------------|
+| Details | Shared equity housing is a model used by nonprofit housing associations and municipalities targeting first-time buyers, those with bad loan or credit history, and those who can’t afford downpayments. Typically, a nonprofit or government entity provides a subsidy to lower the cost of purchase through shared appreciation loans, which are second mortgages provided by a public agency that buyers repay in full at the time of resale along with a percentage of home value appreciation. These funds are reinvested to make home ownership more affordable to another low-income buyer. |
+| Links | [Urban Insitute](https://www.urban.org/research/publication/shared-equity-homeownership-evaluation-case-study-dos-pinos-housing-cooperative) |
+| Implementation Costs & Impact Factor | The Davis cooperative is independently run. In San Francisco, the Mayor's Office BMR program subsidies homes at about $250,000 below their appraised value. According to the [Urban Institute](https://www.urban.org/research/publication/sharing-equity-future-generations-evaluation-long-term-affordable-homeownership-programs-usa), homes that were passed between shared equity owners remained affordable over time, delinquency and foreclosure rates were low, and families who sold their homes were able to use the proceeds to purchase market-rate homes. |
+| Scalable Potential | Stockton's Economic Devleopment Department or the Housing Authority of San Joaquin County could initiate such a program. |
+| Similar | [San Francisco Citywide Inclusionary Affordable Housing Program](https://www.urban.org/research/publication/shared-equity-homeownership-evaluation-case-study-san-francisco-citywide-inclusionary-affordable-housing-program) |
+
+### Match homeowners with vacant spaces with individuals looking for affordable housing
+| Location | San Mateo County, CA  |
+|:------|:-------------------------------------------------------------------|
+| Details | The San Mateo Home Sharing Program is funded by the Department of Housing. The program matches providers with seekers and must live in San Mateo County. They accept housing vouchers through the program. Most rents range from \$600 to \$1500. Some individuals participating in the program also participate in household chores as a way to pay their rent. |
+| Links | [HIP Housing](https://housing.smcgov.org/sites/housing.smcgov.org/files/FAQS%20HomeSharing%202.2019.pdf) |
+| Implementation Costs & Impact Factor | The program is run by nonprofit HIP Housing. The average length of stay is 3 years. Since the program's inception in 1979, 65,000 individuals have participated. |
+| Scalable Potential | A similar nonprofit could organize in Stockton. |
+| Similar | [Santa Clara County Housing Sharing Program, operated by Catholic Charities](https://www.catholiccharitiesscc.org/house-sharing) |
 
 ## Building Energy
 
@@ -4400,67 +4413,75 @@ This domain covers all strategies that reduce the amount of energy use in buildi
 
 ### Set energy savings standards on all public buildings and provide financial and technical assistance for commercial private sector energy savings
 | Location | Milwaukee, WI |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Details | Using a five-pronged strategy, the City of Milwaukee has: (1) Established efficiency targets (20% reduction over a decade in participating buildings); (2) Offered incentives and financing through leveraging private capital to supply upfront funding for improvements and collects payments through a voluntary municipal special charge; (3) Set a 20% reduction target in government buildings
-Provides training to support building owner and occupant actions; and (4) Provided technical services to identify energy efficient equipment and train workforce to support building operations.
- |
+|:------|:-------------------------------------------------------------------|
+| Details | Using a five-pronged strategy, the City of Milwaukee has: (1) Established efficiency targets (20% reduction over a decade in participating buildings); (2) Offered incentives and financing through leveraging private capital to supply upfront funding for improvements and collects payments through a voluntary municipal special charge; (3) Set a 20% reduction target in government buildings; (4) Provides training to support building owner and occupant actions; and (5) Provided technical services to identify energy efficient equipment and train workforce to support building operations. |
 | Links | [Better Buildings Challenge](https://city.milwaukee.gov/bbc) |
-| Implementation Costs | [Originally a $750,000 grant](https://city.milwaukee.gov/bbc/History) |
-| Impact Factor | The [program](https://city.milwaukee.gov/bbc) affected 133 buildings, totaling 14,660,008 square feet, and led to $2,418,061 in annual savings. |
-| Scalable Potential | N/A |
-| Similar |  |
+| Implementation Costs & Impact Factor | [Originally a $750,000 grant](https://city.milwaukee.gov/bbc/History), the [program](https://city.milwaukee.gov/bbc) has since affected 133 buildings, totaling 14,660,008 square feet, and led to $2,418,061 in annual savings. |
+| Scalable Potential | See Chapter 4. |
+| Similar | [San Jose, CA Energy and Water Building Performance Ordinance](https://www.sanjoseca.gov/your-government/departments-offices/environmental-services/climate-smart-san-jos/energy-and-water-building-performance-ordinance) |
 
-### Revise energy standards for public buildings and create a fund to implement energy savings product 
-| Location | Belgrade, Serbia |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Details | Collaborating with the Building Efficiency Accelerator, Belgrade has developed a fund that combines city, state, and national financing streams to help finance energy efficiency projects throughout the city. It also has revised energy efficiency standards for all newly constructed public buildings.
- |
-| Links | [Building Performance Institute Europe](http://bpie.eu/wp-content/uploads/2018/07/Read-the-full-report-here.pdf) |
-| Implementation Costs | Low Renovation: €1.5bn<br>
-Medium Renovation: €4.8bn<br>
-High Renovation: €9bn<br>
-District Heating Renovation Scenario: €2.6bn<br>
- |
-| Impact Factor | Convert table |
-| Scalable Potential | N/A |
-| Similar |  |
+### Create a fund to implement energy savings projects
+| Location | Boston, MA |
+|:------|:-------------------------------------------------------------------|
+| Details | In 2018, the City of Boston plans to launched Renew Boston Trust, which aims to use a market-based, self-funding model to increase energy efficiency investments and climate resiliency in its commercial and municipal buildings, nonprofit institutions, and multi-family properties. |
+| Links | [Renew Boston Trust](https://www.boston.gov/environment-and-energy/renew-boston-trust) |
+| Implementation Costs & Impact Factor | Phase Two involves more than \$40 million of energy conservation measures. Results are TBD. |
+| Scalable Potential | Stockton's Department of Public Works could develop a similar initiative. |
+| Similar | [New York City Energy Efficiency Corporation](https://www.nyceec.com/)<br>[London Green Fund](https://www.london.gov.uk/what-we-do/funding/european-regional-development-fund/london-green-fund)<br>[Sustainable Melbourne Fund](https://sustainableaustraliafund.com.au/)<br>[The Atmospheric Fund, Toronto](https://taf.ca/) |
 
 ### Enable property-assessed clean energy (PACE) financing
 | Location | Hartford, CT |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Details | A private company in Hartford operating a mixed-use housing and retail space privately financed $1 million energy renovation project and paid back the loan through property tax reassessment. Greenworks Lending provided the upfront capital for rooftop solar, fuel cell energy storage, and installation of microgrid. The loan was repaid as a line item assessment of the property tax bill. 
- |
+|:------|:-------------------------------------------------------------------|
+| Details | A private company in Hartford operating a mixed-use housing and retail space privately financed a $1 million energy renovation project and paid back the loan through property tax reassessment. Greenworks Lending provided the upfront capital for rooftop solar, fuel cell energy storage, and installation of microgrid. The loan was repaid as a line item assessment of the property tax bill. |
 | Links | [Better Buildings Initiative](https://betterbuildingsinitiative.energy.gov/implementation-models/commercial-pace-financing-microgrid-mixed-use-building) |
-| Implementation Costs | $1 million
- |
-| Impact Factor | Year 1: $316,927 |
-| Scalable Potential | N/A |
-| Similar |  |
+| Implementation Costs & Impact Factor | \$1 million; In Year 1, $316,927 savings |
+| Scalable Potential | Stockton has [multiple existing PACE programs](http://www.stocktonca.gov/government/departments/econDev/eDevBusRes.html). |
+| Similar | [GreenFinanceSF](https://sfenvironment.org/article/financing/greenfinancesf-commercial-pace-program)<br>[Los Angeles County PACE](http://pace.lacounty.gov/)<br>[Set the PACE St. Louis](http://setthepacestlouis.com/)<br>[Chicago PACE](https://www.chicagopace.org/)<br>[Arlington C-PACE](https://arlington-pace.us/)<br>[Milwaukee PACE](https://city.milwaukee.gov/bbc/services/PACE-Financing) |
+
+### Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements
+| Location | Los Angeles County, CA |
+|:------|:-------------------------------------------------------------------|
+| Details | The Los Angeles Department of Water & Power runs multiple energy efficiency programs in three broad categories. Mass market programs generally serve residential customers and encourage them to upgrade to energy efficient appliances, with a few exceptions. Commercial, industrial, and institutional (CII) programs generally serve large nonresidential customers and range in scope from simple lighting upgrades to entire building overhauls. Lastly, cross-cutting programs serve a wide variety of customer types and employ broad strategies for achieving energy savings (e.g., planting street trees, informing updates to building codes, customer outreach, etc.). |
+| Links | [Economic Benefits of Energy Efficiency Programs: A Case Study of Investments by the Los Angeles Department of Water & Power](https://innovation.luskin.ucla.edu/wp-content/uploads/2019/03/Economic_Benefits_of_Energy_Efficiency_Programs.pdf) |
+| Implementation Costs & Impact Factor | [See table](https://docs.google.com/spreadsheets/d/1qkdGbvYQW0-jtMELTW88zN5dObpmVcHQqJuyeIpI2Kg/edit?usp=sharing). |
+| Scalable Potential | See Chapter 4. |
+| Similar | [Austin Energy](https://savings.austinenergy.com/rebates/residential/offerings/home-improvements/weatherization/)<br>[100 Homes, 100 Days, Birmingham, AL](https://www.birminghamal.gov/2018/08/03/everything-you-need-to-know-about-the-100-homes-100-days-program/)<br>[HomeWise, Seattle, WA](http://www.seattle.gov/light/assistance/assistance.asp) |
 
 ### Use green infrastructure to improve stormwater management
 | Location | San Francisco, CA |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Details | Green Infrastructure is a method of reducing stormwater and pollution burden from stormwater systems. It does this through the creation of micro urban watersheds that has the potential to decrease erosion, improve air quality, increase land value, and reduce urban heat effects (thereby also reducing cooling loads). 
- |
-| Links | [Green Infrastructure Projects](https://sfwater.org/modules/showdocument.aspx?documentid=13249)<br>
-[Cost-Benefit Analysis of similar project](https://static1.squarespace.com/static/561dcdc6e4b039470e9afc00/t/5d435f106f6e7a0001f5b304/1564696351697/HuntsPoint_EarthEconomics_062719-1.pdf)|
-| Implementation Costs | Contingent upon site. See table here.
- |
-| Impact Factor | See table above. Also see tables here. |
-| Scalable Potential | Can’t quantify, but Stockton groundwater, where much of the water supply comes from, is polluted by agricultural run-off. |
-| Similar |  |
+|:------|:-------------------------------------------------------------------|
+| Details | Green Infrastructure is a method of reducing stormwater and pollution burden from stormwater systems. It does this through the creation of micro urban watersheds that have the potential to decrease erosion, improve air quality, increase land value, and reduce urban heat effects (thereby also reducing cooling loads). |
+| Links | [SFWater](https://sfwater.org/modules/showdocument.aspx?documentid=13249) |
+| Implementation Costs & Impact Factor | Contingent upon site. [See table](https://docs.google.com/spreadsheets/d/1Z1Q1j1GJpgI8-M9XGKHMgTds0wqyB-twr-RLR7xX-JU/edit#gid=414331495).
+| Scalable Potential | There are several key risks to Stockton’s water quality, most of which are tied to Stockton historic and present manufacturing activities. The Sharpe Army Depot and McCormick & Baxter Creosoting Company are both listed on the Environmental Protection Agencies National Priorities List, indicating they are a high priority superfund site. The EPA has identified additional sites of concern including Stockton Iron Works, Colberg Boat Works, Norge Cleaning Village, and Brea Agricultural Services. Two additonal sites, Stockton Naval Communications Station and the General Services Administration, are both located at the Naval Supply Center at Rough and Ready Island. As a result of these sites, as well as agricultural run-off and other sources, Stockton has elevated levels of Arsenic that are, on average, 4.5 times higher than recommended levels. [Read more](https://docs.google.com/document/d/1O8eMspahozBkoB3-uIw3Azvwyv6xEJvca1XV76TwgFY/edit). |
+| Similar | [Hunts Point, NY](https://static1.squarespace.com/static/561dcdc6e4b039470e9afc00/t/5d435f106f6e7a0001f5b304/1564696351697/HuntsPoint_EarthEconomics_062719-1.pdf)<br>[NE Siskiyou Green Street, Portland, OR](https://www.urbanraindesign.com/ne-siskiyou)<br> |
 
-### Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements
-| Location | Los Angeles, CA |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Details | The Los Angeles Department of Water & Power runs multiple energy efficiency programs in three broad categories. Mass market programs generally serve residential customers and encourage them to upgrade to energy efficient appliances, with a few exceptions. Commercial, industrial, and institutional (CII) programs generally serve large nonresidential customers and range in scope from simple lighting upgrades to entire building overhauls. Lastly, cross-cutting programs serve a wide variety of customer types and employ broad strategies for achieving energy savings (e.g., planting street trees, informing updates to building codes, customer outreach, etc.). 
- |
-| Links | [Economic Benefits of Energy Efficiency Programs: A Case Study of Investments by the Los Angeles Department of Water & Power](https://innovation.luskin.ucla.edu/wp-content/uploads/2019/03/Economic_Benefits_of_Energy_Efficiency_Programs.pdf) |
-| Implementation Costs | See table.
- |
-| Impact Factor | See table. |
-| Scalable Potential | See Chapter 4. |
-| Similar |  |
+### Provide incentives for households to install on-site batteries, particularly for vulnerable customers
+| Location | California |
+|:------|:-------------------------------------------------------------------|
+| Details | Recent increases in wildfires and grid outages has meant that large swathes of California are at greater risk of losing power. As a result, the California Public Utilities Commission has launched the Self-Generation Incentive Program, which provides funding for low-income, medically vulnerable, and other select groups who live in Tier 2 and 3 "High Fire Threat Districts." |
+| Links | [Green Tech Media](https://www.greentechmedia.com/articles/read/california-finalizes-plan-shifting-key-energy-storage-incentive-toward-blac) |
+| Implementation Costs & Impact Factor | $613 million over four years. As of 2016, 2,178 projects have been completed representing 450 MW of capacity. |
+| Scalable Potential | Unlikely given fire zone parameters, but incentives are still possible. |
+| Similar | [Go Solar California](https://www.gosolarcalifornia.ca.gov/consumers/taxcredits.php)
+
+### Implement "reach" codes which go beyond state minimum requirements for energy use in building design and construction
+| Location | San Jose, CA  |
+|:------|:-------------------------------------------------------------------|
+| Details | San Jose's reach code aims to make zero-emission electric buildings the default for San Jose. This would include low emission heating, additional charging infrastructure for electric vehicles, and photovoltaic cells on roofs. |
+| Links | [National Resource Defense Council](https://www.nrdc.org/experts/pierre-delforge/san-joses-proposed-building-reach-code-explained) |
+| Implementation Costs & Impact Factor | By [LEED standards]http://www.greenspacebuildings.com/wp-content/uploads/2011/05/Kats-Green-Buildings-Cost.pdf) (See Figure 3 in PDF), the cost is ten times less than the benefits. |
+| Scalable Potential | Contingent upon content of codes |
+| Similar | [Palo Alto, CA](https://cityofpaloalto.org/gov/depts/ds/green_building/2019_energy_reach_code_study.asp)
+
+### Use waste to produce electricity
+| Location | Hayward, CA  |
+|:------|:-------------------------------------------------------------------|
+| Details | Biogas uses methane and carbon dioxide and converts it into clean gas that can be piped straight into residential facilities for use. The facility involved in the treatment process is powered through the gas and excess electricity from the process is used at other City facilities. |
+| Links | [City of Hayward](https://www.hayward-ca.gov/your-government/departments/utilities-environmental-services/co-generation-power) |
+| Implementation Costs & Impact Factor | Depends on the scale of the project but by one estimate, the cost is about $4,500 per kilowatt generated for plants that generate more than 50 kilowatts. |
+| Scalable Potential | Large agricultural industry proximal to Stockton could provide a steady supply of fuel. |
+| Similar | [Glendale, CA](https://www.glendaleca.gov/government/departments/glendale-water-and-power/biogas-renewable-generation-project)
 
 ## Employment Growth
 
@@ -4468,51 +4489,38 @@ This domain covers strategies with the outcome of increasing the employment rate
 
 ### Provide training and coaching for low-income workers, rather than unemployed workers
 | Location | Dayton, OH |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Details | The Workforce Advancement and Support Center (WASC) offered participating workers intensive employment retention and advancement services, including career coaching and access to skills training. It also offered them easier access to work support, in an effort to increase their incomes in the short run and help stabilize their employment. The program was found to be most effective in cities with the lowest baseline of work support. 
- |
+|:------|:-------------------------------------------------------------------|
+| Details | The Workforce Advancement and Support Center (WASC) offered participating workers intensive employment retention and advancement services, including career coaching and access to skills training. It also offered them easier access to work support, in an effort to increase their incomes in the short run and help stabilize their employment. The program was found to be most effective in cities with the lowest baseline of work support. |
 | Links | [Strategies to Help Low-Wage Workers Advance](https://www.mdrc.org/sites/default/files/full_627.pdf) |
-| Implementation Costs | Based on a [NY program](http://www.nyc.gov/html/sbs/downloads/pdf/presentation_wasc.pdf), start-up costs of \$615,000 plus three years of \$1.85 million each.
- |
-| Impact Factor | [Bridgeport and Dayton](https://www.mdrc.org/sites/default/files/full_627.pdf) experienced 16% increased participation in education and training. Dayton experienced 8% increase in earnings by Year 3.
- |
-| Scalable Potential | N/A |
-| Similar | San Diego, CA<br>
-Bridgeport, CT |
+| Implementation Costs & Impact Factor | Based on a [New York City program](http://www.nyc.gov/html/sbs/downloads/pdf/presentation_wasc.pdf), start-up costs of \$615,000 plus three years of \$1.85 million each. [Bridgeport and Dayton](https://www.mdrc.org/sites/default/files/full_627.pdf) experienced 16% increased participation in education and training. Dayton experienced 8% increase in earnings by Year 3. |
+| Scalable Potential | Stockton's Economic Development Department could operate a similar program. |
+| Similar | San Diego, CA<br>Bridgeport, CT |
 
 ### Provide green-oriented job training and education pathways
-| Location | Los Angeles, CA |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Details | Los Angeles Trade and Technical College’s Weatherization and Energy Efficiency Education Program is a career-focused education training program designed to integrate industry awareness, academic remediation, and basic skills attainment. The framework includes: (1) Industry and sector-wide occupational mapping; (2) Career ladder mapping for weatherization occupations and occupations in the construction sector; (3) Developing competency frameworks in which skills are identified for target occupations; and (4) Curriculum that integrates and contextualizes soft skills, core academic skills, and technical skills. |
+| Location | Richmond, CA |
+|:------|:-------------------------------------------------------------------|
+| Details | The construction component of [Richmond BUILD's](http://www.ci.richmond.ca.us/1243/RichmondBUILD) main track is a pre-apprenticeship program. About 25% of the program's placements have been into formal building trades apprenticeship programs. Furthermore, after the completion of the 15-week training program, Richmond BUILD partners with employers to provide on-the-job training, funding half of graduates' wages for a probationary period of 12 weeks.|
 | Links | [Making Green Work](https://ellabakercenter.org/sites/default/files/downloads/making-green-work.pdf) |
-| Implementation Costs | N/A
- |
-| Impact Factor | A [Richmond program](http://www.ci.richmond.ca.us/1243/RichmondBUILD) yielded a 90% job placement rate (average starting wage rate at $15/hr). 30% of participants have a history with the legal system, and there are 35 available seats in each class. |
-| Scalable Potential | Brownfields clean-up in Stockton |
-| Similar | [Richmond, CA](http://www.ci.richmond.ca.us/1243/RichmondBUILD) |
+| Implementation Costs & Impact Factor | Richmond BUILD spends between \$5,000 and \$6,000 per student and yielded a 90% job placement rate (average starting wage rate at $15/hr). 30% of participants have a history with the legal system, and there are 35 available seats in each class. |
+| Scalable Potential | See Chapter 4. |
+| Similar | [CDTech Green Corps, Los Angeles, CA](http://www.cdtech.org/)<br>[East Los Angeles Skills Center](https://www.eastlaskillscenter.org/)<br>[Los Angeles Trade-Technical College](http://www.lattc.edu/)<br>[Oakland Green Jobs Corps](https://www.cypressmandela.org/)<br>[JobTrain, Menlo Park, CA](http://www.jobtrainworks.org/) |
 
 ### Create a scholarship fund for students wishing to pursue eco-conscious careers
 | Location | N/A |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | San Joaquin Delta Community College does not require that you have a GED or High School diploma to attend. However, if you do not have a GED/High School Diploma, you are not eligible for federally funded student aid. Tuition is $46.00 per unit, which may represent a barrier for some students. If a fund were created that did not require GED/High School Diploma eligibility for financial aid and was targeted towards those pursuing environmentally-oriented careers, then it would incentivize more to pursue those careers. |
 | Links | [Low-Skill Workers’ Access to Quality Green Jobs](https://www.urban.org/sites/default/files/publication/32921/412096-Low-Skill-Workers-Access-to-Quality-Green-Jobs.PDF) |
-| Implementation Costs | Contingent upon demand for eco-conscious jobs
- |
-| Impact Factor | Contingent upon demand for eco-conscious jobs |
-| Scalable Potential | San Joaquin Delta College or Stockton Scholars |
-| Similar | Green Workforce Development Jobs at similar municipalities |
+| Implementation Costs & Impact Factor | Contingent upon demand for eco-conscious jobs |
+| Scalable Potential | San Joaquin Delta College or Stockton Scholars could explore this idea. |
 
 ### Offer continued training and support post-employment
 | Location | New York, NY |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------|:-------------------------------------------------------------------|
 | Details | WorkAdvance is a sector-based workforce development model that continues training and support post-employment. The developers of the program focused on sectors with strong demand for entry-level and middle-skill employees and relatively short training time. For this program, they focused on transportation & manufacturing, IT, environmental remediation, and healthcare. The program itself has five components including: (1) Intensive screening of program applicants for motivation and readiness; (2) Sector appropriate pre-employment and career readiness, including orientation to the sector and career advancement coaching; (3) Sector-specific occupational skills training aligned with employer needs and leading to certifications that are in demand in the regional labor market; (4) Sector-specific job development and placement services based on strong relationships with employers; and (5) Post-employment retention and advancement services, including ongoing contact, coaching, skills training, and rapid reemployment help if needed. |
-| Links | [Implementing the WorkAdvance Model](https://www.mdrc.org/sites/default/files/WorkAdvance_2016_PolicyBrief.pdf)<br>
-[MDRC Analysis](https://www.mdrc.org/sites/default/files/2016_Workadvance_Final_Web.pdf) |
-| Implementation Costs | See table.
- |
-| Impact Factor | See table. |
-| Scalable Potential | According to the 2013-2017 ACS, the number of individuals that are high school graduates/possess a GED or have less than a high school education are 75,717. |
-| Similar |  |
+| Links | [MRDC Policy Brief](https://www.mdrc.org/sites/default/files/WorkAdvance_2016_PolicyBrief.pdf) |
+| Implementation Costs & Impact Factor | [See table](https://docs.google.com/spreadsheets/d/1a3yOtNb3r3SD4LnSfBDs70Mre4OpmGM53iFZc9dxMkc/edit#gid=0). |
+| Scalable Potential | According to the 2013-2017 ACS, the number of Stockton residents that are high school graduates and possess a GED or have less than a high school education is over 75,000. |
+| Similar | [Towards Employment, Cleveland, OH](https://www.towardsemployment.org/)<br>[Madison Strategies Group, Tulsa, OK](http://www.madisonstrategies.org/) |
 
 ## Local Jobs
 
@@ -4625,7 +4633,7 @@ Along these lines, we were particularly interested evaluating these programs in 
 
 ```{r luskin}
 luskin <- 
-  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/luskin.csv") %>% 
+  read_csv("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/luskin.csv") %>% 
   mutate(
     npv = 
       map2(energysavings, lifetime, function(x, y){
@@ -4708,9 +4716,9 @@ Building electrification refers generally to the conversion of building systems 
 #     type = "variables"
 #   )
 # 
-# save(acs_vars, file="C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_2018.Rdata")
+# save(acs_vars, file="C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/acs1_vars_2018.Rdata")
 
-load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_2018.Rdata")
+load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/acs1_vars_2018.Rdata")
 
 heating_fuel <-
   getCensus(
@@ -4881,6 +4889,6 @@ Local public transit improvements will be modeled as reductions on local amenity
 
 
 ```{r save}
-# save.image(file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_greeneconomy.Rdata")
-# load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_greeneconomy.Rdata")
+# save.image(file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_greeneconomy.Rdata")
+# load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/stockton_greeneconomy.Rdata")
 ```
