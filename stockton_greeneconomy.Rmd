@@ -124,7 +124,7 @@ The following document describes our methodology and results. Given the scope of
 | If you are interested in... | Skip to... |
 |:---|:---|
 | Baseline assessment of economy and GHG footprint | [Chapter 2](#baseline-assessment) |
-| Overview of fifty green economy strategies from around the U.S. | [Chapter 3](overview-of-green-economy-strategies) |
+| Overview of over fifty green economy strategies from around the U.S. | [Chapter 3](overview-of-green-economy-strategies) |
 | Analysis of five green economy strategies for Stockton | [Chapter 4](analysis-of-green-economy-strategies) |
 | U.S. strategy overview organized by city/county/state | [Appendix A](appendix-a-index-of-case-studies-by-place) |
 
@@ -4340,7 +4340,7 @@ The assumptions built into these forecasts are necessarily simplistic given the 
 
 # Overview of Green Economy Strategies
 
-This chapter provides a survey of green economy strategies that have been implemented, or are being considered, in cities and regions across the U.S. and beyond. It is organized by overall strategy domain (with explanations for why the domain is chosen) and by specific strategy (where cities with similar examples as the primary case study are grouped together). In Appendix A, this list is re-organized by city or region.
+This chapter provides a survey of over fifty green economy strategies that have been implemented, or are being considered, in cities and regions across the U.S. and beyond. It is organized by overall strategy domain (with explanations for why the domain is chosen) and by specific strategy (where cities with similar examples as the primary case study are grouped together). In Appendix A, this list is re-organized by city or region.
 
 Given the focus of this body of research on Stockton's green economy strategies, we generally prioritized searching for city-level initiatives over state or federal level policies and private sector initiatives. Compared to the technical analysis elsewhere in this report, which focuses on the GHG footprints of building and transportation and job geography, the strategies in this overview span a broader range of "green" topics, including water and resilience.
 
@@ -4843,44 +4843,44 @@ Chapter 2's baseline assessment has already set up the framework for how we will
 include_graphics("images/diagram.jpg")
 ```
 
-- Employment % was observed in ACS data as the ratio between employed residents and population 16 and older. Using a simple linear assumption, the employment rate increases to 72% in 2040. As a point of comparison, the U.S. 2018 employment rate was ~ 70%. To maintain even this "business as usual" trend may depend on aggressive strategies like workforce training and education initiatives. Otherwise, this is considered a variable with such strategies as possible drivers of change. Note that employment rate affects the number of employed residents, which particularly affects VMTs in the GHG model.
-- Jobs to Employed Residents Ratio is different from employment strategies as it can also include attracting workers who are not Stockton residents to commute to Stockton. Economic development strategies to attract new businesses would be an example of a type of strategy that influences the GHG model through this variable. J/ER  affects the number of jobs in Stockton, which particularly affects commercial building emissions in the GHG model. If those local jobs are increasingly held by Stockton residents, it also implies that VMTs have reduced.
+- Employment % was observed in ACS data as the ratio between employed residents and population 16 and older. Using a simple linear assumption, the employment rate increases to 72% in 2040. As a point of comparison, the U.S. 2018 employment rate was ~ 70%. To maintain even this "business as usual" trend may depend on aggressive strategies like workforce training and education initiatives. Otherwise, this is considered a variable that can be influenced through specific employment growth strategies. Note that employment rate affects the number of employed residents, which particularly affects VMTs in the GHG model.
+- Increasing Jobs to Employed Residents Ratio is different from increasing local employment rate as it can also include attracting workers who are not Stockton residents to commute to Stockton. Economic development strategies to attract new businesses would be an example of a type of strategy that influences the GHG model through this variable. J/ER affects the number of jobs in Stockton, which particularly affects commercial building emissions in the GHG model. If those local jobs are increasingly held by Stockton residents, it also implies that VMTs have been reduced.
 - Commute One-Way Vehicle Miles Traveled is modeled using the LODES origin-destination data, so any predictions of changes in the distribution and concentration of jobs would affect this variable. Other transportation strategies such as increasing carpooling or transit would also affect this variable.
 - Vehicle Emission Rates
 - Building Utilization and Building Energy Efficiency are built into the variables of Energy Use per Capita per Degree Day as "hidden variables" that can't easily be isolated without more data, but any strategies directed at reducing the amount of floor space per capita, or increasing floor area ratio on sites, or retrofitting buildings can be predicted as affecting Building Utilization or Building Energy Efficiency, which in turn would proportionally affect Energy Use per Capita.
-- Energy Emission Rates also affect the ultimate emissions estimated out of some amount of energy use. We have already incorporated PG&E's target to steadily eliminate the emissions associated with electricity use. Strategies that shift energy use from gas to electricity would result in quantitative changes that take place roughly at this point in the model.
+- Energy Emission Rates also affect the ultimate emissions estimated out of some amount of energy use. We have already incorporated PG&E's target to steadily eliminate the emissions associated with electricity use. Strategies that shift energy use from gas to electricity would result in quantitative changes at this leverage point in the model.
 
 ## Building Utilization
 
-As seen in Table \@ref(tab:stockton-pop-jobs), Stockton's population is estimated to grow from 315,000 in 2020 to 339,000 in 2040, and Stockton's job count is estimated to grow from 125,000 in 2020 to 151,000 in 2040. The roughly 24,000 new residents and 26,000 jobs will of course have some baseline amount of energy use that can't be avoided, but the particular ways in which buildings provide for their needs can be made more energy-efficient through specific strategies. This section will focus on ways to reduce the amount of space required per person, which primarily affects energy usage because less heating, cooling, lighting, and plug load is required. Less space per person implies a more dense urban form, which also brings transportation benefits, which we account for elsewhere in the model.
+As seen in Table \@ref(tab:stockton-pop-jobs), Stockton's population is estimated to grow from 315,000 in 2020 to 339,000 in 2040, and Stockton's job count is estimated to grow from 125,000 in 2020 to 151,000 in 2040. The roughly 24,000 new residents and 26,000 jobs will of course have some baseline amount of energy use that can't be avoided, but the particular ways in which buildings provide for their needs can be made more energy-efficient through specific strategies. This section will focus on ways to reduce the amount of space required per person, which primarily affects energy usage because less heating and cooling is required. Less space per person implies a more dense urban form, which also brings transportation benefits, which we account for elsewhere in the model.
 
 ### Case Study: Accessory Dwelling Units
 
-The 2019 California state legislative cycle resulted in [accessory dwelling units](#encourage-accessory-dwelling-units) (ADU) laws that took effect on 1/1/2020 and, among other changes, supercede local control to allow ADUs to be built on every single-family parcel. More specifically, local regulations cannot prevent a homeowner from applying to build an internal ADU of up to 500 sqft within their existing structure, as well as a detached ADU of up to 800 sqft in their backyard, with newly enforced maximum setbacks of 4ft from the side and rear. Exact regulatory details are still in flux as individual cities are expected to updated their local ordinances to match the new state laws, and loopholes will inevitably come up; refer to [CA Housing and Community Development](https://www.hcd.ca.gov/policy-research/AccessoryDwellingUnits.shtml) for the latest guidance.
+The 2019 California state legislative cycle resulted in [accessory dwelling units](#encourage-accessory-dwelling-units) (ADU) laws that took effect on 1/1/2020 and, among other changes, supercede local control to allow ADUs to be built on every single-family parcel. More specifically, local regulations cannot prevent a homeowner from applying to build an internal ADU of up to 500 sqft within their existing structure, as well as a detached ADU of up to 800 sqft in their backyard, with newly enforced maximum setbacks of 4ft from the side and rear. Exact regulatory details are still in flux as individual cities are expected to update their local ordinances to match the new state laws, and loopholes will inevitably come up; refer to [CA Housing and Community Development](https://www.hcd.ca.gov/policy-research/AccessoryDwellingUnits.shtml) for the latest guidance.
 
 ADUs are being evaluated as a green economy strategy for the following key reasons.
 
-First, internal ADUs such as garage conversions directly align with the goals of Building Utilization, making more effective use of existing built floor area and promoting less energy-intensive residential living. According to the [U.S. Energy information Administration's Residential Energy Consumption Survey](https://www.eia.gov/todayinenergy/detail.php?id=11731) (RECS 2009), the energy use per household in 2-4 unit dwellings is roughly half of the energy use of a single family household, so we will use the same assumption when considering the energy impact of internal ADUs. In other words, every new internal ADU development that Stockton can enable will effectively increase household count without increasing overall energy use, assuming those households would have otherwise lived in newly built single-family homes. This liberal assumption can inform an upper end estimate of the energy consumption benefits of internal ADUs.
+First, internal ADUs such as garage conversions directly align with the goals of Building Utilization, making more effective use of existing built floor area and promoting less energy-intensive residential living. According to the [U.S. Energy information Administration's Residential Energy Consumption Survey](https://www.eia.gov/todayinenergy/detail.php?id=11731) (RECS 2009) (see figure below), the energy use per household in 2-4 unit dwellings is roughly half of the energy use of a single-family household, so we will use the same assumption when considering the energy impact of internal ADUs. In other words, every new internal ADU development that Stockton can enable will effectively increase household count without increasing overall energy use, assuming those households would have otherwise lived in newly built single-family homes. This liberal assumption can inform an upper-end estimate of the energy consumption benefits of internal ADUs.
 
-```{r energy-use-duplex-diagram, fig.cap="Site energy use by housing type. Source: EIA."}
+```{r energy-use-duplex-diagram, fig.cap="Site energy use by housing type. Source: RECS 2009.", out.width = "100%"}
 include_graphics("images/energyuseduplex.png")
 ```
 
 $~$
 
-Second, detached ADUs, while not as effective as internal ADUs from a building utilization perspective, still are efficient compared to the average single-family dwelling because they are likely to have a smaller footprint in the constraints of backyard development. A robust model for the relationship between square footage and energy use is outside the scope of this study, so our simplified assumption will be as follows. According to the same RECS, [as analyzed by the National Association of home Builders](https://www.nahbclassic.org/generic.aspx?genericContentID=237901&fromGSA=1), about a third of single-family home energy consumption is for heating/cooling, while the rest is not significantly correlated with square footage. As previously estimated in \@ref(fig: zcta-bldg-stockton-table), the average residential unit size in Stockton today is about 3,200 sqft (conservative because the data includes multifamily units) and consumes about 78,000 kBTUs per year. So we can estimate that a detached ADU of half that size, 1,600 sqft, would reduce its energy consumption by a sixth (to 65,000 kBTUs per year), and so forth.
+Second, detached ADUs, while not as effective as internal ADUs from a building utilization perspective, still are efficient compared to the average single-family dwelling because they are likely to have a smaller footprint in the constraints of backyard development. A robust model for the relationship between square footage and energy use is outside the scope of this study, so our simplified assumption will be as follows. According to the same RECS, [as analyzed by the National Association of home Builders](https://www.nahbclassic.org/generic.aspx?genericContentID=237901&fromGSA=1) (see figure below), about a third of single-family home energy consumption is for heating/cooling, while the rest is not significantly correlated with square footage. As previously estimated in \@ref(tab: zcta-bldg-stockton-table), the average residential unit size in Stockton today is about 3,200 sqft (conservative because the data includes multifamily units) and consumes about 78,000 kBTUs per year. So we can estimate that a detached ADU of half that size, 1,600 sqft, would reduce its energy consumption by a sixth (to 65,000 kBTUs per year), and so forth.
 
-```{r energy-sqft-diagram, fig.cap="NAHB analysis of HVAC vs non-HVAC energy use."}
+```{r energy-sqft-diagram, fig.cap="NAHB analysis of HVAC vs non-HVAC energy use. Source: RECS 2009.", out.width = "100%"}
 include_graphics("images/nahbenergy.jpg")
 ```
 
 $~$
 
-Third, ADUs of any type can be considered "infill growth" as they do not lead to expansion of existing urban boundaries or services. Considering transportation GHGs, we can assume that a household that lives in a new ADU will have the same transportation footprint as their neighbors, where otherwise they might live in newly-built housing that is likely to be further on the outskirts of town, away from jobs and amenities. In a later section, we will more formally model the relationship between infill growth and VMT. For the purposes of this section, we will conclude by demonstrating that a progressive ADU strategy could target ADU development in the areas with the least amount of car-dependence, namely transit access to downtown and other neighborhood centers.
+Third, ADUs of any type can be considered "infill growth" as they do not lead to expansion of existing urban boundaries or services. Considering transportation GHGs, we can assume that a household that lives in a new ADU will have the same transportation footprint as their neighbors, where otherwise they might live in newly-built housing that is likely to be further on the outskirts of town, away from jobs and amenities. For the purposes of this section, we will conclude by demonstrating that a progressive ADU strategy could target ADU development in the areas with the least amount of car-dependence, namely transit access to downtown and other neighborhood centers.
 
 Fourth, homeowners who develop ADUs may realize a new stream of rent revenue, building wealth for local residents, while renters may benefit from lower rents because ADUs are a form of naturally occurring affordable housing. 
 
-The fundamental question, then, is: how many new ADUs can Stockton actively enable in the next two decades that wouldn't have otherwise been built? It is unknown what the natural rate of ADU development without local intervention, given the new state legislation; this remains to be seen in communities across the state as the laws have just taken effect. But for the purposes of our analysis, we will assume that the City of Stockton has a range of options from being the *least* supportive of ADU development (given that despite state legislation, local permitting processes, permit fees, information barriers, community opposition, and financial barriers could all work to curtail development) to the *most* supportive of ADU development (adopting many of the best practices [we reviewed in Chapter 3](#encourage-accessory-dwelling-units)), and we will quantify the size of that spectrum by estimating the number of ADUs that could be built based purely on physical characteristics of existing single-family parcels.
+The fundamental question, then, is: how many new ADUs can Stockton actively enable in the next two decades that wouldn't have otherwise been built? It is unknown what the natural rate of ADU development is without local intervention, given the new state legislation; this remains to be seen in communities across the state as the laws have just taken effect. But for the purposes of our analysis, we will assume that the City of Stockton has a range of options from being the *least* supportive of ADU development (given that despite state legislation, local permitting processes, permit fees, information barriers, community opposition, and financial barriers could all work to curtail development) to the *most* supportive of ADU development (adopting many of the best practices [we reviewed in Chapter 3](#encourage-accessory-dwelling-units)), and we will quantify the size of that spectrum by estimating the number of ADUs that could be built based purely on physical characteristics of existing single-family parcels.
 
 The following is a breakdown of the number of residential parcels by housing type, based on 2018 County Assessor Records. Note that the apartment parcels contain multiple units, so the number of total housing units or households is not represented in this table. Also, our data does not clearly indicate existing ADUs, so the analysis assumes that all single family parcels do not currently have ADUs. We suspect that the existing number of permitted ADUs is relatively low.
 
@@ -4922,7 +4922,8 @@ residential_bldg_summary <-
   ) %>% 
   group_by(Type) %>%
   summarize(Count = n()) %>% 
-  st_set_geometry(NULL)
+  st_set_geometry(NULL) %>% 
+  mutate(Count = prettyNum(floor(Count/100)*100,big.mark=","))
 
 residential_bldg_summary <- residential_bldg_summary[c(5,3,1,4,2),]
 
@@ -4939,7 +4940,7 @@ $~$
 
 Starting first with internal ADUs, technically all 66,000 single-family, duplex, and apartment parcels could build permitted internal ADUs (in fact more than 1 can be allowed in existing multifamily buildings). These are by definition smaller units (less than 500 sqft, typically converting an existing garage, attic, basement, or master bedroom), so can't necessarily support larger household sizes. 
 
-As projected in \@ref(fig: ghg-forecast-prep), only 25,000 new residents are expected between 2020 and 2040. In other words, it could be possible to support this entire population growth (approximately without an increase in building energy consumption) if just half of all eligible existing buildings were to convert existing space to internal ADUs. Of course, for a number of reasons including lifestyle preference (with internal ADUs perhaps being the least palatable social arrangement for two separate households), this is not literally feasible, but should signal the opportunity in encouraging ADU development. 
+As projected in \@ref(tab: ghg-forecast-prep), only 25,000 new residents are expected between 2020 and 2040. In other words, it could be possible to support this entire population growth (with little increase in building energy consumption) if just half of all eligible existing buildings were to convert existing space to internal ADUs. Of course, for a number of reasons including lifestyle preference (with internal ADUs perhaps being the least palatable social arrangement for two separate households), this is not literally feasible, but should signal the opportunity in encouraging ADU development. 
 
 Detached ADUs may be more palatable (along with attached ADUs which are additions to an existing home, but these are not considered in our analysis), given the greater privacy between households, greater square footage, and potential reduced complexity of new construction vs. retrofitting existing buildings, but are more costly as well. Assessing the viability of detached ADUs is more complicated because it involves geospatial analysis. 
 
@@ -4948,7 +4949,7 @@ We developed a script that performs the following basic steps:
 1. We acquired Parcel shapes from the [City of Stockton GIS database](http://www.stocktonca.gov/services/gis/mapdatDat.html).
 2. We acquired Building shapes from [Microsoft's U.S. Building Footprint Data](https://github.com/microsoft/USBuildingFootprints)
 3. For each residential parcel, we produced the leftover yard area after removing 4ft setbacks, front yards (based on the closest distance from the existing building to the street edge), and the building (including a 5ft setback per municipal ordinances).
-4. Using an 8ft x 20ft shape (like [the smallest ADU available on the market from Meka](https://mekamodular.com/models/standard/liberty-160/)), we traced this yard space to find the subset of space that can technically fit an orthogonal ADU design. This method does not account for obstructions like trees not represented in our data.
+4. Using an 8ft x 20ft shape (like [the smallest ADU available on the market](https://mekamodular.com/models/standard/liberty-160/)), we traced this yard space to find the subset of space that can technically fit an orthogonal ADU design. This method does not account for obstructions like trees not represented in our data.
 5. We aggregated and quantified the square footage of this remaining "buildable area".
 
 The following map shows what the analysis looks like for one block group in South Stockton.
@@ -5423,16 +5424,17 @@ test_block_group <-
 test_buildable_area <- clean_buildable_area[test_block_group,]
 test_parcels <- normal_residential_parcels_yards[test_block_group,]
 
-mapview(test_buildable_area, col.regions = "green", lwd=0, layer.name= "Buildable ADU Area") + 
+map <- mapview(test_buildable_area, col.regions = "green", lwd=0, layer.name= "Buildable ADU Area") + 
   mapview(test_parcels %>% st_set_geometry("parcel_geometry"), alpha.region=0, color = "white", layer.name= "Parcel Boundary") + 
   mapview(test_parcels %>% st_set_geometry("building_geometry"), col.regions = "tan", lwd=0.5, layer.name= "Existing Building")
+map@map
 ```
 
 $~$
 
-While the geospatial is not perfect, and doesn't account for other possible obstructions in back yard, this result can be used to roughly estimate the number of parcels that could build detached ADUs, and examine the characteristics of those potential ADUs.
+While the geospatial analysis is not perfect, and doesn't account for other possible obstructions in a backyard, this result can be used to roughly estimate the number of parcels that could build detached ADUs, and examine the characteristics of those potential ADUs.
 
-We analyzed 85625 residential parcels and found 64188 with enough backyard space to build at least a 160 sqft ADU. The breakdown is shown below by area range. The cut-offs are based on market research showing the existence of a [576 sqft 2-BR ADU](https://californiamodulars.com/roma/) and a [989 sqft 3-BR ADU](https://californiamodulars.com/napoli/). With over 2000 sqft of space, a greener option would be to completely redevelop the site to a higher density use, like a low-rise apartment.
+We analyzed 85,625 residential parcels and found 64,188 with enough backyard space to build at least a 160 sqft ADU. The breakdown is shown below by area range. The cut-offs are based on market research showing the existence of a [576 sqft 2-bedroom ADU](https://californiamodulars.com/roma/) and a [989 sqft 3-bedroom ADU](https://californiamodulars.com/napoli/). With over 2000 sqft of space, a greener option would be to completely redevelop the site to a higher density use, like a low-rise apartment.
 
 ```{r buildable-area-summary}
 buildable_area_summary <-
@@ -5448,9 +5450,10 @@ buildable_area_summary <-
   ) %>% 
   group_by(`Buildable Area`) %>% 
   summarize(Count = n()) %>% 
-  st_set_geometry(NULL)
+  st_set_geometry(NULL) %>% 
+  mutate(Count = prettyNum(floor(Count/100)*100,big.mark=","))
 
-buildable_area_summary <- buildable_area_summary[c(3,4,1,2),]
+buildable_area_summary <- buildable_area_summary[c(2,4,1,3),]
 
 kable(
   buildable_area_summary,
@@ -5463,7 +5466,7 @@ kable(
 
 $~$
 
-These numbers once again suggest that there is more than enough space in residential backyards to support all the expected population growth in Stockton over the next 20 years.
+These numbers further suggest that there is more than enough space in residential backyards to support all the expected population growth in Stockton over the next 20 years.
 
 Considering transportation footprint, Stockton could focus its outreach and incentives to the ADU-viable properties that are also extremely accessible to transit, so that the future ADU tenants are less likely to be car-dependent (this could be further ensured by restricting on-street parking and/or providing transit passes). For our demonstration, we defined this subset of the 64,000+ parcels as being within 15 minutes of walking + bus transit (with at least 20-minute frequency during commute hours) from Stockton's downtown bus station, which provides transfers to many other destinations around town as well a commuter bus to the Bay Area. Even with this heavy constraint, we found over 2,600 eligible parcels, as shown below.
 
@@ -5539,10 +5542,11 @@ routes <-
   ) %>% 
   st_transform(projection)
 
-mapview(downtown_accessible_stops, layer.name= "Bus Stops")+
+map <- mapview(downtown_accessible_stops, layer.name= "Bus Stops")+
   mapview(downtown_accessible_stops %>% filter(stop_id %in% rtd_stops_downtownstation), cex = 10, col.regions = "red", layer.name = "Downtown Bus Station") +
   mapview(routes$geometry, layer.name = "Bus Routes") +
   mapview(downtown_accessible_adus_filtered, col.regions = "green", lwd=0.5, layer.name= "Buildable ADU Area")
+map@map
 ```
 
 $~$
@@ -5551,15 +5555,13 @@ Such sites are great opportunities to immediately conduct homeowner outreach to 
 
 To conclude this section, we offer an example of how a progress ADU strategy could impact our GHG forecasts:
 
-- The business-as-usual projection from \@ref(fig: ghg-forecast-prep) suggests that total residential building GHG emissions are already expected to decline from 209,000 tCO2/year in 2020 to 101,000 tCO2/year, driven by climate change that reduces gas heating needs, cleaner PG&E electricity, and continuing trends in energy efficiency improvements and building utilization.
+- The business-as-usual projection from \@ref(tab: ghg-forecast-prep) suggests that total residential building GHG emissions are already expected to decline from 209,000 tCO2/year in 2020 to 101,000 tCO2/year, driven by climate change that reduces gas heating needs, cleaner PG&E electricity, and continuing trends in energy efficiency improvements and building utilization.
 - As previously noted, 25,000 new residents are projected during the same time, contributing to about 7,400 of the 101,000 tCO2 in 2040.
-- As part of a steady stream of single-family home retrofits happening over the next 20 years (partially driven by energy efficiency strategies covered later), homeowners are actively encouraged to also consider the conversion of an underutilized space in their homes into an internal ADU, at the same time as other renovations. If just 1% of the 60,000+ single-family homes take up this opportunity, 6,000 internal ADUs can be developed, creating highly energy-efficient dwelling opportunities for some of the residential growth (which may include cases of younger Stocktonians growing up and moving into an internal ADU in the same home they grew up in, or their aging parents moving into the internal ADU and giving the main home to their children to start a new family).
-- At the same time, homeowners are actively encouraged to consider the development of detached ADUs, which can accommodate an even greater range of lifestyle preferences. If just 1% of the 60,000+ parcels eligible for detached ADUs are motivated to build a detached ADU, 6,000 additional detached ADUs could be made available that wouldn't otherwise have existed.
+- As part of a steady stream of single-family home retrofits happening over the next 20 years (partially driven by energy efficiency strategies covered later), homeowners could be actively encouraged to also consider the conversion of an underutilized space in their homes into an internal ADU, at the same time as other renovations. If just 1% of the 60,000+ single-family homes were to take up this opportunity, 6,000 internal ADUs could be developed, creating highly energy-efficient dwelling opportunities for some of the residential growth (which may include cases of younger Stocktonians growing up and moving into an internal ADU in the same home they grew up in, or their aging parents moving into the internal ADU and giving the main home to their children to start a new family).
+- At the same time, homeowners could be actively encouraged to consider the development of detached ADUs, which can accommodate an even greater range of lifestyle preferences. If just 1% of the 60,000+ property owners eligible for detached ADUs were motivated to build a detached ADU, 6,000 additional detached ADUs could be made available that wouldn't otherwise have existed.
 - Assuming an average 2 residents per household, these 12,000 new ADUs could support nearly all of the new residential growth. Of course, other kinds of residential development can be expected elsewhere in Stockton during these two decades, particularly higher-density multifamily housing. But this ADU capacity could effectively mitigate any further development of detached single-family housing.
 - Using our energy assumptions, 6,000 internal ADUs and 6,000 detached ADUs (assuming an average 600 sqft in size), compared to what could have been 12,000 new single-family homes, would only emit about `r prettyNum(floor((25000/339000*101000*(12000/25000)*(2/3+(1/3)*(600/3200))+25000/339000*101000*(1000/25000))/100)*100,big.mark=",")` tCO2 compared to 7,400 in business-as-usual -- a 2-3% reduction in 2040's residential building GHG footprint.
-- While the GHG reductions in building energy are low because of the relatively progression reductions already expected in business-as-usual, the combined transportation impacts of ADU development could be significant. There is a projected increase of 59,000 employed residents between 2020-2040. If half of the 12,000 ADUs could support transit-based commuting (given their location, like the demonstration above) for at least 6,000 employed residents (one per household) who would have otherwise been car-dependent, the reduction in projected commute GHGs would be about 46,000 tCO2 in 2040, bringing the total GHG reduction associated with ADU development to 53,000 tCO2 (2-3% of total tCO2 in 2016).
-
-### Strategy: Infill Growth
+- While the GHG reductions in building energy are relatively low because of the progressive reductions already expected in business-as-usual, the combined transportation impacts of ADU development could be relatively significant. There is a projected increase of 59,000 employed residents between 2020-2040. If half of the 12,000 ADUs could support transit-based commuting (given their location, like the demonstration above) for at least 6,000 employed residents (one per household) who would have otherwise been car-dependent, the reduction in projected commute GHGs would be about 46,000 tCO2 in 2040, bringing the total GHG reduction associated with ADU development to 53,000 tCO2 (2-3% of Stockton's total tCO2 in 2016).
 
 ## Building Energy
 
