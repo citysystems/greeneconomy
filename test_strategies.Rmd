@@ -447,7 +447,18 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 | Links | [European Environment Agency](https://www.eea.europa.eu/themes/transport/speed-limits-fuel-consumption-and/speed-limits) |
 | Implementation Costs & Impact Factor | Pollution: Depending on [driving behavior](https://www.eea.europa.eu/themes/transport/speed-limits-fuel-consumption-and/speed-limits), it is possible to expect anything from 2-18% reductions in GHGs.<br>Public Health: In an 83-city [study](https://ehjournal.biomedcentral.com/articles/10.1186/1476-069X-9-65), PM2.5-related mortality reduction is worth \$31 billion (2007 dollars).<br>Fatalities and Injuries: 2200 crashes, 18 fatalities, and 1200 injuries reduced in Massachusetts.<br>Economic Benefits: Massachusetts predicted to save \$210 million (30mph to 25mph reduction). |
 | Scalable Potential | According to the California [Clean Vehicle Rebate Project](https://cleanvehiclerebate.org/eng/rebate-statistics), San Joaquin County customers have received about 3,000 rebates, compared to 366,000 state-wide, leaving a lot of growth potential compared to other counties. |
-| Similar | [NYC Neighborhood Slow Zones](https://www1.nyc.gov/html/dot/html/motorist/slowzones.shtml) |
+| Similar | [NYC Neighborhood Slow Zones](https://www1.nyc.gov/html/dot/html/motorist/slowzones.shtml)<br>[Philadelphia Neighborhood Slow Zones](http://visionzerophl.com/get-involved) |
+
+## Resilience
+
+### Promote cool surfaces to reduce heat island effect
+| Location | Arizona |
+|:------|:-------------------------------------------------------------------|
+| Details | Rather than using dark pavements, which attract 80-95% of sunlight, solar reflective "cool" pavements have increased reflectance. They typically use a reflective or clear binder, or a reflective surface coating. |
+| Links | [Berkeley Lab](https://heatisland.lbl.gov/coolscience/cool-pavements) |
+| Implementation Costs & Impact Factor | CoolSeal costs between \$0.30 to \$0.40 per square foot. Albedo increases lead to a reduction of outdoor air temperatures by 0.2 to 0.9 °F. In California cities with a lot of air conditioning, the savings of air conditioning energy due to lowered air temperature is up to 1 kWh (\$0.60) per year per m² of pavement modified. The avoided CO??? is valued at less than a penny a year per m². Lower surface air temperature reduces ground level ozone. |
+| Scalable Potential | According to the California [Clean Vehicle Rebate Project](https://cleanvehiclerebate.org/eng/rebate-statistics), San Joaquin County customers have received about 3,000 rebates, compared to 366,000 state-wide, leaving a lot of growth potential compared to other counties. |
+| Similar | [NYC Neighborhood Slow Zones](https://www1.nyc.gov/html/dot/html/motorist/slowzones.shtml)<br>[Philadelphia Neighborhood Slow Zones](http://visionzerophl.com/get-involved) |
  
 ## Appendix A: Index of Case Studies by Place
 
