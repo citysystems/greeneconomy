@@ -109,6 +109,15 @@ Building Utilization refers to the amount of building space used per person thro
 
 This domain covers all strategies that reduce the amount of energy use in buildings, which tend to be concentrated in heating or cooling loads but also include lighting and other plug loads. This domain also includes localized power generation and storage, as well as electrification strategies that switch gas use to electricity use where the electricity grid has fewer emissions.
 
+### Promote solar development in Opportunity Zones
+| Location |  Washington, DC |
+|:------|:-------------------------------------------------------------------|
+| Details | Use the tax benefits in Opportunity Zones to promote lower cost of capital and opportunities. This allows businesses to absorb tax benefits from Opportunity Zones, as well as those from financing solar projects. |
+| Links | [O-Zones for Clean Energy](https://groundswell.org/o-zones-for-clean-energy/)<br>[Opportunity Zones Can Drive Development of U.S. Renewable Energy](https://www.forbes.com/sites/jamesellsmoor/2019/07/02/opportunity-zones-drive-development-of-us-renewable-energy/#692c32975609) |
+| Implementation Costs & Impact Factor | Nationally, Opportunity Zone credits will cost [$1.6 billion](https://www.cbpp.org/research/federal-tax/potential-flaws-of-opportunity-zones-loom-as-do-risks-of-large-scale-tax) in lost tax revenue. [31.5 million people](https://eig.org/opportunityzones/facts-and-figures) live in Opportunity Zones. |
+| Scalable Potential | Opportunity Zones exist within Stockton. |
+| Similar | [Chart House Energy Opportunity Fund, Muskegon, MI](http://www.charthouseenergy.com/default.asp?iId=HILHG)<br>[Norfolk Solar Qualified Opportunity Fund](https://www.norfolksolar.org/programs) |
+
 ### Promote a Solar Renewable Energy Certificate program
 | Location |  Washington, DC |
 |:------|:-------------------------------------------------------------------|
@@ -286,7 +295,7 @@ This domain includes strategies with the outcome of increasing the number of job
 | Links | [Georgia's Successful Partnership with Kia Serves as Model for Efficiency and Job Growth](https://www.georgia.org/sites/default/files/wp-uploads/2014/08/Kia_Case_Study_Final.pdf) |
 | Implementation Costs & Impact Factor | \$9,000,000-$15,000,000 in Job Tax Credits; \$80,700,000 in Department of Transportation capital projects; Direct creation of 3000+ jobs |
 | Scalable Potential | Stockton brownfields could be valuable opportunities for large capital projects or commercial development, combining private investment and public facilitation of brownfield remediation. |
-| Similar | [Massachusetts Community Investment Tax Credit](https://macdc.org/how-it-works) |
+| Similar | [Prince George's County Maryland Clean Water Partnership](https://www.epa.gov/G3/prince-georges-county-maryland-clean-water-partnership)<br>[Mission Bay, San Francisco](https://www.mbaydevelopment.com/mission-bay-new) |
 
 ### Fund economic development using tax-base sharing
 | Location | Montgomery County, OH |
@@ -318,6 +327,24 @@ This domain includes transportation-oriented strategies that lead to fewer vehic
 | Implementation Costs & Impact Factor | Besides legislative work, no implementation costs. In 2014, 40 projects were subject to the City of Cambridge's Parking and TDM Ordinance Large Project TDM Plans. Of those, 35 projects, or 88 percent completed monitoring reports. Of the 35 projects, 30 projects exceeded non-drive-alone mode split commitments. [Read more here](https://default.sfplanning.org/transportation/tdm/TDM_Technical_Justification_update2018.pdf) (Table 3-3). |
 | Scalable Potential | Because Stockton has a low jobs to employed residents ratio, TDM is a less impactful strategy without the support of big employers of Stockton residents outside of the city. |
 | Similar | [Downtown Berkeley Parking and Transportation Demand Management](https://www.cityofberkeley.info/Public_Works/Transportation/Downtown_Berkeley_Parking_and_Transportation_Demand_Management_Report.aspx)<br>[SF Planning](https://sfplanning.org/transportation-demand-management-program) |
+
+### Use BRT corridors to reduce travel times on public transit
+| Location | San Francisco, CA |
+|:------|:-------------------------------------------------------------------|
+| Details | Bus rapid transit is a system that allocates designated lanes to buses and light rail, in order to make for faster travel on bus. Additionally, off-board fare collection is key to reduce delay caused by passengers waiting to pay on board. |
+| Links | [San Francisco Van Ness Improvement Project](https://www.sfcta.org/projects/van-ness-improvement-project)<br>[Institute for Transportation & Development Policy](https://www.itdp.org/library/standards-and-guides/the-bus-rapid-transit-standard/what-is-brt/) |
+| Implementation Costs & Impact Factor | [RTD has planned](http://sanjoaquinrtd.com/wp-content/uploads/2019/02/SRTP-2018-Update_FINAL.pdf) for about $30 million of BRT service expansion between 2019-2026. When fully deployed, RTD's BRT routes will create a high-frequency network covering the major arterials of the County, connecting them with central Stockton. RTD projects almost 3.7 million annual trips on the BRT network by FY 25. By attracting new riders, RTD's BRT network can eliminate over one million tons of carbon emissions. |
+| Scalable Potential | BRT service is currently planned for a range of corridors throughout the City of Stockton, with potential service extension to Lodi via BRT Express. RTD will implement BRT Express service over time as funding becomes available and as demand grows due to new development. Therefore, BRT design may differ by corridor but should follow a set of requirements to ensure system characteristics remain consistent. Figure below from RTD 2018 Short Range Transit Plan.<br><br>`r knitr::include_graphics("images/brt.png")` |
+| Similar | [Bogota TransMilenio, Mexico City Metrobus, Johannesburg BRT](https://docs.google.com/spreadsheets/d/1JixMHuX0ArT3MDNrJgYliGE77TqYZe5bGwms8D6oblE/edit#gid=0) |
+
+### Promote the use of e-scooters and dockless bicycles to reduce reliance on private cars
+| Location | San Francisco, CA |
+|:------|:-------------------------------------------------------------------|
+| Details | Shared scooters and bikes, which can be used in dedicated bike lanes, have already become a major source of transportation in large metropolitan areas. Bird had 10 million rides in its first 12 months alone, while Lime users took 34 million trips in its first year. Additionally, they are more conducive to the short trips made by most commuters. |
+| Links | [Deloitte Insights](https://www2.deloitte.com/us/en/insights/focus/future-of-mobility/micro-mobility-is-the-future-of-urban-transportation.html) |
+| Implementation Costs & Impact Factor | Costs average at $100 per scooter. Impact [depends](https://www.vox.com/2018/8/27/17676670/electric-scooter-rental-bird-lime-skip-spin-cities) on where the city gets its energy from e.g. coal, natural gas, or renewable. The majority of scooter trips are less than 2 miles, which may mean that they are not a substitute for ride apps. They do, however, serve to reduce traffic congestion as 60% of car trips fell within the micromobility range of [0-5 miles](https://www.forbes.com/sites/adeyemiajao/2019/02/01/everything-you-want-to-know-about-scooters-and-micro-mobility/). |
+| Scalable Potential | Stockton's urban core may not yet experience the congestion issues that create an opportunity for micromobility. |
+| Similar | [Pittsburgh Mobility Collective](https://pittsburghpa.gov/press-releases/press-releases.html?id=3152)<br>[Tacoma, WA](https://www.cityoftacoma.org/cms/one.aspx?pageId=158101)<br>[Washington, DC](https://ddot.dc.gov/page/micromobility-district) |
 
 ### Rezone areas around transit stations and commercial corridors to allow for high-density residential development
 | Location | Tyson, VA |
@@ -376,6 +403,51 @@ This domain includes transportation-oriented strategies that lead to fewer vehic
 ## Vehicle Emissions
 
 This domain focuses on strategies that reduce the emissions of combustion engine vehicles or increase the share of electric vehicles on the road.
+
+### Provide grants for pollutant remediation and reduction initiatives
+| Location | Ventura County, CA |
+|:------|:-------------------------------------------------------------------|
+| Details | The Carl Moyer Memorial Air Quality Standards Attainment Program, which is jointly run by CARB and the VCAPCB, provides grants for the following projects: Repower commercial fishing boats with lower emission engines; Repower farm equipment with lower emission engines; Replace emergency vehicles with lower emission engines; Replace heavy duty diesel trucks with lower emission engines; New, conversion of existing, or expansion of battery charging/alternative fueling stations. |
+| Links | [Ventura County Air Pollution Control District](http://www.vcapcd.org/grant_programs.htm#Clean_Air_Fund_) |
+| Implementation Costs & Impact Factor | Since its inception, over \$42 million was granted to businesses in Ventura County. In 2017, \$4.5 million was allocated; in 2018, \$2.5 million was allocated;iIn 2019, \$6 million was allocated. |
+| Scalable Potential | The case study was funded by CARB, so the primary pathway is through CARB and the local air pollution district. Most funding is allocated to commercial uses. |
+| Similar | [Transportation Fund for Clean Air County Program Manager Fund, BAAQMD](https://www.baaqmd.gov/funding-and-incentives/public-agencies/county-program-manager-fund) |
+
+### Provide commercial rebates for commercial building owners to install EV charging stations
+| Location | Los Angeles, CA |
+|:------|:-------------------------------------------------------------------|
+| Details | The Los Angeles Department of Water and Power (LADWP) provides rebates to commercial customers toward the purchase of a Level 2 electric vehicle charging station. Commercial customers who purchase and install EV charging stations for employee and public use can receive up to \$5,000 for each charger, with up to \$750 in additional rebate funds per extra charge port. Eligible customers may qualify for up to 40 rebate rewards depending on the number of parking spaces at the installation site. EV charging stations must be installed within the LADWP service area. Rebates are available on a first-come, first-served basis through June 30, 2021, or until funds are exhausted. |
+| Links | [LADWP](https://www.ladwp.com/ladwp/faces/ladwp/commercial/c-savemoney/c-sm-rebatesandprograms/c-sm-rp-commevstation?_adf.ctrl-state=ydg1eawf9_17&_afrLoop=246802491623816) |
+| Implementation Costs & Impact Factor | [See recent dashboard report](https://www.ladwp.com/cs/idcplg?IdcService=GET_FILE&dDocName=OPLADWPCCB701489&RevisionSelectionMethod=LatestReleased). As for February 2020, \$31 million for Level 2 charging stations, with over 350 applications paid, pending, or reserved. |
+| Scalable Potential | Many parking structures in Stockton may be good candidates for incentivizing EV charging station installation. |
+| Similar | [Rancho Cucamonga Municipal Utility](https://www.cityofrc.us/sites/default/files/2019-08/ENG-RCMU-Commercial-EV-Rebate-Application_2019.pdf) |
+
+### Provide grants to income eligible residents for the replacement of high-emission cars with low-emission cars
+| Location | San Francisco Bay Area, CA |
+|:------|:-------------------------------------------------------------------|
+| Details | The Bay Area Air Quality Management District's (BAAQMD) Clean Cars for All program offers grants up to \$9,500 to income-eligible residents to replace a vehicle eligible for retirement with a PEV or HEV. Eligible vehicles for replacement should have a model year 15 years or older than the current year. Recipients may buy or lease a new or used PEV or HEV. Grants vary depending on the household income and vehicle technology. Vehicles that are replaced must be turned in at an authorized dismantler. Individuals that purchase an all-electric vehicle are eligible to receive up to \$2,000 for the purchase and installation of a Level 2 electric vehicle supply equipment. |
+| Links | [BAAQMD](https://www.baaqmd.gov/funding-and-incentives/residents/clean-cars-for-all) |
+| Implementation Costs & Impact Factor | From 2015-2019, \$112 million was allocated to Clean Cars 4 All from CARB (\$10 million of which was from Volkswagen settlement funds). Of this, San Joaquin Valley APCD has expended about \$9 million of \$41 million to replace 1,450 vehicles (about 15 percent battery electric, 35 percent plug-in hybrid, 50 percent hybrid). [Read more here](https://ww2.arb.ca.gov/sites/default/files/2019-09/fy1920fundingplan.pdf) and through [Drive Clean in the San Joaquin](https://www.valleyair.org/drivecleaninthesanjoaquin/replace/). |
+| Scalable Potential | Further grant opportunities are expected through the program in the coming years. Stockton could target underserved communities in future grant applications. |
+| Similar | [City of Pasadena](https://ww5.cityofpasadena.net/water-and-power/residentialevrebate/) |
+
+### Engage automobile manufacturers as stakeholders in the EV market
+| Location | Arizona |
+|:------|:-------------------------------------------------------------------|
+| Details | Arizona requires car dealers to make information about alternative fuel vehicles and Arizona-based incentives for purchasing or leasing alternative fuel vehicles available to the public. The state also created an Electric Vehicles Arizona stakeholder group to bring together auto dealers and other interested parties so that they better understand the opportunities and barriers that electric vehicles face in the state. |
+| Links | [Carnegie Endowment Report](https://carnegieendowment.org/files/electric_vehicles.pdf) |
+| Implementation Costs & Impact Factor | No implementation costs. [Between 2017 and 2018](https://evadoption.com/ev-market-share/ev-market-share-state/), AZ EV sales increased from 2,976 (0.90% of market share) to 7,086 (1.84% of market share). |
+| Scalable Potential | According to the California [Clean Vehicle Rebate Project](https://cleanvehiclerebate.org/eng/rebate-statistics), San Joaquin County customers have received about 3,000 rebates, compared to 366,000 state-wide, leaving a lot of growth potential compared to other counties. |
+| Similar | [Chicago Area Clean Cities](https://www.chicago.gov/city/en/depts/cdot/supp_info/chicago_area_cleancities.html) |
+
+### Reduce vehicle speed limits
+| Location | Arizona |
+|:------|:-------------------------------------------------------------------|
+| Details | Introducing lower speed limits on motorways cuts fuel consumption and pollutant emissions. The exact impact is contingent upon vehicle type, driving patterns, frequency of speeding, congestion, and traffic diversion. |
+| Links | [European Environment Agency](https://www.eea.europa.eu/themes/transport/speed-limits-fuel-consumption-and/speed-limits) |
+| Implementation Costs & Impact Factor | Pollution: Depending on [driving behavior](https://www.eea.europa.eu/themes/transport/speed-limits-fuel-consumption-and/speed-limits), it is possible to expect anything from 2-18% reductions in GHGs.<br>Public Health: In an 83-city [study](https://ehjournal.biomedcentral.com/articles/10.1186/1476-069X-9-65), PM2.5-related mortality reduction is worth \$31 billion (2007 dollars).<br>Fatalities and Injuries: 2200 crashes, 18 fatalities, and 1200 injuries reduced in Massachusetts.<br>Economic Benefits: Massachusetts predicted to save \$210 million (30mph to 25mph reduction). |
+| Scalable Potential | According to the California [Clean Vehicle Rebate Project](https://cleanvehiclerebate.org/eng/rebate-statistics), San Joaquin County customers have received about 3,000 rebates, compared to 366,000 state-wide, leaving a lot of growth potential compared to other counties. |
+| Similar | [NYC Neighborhood Slow Zones](https://www1.nyc.gov/html/dot/html/motorist/slowzones.shtml) |
  
 ## Appendix A: Index of Case Studies by Place
 
