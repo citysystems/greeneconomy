@@ -23,3 +23,6 @@ DT
 bookdown
 kableExtra
 FinancialMath
+smoothr
+geosphere
+tidytransit

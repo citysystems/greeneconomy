@@ -96,15 +96,15 @@ The following is a breakdown of the number of residential parcels by housing typ
 ```{r units-by-type-table}
 projection <- "+proj=utm +zone=10 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=ft +no_defs"
 
-stockton_boundary_influence_projected <- st_read("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/SpheresOfInfluence/SpheresOfInfluence.shp", quiet = TRUE) %>% 
+stockton_boundary_influence_projected <- st_read("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/SpheresOfInfluence/SpheresOfInfluence.shp", quiet = TRUE) %>% 
   filter(SPHERE == "STOCKTON") %>% 
   st_transform(projection)
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Parcels/sjc_parcels.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Parcels/sjc_parcels.Rdata")
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/Parcels/stockton_parcels.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Parcels/stockton_parcels.Rdata")
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/bldg_join.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/USBuildingFootprints/bldg_join.Rdata")
 
 residential_bldg <-
   bldg_join %>% 
@@ -191,7 +191,7 @@ The following map shows what the analysis looks like for one block group in Sout
 #     adu_available_land %>%
 #     rbind(available_land)
 # }
-# save(adu_available_land, file = "C:/Users/Derek Ouyang Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/adu_available_land.Rdata")
+# save(adu_available_land, file = "C:/Users/derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/adu_available_land.Rdata")
 # 
 # yard_separation <- #separates front and back yards into separate shapes
 #   adu_available_land %>%
@@ -209,8 +209,8 @@ The following map shows what the analysis looks like for one block group in Sout
 #   sp::disaggregate() %>%
 #   st_as_sf()
 # 
-# save(stockton_parcels_dissolve, file = "C:/Users/Derek Ouyang Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/stockton_parcels_dissolve.Rdata")
-# load("C:/Users/Derek Ouyang Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/stockton_parcels_dissolve.Rdata")
+# save(stockton_parcels_dissolve, file = "C:/Users/derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/stockton_parcels_dissolve.Rdata")
+# load("C:/Users/derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/stockton_parcels_dissolve.Rdata")
 # 
 # This creates the clips of each parcel with the block shapes from the previous line. because of the -1ft buffer, this creates little 1ft leftover crusts.
 # 
@@ -240,10 +240,10 @@ The following map shows what the analysis looks like for one block group in Sout
 #     street_edges %>% 
 #     rbind(street_edge)
 #   
-#   save(street_edges, file = "C:/Users/Derek Ouyang Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/street_edges.Rdata")
+#   save(street_edges, file = "C:/Users/derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/street_edges.Rdata")
 # }
 # 
-# load("C:/Users/Derek Ouyang Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/street_edges.Rdata")
+# load("C:/Users/derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/street_edges.Rdata")
 # 
 # # Note that borders with water or green space may be incorrectly identified as street edges with this method. in EPA there are almost always buffer parcels for the baylands which prevent this from happening, but this may need to be addressed as a check on suspected throughlots using the street method, same as how the corner lot cases likely need to be sent to the street method.
 # 
@@ -622,7 +622,7 @@ The following map shows what the analysis looks like for one block group in Sout
 #     buildable_area = floor(yard_area/10)*10
 #   )
 
-load("C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/clean_buildable_area.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/ADU/clean_buildable_area.Rdata")
 
 test_block_group <- 
   block_groups("CA", cb = TRUE) %>% 
