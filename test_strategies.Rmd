@@ -163,16 +163,7 @@ This domain covers all strategies that reduce the amount of energy use in buildi
 | Scalable Potential | See Chapter 4. |
 | Similar | [Austin Energy](https://savings.austinenergy.com/rebates/residential/offerings/home-improvements/weatherization/)<br>[100 Homes, 100 Days, Birmingham, AL](https://www.birminghamal.gov/2018/08/03/everything-you-need-to-know-about-the-100-homes-100-days-program/)<br>[HomeWise, Seattle, WA](http://www.seattle.gov/light/assistance/assistance.asp) |
 
-### Use green infrastructure to improve stormwater management
-| Location | San Francisco, CA |
-|:------|:-------------------------------------------------------------------|
-| Details | Green Infrastructure is a method of reducing stormwater and pollution burden from stormwater systems. It does this through the creation of micro urban watersheds that have the potential to decrease erosion, improve air quality, increase land value, and reduce urban heat effects (thereby also reducing cooling loads). |
-| Links | [SFWater](https://sfwater.org/modules/showdocument.aspx?documentid=13249) |
-| Implementation Costs & Impact Factor | Contingent upon site. [See table](https://docs.google.com/spreadsheets/d/1Z1Q1j1GJpgI8-M9XGKHMgTds0wqyB-twr-RLR7xX-JU/edit#gid=414331495).
-| Scalable Potential | There are several key risks to Stockton’s water quality, most of which are tied to Stockton historic and present manufacturing activities. The Sharpe Army Depot and McCormick & Baxter Creosoting Company are both listed on the Environmental Protection Agencies National Priorities List, indicating they are a high priority superfund site. The EPA has identified additional sites of concern including Stockton Iron Works, Colberg Boat Works, Norge Cleaning Village, and Brea Agricultural Services. Two additonal sites, Stockton Naval Communications Station and the General Services Administration, are both located at the Naval Supply Center at Rough and Ready Island. As a result of these sites, as well as agricultural run-off and other sources, Stockton has elevated levels of Arsenic that are, on average, 4.5 times higher than recommended levels. [Read more](https://docs.google.com/document/d/1O8eMspahozBkoB3-uIw3Azvwyv6xEJvca1XV76TwgFY/edit). |
-| Similar | [Hunts Point, NY](https://static1.squarespace.com/static/561dcdc6e4b039470e9afc00/t/5d435f106f6e7a0001f5b304/1564696351697/HuntsPoint_EarthEconomics_062719-1.pdf)<br>[NE Siskiyou Green Street, Portland, OR](https://www.urbanraindesign.com/ne-siskiyou)<br> |
-
-### Provide incentives for households to install on-site batteries, particularly for vulnerable customers
+### Provide incentives for households to install solar generation and storage, particularly for vulnerable customers
 | Location | California |
 |:------|:-------------------------------------------------------------------|
 | Details | Recent increases in wildfires and grid outages has meant that large swathes of California are at greater risk of losing power. As a result, the California Public Utilities Commission has launched the Self-Generation Incentive Program, which provides funding for low-income, medically vulnerable, and other select groups who live in Tier 2 and 3 "High Fire Threat Districts." |
@@ -222,12 +213,13 @@ This domain covers strategies with the outcome of increasing the employment rate
 | Similar | [CDTech Green Corps, Los Angeles, CA](http://www.cdtech.org/)<br>[East Los Angeles Skills Center](https://www.eastlaskillscenter.org/)<br>[Los Angeles Trade-Technical College](http://www.lattc.edu/)<br>[Oakland Green Jobs Corps](https://www.cypressmandela.org/)<br>[JobTrain, Menlo Park, CA](http://www.jobtrainworks.org/)<br>[Green Jobs Boston](https://sites.google.com/site/greenjobsboston/home)<br>[Win-Win, New York City, NY](https://www.nycservice.org/organizations/936) |
 
 ### Create a scholarship fund for students wishing to pursue eco-conscious careers
-| Location | N/A |
+| Location | Chicago, IL |
 |:------|:-------------------------------------------------------------------|
-| Details | San Joaquin Delta Community College does not require that you have a GED or High School diploma to attend. However, if you do not have a GED/High School Diploma, you are not eligible for federally funded student aid. Tuition is $46.00 per unit, which may represent a barrier for some students. If a fund were created that did not require GED/High School Diploma eligibility for financial aid and was targeted towards those pursuing environmentally-oriented careers, then it would incentivize more to pursue those careers. |
-| Links | [Low-Skill Workers’ Access to Quality Green Jobs](https://www.urban.org/sites/default/files/publication/32921/412096-Low-Skill-Workers-Access-to-Quality-Green-Jobs.PDF) |
-| Implementation Costs & Impact Factor | Contingent upon demand for eco-conscious jobs |
-| Scalable Potential | San Joaquin Delta College or Stockton Scholars could explore this idea. |
+| Details | Created in partnership with the Walsh-Fluor Design-Build team (WFDBT), the contractor for CTA’s historic \$2.1 billion Red and Purple Modernization (RPM) Phase One Project, the new scholarship program will provide \$250,000 to aid CPS students who plan to pursue Science, Technology, Engineering and Math (STEM) four-year degrees at a university or college.  |
+| Links | [Chicago Transit Authority](https://www.transitchicago.com/rpm/workforce-opportunities/) |
+| Implementation Costs & Impact Factor | Scholarship donated by private sector. |
+| Scalable Potential | San Joaquin Delta Community College does not require that you have a GED or High School diploma to attend. However, if you do not have a GED/High School Diploma, you are not eligible for federally funded student aid. Tuition is $46.00 per unit, which may represent a barrier for some students. If a fund were created that did not require GED/High School Diploma eligibility for financial aid and was targeted towards those pursuing environmentally-oriented careers, then it would incentivize more to pursue those careers. |
+| Similar | [Kansas Water Environment Association](http://www.kwea.net/scholarships.html) |
 
 ### Offer continued training and support post-employment
 | Location | New York City, NY |
@@ -337,6 +329,15 @@ This domain includes transportation-oriented strategies that lead to fewer vehic
 | Scalable Potential | BRT service is currently planned for a range of corridors throughout the City of Stockton, with potential service extension to Lodi via BRT Express. RTD will implement BRT Express service over time as funding becomes available and as demand grows due to new development. Therefore, BRT design may differ by corridor but should follow a set of requirements to ensure system characteristics remain consistent. Figure below from RTD 2018 Short Range Transit Plan.<br><br>`r knitr::include_graphics("images/brt.png")` |
 | Similar | [Bogota TransMilenio, Mexico City Metrobus, Johannesburg BRT](https://docs.google.com/spreadsheets/d/1JixMHuX0ArT3MDNrJgYliGE77TqYZe5bGwms8D6oblE/edit#gid=0) |
 
+### Redesign bus network to prioritize ridership over coverage
+| Location | Houston, TX |
+|:------|:-------------------------------------------------------------------|
+| Details | After an extensive community engagement process, the METRO Board of Directors directed the System Reimagining team to design a network where 80% of resources are aimed at maximum ridership and 20% of resources are used for coverage (compared to about 50%-50% today). The result is a simpler, easier to understand network that better aligns with the Houston of today. At all times, the plan strives to keep service to as many existing riders as possible. |
+| Links | [Houston METRO Transit Systems Reimagining Project](https://www.ridemetro.org/Pages/Reimagining-FAQs.aspx) |
+| Implementation Costs & Impact Factor | The draft plan presented here is a no-growth network plan, which means it is designed to use existing METRO operating funds. The plan reallocates existing service rather than imagining new resources. That’s why the plan doesn’t always offer as much service as METRO or its customers would like. Nearly all (94%) current riders will be able to access service at the same stop they do now. The vast majority of current riders (72% up from 49.5% on weekdays and 25% on weekends) will be on or near frequent service that is useful for travel to more places than they can reach easily now. Even if you are already on a frequent line, the plan makes it much easier to transfer to other lines to get to more places. 99.5% of existing riders will have local bus service within 1/4 mile. The small percentage that will be farther from service either live or travelc in areas where the pattern of development and the street network make it impossible to run transit efficiently, and as a result they could only be served at a very high cost per rider. About 0.6% of existing riders will have flexible service rather than fixed route service. This service will provide hourly pickups and dropoffs within its defined zone and to reach a point where you can connet to fixed route service. Riders can call ahead to reserve a ride on the service or meet the bus at a designated location and time. Some fixed routes will still run in these zones, but the flexible service will fill in the gaps for those who might find it difficult to walk to a bus stop. |
+| Scalable Potential | San Joaquin RTD is still recovering from budget cuts, but can consider a bus network redesign that is budget-neutral and maximizes ridership. |
+| Similar | [IndyGo](https://www.indygo.net/projects/)<br>[Austin Capital Metro Connections 2025](https://capmetro.org/connections2025/)<br>[Central Ohio Transit Authority](https://www.cota.com/initiatives/tsr/) |
+
 ### Promote the use of e-scooters and dockless bicycles to reduce reliance on private cars
 | Location | San Francisco, CA |
 |:------|:-------------------------------------------------------------------|
@@ -400,6 +401,24 @@ This domain includes transportation-oriented strategies that lead to fewer vehic
 | Scalable Potential | Stockton’s [intra-county workforce](https://www.pacific.edu/Documents/school-business/BFC/NSJV%20Reg%20Assessment/NSJV%20Commuting%20Patterns%20v2.pdf) has declined from 92.4% in 1980 to 83.1% in 2010. This means that people are traveling longer to get to work, suggesting greater benefits to such a program. |
 | Similar | [Boston Fleethub](https://www.zipcar.com/press/releases/zipcar-launches-new-boston-fleethub-program) |
 
+### Provide free public transit
+| Location | Kansas City, MO |
+|:------|:-------------------------------------------------------------------|
+| Details | Kansas City, Missouri, will be the first major US city to offer free bus service to residents by 2020. City Council members in a metropolis of about 490,000 people, voted unanimously in early December 2019. The council still needs to decide how the system will be funded and where that money will come from in the budget. |
+| Links | [Vox](https://www.vox.com/the-goods/2019/12/17/21026425/kansas-city-free-bus-system) |
+| Implementation Costs & Impact Factor | The Kansas City Council already expects to spend about \$8 to \$9 million to cover for the lost fares, as mentioned, but the city already loses \$1.5 million collecting fares every year, according to Mayor Lucas. The impact on ridership is yet to be determined. |
+| Scalable Potential | Free transit could be feasible in Stockton given the relatively low transit ridership numbers for RTD compared to high-density cities. It's unclear how the loss in revenues would affect service quality and ridership. In Dunkirk, France, a similar program was implemented with the following results: Passengers were up 50-85%, depending on the route, and average trip length dropped by 10%. |
+| Similar | [Luxembourg](https://www.bbc.com/worklife/article/20190128-the-cost-of-luxembourgs-free-public-transport-plan)<br>[Estonia](https://www.economist.com/europe/2019/05/09/free-public-transport-in-estonia) |
+
+### Subsidize first-mile/last-mile transportation services
+| Location | Centennial, CO |
+|:------|:-------------------------------------------------------------------|
+| Details | The First and Last Mile Pilot (FLMP) was a public-private partnership between the City of Centennial, CH2M, the Denver South Transportation Management Association (DSTMA), Southeast Public Improvement Metropolitan District (SPIMD), Lyft, Via Mobility Services (Via), and Xerox (Conduent). Beginning August 17th, residents were able to request a free Lyft Line (carpooling) ride to and from the Dry Creek LRT station. The Go Denver app powered by Xerox integrated scheduling and payment systems for both transit and Lyft, thus allowing users to select the FLMP options including “Light Rail + Lyft Line.” |
+| Links | [Shared Use Mobility Center](https://learn.sharedusemobilitycenter.org/wp-content/uploads/Go-Centennial-Final-Report_for-web.pdf) |
+| Implementation Costs & Impact Factor | The FLMP program had a budget of \$400,000 and temporarily replaced the City’s Call-n-Ride system. Read more in the report. |
+| Scalable Potential | A similar service in Stockton could subsidize trips to the Amtrak station or dowtown bus station. |
+| Similar | [RideAustin](https://learn.sharedusemobilitycenter.org/casestudy/metrolink-pilot-by-capmetro-in-partnership-with-rideaustin/) |
+
 ## Vehicle Emissions
 
 This domain focuses on strategies that reduce the emissions of combustion engine vehicles or increase the share of electric vehicles on the road.
@@ -456,29 +475,261 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 |:------|:-------------------------------------------------------------------|
 | Details | Rather than using dark pavements, which attract 80-95% of sunlight, solar reflective "cool" pavements have increased reflectance. They typically use a reflective or clear binder, or a reflective surface coating. |
 | Links | [Berkeley Lab](https://heatisland.lbl.gov/coolscience/cool-pavements) |
-| Implementation Costs & Impact Factor | CoolSeal costs between \$0.30 to \$0.40 per square foot. Albedo increases lead to a reduction of outdoor air temperatures by 0.2 to 0.9 �F. In California cities with a lot of air conditioning, the savings of air conditioning energy due to lowered air temperature is up to 1 kWh (\$0.60) per year per m� of pavement modified. The avoided CO??? is valued at less than a penny a year per m�. Lower surface air temperature reduces ground level ozone. |
-| Scalable Potential | According to the California [Clean Vehicle Rebate Project](https://cleanvehiclerebate.org/eng/rebate-statistics), San Joaquin County customers have received about 3,000 rebates, compared to 366,000 state-wide, leaving a lot of growth potential compared to other counties. |
-| Similar | [NYC Neighborhood Slow Zones](https://www1.nyc.gov/html/dot/html/motorist/slowzones.shtml)<br>[Philadelphia Neighborhood Slow Zones](http://visionzerophl.com/get-involved) |
+| Implementation Costs & Impact Factor | CoolSeal costs between \$0.30 to \$0.40 per square foot. Albedo increases lead to a reduction of outdoor air temperatures by 0.2 to 0.9 degrees Fahrenheit. In California cities with a lot of air conditioning, the savings of air conditioning energy due to lowered air temperature is up to 1 kWh (\$0.60) per year per sq.m. of pavement modified. The avoided CO2 is valued at less than a penny a year per sq.m. Lower surface air temperature reduces ground level ozone. |
+| Scalable Potential | Downtown Stockton could benefit from a set of public and private initiatives to retrofit existing commercial roofs and ground surfaces. |
+| Similar | [White Roof Project, NYC](http://www.whiteroofproject.org/)<br>[SMUD Cool Roof Rebate](https://energy-seal.com/wp-content/uploads/crrp_smud_cool_roof_rebate_program.pdf) |
+
+### Promote permeable pavement to increase groundwater absorption
+| Location | Greenville County, SC |
+|:------|:-------------------------------------------------------------------|
+| Details | Permeable pavement is a form of pavement that is highly porous pavement that allows rainwater to pass through it and into the ground. In addition to reducing surface runoff, it can trap suspended solids, thereby filtering stormwater. This also reduces peak discharge rates, meaning that flooding is more controlled. It is, however, most appropriate for sidewalks/pedestrian areas and low-speed driving areas. |
+| Links | [USGS](https://www.usgs.gov/science/evaluating-potential-benefits-permeable-pavement-quantity-and-quality-stormwater-runoff?qt-science_center_objects=0#qt-science_center_objects) |
+| Implementation Costs & Impact Factor | \$4.00-\$6.00 per square foot. [Read more here](https://docs.google.com/document/d/1qV1ki5JeARdA-i3a_4ICYKz0fER5NR8QOo5Aq3TBiTQ/edit). |
+| Scalable Potential | Stockton could identify low-lying areas that frequently flood and prioritize permeable pavement as part of regularly scheduled maintenance. |
+| Similar | [SF Permeable Sidewalks](https://www.sfbetterstreets.org/find-project-types/greening-and-stormwater-management/stormwater-overview/permeable-paving/) |
+
+### Reclaim urban streams and rivers to increase groundwater absorption and filtration
+| Location | Greenville County, SC |
+|:------|:-------------------------------------------------------------------|
+| Details | Reclaiming urban streams and rivers helps to restore the watercycle back to its natural processes. This helps to restore groundwater recharge, as well as natural water filtration processes. From an environmental perspective, it restores sensitive natural habitats. |
+| Links | [Earth Economics](https://static1.squarespace.com/static/561dcdc6e4b039470e9afc00/t/5e4581cf81c87071297f8e61/1581613539633/ReedyRiver_FactSheet_0220-0.pdf) |
+| Implementation Costs & Impact Factor | [\$28 to \$129 per foot](https://www.prp.cses.vt.edu/Reports_04/Mitigation_04.pdf). Benefits: reduction in sediment removal (\$2.76 per ton to manually remove); [green space](https://www.researchgate.net/publication/265969625_Effect_of_public_green_space_on_residential_property_values_in_Belfast_metropolitan_area) increases property values by up to 49% as properties change hands; [contingent valuation](https://www.hydroreform.org/sites/default/files/Hurd_Economic_Benefits_2009_0.pdf) varies from \$10.83 to \$270.40 per capita. |
+| Scalable Potential | There are a number of waterways through Stockton that could be opportunities for proactive reclamation, given that FEMA and U.S. Army Corps guidelines do not yet fully factor in the science on climate change impacts on precipitation patterns. |
+| Similar | [Guadalupe River, San Jose](https://www.hydroreform.org/sites/default/files/Hurd_Economic_Benefits_2009_0.pdf) |
+
+### Use green infrastructure to improve stormwater management
+| Location | San Francisco, CA |
+|:------|:-------------------------------------------------------------------|
+| Details | Green Infrastructure is a method of reducing stormwater and pollution burden from stormwater systems. It does this through the creation of micro urban watersheds that have the potential to decrease erosion, improve air quality, increase land value, and reduce urban heat effects (thereby also reducing cooling loads). |
+| Links | [SFWater](https://sfwater.org/modules/showdocument.aspx?documentid=13249) |
+| Implementation Costs & Impact Factor | Contingent upon site. [See table](https://docs.google.com/spreadsheets/d/1Z1Q1j1GJpgI8-M9XGKHMgTds0wqyB-twr-RLR7xX-JU/edit#gid=414331495).
+| Scalable Potential | There are several key risks to Stockton’s water quality, most of which are tied to Stockton historic and present manufacturing activities. The Sharpe Army Depot and McCormick & Baxter Creosoting Company are both listed on the Environmental Protection Agencies National Priorities List, indicating they are a high priority superfund site. The EPA has identified additional sites of concern including Stockton Iron Works, Colberg Boat Works, Norge Cleaning Village, and Brea Agricultural Services. Two additonal sites, Stockton Naval Communications Station and the General Services Administration, are both located at the Naval Supply Center at Rough and Ready Island. As a result of these sites, as well as agricultural run-off and other sources, Stockton has elevated levels of Arsenic that are, on average, 4.5 times higher than recommended levels. [Read more](https://docs.google.com/document/d/1O8eMspahozBkoB3-uIw3Azvwyv6xEJvca1XV76TwgFY/edit). |
+| Similar | [Hunts Point, NY](https://static1.squarespace.com/static/561dcdc6e4b039470e9afc00/t/5d435f106f6e7a0001f5b304/1564696351697/HuntsPoint_EarthEconomics_062719-1.pdf)<br>[NE Siskiyou Green Street, Portland, OR](https://www.urbanraindesign.com/ne-siskiyou)<br>[Caltrans](https://www.owp.csus.edu/research/papers/papers/PP061.pdf)<br>[Tres Rios Demonstration Constructed Wetlands, Phoenix](https://www.wetlandsolutionsinc.com/download/TreatmentWetlands/Tres_Rios_Biomonitoring_Aug%202004.pdf) |
+
+### Promote urban gardens as a substitute for displaced ecosystem services
+| Location | Philadelphia, PA |
+|:------|:-------------------------------------------------------------------|
+| Details | As a result of their greying environment, cities often suffer from greater fluctuations in weather conditions, poor water infiltration, improper nutrient cycling, and lack of vegetative cover. These lead to reduced water quality and flooding, heat islands, and lack of ecological diversity. Using vacant lots, which reduce property values, residents of Philadelphia have developed urban gardens  as a means of food production, increase property values, and provide educational opportunities on sustainability. |
+| Links | [Philadelphia Inquirer](https://www.inquirer.com/science/climate/urban-farm-agriculture-philadelphia-plan-garden-plots-20190320.html)<br>[University of Pennsylvania](https://repository.upenn.edu/cgi/viewcontent.cgi?article=1044&context=mes_capstones) |
+| Implementation Costs & Impact Factor | Soil remediation costs between \$5-40 per ton. Central Valley water costs between \$15-40 per acre-foot. Philadelphia is estimated to have about 40,000 structureless vacant parcels amounting to 1,840 acres of unused land. These vacant parcels reduced property values by an average of 6.5%, leading to $3.6 billion in property tax loss. Households with an adult that participates in a community garden program are more likely to eat fruits and vegetables. Compared to vacant lots, agricultural lots realized far lower rates of soil erosion. |
+| Scalable Potential | Local nonprofits like [PUENTES](http://puentesca.org/) already are in a position to expand their operations to develop more urban gardens in Stockton, contingent on land and water costs. |
+| Similar | [Detroit Garden Resource Program](http://detroitagriculture.net/)<br>[HOME GR/OWN Milwaukee](https://city.milwaukee.gov/homegrownmilwaukee.com#.XlXwGmhKiUk) |
+
+### Offer rebates for flood mitigation projects
+| Location | South Holland, IL |
+|:------|:-------------------------------------------------------------------|
+| Details | Due to flooding from a local river, South Holland, IL offers up to \$2500 per project per property. Approved projects include measures to prevent water from entering a home, including adding downspouts and floodwalls, sewer backup projects, such as installing overhead sewers, and removal of connections from stormwater sewers. In 2016, the program was further extended to cover up to \$5,000 in costs if residents install systems to prevent sewer backups. |
+| Links | [Pew Charitable Trusts](https://www.pewtrusts.org/-/media/assets/2019/11/illinois_village_offers_rebates_brief_final.pdf) |
+| Implementation Costs & Impact Factor | As of February 2019 (started in 1990), \$800,000 in rebates; 1,172 households have participated. |
+| Scalable Potential | Historical data on snowpack flooding has shown that 3 feet of flooding in Stockton could impact as many as 12,000 acres of land, with 20,000 housing units. Factoring in sea level rise projections, [Climate Central](http://ssrf.climatecentral.org.s3-website-us-east-1.amazonaws.com/Buffer2/states/CA/downloads/pdf_reports/Town/CA_Stockton-report.pdf) estimates a 34 percent multi-year risk of at least one flood exceeding 3 feet from 2016 to 2030, a 93 percent risk by from 2016 to midcentury, and a 100 percent risk by 2100. Under the National Resaerch Council's high-end projections, these chances increase to 50, 100, and 100 percent, respectively, and they compute a 100 percent risk of at least one flood exceeding 6 feet by the end of the century.
+| Similar | [Wisconsin Department of Natural Resources](https://www.pewtrusts.org/en/research-and-analysis/issue-briefs/2019/11/wisconsin-grant-program-helps-people-relocate-from-flood-prone-areas)<br>[Arkansas Private Wetland and Riparian Zone Creation and Restoration Incentives Act](https://www.pewtrusts.org/en/research-and-analysis/issue-briefs/2019/11/arkansas-tax-credit-rewards-landowners-for-conserving-wetlands) |
  
 ## Appendix A: Index of Case Studies by Place
 
 **Arizona**
 
-- [Engage automobile manufacturers as stakeholders in the EV market](engage-automobile-manufacturers-as-stakeholders-in-the-ev-market)
+- [Engage automobile manufacturers as stakeholders in the EV market](#engage-automobile-manufacturers-as-stakeholders-in-the-ev-market)
+
+**Arlington, VA**
+
+- [Provide a density bonus for affordable housing](#provide-a-density-bonus-for-affordable-housing)
+- [Enable property-assessed clean energy (PACE) financing](#enable-property-assessed-clean-energy-pace-financing)
 
 **Austin, TX**
 
+- [Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements](#provide-consumer-oriented-programs-to-incentivize-energy-efficiency-retrofits-and-appliance-improvements)
 - Partner with transportation network companies (TNCs) to offer first/last mile discount programs for transit riders
+
+**Birmingham, AL**
+- [Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements](#provide-consumer-oriented-programs-to-incentivize-energy-efficiency-retrofits-and-appliance-improvements)
+
+**Boston, MA**
+
+- [Create a fund to implement energy savings projects](#create-a-fund-to-implement-energy-savings-projects)
+- [Provide green-oriented job training and education pathways](#provide-green-oriented-job-training-and-education-pathways)
 
 **Bridgeport, CT**
 
-- [Provide training and coaching for low-income workers, rather than unemployed workers](provide-training-and-coaching-for-low-income-workers-rather-than-unemployed-workers)
+- [Provide training and coaching for low-income workers, rather than unemployed workers](#provide-training-and-coaching-for-low-income-workers-rather-than-unemployed-workers)
 
 **Buffalo, NY**
 
-- [Eliminate minimum parking](#revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning)
+- [Eliminate minimum parking](#eliminate-minimum-parking)
 
 **California**
 
-- [Encourage accessory dwelling units](encourage-accessory-dwelling-units)
-- [Revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning](revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning)
+- [Encourage accessory dwelling units](#encourage-accessory-dwelling-units)
+- [Revise zoning codes in medium to large cities to facilitate upzoning](#revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning)
+- [Promote a Solar Renewable Energy Certificate program](#promote-a-solar-renewable-energy-certificate-program)
+- [Provide incentives for households to install solar generation and storage, particularly for vulnerable customers](#provide-incentives-for-households-to-install-solar-generation-and-storage-particularly-for-vulnerable-customers)
+
+**Chicago, IL**
+
+- [Enable property-assessed clean energy (PACE) financing](#enable-property-assessed-clean-energy-pace-financing)
+- [Create a scholarship fund for students wishing to pursue eco-conscious careers](#create-a-scholarship-fund-for-students-wishing-to-pursue-eco-conscious-careers)
+- [Encourage mortgage refinancing](#encourage-mortgage-refinancing)
+
+**Cleveland, OH**
+
+- [Offer continued training and support post-employment](#offer-continued-training-and-support-post-employment)
+
+**Colorado**
+
+- [Provide tax credits to investors in advanced industries](#provide-tax-credits-to-investors-in-advanced-industries)
+
+**Columbus, OH**
+
+- [Offer job creation tax credit](#offer-job-creation-tax-credit)
+
+**Davis, CA**
+
+- [Develop a shared equity program for high-density housing](#develop-a-shared-equity-program-for-high-density-housing)
+
+**Dayton, OH**
+
+- [Provide training and coaching for low-income workers, rather than unemployed workers](#provide-training-and-coaching-for-low-income-workers-rather-than-unemployed-workers)
+
+**Dublin, CA**
+
+- [Encourage mortgage refinancing](#encourage-mortgage-refinancing)
+
+**Glendale, CA**
+
+- [Use waste to produce electricity](#use-waste-to-produce-electricity)
+
+**Hartford, CT**
+
+- [Eliminate minimum parking](#eliminate-minimum-parking)
+- [Enable property-assessed clean energy (PACE) financing](#enable-property-assessed-clean-energy-pace-financing)
+
+**Hayward, CA**
+
+- [Use waste to produce electricity](#use-waste-to-produce-electricity)
+
+**Indianapolis, IN**
+
+- [Develop public employment program](#develop-public-employment-program)
+
+**Kansas**
+
+- [Create a scholarship fund for students wishing to pursue eco-conscious careers](#create-a-scholarship-fund-for-students-wishing-to-pursue-eco-conscious-careers)
+
+**London, UK**
+
+- [Create a fund to implement energy savings projects](#create-a-fund-to-implement-energy-savings-projects)
+
+**Los Angeles County, CA**
+
+- [Enable property-assessed clean energy (PACE) financing](#enable-property-assessed-clean-energy-pace-financing)
+- [Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements](#provide-consumer-oriented-programs-to-incentivize-energy-efficiency-retrofits-and-appliance-improvements)
+- [Provide green-oriented job training and education pathways](#provide-green-oriented-job-training-and-education-pathways)
+
+**Oakland, CA**
+
+- [Provide green-oriented job training and education pathways](#provide-green-oriented-job-training-and-education-pathways)
+
+**Oregon**
+
+- [Revise zoning codes in medium to large cities to facilitate upzoning](#revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning)
+
+**Melbourne, Australia**
+
+- [Create a fund to implement energy savings projects](#create-a-fund-to-implement-energy-savings-projects)
+
+**Menlo Park, CA**
+
+- [Provide green-oriented job training and education pathways](#provide-green-oriented-job-training-and-education-pathways)
+
+**Milwaukee, WI**
+
+- [Set energy savings standards on all public buildings and provide financial and technical assistance for commercial private sector energy savings](#set-energy-savings-standards-on-all-public-buildings-and-provide-financial-and-technical-assistance-for-commercial-private-sector-energy-savings)
+- [Enable property-assessed clean energy (PACE) financing](#enable-property-assessed-clean-energy-pace-financing)
+
+**Minneapolis, MN**
+
+- [Revise zoning codes in medium to large cities to facilitate upzoning](#revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning)
+- [Eliminate minimum parking](#eliminate-minimum-parking)
+
+**Muskegon, MI**
+
+- [Promote solar development in Opportunity Zones](#promote-solar-development-in-opportunity-zones)
+
+**Nebraska**
+
+- [Provide tax credits to investors in advanced industries](#provide-tax-credits-to-investors-in-advanced-industries)
+
+**New York City, NY**
+
+- [Encourage micro-units](#encourage-micro-units)
+- [Create a fund to implement energy savings projects](#create-a-fund-to-implement-energy-savings-projects)
+- [Provide green-oriented job training and education pathways](#provide-green-oriented-job-training-and-education-pathways)
+- [Offer continued training and support post-employment](#offer-continued-training-and-support-post-employment)
+
+**Norfolk, VA**
+
+- [Promote solar development in Opportunity Zones](#promote-solar-development-in-opportunity-zones)
+
+**Palo Alto, CA**
+
+- [Implement “reach” codes which go beyond state minimum requirements for energy use in building design and construction](#implement-reach-codes-which-go-beyond-state-minimum-requirements-for-energy-use-in-building-design-and-construction)
+
+**Philadelphia, PA**
+
+- [Offer job creation tax credit](#offer-job-creation-tax-credit)
+
+**Richmond, CA**
+
+- [Provide green-oriented job training and education pathways](#provide-green-oriented-job-training-and-education-pathways)
+
+**San Diego, CA**
+
+- [Provide training and coaching for low-income workers, rather than unemployed workers](#provide-training-and-coaching-for-low-income-workers-rather-than-unemployed-workers)
+
+**San Francisco, CA**
+
+- [Eliminate minimum parking](#eliminate-minimum-parking)
+- [Encourage micro-units](#encourage-micro-units)
+- [Provide a density bonus for affordable housing](#provide-a-density-bonus-for-affordable-housing)
+- [Develop a shared equity program for high-density housing](#develop-a-shared-equity-program-for-high-density-housing)
+- [Enable property-assessed clean energy (PACE) financing](#enable-property-assessed-clean-energy-pace-financing)
+- [Encourage mortgage refinancing](#encourage-mortgage-refinancing)
+- [Develop public employment program](#develop-public-employment-program)
+
+**San Jose, CA**
+
+- [Set energy savings standards on all public buildings and provide financial and technical assistance for commercial private sector energy savings](#set-energy-savings-standards-on-all-public-buildings-and-provide-financial-and-technical-assistance-for-commercial-private-sector-energy-savings)
+- [Implement “reach” codes which go beyond state minimum requirements for energy use in building design and construction](#implement-reach-codes-which-go-beyond-state-minimum-requirements-for-energy-use-in-building-design-and-construction)
+
+**San Mateo County, CA**
+
+- [Match homeowners with vacant spaces with individuals looking for affordable housing](#match-homeowners-with-vacant-spaces-with-individuals-looking-for-affordable-housing)
+
+**Santa Clara County, CA**
+
+- [Match homeowners with vacant spaces with individuals looking for affordable housing](#match-homeowners-with-vacant-spaces-with-individuals-looking-for-affordable-housing)
+
+**Seattle, WA**
+
+- [Encourage accessory dwelling units](#encourage-accessory-dwelling-units)
+- [Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements](#provide-consumer-oriented-programs-to-incentivize-energy-efficiency-retrofits-and-appliance-improvements)
+
+**St. Louis, MO**
+
+- [Enable property-assessed clean energy (PACE) financing](#enable-property-assessed-clean-energy-pace-financing)
+
+**Toronto, Canada**
+
+- [Create a fund to implement energy savings projects](#create-a-fund-to-implement-energy-savings-projects)
+
+**Tulsa, OK**
+
+- [Offer continued training and support post-employment](#offer-continued-training-and-support-post-employment)
+
+**Vancouver, Canada**
+
+- [Encourage micro-units](#encourage-micro-units)
+
+**Washington, DC**
+
+- [Promote solar development in Opportunity Zones](#promote-solar-development-in-opportunity-zones)
+- [Promote a Solar Renewable Energy Certificate program](#promote-a-solar-renewable-energy-certificate-program)

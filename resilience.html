@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2.9 GHG Forecast | Stockton Green Economy Report</title>
-  <meta name="description" content="2.9 GHG Forecast | Stockton Green Economy Report" />
+  <title>3.7 Resilience | Stockton Green Economy Report</title>
+  <meta name="description" content="3.7 Resilience | Stockton Green Economy Report" />
   <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2.9 GHG Forecast | Stockton Green Economy Report" />
+  <meta property="og:title" content="3.7 Resilience | Stockton Green Economy Report" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2.9 GHG Forecast | Stockton Green Economy Report" />
+  <meta name="twitter:title" content="3.7 Resilience | Stockton Green Economy Report" />
   
   
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="buildings.html"/>
-<link rel="next" href="overview-of-green-economy-strategies.html"/>
+<link rel="prev" href="vehicle-emissions.html"/>
+<link rel="next" href="analysis-of-green-economy-strategies.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -651,808 +651,230 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ghg-forecast" class="section level2" number="2.9">
-<h2><span class="header-section-number">2.9</span> GHG Forecast</h2>
-<p>For our “business as usual” forecast of GHG emissions through 2040, and for our subsequent exploration of intervention strategies, we will focus on the following sectors for which we have used available data to refine our models: transportation, commercial energy, and residential energy. These sectors represented 58% of ICLEI’s modeled emissions in 2016. The other sectors, particularly industrial energy which comprised 24% of 2016 emissions, are also significant opportunities for GHG reductions, but are outside of the scope of this analysis without better data.</p>
-<p>Our simplified model of transportation emissions assumes that commute one-way vehicle miles traveled per worker is on a linear trend based on recent data. Otherwise, our forecasts of growth in the number of employed residents drives changes in VMT and thus transportation emissions. Other “business as usual” factors, like a forecasted adoption of EVs, are not considered in this analysis.</p>
-<p>Our simplified model of energy emissions will assume that building square footage increases with population and job growth through fixed ratios, and an underlying energy use factor for commercial and residential electricity and gas will follow the same trends as the last six years through 2040. Otherwise, a basic climate change model of heating and cooling degree days will drive additional changes in the forecasts.</p>
-<p>In summary, the following assumptions go into inputs for the forecasts, which are also shown in the table below:</p>
-<ul>
-<li>From Section 2.1, we derived future population, employed resident, and job forecasts, specifically for the years 2020, 2025, 2030, 2035, and 2040.</li>
-<li>From Section 2.5, we derived commute one-way VMT/workers for 2011-2017. The table below projects this trend to 2040.</li>
-<li>From Section 2.5, we derived simplified aggregate vehicle emission rates for San Joaquin County through 2040.</li>
-<li>From Section 2.7, we derived a linear forecast of PG&amp;E’s electricity emissions factor which runs from 2017’s data point towards a 2045 target of 100% clean energy.</li>
-<li>From Section 2.7, we derived linear forecasts of heating and cooling degree days through 2040 from Cal-Adapt’s HDD and CDD projections.</li>
-<li>From Section 2.7, we derived linear forecasts of energy use per capita per degree-day through 2040. For Commercial Gas, we leveled out the forecast at 1 kBTU/job/HDD from 2035 on.</li>
-</ul>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="ghg-forecast.html#cb56-1"></a>summary_TCO2E_norm_projection &lt;-</span>
-<span id="cb56-2"><a href="ghg-forecast.html#cb56-2"></a><span class="st">  </span>summary_TCO2E_norm_all</span>
-<span id="cb56-3"><a href="ghg-forecast.html#cb56-3"></a></span>
-<span id="cb56-4"><a href="ghg-forecast.html#cb56-4"></a>summary_TCO2E_norm_projection[<span class="dv">7</span><span class="op">:</span><span class="dv">11</span>,<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">2020</span>,<span class="dv">2025</span>,<span class="dv">2030</span>,<span class="dv">2035</span>,<span class="dv">2040</span>)</span>
-<span id="cb56-5"><a href="ghg-forecast.html#cb56-5"></a></span>
-<span id="cb56-6"><a href="ghg-forecast.html#cb56-6"></a>ghg_forecast_prep &lt;-</span>
-<span id="cb56-7"><a href="ghg-forecast.html#cb56-7"></a><span class="st">  </span>summary_TCO2E_norm_projection <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb56-8"><a href="ghg-forecast.html#cb56-8"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span><span class="st">`</span><span class="dt">Heating Degree Days</span><span class="st">`</span>,<span class="op">-</span><span class="st">`</span><span class="dt">Cooling Degree Days</span><span class="st">`</span>,<span class="op">-</span>Residents,<span class="op">-</span>Jobs) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb56-9"><a href="ghg-forecast.html#cb56-9"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
-<span id="cb56-10"><a href="ghg-forecast.html#cb56-10"></a>    <span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span> =</span>
-<span id="cb56-11"><a href="ghg-forecast.html#cb56-11"></a><span class="st">      </span><span class="kw">ifelse</span>(</span>
-<span id="cb56-12"><a href="ghg-forecast.html#cb56-12"></a>        Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2020</span>,</span>
-<span id="cb56-13"><a href="ghg-forecast.html#cb56-13"></a>        <span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span>,</span>
-<span id="cb56-14"><a href="ghg-forecast.html#cb56-14"></a>        <span class="kw">lm</span>(</span>
-<span id="cb56-15"><a href="ghg-forecast.html#cb56-15"></a>          <span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
-<span id="cb56-16"><a href="ghg-forecast.html#cb56-16"></a>        )<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
-<span id="cb56-17"><a href="ghg-forecast.html#cb56-17"></a><span class="st">          </span><span class="kw">lm</span>(</span>
-<span id="cb56-18"><a href="ghg-forecast.html#cb56-18"></a>            <span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
-<span id="cb56-19"><a href="ghg-forecast.html#cb56-19"></a>          )<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span>Year</span>
-<span id="cb56-20"><a href="ghg-forecast.html#cb56-20"></a>      ),</span>
-<span id="cb56-21"><a href="ghg-forecast.html#cb56-21"></a>    <span class="st">`</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span> =</span>
-<span id="cb56-22"><a href="ghg-forecast.html#cb56-22"></a><span class="st">      </span><span class="kw">ifelse</span>(</span>
-<span id="cb56-23"><a href="ghg-forecast.html#cb56-23"></a>        Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2020</span>,</span>
-<span id="cb56-24"><a href="ghg-forecast.html#cb56-24"></a>        <span class="st">`</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span>,</span>
-<span id="cb56-25"><a href="ghg-forecast.html#cb56-25"></a>        <span class="kw">lm</span>(</span>
-<span id="cb56-26"><a href="ghg-forecast.html#cb56-26"></a>          <span class="st">`</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
-<span id="cb56-27"><a href="ghg-forecast.html#cb56-27"></a>        )<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
-<span id="cb56-28"><a href="ghg-forecast.html#cb56-28"></a><span class="st">          </span><span class="kw">lm</span>(</span>
-<span id="cb56-29"><a href="ghg-forecast.html#cb56-29"></a>            <span class="st">`</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
-<span id="cb56-30"><a href="ghg-forecast.html#cb56-30"></a>          )<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span>Year</span>
-<span id="cb56-31"><a href="ghg-forecast.html#cb56-31"></a>      ),</span>
-<span id="cb56-32"><a href="ghg-forecast.html#cb56-32"></a>    <span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span> =</span>
-<span id="cb56-33"><a href="ghg-forecast.html#cb56-33"></a><span class="st">      </span><span class="kw">ifelse</span>(</span>
-<span id="cb56-34"><a href="ghg-forecast.html#cb56-34"></a>        Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2020</span>,</span>
-<span id="cb56-35"><a href="ghg-forecast.html#cb56-35"></a>        <span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span>,</span>
-<span id="cb56-36"><a href="ghg-forecast.html#cb56-36"></a>        <span class="kw">lm</span>(</span>
-<span id="cb56-37"><a href="ghg-forecast.html#cb56-37"></a>          <span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
-<span id="cb56-38"><a href="ghg-forecast.html#cb56-38"></a>        )<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
-<span id="cb56-39"><a href="ghg-forecast.html#cb56-39"></a><span class="st">          </span><span class="kw">lm</span>(</span>
-<span id="cb56-40"><a href="ghg-forecast.html#cb56-40"></a>            <span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
-<span id="cb56-41"><a href="ghg-forecast.html#cb56-41"></a>          )<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span>Year</span>
-<span id="cb56-42"><a href="ghg-forecast.html#cb56-42"></a>      ),</span>
-<span id="cb56-43"><a href="ghg-forecast.html#cb56-43"></a>    <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span> =</span>
-<span id="cb56-44"><a href="ghg-forecast.html#cb56-44"></a><span class="st">      </span><span class="kw">ifelse</span>(</span>
-<span id="cb56-45"><a href="ghg-forecast.html#cb56-45"></a>        Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2020</span>,</span>
-<span id="cb56-46"><a href="ghg-forecast.html#cb56-46"></a>        <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span>,</span>
-<span id="cb56-47"><a href="ghg-forecast.html#cb56-47"></a>        <span class="kw">lm</span>(</span>
-<span id="cb56-48"><a href="ghg-forecast.html#cb56-48"></a>          <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
-<span id="cb56-49"><a href="ghg-forecast.html#cb56-49"></a>        )<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
-<span id="cb56-50"><a href="ghg-forecast.html#cb56-50"></a><span class="st">          </span><span class="kw">lm</span>(</span>
-<span id="cb56-51"><a href="ghg-forecast.html#cb56-51"></a>            <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span>[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</span>
-<span id="cb56-52"><a href="ghg-forecast.html#cb56-52"></a>          )<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span>Year</span>
-<span id="cb56-53"><a href="ghg-forecast.html#cb56-53"></a>      ),</span>
-<span id="cb56-54"><a href="ghg-forecast.html#cb56-54"></a>    <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span> =</span>
-<span id="cb56-55"><a href="ghg-forecast.html#cb56-55"></a><span class="st">      </span><span class="kw">ifelse</span>(</span>
-<span id="cb56-56"><a href="ghg-forecast.html#cb56-56"></a>        <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span> <span class="op">&lt;</span><span class="st"> </span><span class="dv">1</span>,</span>
-<span id="cb56-57"><a href="ghg-forecast.html#cb56-57"></a>        <span class="dv">1</span>,</span>
-<span id="cb56-58"><a href="ghg-forecast.html#cb56-58"></a>        <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span></span>
-<span id="cb56-59"><a href="ghg-forecast.html#cb56-59"></a>      )</span>
-<span id="cb56-60"><a href="ghg-forecast.html#cb56-60"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb56-61"><a href="ghg-forecast.html#cb56-61"></a><span class="st">  </span><span class="kw">left_join</span>(hdd, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;Year&quot;</span> =<span class="st"> &quot;YEAR&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb56-62"><a href="ghg-forecast.html#cb56-62"></a><span class="st">  </span><span class="kw">left_join</span>(cdd, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;Year&quot;</span> =<span class="st"> &quot;YEAR&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb56-63"><a href="ghg-forecast.html#cb56-63"></a><span class="st">  </span><span class="kw">left_join</span>(pop_jobs_stockton_w_projection <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(Year, Population, <span class="st">`</span><span class="dt">Employed Residents</span><span class="st">`</span>, Jobs), <span class="dt">by =</span> <span class="st">&quot;Year&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb56-64"><a href="ghg-forecast.html#cb56-64"></a><span class="st">  </span><span class="kw">left_join</span>(stockton_commute_vmt_tractmode <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(Year, vmt, jobs_car), <span class="dt">by =</span> <span class="st">&quot;Year&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb56-65"><a href="ghg-forecast.html#cb56-65"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
-<span id="cb56-66"><a href="ghg-forecast.html#cb56-66"></a>    <span class="dt">vmtperjob =</span> vmt<span class="op">/</span>jobs_car</span>
-<span id="cb56-67"><a href="ghg-forecast.html#cb56-67"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb56-68"><a href="ghg-forecast.html#cb56-68"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>vmt,<span class="op">-</span>jobs_car) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb56-69"><a href="ghg-forecast.html#cb56-69"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
-<span id="cb56-70"><a href="ghg-forecast.html#cb56-70"></a>    <span class="dt">vmtperjob =</span></span>
-<span id="cb56-71"><a href="ghg-forecast.html#cb56-71"></a>      <span class="kw">ifelse</span>(</span>
-<span id="cb56-72"><a href="ghg-forecast.html#cb56-72"></a>        Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2018</span>,</span>
-<span id="cb56-73"><a href="ghg-forecast.html#cb56-73"></a>        vmtperjob,</span>
-<span id="cb56-74"><a href="ghg-forecast.html#cb56-74"></a>        <span class="kw">lm</span>(</span>
-<span id="cb56-75"><a href="ghg-forecast.html#cb56-75"></a>          vmtperjob[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</span>
-<span id="cb56-76"><a href="ghg-forecast.html#cb56-76"></a>        )<span class="op">$</span>coefficients[<span class="dv">1</span>]<span class="op">+</span></span>
-<span id="cb56-77"><a href="ghg-forecast.html#cb56-77"></a><span class="st">          </span><span class="kw">lm</span>(</span>
-<span id="cb56-78"><a href="ghg-forecast.html#cb56-78"></a>            vmtperjob[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>] <span class="op">~</span><span class="st"> </span>Year[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</span>
-<span id="cb56-79"><a href="ghg-forecast.html#cb56-79"></a>          )<span class="op">$</span>coefficients[<span class="dv">2</span>]<span class="op">*</span>Year</span>
-<span id="cb56-80"><a href="ghg-forecast.html#cb56-80"></a>      )</span>
-<span id="cb56-81"><a href="ghg-forecast.html#cb56-81"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb56-82"><a href="ghg-forecast.html#cb56-82"></a><span class="st">  </span><span class="kw">left_join</span>(pge_elec_emissions_factor, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;Year&quot;</span> =<span class="st"> &quot;year&quot;</span>))</span>
-<span id="cb56-83"><a href="ghg-forecast.html#cb56-83"></a></span>
-<span id="cb56-84"><a href="ghg-forecast.html#cb56-84"></a>ghg_forecast_table_prep &lt;-</span>
-<span id="cb56-85"><a href="ghg-forecast.html#cb56-85"></a><span class="st">  </span>ghg_forecast_prep <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb56-86"><a href="ghg-forecast.html#cb56-86"></a><span class="st">  </span><span class="kw">transmute</span>(</span>
-<span id="cb56-87"><a href="ghg-forecast.html#cb56-87"></a>    <span class="dt">Year =</span> Year,</span>
-<span id="cb56-88"><a href="ghg-forecast.html#cb56-88"></a>    <span class="dt">Population =</span> <span class="kw">prettyNum</span>(<span class="kw">round</span>(Population,<span class="op">-</span><span class="dv">3</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
-<span id="cb56-89"><a href="ghg-forecast.html#cb56-89"></a>    <span class="st">`</span><span class="dt">Employed Residents</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(<span class="st">`</span><span class="dt">Employed Residents</span><span class="st">`</span>,<span class="op">-</span><span class="dv">3</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
-<span id="cb56-90"><a href="ghg-forecast.html#cb56-90"></a>    <span class="dt">Jobs =</span> <span class="kw">prettyNum</span>(<span class="kw">round</span>(Jobs,<span class="op">-</span><span class="dv">3</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
-<span id="cb56-91"><a href="ghg-forecast.html#cb56-91"></a>    <span class="st">`</span><span class="dt">One-way Commute VMT per Car-dependent Worker</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(vmtperjob),</span>
-<span id="cb56-92"><a href="ghg-forecast.html#cb56-92"></a>    <span class="st">`</span><span class="dt">PG&amp;E Electricity Emissions Factor</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(factor),</span>
-<span id="cb56-93"><a href="ghg-forecast.html#cb56-93"></a>    <span class="st">`</span><span class="dt">Heating Degree Days</span><span class="st">`</span> =<span class="st"> </span>hdd,</span>
-<span id="cb56-94"><a href="ghg-forecast.html#cb56-94"></a>    <span class="st">`</span><span class="dt">Cooling Degree Days</span><span class="st">`</span> =<span class="st"> </span>cdd,</span>
-<span id="cb56-95"><a href="ghg-forecast.html#cb56-95"></a>    <span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(<span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span>,<span class="dv">1</span>),</span>
-<span id="cb56-96"><a href="ghg-forecast.html#cb56-96"></a>    <span class="st">`</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(<span class="st">`</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span>,<span class="dv">1</span>),</span>
-<span id="cb56-97"><a href="ghg-forecast.html#cb56-97"></a>    <span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(<span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span>,<span class="dv">1</span>),</span>
-<span id="cb56-98"><a href="ghg-forecast.html#cb56-98"></a>    <span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(<span class="st">`</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span>,<span class="dv">1</span>)</span>
-<span id="cb56-99"><a href="ghg-forecast.html#cb56-99"></a>  )</span>
-<span id="cb56-100"><a href="ghg-forecast.html#cb56-100"></a></span>
-<span id="cb56-101"><a href="ghg-forecast.html#cb56-101"></a><span class="kw">kable</span>(</span>
-<span id="cb56-102"><a href="ghg-forecast.html#cb56-102"></a>  ghg_forecast_table_prep,</span>
-<span id="cb56-103"><a href="ghg-forecast.html#cb56-103"></a>  <span class="dt">booktabs =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb56-104"><a href="ghg-forecast.html#cb56-104"></a>  <span class="dt">caption =</span> <span class="st">&#39;Input assumptions for GHG forecast to 2040.&#39;</span></span>
-<span id="cb56-105"><a href="ghg-forecast.html#cb56-105"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb56-106"><a href="ghg-forecast.html#cb56-106"></a><span class="st">  </span><span class="kw">kable_styling</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb56-107"><a href="ghg-forecast.html#cb56-107"></a><span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</span></code></pre></div>
-<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
-<table class="table" style="margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:ghg-forecast-prep">Table 2.22: </span>Input assumptions for GHG forecast to 2040.
-</caption>
+<div id="resilience" class="section level2" number="3.7">
+<h2><span class="header-section-number">3.7</span> Resilience</h2>
+<div id="promote-cool-surfaces-to-reduce-heat-island-effect" class="section level3" number="3.7.1">
+<h3><span class="header-section-number">3.7.1</span> Promote cool surfaces to reduce heat island effect</h3>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="90%" />
+</colgroup>
 <thead>
-<tr>
-<th style="text-align:right;">
-Year
-</th>
-<th style="text-align:left;">
-Population
-</th>
-<th style="text-align:left;">
-Employed Residents
-</th>
-<th style="text-align:left;">
-Jobs
-</th>
-<th style="text-align:right;">
-One-way Commute VMT per Car-dependent Worker
-</th>
-<th style="text-align:right;">
-PG&amp;E Electricity Emissions Factor
-</th>
-<th style="text-align:right;">
-Heating Degree Days
-</th>
-<th style="text-align:right;">
-Cooling Degree Days
-</th>
-<th style="text-align:right;">
-Residential Electricity, kBTU/resident/CDD
-</th>
-<th style="text-align:right;">
-Residential Gas, kBTU/resident/HDD
-</th>
-<th style="text-align:right;">
-Commercial Electricity, kBTU/job/CDD
-</th>
-<th style="text-align:right;">
-Commercial Gas, kBTU/job/HDD
-</th>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Arizona</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:right;">
-2013
-</td>
-<td style="text-align:left;">
-298,000
-</td>
-<td style="text-align:left;">
-109,000
-</td>
-<td style="text-align:left;">
-106,000
-</td>
-<td style="text-align:right;">
-21
-</td>
-<td style="text-align:right;">
-427
-</td>
-<td style="text-align:right;">
-2090
-</td>
-<td style="text-align:right;">
-2029
-</td>
-<td style="text-align:right;">
-4.7
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-<td style="text-align:right;">
-5.7
-</td>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Rather than using dark pavements, which attract 80-95% of sunlight, solar reflective “cool” pavements have increased reflectance. They typically use a reflective or clear binder, or a reflective surface coating.</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-2014
-</td>
-<td style="text-align:left;">
-302,000
-</td>
-<td style="text-align:left;">
-116,000
-</td>
-<td style="text-align:left;">
-107,000
-</td>
-<td style="text-align:right;">
-22
-</td>
-<td style="text-align:right;">
-435
-</td>
-<td style="text-align:right;">
-2246
-</td>
-<td style="text-align:right;">
-1811
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-<td style="text-align:right;">
-14.1
-</td>
-<td style="text-align:right;">
-4.7
-</td>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://heatisland.lbl.gov/coolscience/cool-pavements">Berkeley Lab</a></td>
 </tr>
-<tr>
-<td style="text-align:right;">
-2015
-</td>
-<td style="text-align:left;">
-306,000
-</td>
-<td style="text-align:left;">
-117,000
-</td>
-<td style="text-align:left;">
-114,000
-</td>
-<td style="text-align:right;">
-21
-</td>
-<td style="text-align:right;">
-405
-</td>
-<td style="text-align:right;">
-2065
-</td>
-<td style="text-align:right;">
-1970
-</td>
-<td style="text-align:right;">
-4.7
-</td>
-<td style="text-align:right;">
-6.7
-</td>
-<td style="text-align:right;">
-12.1
-</td>
-<td style="text-align:right;">
-4.9
-</td>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">CoolSeal costs between $0.30 to $0.40 per square foot. Albedo increases lead to a reduction of outdoor air temperatures by 0.2 to 0.9 degrees Fahrenheit. In California cities with a lot of air conditioning, the savings of air conditioning energy due to lowered air temperature is up to 1 kWh ($0.60) per year per sq.m. of pavement modified. The avoided CO2 is valued at less than a penny a year per sq.m. Lower surface air temperature reduces ground level ozone.</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-2016
-</td>
-<td style="text-align:left;">
-307,000
-</td>
-<td style="text-align:left;">
-123,000
-</td>
-<td style="text-align:left;">
-116,000
-</td>
-<td style="text-align:right;">
-22
-</td>
-<td style="text-align:right;">
-294
-</td>
-<td style="text-align:right;">
-1689
-</td>
-<td style="text-align:right;">
-1700
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-8.0
-</td>
-<td style="text-align:right;">
-13.9
-</td>
-<td style="text-align:right;">
-5.0
-</td>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Downtown Stockton could benefit from a set of public and private initiatives to retrofit existing commercial roofs and ground surfaces.</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-2017
-</td>
-<td style="text-align:left;">
-310,000
-</td>
-<td style="text-align:left;">
-131,000
-</td>
-<td style="text-align:left;">
-117,000
-</td>
-<td style="text-align:right;">
-23
-</td>
-<td style="text-align:right;">
-210
-</td>
-<td style="text-align:right;">
-2244
-</td>
-<td style="text-align:right;">
-1807
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-<td style="text-align:right;">
-6.2
-</td>
-<td style="text-align:right;">
-12.6
-</td>
-<td style="text-align:right;">
-4.3
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2018
-</td>
-<td style="text-align:left;">
-311,000
-</td>
-<td style="text-align:left;">
-129,000
-</td>
-<td style="text-align:left;">
-118,000
-</td>
-<td style="text-align:right;">
-23
-</td>
-<td style="text-align:right;">
-202
-</td>
-<td style="text-align:right;">
-2304
-</td>
-<td style="text-align:right;">
-2107
-</td>
-<td style="text-align:right;">
-4.1
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-10.5
-</td>
-<td style="text-align:right;">
-4.4
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2020
-</td>
-<td style="text-align:left;">
-315,000
-</td>
-<td style="text-align:left;">
-138,000
-</td>
-<td style="text-align:left;">
-125,000
-</td>
-<td style="text-align:right;">
-24
-</td>
-<td style="text-align:right;">
-188
-</td>
-<td style="text-align:right;">
-2082
-</td>
-<td style="text-align:right;">
-1866
-</td>
-<td style="text-align:right;">
-4.6
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-<td style="text-align:right;">
-3.9
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2025
-</td>
-<td style="text-align:left;">
-323,000
-</td>
-<td style="text-align:left;">
-154,000
-</td>
-<td style="text-align:left;">
-134,000
-</td>
-<td style="text-align:right;">
-25
-</td>
-<td style="text-align:right;">
-150
-</td>
-<td style="text-align:right;">
-2410
-</td>
-<td style="text-align:right;">
-2106
-</td>
-<td style="text-align:right;">
-4.2
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-<td style="text-align:right;">
-10.4
-</td>
-<td style="text-align:right;">
-2.8
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2030
-</td>
-<td style="text-align:left;">
-329,000
-</td>
-<td style="text-align:left;">
-169,000
-</td>
-<td style="text-align:left;">
-141,000
-</td>
-<td style="text-align:right;">
-27
-</td>
-<td style="text-align:right;">
-112
-</td>
-<td style="text-align:right;">
-2087
-</td>
-<td style="text-align:right;">
-2309
-</td>
-<td style="text-align:right;">
-3.9
-</td>
-<td style="text-align:right;">
-4.4
-</td>
-<td style="text-align:right;">
-9.3
-</td>
-<td style="text-align:right;">
-1.7
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2035
-</td>
-<td style="text-align:left;">
-335,000
-</td>
-<td style="text-align:left;">
-183,000
-</td>
-<td style="text-align:left;">
-146,000
-</td>
-<td style="text-align:right;">
-29
-</td>
-<td style="text-align:right;">
-75
-</td>
-<td style="text-align:right;">
-2260
-</td>
-<td style="text-align:right;">
-2286
-</td>
-<td style="text-align:right;">
-3.5
-</td>
-<td style="text-align:right;">
-3.5
-</td>
-<td style="text-align:right;">
-8.2
-</td>
-<td style="text-align:right;">
-1.0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2040
-</td>
-<td style="text-align:left;">
-339,000
-</td>
-<td style="text-align:left;">
-197,000
-</td>
-<td style="text-align:left;">
-151,000
-</td>
-<td style="text-align:right;">
-31
-</td>
-<td style="text-align:right;">
-38
-</td>
-<td style="text-align:right;">
-2082
-</td>
-<td style="text-align:right;">
-2112
-</td>
-<td style="text-align:right;">
-3.2
-</td>
-<td style="text-align:right;">
-2.7
-</td>
-<td style="text-align:right;">
-7.1
-</td>
-<td style="text-align:right;">
-1.0
-</td>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="http://www.whiteroofproject.org/">White Roof Project, NYC</a><br><a href="https://energy-seal.com/wp-content/uploads/crrp_smud_cool_roof_rebate_program.pdf">SMUD Cool Roof Rebate</a></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p><span class="math inline">\(~\)</span></p>
-<p>The input assumptions above result in the following GHG forecasts.</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="ghg-forecast.html#cb57-1"></a>ghg_forecast &lt;-</span>
-<span id="cb57-2"><a href="ghg-forecast.html#cb57-2"></a><span class="st">  </span>ghg_forecast_prep <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb57-3"><a href="ghg-forecast.html#cb57-3"></a><span class="st">  </span><span class="kw">transmute</span>(</span>
-<span id="cb57-4"><a href="ghg-forecast.html#cb57-4"></a>    <span class="dt">Year =</span> Year,</span>
-<span id="cb57-5"><a href="ghg-forecast.html#cb57-5"></a>    <span class="dt">transport =</span> vmtperjob <span class="op">*</span><span class="st"> `</span><span class="dt">Employed Residents</span><span class="st">`</span> <span class="op">*</span><span class="dv">2</span><span class="op">*</span><span class="fl">369.39</span><span class="op">*</span><span class="fl">0.000334</span>,</span>
-<span id="cb57-6"><a href="ghg-forecast.html#cb57-6"></a>    <span class="dt">residential =</span> <span class="st">`</span><span class="dt">Residential Electricity, kBTU/resident/CDD</span><span class="st">`</span><span class="op">*</span>Population<span class="op">*</span>cdd<span class="op">*</span><span class="fl">2.9307e-7</span><span class="op">*</span><span class="fl">0.000453592</span> <span class="op">+</span><span class="st"> `</span><span class="dt">Residential Gas, kBTU/resident/HDD</span><span class="st">`</span><span class="op">*</span>Population<span class="op">*</span>hdd<span class="op">/</span><span class="fl">99.9761</span><span class="op">*</span><span class="fl">0.00531</span>,</span>
-<span id="cb57-7"><a href="ghg-forecast.html#cb57-7"></a>    <span class="dt">commercial =</span> <span class="st">`</span><span class="dt">Commercial Electricity, kBTU/job/CDD</span><span class="st">`</span><span class="op">*</span>Jobs<span class="op">*</span>cdd<span class="op">*</span><span class="fl">2.9307e-7</span><span class="op">*</span><span class="fl">0.000453592</span> <span class="op">+</span><span class="st"> `</span><span class="dt">Commercial Gas, kBTU/job/HDD</span><span class="st">`</span><span class="op">*</span>Jobs<span class="op">*</span>hdd<span class="op">/</span><span class="fl">99.9761</span><span class="op">*</span><span class="fl">0.00531</span></span>
-<span id="cb57-8"><a href="ghg-forecast.html#cb57-8"></a>  )</span>
-<span id="cb57-9"><a href="ghg-forecast.html#cb57-9"></a></span>
-<span id="cb57-10"><a href="ghg-forecast.html#cb57-10"></a>ghg_forecast_table &lt;-</span>
-<span id="cb57-11"><a href="ghg-forecast.html#cb57-11"></a><span class="st">  </span>ghg_forecast <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb57-12"><a href="ghg-forecast.html#cb57-12"></a><span class="st">  </span><span class="kw">transmute</span>(</span>
-<span id="cb57-13"><a href="ghg-forecast.html#cb57-13"></a>    <span class="dt">Year=</span>Year,</span>
-<span id="cb57-14"><a href="ghg-forecast.html#cb57-14"></a>    <span class="st">`</span><span class="dt">Transportation tCO2</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(transport,<span class="op">-</span><span class="dv">4</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
-<span id="cb57-15"><a href="ghg-forecast.html#cb57-15"></a>    <span class="st">`</span><span class="dt">Residential Building tCO2</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(residential,<span class="op">-</span><span class="dv">3</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
-<span id="cb57-16"><a href="ghg-forecast.html#cb57-16"></a>    <span class="st">`</span><span class="dt">Commercial Building tCO2</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(commercial,<span class="op">-</span><span class="dv">3</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>)</span>
-<span id="cb57-17"><a href="ghg-forecast.html#cb57-17"></a>  )</span>
-<span id="cb57-18"><a href="ghg-forecast.html#cb57-18"></a></span>
-<span id="cb57-19"><a href="ghg-forecast.html#cb57-19"></a><span class="kw">kable</span>(</span>
-<span id="cb57-20"><a href="ghg-forecast.html#cb57-20"></a>  ghg_forecast_table,</span>
-<span id="cb57-21"><a href="ghg-forecast.html#cb57-21"></a>  <span class="dt">booktabs =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb57-22"><a href="ghg-forecast.html#cb57-22"></a>  <span class="dt">caption =</span> <span class="st">&#39;GHG forecast to 2040.&#39;</span></span>
-<span id="cb57-23"><a href="ghg-forecast.html#cb57-23"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb57-24"><a href="ghg-forecast.html#cb57-24"></a><span class="st">  </span><span class="kw">kable_styling</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb57-25"><a href="ghg-forecast.html#cb57-25"></a><span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</span></code></pre></div>
-<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
-<table class="table" style="margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:ghg-forecast">Table 2.23: </span>GHG forecast to 2040.
-</caption>
+<div id="promote-permeable-pavement-to-increase-groundwater-absorption" class="section level3" number="3.7.2">
+<h3><span class="header-section-number">3.7.2</span> Promote permeable pavement to increase groundwater absorption</h3>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="90%" />
+</colgroup>
 <thead>
-<tr>
-<th style="text-align:right;">
-Year
-</th>
-<th style="text-align:left;">
-Transportation tCO2
-</th>
-<th style="text-align:left;">
-Residential Building tCO2
-</th>
-<th style="text-align:left;">
-Commercial Building tCO2
-</th>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Greenville County, SC</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:right;">
-2013
-</td>
-<td style="text-align:left;">
-560,000
-</td>
-<td style="text-align:left;">
-255,000
-</td>
-<td style="text-align:left;">
-67,000
-</td>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Permeable pavement is a form of pavement that is highly porous pavement that allows rainwater to pass through it and into the ground. In addition to reducing surface runoff, it can trap suspended solids, thereby filtering stormwater. This also reduces peak discharge rates, meaning that flooding is more controlled. It is, however, most appropriate for sidewalks/pedestrian areas and low-speed driving areas.</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-2014
-</td>
-<td style="text-align:left;">
-630,000
-</td>
-<td style="text-align:left;">
-213,000
-</td>
-<td style="text-align:left;">
-60,000
-</td>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.usgs.gov/science/evaluating-potential-benefits-permeable-pavement-quantity-and-quality-stormwater-runoff?qt-science_center_objects=0#qt-science_center_objects">USGS</a></td>
 </tr>
-<tr>
-<td style="text-align:right;">
-2015
-</td>
-<td style="text-align:left;">
-600,000
-</td>
-<td style="text-align:left;">
-225,000
-</td>
-<td style="text-align:left;">
-61,000
-</td>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">$4.00-$6.00 per square foot. <a href="https://docs.google.com/document/d/1qV1ki5JeARdA-i3a_4ICYKz0fER5NR8QOo5Aq3TBiTQ/edit">Read more here</a>.</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-2016
-</td>
-<td style="text-align:left;">
-650,000
-</td>
-<td style="text-align:left;">
-220,000
-</td>
-<td style="text-align:left;">
-52,000
-</td>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Stockton could identify low-lying areas that frequently flood and prioritize permeable pavement as part of regularly scheduled maintenance.</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-2017
-</td>
-<td style="text-align:left;">
-740,000
-</td>
-<td style="text-align:left;">
-229,000
-</td>
-<td style="text-align:left;">
-60,000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2018
-</td>
-<td style="text-align:left;">
-720,000
-</td>
-<td style="text-align:left;">
-232,000
-</td>
-<td style="text-align:left;">
-64,000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2020
-</td>
-<td style="text-align:left;">
-800,000
-</td>
-<td style="text-align:left;">
-209,000
-</td>
-<td style="text-align:left;">
-53,000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2025
-</td>
-<td style="text-align:left;">
-960,000
-</td>
-<td style="text-align:left;">
-214,000
-</td>
-<td style="text-align:left;">
-48,000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2030
-</td>
-<td style="text-align:left;">
-1,140,000
-</td>
-<td style="text-align:left;">
-159,000
-</td>
-<td style="text-align:left;">
-26,000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2035
-</td>
-<td style="text-align:left;">
-1,310,000
-</td>
-<td style="text-align:left;">
-142,000
-</td>
-<td style="text-align:left;">
-18,000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2040
-</td>
-<td style="text-align:left;">
-1,500,000
-</td>
-<td style="text-align:left;">
-101,000
-</td>
-<td style="text-align:left;">
-17,000
-</td>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.sfbetterstreets.org/find-project-types/greening-and-stormwater-management/stormwater-overview/permeable-paving/">SF Permeable Sidewalks</a></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p><span class="math inline">\(~\)</span></p>
-<p>The general insight is that transportation emissions are expected to increase while building emissions are expected to decrease.</p>
-<p>Many differences in inputs exist between this analysis and ICLEI’s 2016 GHG Inventory, including the following:</p>
-<ul>
-<li>ICLEI’s VMT data came from a source that was only available at the SJC level and was scaled down to Stockton by population, whereas our VMT data is based on the routed distance of LODES origin-destinations. The difference these methods results in is significant (2.5 billion vs. 1.5 billion annual VMTs) and should be investigated in further work. Our Transportation tCO2 number is only for passenger commuters, whereas ICLEI’s number includes many other modes.</li>
-<li>ICLEI’s electricity and gas data was obtained directly from PG&amp;E, while ours was downloaded at the zip code level from their public data portal. Since our zip codes include many parcels outside of the Stockton city boundary, it’s likely our consumption is for a larger population. As for commercial energy, ICLEI’s commercial data was combined with industrial data, while ours is separated, so that could explain why our commercial consumption numbers our lower.</li>
-</ul>
-<p>The assumptions built into these forecasts are necessarily simplistic given the scope of this analysis. In particular, linear trendlines should be refined into nonlinear functions given a better understanding of growth limits for each of the domains. It’s also worth noting that some trends based on the past few years, like the desirable decline in building emissions, may be heavily influenced by active strategic policymaking, the kind which this report is meant to guide for the future. That means that “business as usual” is not necessarily “doing nothing” but “successfully continuing to implement progressive policies” (e.g. PG&amp;E successfully meeting its aggressive decarbonization strategies).</p>
+<div id="reclaim-urban-streams-and-rivers-to-increase-groundwater-absorption-and-filtration" class="section level3" number="3.7.3">
+<h3><span class="header-section-number">3.7.3</span> Reclaim urban streams and rivers to increase groundwater absorption and filtration</h3>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="90%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Greenville County, SC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Reclaiming urban streams and rivers helps to restore the watercycle back to its natural processes. This helps to restore groundwater recharge, as well as natural water filtration processes. From an environmental perspective, it restores sensitive natural habitats.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://static1.squarespace.com/static/561dcdc6e4b039470e9afc00/t/5e4581cf81c87071297f8e61/1581613539633/ReedyRiver_FactSheet_0220-0.pdf">Earth Economics</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left"><a href="https://www.prp.cses.vt.edu/Reports_04/Mitigation_04.pdf">$28 to $129 per foot</a>. Benefits: reduction in sediment removal ($2.76 per ton to manually remove); <a href="https://www.researchgate.net/publication/265969625_Effect_of_public_green_space_on_residential_property_values_in_Belfast_metropolitan_area">green space</a> increases property values by up to 49% as properties change hands; <a href="https://www.hydroreform.org/sites/default/files/Hurd_Economic_Benefits_2009_0.pdf">contingent valuation</a> varies from $10.83 to $270.40 per capita.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">There are a number of waterways through Stockton that could be opportunities for proactive reclamation, given that FEMA and U.S. Army Corps guidelines do not yet fully factor in the science on climate change impacts on precipitation patterns.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.hydroreform.org/sites/default/files/Hurd_Economic_Benefits_2009_0.pdf">Guadalupe River, San Jose</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="use-green-infrastructure-to-improve-stormwater-management" class="section level3" number="3.7.4">
+<h3><span class="header-section-number">3.7.4</span> Use green infrastructure to improve stormwater management</h3>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="90%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">San Francisco, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Green Infrastructure is a method of reducing stormwater and pollution burden from stormwater systems. It does this through the creation of micro urban watersheds that have the potential to decrease erosion, improve air quality, increase land value, and reduce urban heat effects (thereby also reducing cooling loads).</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://sfwater.org/modules/showdocument.aspx?documentid=13249">SFWater</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Contingent upon site. <a href="https://docs.google.com/spreadsheets/d/1Z1Q1j1GJpgI8-M9XGKHMgTds0wqyB-twr-RLR7xX-JU/edit#gid=414331495">See table</a>.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">There are several key risks to Stockton’s water quality, most of which are tied to Stockton historic and present manufacturing activities. The Sharpe Army Depot and McCormick &amp; Baxter Creosoting Company are both listed on the Environmental Protection Agencies National Priorities List, indicating they are a high priority superfund site. The EPA has identified additional sites of concern including Stockton Iron Works, Colberg Boat Works, Norge Cleaning Village, and Brea Agricultural Services. Two additonal sites, Stockton Naval Communications Station and the General Services Administration, are both located at the Naval Supply Center at Rough and Ready Island. As a result of these sites, as well as agricultural run-off and other sources, Stockton has elevated levels of Arsenic that are, on average, 4.5 times higher than recommended levels. <a href="https://docs.google.com/document/d/1O8eMspahozBkoB3-uIw3Azvwyv6xEJvca1XV76TwgFY/edit">Read more</a>.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://static1.squarespace.com/static/561dcdc6e4b039470e9afc00/t/5d435f106f6e7a0001f5b304/1564696351697/HuntsPoint_EarthEconomics_062719-1.pdf">Hunts Point, NY</a><br><a href="https://www.urbanraindesign.com/ne-siskiyou">NE Siskiyou Green Street, Portland, OR</a><br><a href="https://www.owp.csus.edu/research/papers/papers/PP061.pdf">Caltrans</a><br><a href="https://www.wetlandsolutionsinc.com/download/TreatmentWetlands/Tres_Rios_Biomonitoring_Aug%202004.pdf">Tres Rios Demonstration Constructed Wetlands, Phoenix</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="promote-urban-gardens-as-a-substitute-for-displaced-ecosystem-services" class="section level3" number="3.7.5">
+<h3><span class="header-section-number">3.7.5</span> Promote urban gardens as a substitute for displaced ecosystem services</h3>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="90%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Philadelphia, PA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">As a result of their greying environment, cities often suffer from greater fluctuations in weather conditions, poor water infiltration, improper nutrient cycling, and lack of vegetative cover. These lead to reduced water quality and flooding, heat islands, and lack of ecological diversity. Using vacant lots, which reduce property values, residents of Philadelphia have developed urban gardens as a means of food production, increase property values, and provide educational opportunities on sustainability.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.inquirer.com/science/climate/urban-farm-agriculture-philadelphia-plan-garden-plots-20190320.html">Philadelphia Inquirer</a><br><a href="https://repository.upenn.edu/cgi/viewcontent.cgi?article=1044&amp;context=mes_capstones">University of Pennsylvania</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Soil remediation costs between $5-40 per ton. Central Valley water costs between $15-40 per acre-foot. Philadelphia is estimated to have about 40,000 structureless vacant parcels amounting to 1,840 acres of unused land. These vacant parcels reduced property values by an average of 6.5%, leading to $3.6 billion in property tax loss. Households with an adult that participates in a community garden program are more likely to eat fruits and vegetables. Compared to vacant lots, agricultural lots realized far lower rates of soil erosion.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Local nonprofits like <a href="http://puentesca.org/">PUENTES</a> already are in a position to expand their operations to develop more urban gardens in Stockton, contingent on land and water costs.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="http://detroitagriculture.net/">Detroit Garden Resource Program</a><br><a href="https://city.milwaukee.gov/homegrownmilwaukee.com#.XlXwGmhKiUk">HOME GR/OWN Milwaukee</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="offer-rebates-for-flood-mitigation-projects" class="section level3" number="3.7.6">
+<h3><span class="header-section-number">3.7.6</span> Offer rebates for flood mitigation projects</h3>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="90%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">South Holland, IL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Due to flooding from a local river, South Holland, IL offers up to $2500 per project per property. Approved projects include measures to prevent water from entering a home, including adding downspouts and floodwalls, sewer backup projects, such as installing overhead sewers, and removal of connections from stormwater sewers. In 2016, the program was further extended to cover up to $5,000 in costs if residents install systems to prevent sewer backups.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.pewtrusts.org/-/media/assets/2019/11/illinois_village_offers_rebates_brief_final.pdf">Pew Charitable Trusts</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">As of February 2019 (started in 1990), $800,000 in rebates; 1,172 households have participated.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Historical data on snowpack flooding has shown that 3 feet of flooding in Stockton could impact as many as 12,000 acres of land, with 20,000 housing units. Factoring in sea level rise projections, <a href="http://ssrf.climatecentral.org.s3-website-us-east-1.amazonaws.com/Buffer2/states/CA/downloads/pdf_reports/Town/CA_Stockton-report.pdf">Climate Central</a> estimates a 34 percent multi-year risk of at least one flood exceeding 3 feet from 2016 to 2030, a 93 percent risk by from 2016 to midcentury, and a 100 percent risk by 2100. Under the National Resaerch Council’s high-end projections, these chances increase to 50, 100, and 100 percent, respectively, and they compute a 100 percent risk of at least one flood exceeding 6 feet by the end of the century.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.pewtrusts.org/en/research-and-analysis/issue-briefs/2019/11/wisconsin-grant-program-helps-people-relocate-from-flood-prone-areas">Wisconsin Department of Natural Resources</a><br><a href="https://www.pewtrusts.org/en/research-and-analysis/issue-briefs/2019/11/arkansas-tax-credit-rewards-landowners-for-conserving-wetlands">Arkansas Private Wetland and Riparian Zone Creation and Restoration Incentives Act</a></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <!-- </div> -->
             </section>
@@ -1460,8 +882,8 @@ Commercial Building tCO2
           </div>
         </div>
       </div>
-<a href="buildings.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="overview-of-green-economy-strategies.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="vehicle-emissions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="analysis-of-green-economy-strategies.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
