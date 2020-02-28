@@ -119,7 +119,7 @@ City Systems has conducted a research activity with the following outcomes:
 2. Communication materials for the City of Stockton and partners to use in investor outreach.
 3. A detailed design and implementation plan for a green demonstration project, informed by consensus-building discussion with City-identified stakeholders throughout the research phase, and likely to have initiated before the conclusion of the research phase.
 
-The following document describes our methodology and results. Given the scope of this report, readers encouraged to navigate freely throughout different sections using the table of contents on the left, or with the summary table below.
+The following document describes our methodology and results. Given the scope of this report, readers are encouraged to navigate freely throughout different sections using the table of contents on the left, or with the summary table below.
 
 | If you are interested in... | Skip to... |
 |:---|:---|
@@ -128,19 +128,25 @@ The following document describes our methodology and results. Given the scope of
 | Analysis of five green economy strategies for Stockton | [Chapter 4](analysis-of-green-economy-strategies) |
 | U.S. strategy overview organized by city/county/state | [Appendix A](appendix-a-index-of-case-studies-by-place) |
 
+$~$
+
+**Acknowledgements**
+
+Ann Rogan provided the motivation for and guided this entire project. Jasmine Leek, Amanda Ford, Taylor Williams, Finn Dobkin, Darryl Rutherford, and others attended regular check-ins and gave valuable feedback. Greg Forbes, Kevin Lin, Max O'Krepki, and John Zhao provided support on portions of code. Rachel Galowich, Christian Giadolor, Greg Forbes, Julia Wagenfehr, Armelle Coutant, Abdul Aleem, Matt Nissen, and Dorian Lumarque participated in practicum projects at Stanford that produced outcomes that are integrated into this work. Finn Dobkin led the research in Chapter 3 on green economy strategies. Tyler Pullen reviewed the report and offered helpful revisions.
+
 ## Approach
 
 The goal of every urban government is to provide residents a high quality of life, which not only includes the benefits associated with high-quality jobs, but also a vibrant economy filled with excellent amenities and supported by well-maintained infrastructure. Building a robust business tax base is one recognized strategy in California for cities to adequately fund general expenses and capital infrastructure, given, for example, state restrictions on property taxes. This strategy is particularly relevant to Stockton given its history of bankruptcy following the Recession and its "brain drain" challenge of keeping high-quality talent from leaving for economic opportunities in the Bay Area and elsewhere. One useful related indicator is the jobs to employed residents (J/ER) ratio; the higher this ratio, the greater the share of business and sales tax relative to property tax, and the less likely the region is a "bedroom community" in which there are more people at night than during the day. For reference, a city like San Jose is unique to have its metropolitan core location yet have a J/ER ratio less than 1; nearby cities like Palo Alto approach a J/ER ratio of 3. 
 
-If Stockton is to reinvent its economy, a key goal should be to increase its J/ER ratio while ensuring the quality of those jobs. To do so, it must aggressively attract high-quality businesses and support the growth of its existing ones, so that its number of jobs may increase more quickly than its population. Historical data for both population and jobs will help us understand the baseline performance of Stockton and its surrounding region in this regard, as well as allow us to forecast what "business as usual" looks like into the future. Then, J/ER ratio targets can be set in comparison to business as usual, which can be achieved through the kinds of economic development strategies explored in this report.
+If Stockton is to reinvent its economy, a key goal should be to increase its J/ER ratio while ensuring the quality of those jobs. To do so, it must aggressively attract high-quality businesses and support the growth of its existing ones, so that its number of jobs may increase more quickly than its population. Historical data for both population and jobs will help us understand the baseline performance of Stockton and its surrounding region in this regard, as well as allow us to forecast what "business-as-usual" looks like into the future. Then, J/ER ratio targets can be set in comparison to business-as-usual, which can be achieved through the kinds of economic development strategies explored in this report.
 
 Of course, both job and population growth directly impact a city's environmental footprint. In Chapter 2, we will prepare a baseline assessment of Stockton's greenhouse gas inventory, our primary indicator of environmental performance. Importantly, GHGs should be disaggregated as much as possible into residential and non-residential (commercial, industrial, agricultural) sectors and normalized by respective populations (residents vs. workers) to understand the GHG use per capita in these different sectors. Stockton's GHG footprint will almost certainly increase in the coming decades simply due to the increase in jobs and population, but if GHG/capita for each sector can be reduced through the kinds of strategies explored in this report, then it should be considered successful in curbing GHGs -- and perhaps the City's GHG footprint may actually decrease as a whole.
 
-So, in summary, an accurate assessment of current population and jobs, combined with a GHG inventory, helps us measure important indicators of success like J/ER and GHG/capita. And a best estimate of how population and jobs will change in the future shows us what business as usual looks like for both economic and environmental health. Given this outlook, Stockton can consider a wide range of possible strategies that stimulate job growth, reduce our environmental footprint, or in the best case scenario, achieve both at the same time, all categorized under the term **green economy**. The effects of those strategies can be modeled into the future in comparison to business as usual to see if they help us achieve our economic and environmental targets. Of course, strategies will also need to be evaluated based on their costs and return on investment, which we will approximate as a $/tCO2e (metric tons of carbon dioxide equivalent) in net-present value, similar to the work done in [Climate Smart San Jose](https://www.sanjoseca.gov/your-government/environment/climate-smart-san-jos). After robustly carrying out the quantitative analysis involved, this report will highlight the most promising strategies at the intersection of "green" and "economy" so that future decision-makers can take actionable steps towards a vibrant and sustainable future.
+So, in summary, an accurate assessment of current population and jobs, combined with a GHG inventory, helps us measure important indicators of success like J/ER and GHG/capita. And a best estimate of how population and jobs will change in the future shows us what business-as-usual looks like for both economic and environmental health. Given this outlook, Stockton can consider a wide range of possible strategies that stimulate job growth, reduce our environmental footprint, or in the best case scenario, achieve both at the same time, all categorized under the term **green economy**. The effects of those strategies can be modeled into the future in comparison to business-as-usual to see if they help us achieve our economic and environmental targets. Of course, strategies will also need to be evaluated based on their costs and return on investment, which we will approximate as a $/tCO2e (metric tons of carbon dioxide equivalent) in net-present value, similar to the work done in [Climate Smart San Jose](https://www.sanjoseca.gov/your-government/environment/climate-smart-san-jos). After robustly carrying out the quantitative analysis involved, this report will highlight the most promising strategies at the intersection of "green" and "economy" so that future decision-makers can take actionable steps towards a vibrant and sustainable future.
 
 # Baseline Assessment
 
-The first step to our research is to conduct a baseline assessment of Stockton's environmental and economic performance, and produce "business as usual" forecasts. Different datasets will be limited to different historical ranges and geographic scales. We will explain all key assumptions made in data processing. For forecasting, we will generally rely on simple regression and will project to 2040, a common planning horizon.
+The first step to our research is to conduct a baseline assessment of Stockton's environmental and economic performance, and produce "business-as-usual" forecasts. Different datasets will be limited to different historical ranges and geographic scales. We will explain all key assumptions made in data processing. For forecasting, we will generally rely on simple regression and will project to 2040, a common planning horizon.
 
 ## Population and Jobs
 
@@ -546,8 +552,11 @@ stockton_tracts_full <-
 
 # mapview(stockton_tracts_full) + mapview(stockton_boundary, alpha.regions = 0, color = "red", lwd = 4)
 
-map = mapview(stockton_bgs_full$geometry) + mapview(stockton_boundary$geometry, alpha.regions = 0, color = "red", lwd = 4)
-map@map
+# map <- mapview(stockton_bgs_full$geometry) + mapview(stockton_boundary$geometry, alpha.regions = 0, color = "red", lwd = 4)
+# 
+# mapshot(map,url="map-bgs.html")
+
+knitr::include_url("http://web.stanford.edu/~douyang1/map-bgs.html")
 ```
 
 $~$
@@ -1198,7 +1207,7 @@ Based on the allocation assumptions, it appears that emissions per resident has 
 
 ## Origin-Destination Commute Analysis
 
-As seen in the previous section, transportation is the largest single contributor of GHG emissions in Stockton, [as is true for all of California](https://ww2.arb.ca.gov/ghg-inventory-data). Within this sector, passenger vehicle emissions are by far the largest portion, and these are relatively easy to relate to their direct proxy, vehicle miles traveled (VMT), and normalize by drivers to understand current driving behavior. Specifically, commutes (driving to work) are the largest share of passenger vehicle emissions (other driving to/from amenities will be analyzed separately), and we can access data as recent as 2017 to understand commute patterns of Stockton residents to different job destinations inside and outside of SJC. What we find is that VMT is significant, and significantly locked in to the nature of job opportunity in faraway locations like the Bay Area. This means that VMT reduction is a crucial component in any overall green economy strategy, and it can be tackled directly through transportation strategies like public transit and EV deployment, but also indirectly by attracting high-quality jobs to Stockton, which on average will shift workers from faraway jobs to local jobs, thereby reducing VMTs. A comprehensive origin-destination commute analysis, as performed below, helps us quantify total VMTs attributable to commuting as well as model the specific impacts of different direct or indirect VMT reduction strategies.
+As seen in the previous section, transportation is the largest single contributor of GHG emissions in Stockton, [as is true for all of California](https://ww2.arb.ca.gov/ghg-inventory-data). Within this sector, passenger vehicle emissions are by far the largest portion, and these are relatively easy to relate to their direct proxy, vehicle miles traveled (VMT), and normalize by drivers to understand current driving behavior. Specifically, commutes (driving to work) are the largest share of passenger vehicle emissions (other driving to/from amenities can be analyzed separately), and we can access data as recent as 2017 to understand commute patterns of Stockton residents to different job destinations inside and outside of SJC. What we find is that VMT is significant, and significantly locked in to the nature of job opportunity in faraway locations like the Bay Area. This means that VMT reduction is a crucial component in any overall green economy strategy, and it can be tackled directly through transportation strategies like public transit and EV deployment, but also indirectly by attracting high-quality jobs to Stockton, which on average will shift workers from faraway jobs to local jobs, thereby reducing VMTs. A comprehensive origin-destination commute analysis, as performed below, helps us quantify total VMTs attributable to commuting as well as model the specific impacts of different direct or indirect VMT reduction strategies.
 
 In this section, we first examine the distribution of job locations for SJC in comparison to neighboring counties, as well as Stockton in particular. The following section will then analyze vehicle miles traveled for these commute trips.
 
@@ -1324,7 +1333,7 @@ kable(
 
 $~$
 
-The following table compares SJC with neighboring counties in terms of the percentage of jobs held by its residents that are "local", meaning within the same county. This figure mirrors Figure \@ref(fig: compare-jer), which showed J/ER ratio for the same counties, all stagnating or in decline. The figure below provides one contribution, which is declining local jobs for local residents, not just for SJC but for its neighboring counties.
+The following table compares SJC with neighboring counties in terms of the percentage of jobs held by its residents that are "local", meaning within the same county. This figure mirrors Figure 2.3, which showed J/ER ratio for the same counties, all stagnating or in decline. The figure below provides one contribution, which is declining local jobs for local residents, not just for SJC but for its neighboring counties.
 
 ```{r county-localjobs, fig.cap="Percent of county residents who work within their home county, 2002 to 2017. Data from LODES."}
 county_localjobs <- NULL
@@ -1496,7 +1505,7 @@ stockton_lodes_w_top_counties_table <-
 kable(
   stockton_lodes_w_top_counties_table, 
   booktabs = TRUE, 
-  caption = 'Top 15 workplaces where Stockton residents work. Includes Stockton as a workplace destination separate from the rest of SJC. All other listed workplaces are counties. Los Angeles, San Bernardino, Orange, and San Diego Counties were removed. Data from LODES, 2017.'
+  # caption = 'Top 15 workplaces where Stockton residents work. Includes Stockton as a workplace destination separate from the rest of SJC. All other listed workplaces are counties. Los Angeles, San Bernardino, Orange, and San Diego Counties were removed. Data from LODES, 2017.'
   ) %>% 
   kable_styling() %>%
   scroll_box(width = "100%")
@@ -1509,19 +1518,24 @@ The following maps help to visualize the specific distribution of Stockton resid
 37% of younger (under 29) Stockton employed residents work within Stockton, and another 15% work outside of Stockton but within SJC. Beyond that, there are higher concentrations of these younger workers in Sacramento and Alameda County compared to other neighboring counties.
 
 ```{r stockton-lodes-w-top-counties-youth, fig.cap="Top 13 counties where Stockton residents work, not including SJC - percent of overall jobs for Stockton workers age 29 or younger located in workplace. Data from LODES, 2017."}
-map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs for workers age 29 or younger", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>for workers age</br>29 or younger')
+# map <- mapview(stockton_lodes_w_top_counties[-c(1,2),c("Percent of jobs for workers age 29 or younger")], zcol = "Percent of jobs for workers age 29 or younger", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>for workers age</br>29 or younger')
+# 
+# mapshot(map,url="map-stockton-lodes-w-top-counties-youth.html")
 
-map@map
+knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-lodes-w-top-counties-youth.html")
 ```
 
 $~$
 
 46% of lower-wage (less than $1,250/month) Stockton employed residents work within Stockton, and another 13% work outside of Stockton but within SJC. Beyond that, there is a higher concentration of these lower-wage workers in Sacramento County compared to other neighboring counties.
 
-```{r stockton-lodes-w-top-counties-lowinc, fig.cap="Top 13 counties where Stockton residents work, not including SJC - percent of overall jobs for Stockton workers with earnings $1250/month or less located in workplace. Data from LODES, 2017."}
-map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs with earnings $1250/month or less", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>with earnings</br>$1250/month or less')
+```{r stockton-lodes-w-top-counties-lowinc, fig.cap="Top 13 counties where Stockton residents work, not including SJC - percent of overall jobs for Stockton workers with earnings $1250/month or less located in workplace. Data from LODES, 2017."} 
 
-map@map
+# map = mapview(stockton_lodes_w_top_counties[-c(1,2),c("Percent of jobs with earnings $1250/month or less")], zcol = "Percent of jobs with earnings $1250/month or less", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>with earnings</br>$1250/month or less')
+# 
+# mapshot(map,url="map-stockton-lodes-w-top-counties-lowinc.html")
+
+knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-lodes-w-top-counties-lowinc.html")
 ```
 
 $~$
@@ -1529,9 +1543,11 @@ $~$
 38% of higher-wage (greater than $3,333/month) Stockton employed residents work within Stockton, and another 12% work outside of Stockton but within SJC. Note these percentages are lower than the percentages of lower-wage jobs that remain local. Beyond that, there is a higher concentration of these high-wage workers in Alameda County compared to other neighboring counties. Perhaps targeted marketing of businesses that are providing these higher-wage jobs in Alameda County to move to Stockton could be an effective investment.
 
 ```{r stockton-lodes-w-top-counties-highinc, fig.cap="Top 13 counties where Stockton residents work, not including SJC - percent of overall jobs for Stockton residents with earnings greater than $3333/month located in workplace. Data from LODES, 2017."}
-map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs with earnings greater than $3333/month", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>with earnings</br>greater than</br>$3333/month')
+# map = mapview(stockton_lodes_w_top_counties[-c(1,2),c("Percent of jobs with earnings greater than $3333/month")], zcol = "Percent of jobs with earnings greater than $3333/month", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>with earnings</br>greater than</br>$3333/month')
+# 
+# mapshot(map,url="map-stockton-lodes-w-top-counties-highinc.html")
 
-map@map
+knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-lodes-w-top-counties-highinc.html")
 ```
 
 $~$
@@ -1539,9 +1555,11 @@ $~$
 30% of Stockton employed residents in Goods Producing industry sectors work within Stockton, and another 23% (a notably high percentage) work outside of Stockton but within SJC. Beyond that, there is a higher concentration of these high-wage workers in Alameda County compared to other neighboring counties.
 
 ```{r stockton-lodes-w-top-counties-goods, fig.cap="Top 13 counties where Stockton residents work, not including SJC - percent of jobs for Stockton residents in Goods Producing industry sectors located in workplace. Data from LODES, 2017."}
-map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs in Goods Producing industry sectors", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>in Goods Producing</br>industry sectors')
+# map = mapview(stockton_lodes_w_top_counties[-c(1,2),c("Percent of jobs in Goods Producing industry sectors")], zcol = "Percent of jobs in Goods Producing industry sectors", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>in Goods Producing</br>industry sectors')
+# 
+# mapshot(map,url="map-stockton-lodes-w-top-counties-goods.html")
 
-map@map
+knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-lodes-w-top-counties-goods.html")
 ```
 
 $~$
@@ -1549,9 +1567,11 @@ $~$
 33% of Stockton employed residents in Trade, Transportation, and Utilities industry sectors work within Stockton, and another 18% work outside of Stockton but within SJC. Beyond that, there are higher concentrations of these high-wage workers in Sacramento and Alameda County compared to other neighboring counties.
 
 ```{r stockton-lodes-w-top-counties-trade, fig.cap="Top 13 counties where Stockton residents work, not including SJC - percent of jobs for Stockton residents in Trade, Transportation, and Utilities industry sectors located in workplace. Data from LODES, 2017."}
-map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs in Trade, Transportation, and Utilities industry sectors", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>in Trade, Transportation,</br>and Utilities</br>industry sectors')
+# # map = mapview(stockton_lodes_w_top_counties[-c(1,2),c("Percent of jobs in Trade, Transportation, and Utilities industry sectors")], zcol = "Percent of jobs in Trade, Transportation, and Utilities industry sectors", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>in Trade, Transportation,</br>and Utilities</br>industry sectors')
+# 
+# mapshot(map,url="map-stockton-lodes-w-top-counties-trade.html")
 
-map@map
+knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-lodes-w-top-counties-trade.html")
 ```
 
 $~$
@@ -1559,9 +1579,11 @@ $~$
 48% (a notably high percentage) of Stockton employed residents in All Other Services industry sectors work within Stockton, and another 10% work outside of Stockton but within SJC. Beyond that, there is a higher concentrations of these high-wage workers in Alameda County compared to other neighboring counties.
 
 ```{r stockton-lodes-w-top-counties-services, fig.cap="Top 13 counties where Stockton residents work, not including SJC - percent of jobs for Stockton residents in All Other Services industry sectors located in workplace. Data from LODES, 2017."}
-map = mapview(stockton_lodes_w_top_counties[-c(1,2),], zcol = "Percent of jobs in All Other Services industry sectors", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>in All Other Services</br>industry sectors')
+# map = mapview(stockton_lodes_w_top_counties[-c(1,2),c("Percent of jobs in All Other Services industry sectors")], zcol = "Percent of jobs in All Other Services industry sectors", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Percent of jobs</br>in All Other Services</br>industry sectors')
+# 
+# mapshot(map,url="map-stockton-lodes-w-top-counties-services.html")
 
-map@map
+knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-lodes-w-top-counties-services.html")
 ```
 
 $~$
@@ -1753,9 +1775,11 @@ stockton_lodes_w_construction_high <-
     `Number of High-wage Construction jobs` = high_CNS04
   )
 
-map = mapview(stockton_lodes_w_construction_high[1:10,], zcol = "Number of High-wage Construction jobs", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Number of</br>High-wage</br>Construction jobs')
+# map = mapview(stockton_lodes_w_construction_high[1:10,c("Number of High-wage Construction jobs")], zcol = "Number of High-wage Construction jobs", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Number of</br>High-wage</br>Construction jobs')
+# 
+# mapshot(map,url="map-stockton-lodes-w-construction-high.html")
 
-map@map
+knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-lodes-w-construction-high.html")
 ```
 
 $~$
@@ -1775,9 +1799,11 @@ stockton_lodes_w_scientific_high <-
     `Number of Professional, Scientific, and Technical Services jobs` = high_CNS12
   )
 
-map = mapview(stockton_lodes_w_scientific_high[1:10,], zcol = "Number of Professional, Scientific, and Technical Services jobs", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Number of</br>Professional,</br>Scientific,</br>and Technical</br>Services jobs')
+# map = mapview(stockton_lodes_w_scientific_high[1:10,c("Number of Professional, Scientific, and Technical Services jobs")], zcol = "Number of Professional, Scientific, and Technical Services jobs", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Number of</br>Professional,</br>Scientific,</br>and Technical</br>Services jobs')
+# 
+# mapshot(map,url="map-stockton-lodes-w-scientific-high.html")
 
-map@map
+knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-lodes-w-scientific-high.html")
 ```
 
 $~$
@@ -1786,7 +1812,7 @@ Note that for high-wage jobs in Professional, Scientific, and Technical Services
 
 ## Commute Vehicle Miles Traveled
 
-Building off the Origin-Destination Commute Analysis from the previous section, we isolated every unique pair of SJC or Stockton home block groups and work block groups and used the [Open Source Routing Machine](http://project-osrm.org/) to compute a distance (in miles) and duration (and hours) for a one-way trip. This analysis, combined with some estimates of mode choice (single-occupancy vehicle vs. carpool vs. other), we created estimates of vehicle miles traveled for a certain number of jobs and were able to see how see how SJC and Stockton residents have changed their driving behavior over time, and how that behavior has compared to neighboring counties. Finally, we used VMT to estimate the GHG footprint of commuting for Stockton residents. 
+Building off the Origin-Destination Commute Analysis from the previous section, we isolated every unique pair of SJC or Stockton home block groups and work block groups and used the [Open Source Routing Machine](http://project-osrm.org/) to compute a distance (in miles) and duration (and hours) for a one-way trip. Using this analysis, combined with some estimates of mode choice (single-occupancy vehicle vs. carpool vs. other), we created estimates of vehicle miles traveled for a certain number of jobs and were able to see how see how SJC and Stockton residents have changed their driving behavior over time, and how that behavior has compared to neighboring counties. Finally, we used VMT to estimate the GHG footprint of commuting for Stockton residents. 
 
 Our analysis in this section focuses on destinations with average commute times of less than 3 hours, which eliminates the unrealistic commutes while preserving more than 90% of reported commutes. We suspect that many of the other commutes with purported destinations like Los Angeles County are erroneously reported, and the actual workplace location is unavailable to us. Note, however, that it could be true that some workers commute to southern California, though not every weekday, and it also could be true to some workers commute by flight, which presents its own distinct and potentially significant GHG analysis which is outside the scope of this report.
 
@@ -2466,9 +2492,11 @@ stockton_jobs_map <-
   left_join(ca_tracts, by = c("w_tract" = "GEOID")) %>%
   st_as_sf()
 
-map = mapview(stockton_jobs_map, zcol = "Jobs held by Stockton residents", col.regions = colorRampPalette(c("snow", "black", "grey")), map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Jobs held by</br>Stockton residents')
+# map = mapview(stockton_jobs_map[,c("Jobs held by Stockton residents")], zcol = "Jobs held by Stockton residents", col.regions = colorRampPalette(c("snow", "black", "grey")), map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Jobs held by</br>Stockton residents')
+# 
+# mapshot(map,url="map-stockton-jobs-map.html")
 
-map@map
+knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-jobs-map.html")
 ```
 
 $~$
@@ -2485,9 +2513,11 @@ stockton_commute_avg <-
   left_join(ca_tracts, by = c("w_tract" = "GEOID")) %>%
   st_as_sf()
 
-map = mapview(stockton_commute_avg, zcol = "Average Commute Time, Hours", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Average Commute</br>Time, Hours')
+# map = mapview(stockton_commute_avg[,c("Average Commute Time, Hours")], zcol = "Average Commute Time, Hours", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Average Commute</br>Time, Hours')
+# 
+# mapshot(map,url="map-stockton-commute-avg.html")
 
-map@map
+knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-commute-avg.html")
 ```
 
 $~$
@@ -3060,11 +3090,67 @@ stockton_county_commute_vmt_compare %>%
 
 $~$
 
-We estimated the total and average GHG emissions for Stockton workers commuting to each of the top 15 counties (filtering out counties further than 3 hours away). We made the following assumptions:
+## Vehicle Emissions
 
+The previous section estimated the total VMTs due to commuting for Stockton workers from 2011 to 2017, which can be used to forecast VMTs through 2040. While VMTs themselves are an important indicator of quality of life and economic vitality, from a GHG perspective we need to convert vehicle miles to emissions.
+
+We followed the standard method for calculating vehicle emissions in California using the California Air Resources Board (CARB) [Emission Factors (EMFAC) model](https://ww2.arb.ca.gov/our-work/programs/mobile-source-emissions-inventory/msei-modeling-tools). Using the EMFAC2017 model, we downloaded emissions rates data for 2013-2018, 2020, 2025, 2030, and 2040 in the San Joaquin Valley air basin. The data includes CARB's model estimates for daily vehicles across passenger cars and trucks of different fuel types, along with emissions per mile for CO2 and other pollutants. A summary of the EMFAC data is provided below.
+
+```{r emfac}
+emfac <- read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/emfac.csv")
+
+emfac_summary <-
+  emfac %>% 
+  dplyr::select(
+    Year = `Calendar Year`,
+    `Vehicle Category`,
+    `Fuel Type` = Fuel,
+    Population,
+    CO2_RUNEX,
+    CO2_STREX
+  ) %>% 
+  group_by(Year) %>% 
+  mutate(
+    `Percent Vehicles` = round(Population/sum(Population)*100,2) %>% as.numeric(),
+    `gCO2 Running Exhaust` = CO2_RUNEX %>% as.integer(),
+    `gCO2 Start Exhaust` = CO2_STREX %>% as.integer()
+  ) %>% 
+  ungroup() %>% 
+  dplyr::select(-Population, -CO2_RUNEX, -CO2_STREX) %>% 
+  mutate(
+    `Fuel Type` = 
+      case_when(
+        `Fuel Type` == "GAS" ~ "Gasoline",
+        `Fuel Type` == "DSL" ~ "Diesel",
+        TRUE ~ "Electric"
+      ),
+    `Vehicle Category` = 
+      case_when(
+        `Vehicle Category` == "LDA" ~ "Passenger Car",
+        TRUE ~ "Light Duty Truck"
+      )
+  ) %>% 
+  group_by(Year, `Vehicle Category`, `Fuel Type`) %>% 
+  summarize_all(sum)
+  
+kable(
+  emfac_summary,
+  booktabs = TRUE,
+  caption = 'EMFAC2017 emission rates for vehicles in San Joaquin Valley, 2013 through 2040.'
+) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = "500px")
+```
+
+$~$
+
+Emissions from N2O and CH4, along with emissions from other types of vehicles, were left out of this analysis. 
+
+We applied the CO2 emission rates above to our 2017 VMTs to estimate the total and average GHG emissions for Stockton workers commuting to each of the top 15 counties (filtering out counties further than 3 hours away). We made the following assumptions:
+
+- Assuming that the distribution vehicle types for Stockton commuters matches the EMFAC breakdown, the average GHG emissions is about 440 g/mile running exhaust, and 93 g/trip start exhaust.
 - For daily VMT, each vehicle was assumed to take 2 one-way trips.
 - To convert daily VMT to annual VMT, the same annualization factor was used as ICLEI: 369.39. The factor appears to account for both expected reductions in VMT because of sick days, as well as expected increases in VMT because of chained trips.
-- All vehicles were assumed to be passenger vehicles with an average mpg of 29.2 in 2017 and CO2e emissions of 303 g/mi (0.000334 tCO2e/mi), using data from the [EPA Automotive Trends Report](https://www.epa.gov/automotive-trends/explore-automotive-trends-data). Disregarding SUVs and trucks has the effect of underestimating emissions. 
 
 The following table is sorted by total annual GHG from transportation.
 
@@ -3089,7 +3175,7 @@ stockton_lodes_h_counties_ghg <-
   mutate(
     perc_jobs = jobs/sum(jobs),
     annual_vmt = vmt*2*369.39,
-    annual_ghg = annual_vmt*0.000334,
+    annual_ghg = annual_vmt*439.462*1.1023e-6 + 2*369.39*vehicles*92.582*1.1023e-6,
     perc_ghg = annual_ghg/sum(annual_ghg),
     avg_ghg = annual_ghg/jobs
   ) %>% 
@@ -3123,17 +3209,70 @@ kable(
 
 $~$
 
-According to the table above, 59% percent of Stockton residents work in San Joaquin County and collectively contribute 18% of all commute GHGs. The next 14 counties comprise another 38% of Stockton residents, but they collectively contribute 76% of all commute GHGs. This significant difference comes down to difference in average commute distance to each county, which is directly related to average GHG emissions per worker. In a later section, we will explore opportunities to stimulate local job creation so that some of these long-distance commutes can be converted into local commutes, reducing both the toll on the environment and the tolls on health and well-being for Stockton residents.
+According to the table above, 59% percent of Stockton residents work in San Joaquin County and collectively contribute 19% of all commute GHGs. The next 14 counties comprise another 39% of Stockton residents, but they collectively contribute 73% of all commute GHGs. This significant difference comes down to difference in average commute distance to each county, which is directly related to average GHG emissions per worker. In a later section, we will explore opportunities to stimulate local job creation so that some of these long-distance commutes can be converted into local commutes, reducing both the toll on the environment and the tolls on health and well-being for Stockton residents.
 
 ```{r ghg-map-2, fig.cap="Top 15 Counties where Stockton residents work - annual GHG emissions from driving. Data from LODES, 2017."}
-map = mapview(stockton_lodes_h_counties_ghg[1:15,], zcol = "annual_ghg", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Total Annual</br>GHG (tCO2e)')
+# map = mapview(stockton_lodes_h_counties_ghg[1:15,c("annual_ghg")], zcol = "annual_ghg", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Total Annual</br>GHG (tCO2e)')
+# 
+# mapshot(map,url="map-ghg-map-2.html")
 
-map@map
+knitr::include_url("http://web.stanford.edu/~douyang1/map-ghg-map-2.html")
 ```
 
 $~$
 
-## Non-commute Vehicle Miles Traveled
+To conclude this section, we plotted changes in emissions per mile (just running exhaust) and the percentage of electric vehicles in San Joaquin County from 2013-2040. These projections will contribute to modeling business-as-usual GHG emissions.
+
+```{r vehicle-emissions-trend, fig.cap="Average GHG emissions per mile for vehicles in San Joaquin Valley Air Basin, 2013-2040. Source: EMFAC2017."}
+vehicle_emissions_trend <-
+  emfac_summary %>% 
+    mutate(
+      product = `Percent Vehicles`/100*`gCO2 Running Exhaust`,
+      product2 = `Percent Vehicles`/100*`gCO2 Start Exhaust`
+    ) %>% 
+    group_by(Year) %>% 
+    summarize(
+      `gCO2/mile` = sum(product),
+      `gCO2/trip` = sum(product2)
+    )
+
+vehicle_emissions_trend %>% 
+  ggplot(
+    aes(
+      x = Year,
+      y = `gCO2/mile`
+    )
+  )+
+  geom_line(size = 2, colour = "orange") + 
+  labs(title = "San Joaquin Valley Air Basin", y = "gCO2/mile running exhaust")
+```
+
+$~$
+
+```{r vehicle-electric-trend, fig.cap="Percentage of electric vehicles in San Joaquin Valley Air Basin, 2013-2040. Source: EMFAC2017."}
+vehicle_electric_trend <-
+  emfac_summary %>% 
+  mutate(
+    `Fuel Type` = ifelse(`Fuel Type` == "Electric", "Electric", "Other")
+  ) %>% 
+  group_by(Year, `Fuel Type`) %>% 
+  summarize(count = sum(`Percent Vehicles`)) %>% 
+  filter(`Fuel Type` == "Electric")
+
+vehicle_electric_trend %>% 
+  ggplot(
+    aes(
+      x = Year,
+      y = `count`
+    )
+  )+
+  geom_line(size = 2, colour = "forest green") + 
+  labs(title = "San Joaquin Valley Air Basin", y = "Percentage electric vehicles on road")
+```
+
+$~$
+
+The projected busines-as-usual increase in electric vehicles on the road is a driver of the reduction in emissions/mile (along with fuel efficiency improvements and other factors). Later, one of our strategies will model the GHG reductions associated with even more progressive EV adoption beyond 5% by 2040.
 
 ## Energy
 
@@ -3159,9 +3298,11 @@ zcta_stockton <- zcta[stockton_boundary_influence,] %>%
   #these are some extraneous zip codes that just barely touch the sphere of influence that i manually decided to remove.
 # zcta_stockton <- zcta[which(zcta$ZCTA5CE10 %in% st_centroid(zcta)[stockton_boundary_influence,]$ZCTA5CE10),] #this would be the go-to script to do a location by centroid within, but it's not as useful in this specific case.
 
-map = mapview(zcta_stockton$geometry) + mapview(stockton_boundary$geometry, alpha.regions = 0, color = "red", lwd = 4)
+# map = mapview(zcta_stockton$geometry) + mapview(stockton_boundary$geometry, alpha.regions = 0, color = "red", lwd = 4)
+# 
+# mapshot(map, url = "map-zcta.html")
 
-map@map
+knitr::include_url("http://web.stanford.edu/~douyang1/map-zcta.html")
 ```
 
 $~$
@@ -3907,9 +4048,11 @@ bg_bldg_norm_r <-
     residential_density = bldgtot/(as.numeric(st_area(.))/4046.86)
   )
 
-map = mapview(bg_bldg_norm_r,zcol=c("residential_density"), legend = TRUE, layer.name = "Residential</br>density</br>per acre")
+# map = mapview(bg_bldg_norm_r[,c("residential_density")],zcol=c("residential_density"), legend = TRUE, layer.name = "Residential</br>density</br>per acre")
+# 
+# mapshot(map, url = "map-residential-density.html")
 
-map@map
+knitr::include_url("http://web.stanford.edu/~douyang1/map-residential-density.html")
 ```
 
 $~$
@@ -3956,9 +4099,11 @@ bg_bldg_norm_c <-
   ) %>% 
   filter(!GEOID %in% c("060770039001","060770039002"))
 
-map = mapview(bg_bldg_norm_c,zcol=c("commercial_density"), legend = TRUE, layer.name = "Commercial</br>density</br>per acre")
+# map = mapview(bg_bldg_norm_c[,c("commercial_density")],zcol=c("commercial_density"), legend = TRUE, layer.name = "Commercial</br>density</br>per acre")
+# 
+# mapshot(map, url = "map-commercial-density.html")
 
-map@map
+knitr::include_url("http://web.stanford.edu/~douyang1/map-commercial-density.html")
 ```
 
 $~$
@@ -4011,17 +4156,21 @@ zcta_bldg_stockton_joined <-
     KBTUperSQFT = TOTALKBTU/TOTSQFT
   )
 
-map = mapview(zcta_bldg_stockton_joined, zcol=c("R_KBTUPERCUST"), legend = TRUE, layer.name = "kBTU per customer,</br>Residential")
+# map = mapview(zcta_bldg_stockton_joined[,c("R_KBTUPERCUST")], zcol=c("R_KBTUPERCUST"), legend = TRUE, layer.name = "kBTU per customer,</br>Residential")
+# 
+# mapshot(map, url = "map-res-customer.html")
 
-map@map
+knitr::include_url("http://web.stanford.edu/~douyang1/map-res-customer.html")
 ```
 
 $~$
 
 ```{r comm-customer, fig.cap="Stockton commercial kBTU per sqft of commercial building area, per zip code."}
-map = mapview(zcta_bldg_stockton_joined, zcol=c("C_KBTUPERCUST"), legend = TRUE, layer.name = "kBTU per customer,</br>Commercial")
+# map = mapview(zcta_bldg_stockton_joined[,c("C_KBTUPERCUST")], zcol=c("C_KBTUPERCUST"), legend = TRUE, layer.name = "kBTU per customer,</br>Commercial")
+# 
+# mapshot(map, url = "map-comm-customer.html")
 
-map@map
+knitr::include_url("http://web.stanford.edu/~douyang1/map-comm-customer.html")
 ```
 
 $~$
@@ -4170,9 +4319,9 @@ $~$
 
 ## GHG Forecast
 
-For our "business as usual" forecast of GHG emissions through 2040, and for our subsequent exploration of intervention strategies, we will focus on the following sectors for which we have used available data to refine our models: transportation, commercial energy, and residential energy. These sectors represented 58% of ICLEI's modeled emissions in 2016. The other sectors, particularly industrial energy which comprised 24% of 2016 emissions, are also significant opportunities for GHG reductions, but are outside of the scope of this analysis without better data.
+For our "business-as-usual" forecast of GHG emissions through 2040, and for our subsequent exploration of intervention strategies, we will focus on the following sectors for which we have used available data to refine our models: transportation, commercial energy, and residential energy. These sectors represented 58% of ICLEI's modeled emissions in 2016. The other sectors, particularly industrial energy which comprised 24% of 2016 emissions, are also significant opportunities for GHG reductions, but are outside of the scope of this analysis without better data.
 
-Our simplified model of transportation emissions assumes that commute one-way vehicle miles traveled per worker is on a linear trend based on recent data. Otherwise, our forecasts of growth in the number of employed residents drives changes in VMT and thus transportation emissions. Other "business as usual" factors, like a forecasted adoption of EVs, are not considered in this analysis.
+Our simplified model of transportation emissions assumes that commute one-way vehicle miles traveled per worker is on a linear trend based on recent data. Otherwise, our forecasts of growth in the number of employed residents drives changes in VMT and thus transportation emissions. Other "business-as-usual" factors, like a forecasted adoption of EVs, are not considered in this analysis.
 
 Our simplified model of energy emissions will assume that building square footage increases with population and job growth through fixed ratios, and an underlying energy use factor for commercial and residential electricity and gas will follow the same trends as the last six years through 2040. Otherwise, a basic climate change model of heating and cooling degree days will drive additional changes in the forecasts.
 
@@ -4180,7 +4329,7 @@ In summary, the following assumptions go into inputs for the forecasts, which ar
 
 - From Section 2.1, we derived future population, employed resident, and job forecasts, specifically for the years 2020, 2025, 2030, 2035, and 2040.
 - From Section 2.5, we derived commute one-way VMT/workers for 2011-2017. The table below projects this trend to 2040.
-- From Section 2.5, we derived simplified aggregate vehicle emission rates for San Joaquin County through 2040.
+- From Section 2.6, we derived simplified aggregate vehicle emission rates for San Joaquin County through 2040. Average gCO2/mile and % electric vehicles are projected in the table below.
 - From Section 2.7, we derived a linear forecast of PG&E's electricity emissions factor which runs from 2017's data point towards a 2045 target of 100% clean energy.
 - From Section 2.7, we derived linear forecasts of heating and cooling degree days through 2040 from Cal-Adapt's HDD and CDD projections.
 - From Section 2.7, we derived linear forecasts of energy use per capita per degree-day through 2040. For Commercial Gas, we leveled out the forecast at 1 kBTU/job/HDD from 2035 on.
@@ -4267,7 +4416,9 @@ ghg_forecast_prep <-
           )$coefficients[2]*Year
       )
   ) %>% 
-  left_join(pge_elec_emissions_factor, by = c("Year" = "year"))
+  left_join(pge_elec_emissions_factor, by = c("Year" = "year")) %>% 
+  left_join(vehicle_emissions_trend, by = "Year") %>% 
+  left_join(vehicle_electric_trend, by = "Year")
 
 ghg_forecast_table_prep <-
   ghg_forecast_prep %>% 
@@ -4277,6 +4428,8 @@ ghg_forecast_table_prep <-
     `Employed Residents` = prettyNum(round(`Employed Residents`,-3),big.mark=","),
     Jobs = prettyNum(round(Jobs,-3),big.mark=","),
     `One-way Commute VMT per Car-dependent Worker` = round(vmtperjob),
+    `gCO2 per Vehicle Mile` = round(`gCO2/mile`),
+    `Percent EVs` = count,
     `PG&E Electricity Emissions Factor` = round(factor),
     `Heating Degree Days` = hdd,
     `Cooling Degree Days` = cdd,
@@ -4304,7 +4457,7 @@ ghg_forecast <-
   ghg_forecast_prep %>% 
   transmute(
     Year = Year,
-    transport = vmtperjob * `Employed Residents` *2*369.39*0.000334,
+    transport = vmtperjob * `Employed Residents` *2*369.39*`gCO2/mile`*1.1023e-6 + `Employed Residents`*2*369.39*`gCO2/trip`*1.1023e-6,
     residential = `Residential Electricity, kBTU/resident/CDD`*Population*cdd*2.9307e-7*0.000453592 + `Residential Gas, kBTU/resident/HDD`*Population*hdd/99.9761*0.00531,
     commercial = `Commercial Electricity, kBTU/job/CDD`*Jobs*cdd*2.9307e-7*0.000453592 + `Commercial Gas, kBTU/job/HDD`*Jobs*hdd/99.9761*0.00531
   )
@@ -4321,7 +4474,7 @@ ghg_forecast_table <-
 kable(
   ghg_forecast_table,
   booktabs = TRUE,
-  caption = 'GHG forecast to 2040.'
+  caption = 'GHG forecast to 2040 for three subsets of GHG emissions.'
 ) %>% 
   kable_styling() %>% 
   scroll_box(width = "100%")
@@ -4329,18 +4482,40 @@ kable(
 
 $~$
 
-The general insight is that transportation emissions are expected to increase while building emissions are expected to decrease.
+```{r ghg-forecast-plot, fig.cap="GHG forecast to 2040 for three subsets of GHG emissions."}
+ghg_forecast %>% 
+  gather(-Year, key = "Sector", value = "tCO2") %>% 
+  mutate(
+    Sector = case_when(
+      Sector == "transport" ~ "Transportation",
+      Sector == "residential" ~ "Residential Building",
+      TRUE ~ "Commercial Building"
+    )
+  ) %>% 
+  ggplot(
+    aes(
+      x = Year,
+      y = tCO2,
+      fill = Sector
+    )
+  ) + 
+  geom_area()
+```
+
+$~$
+
+The general insight is that transportation emissions are expected to increase while building emissions are expected to decrease, such that transportation emissions is even greater relative to buiding emissions than it is today.
 
 Many differences in inputs exist between this analysis and ICLEI's 2016 GHG Inventory, including the following:
 
 - ICLEI's VMT data came from a source that was only available at the SJC level and was scaled down to Stockton by population, whereas our VMT data is based on the routed distance of LODES origin-destinations. The difference these methods results in is significant (2.5 billion vs. 1.5 billion annual VMTs) and should be investigated in further work. Our Transportation tCO2 number is only for passenger commuters, whereas ICLEI's number includes many other modes.
 - ICLEI's electricity and gas data was obtained directly from PG&E, while ours was downloaded at the zip code level from their public data portal. Since our zip codes include many parcels outside of the Stockton city boundary, it's likely our consumption is for a larger population. As for commercial energy, ICLEI's commercial data was combined with industrial data, while ours is separated, so that could explain why our commercial consumption numbers our lower.
 
-The assumptions built into these forecasts are necessarily simplistic given the scope of this analysis. In particular, linear trendlines should be refined into nonlinear functions given a better understanding of growth limits for each of the domains. It's also worth noting that some trends based on the past few years, like the desirable decline in building emissions, may be heavily influenced by active strategic policymaking, the kind which this report is meant to guide for the future. That means that "business as usual" is not necessarily "doing nothing" but "successfully continuing to implement progressive policies" (e.g. PG&E successfully meeting its aggressive decarbonization strategies).
+The assumptions built into these forecasts are necessarily simplistic given the scope of this analysis. In particular, linear trendlines should be refined into nonlinear functions given a better understanding of growth limits for each of the domains. It's also worth noting that some trends based on the past few years, like the desirable decline in building emissions, may be heavily influenced by active strategic policymaking, the kind which this report is meant to guide for the future. That means that "business-as-usual" is not necessarily "doing nothing" but "successfully continuing to implement progressive policies" (e.g. PG&E successfully meeting its aggressive decarbonization strategies).
 
 # Overview of Green Economy Strategies
 
-This chapter provides a survey of over fifty green economy strategies that have been implemented, or are being considered, in cities and regions across the U.S. and beyond. It is organized by overall strategy domain (with explanations for why the domain is chosen) and by specific strategy (where cities with similar examples as the primary case study are grouped together). In Appendix A, this list is re-organized by city or region.
+This chapter provides a survey of over fifty green economy strategies that have been implemented, or are being considered, in over eighty cities and regions across the U.S. and beyond. It is organized by overall strategy domain (with explanations for why the domain is chosen) and by specific strategy (where cities with similar examples as the primary case study are grouped together). In Appendix A, this list is re-organized by city or region.
 
 Given the focus of this body of research on Stockton's green economy strategies, we generally prioritized searching for city-level initiatives over state or federal level policies and private sector initiatives. Compared to the technical analysis elsewhere in this report, which focuses on the GHG footprints of building and transportation and job geography, the strategies in this overview span a broader range of "green" topics, including water and resilience.
 
@@ -4463,7 +4638,7 @@ This domain covers all strategies that reduce the amount of energy use in buildi
 | Similar | [GreenFinanceSF](https://sfenvironment.org/article/financing/greenfinancesf-commercial-pace-program)<br>[Los Angeles County PACE](http://pace.lacounty.gov/)<br>[Set the PACE St. Louis](http://setthepacestlouis.com/)<br>[Chicago PACE](https://www.chicagopace.org/)<br>[Arlington C-PACE](https://arlington-pace.us/)<br>[Milwaukee PACE](https://city.milwaukee.gov/bbc/services/PACE-Financing) |
 
 ### Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements
-| Location | Los Angeles County, CA |
+| Location | Los Angeles, CA |
 |:------|:-------------------------------------------------------------------|
 | Details | The Los Angeles Department of Water & Power runs multiple energy efficiency programs in three broad categories. Mass market programs generally serve residential customers and encourage them to upgrade to energy efficient appliances, with a few exceptions. Commercial, industrial, and institutional (CII) programs generally serve large nonresidential customers and range in scope from simple lighting upgrades to entire building overhauls. Lastly, cross-cutting programs serve a wide variety of customer types and employ broad strategies for achieving energy savings (e.g., planting street trees, informing updates to building codes, customer outreach, etc.). |
 | Links | [Economic Benefits of Energy Efficiency Programs: A Case Study of Investments by the Los Angeles Department of Water & Power](https://innovation.luskin.ucla.edu/wp-content/uploads/2019/03/Economic_Benefits_of_Energy_Efficiency_Programs.pdf) |
@@ -4767,7 +4942,7 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 | Similar | [Chicago Area Clean Cities](https://www.chicago.gov/city/en/depts/cdot/supp_info/chicago_area_cleancities.html) |
 
 ### Reduce vehicle speed limits
-| Location | Arizona |
+| Location | Massachusetts |
 |:------|:-------------------------------------------------------------------|
 | Details | Introducing lower speed limits on motorways cuts fuel consumption and pollutant emissions. The exact impact is contingent upon vehicle type, driving patterns, frequency of speeding, congestion, and traffic diversion. |
 | Links | [European Environment Agency](https://www.eea.europa.eu/themes/transport/speed-limits-fuel-consumption-and/speed-limits) |
@@ -4778,16 +4953,16 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 ## Resilience
 
 ### Promote cool surfaces to reduce heat island effect
-| Location | Arizona |
+| Location | New York City, NY |
 |:------|:-------------------------------------------------------------------|
 | Details | Rather than using dark pavements, which attract 80-95% of sunlight, solar reflective "cool" pavements have increased reflectance. They typically use a reflective or clear binder, or a reflective surface coating. |
-| Links | [Berkeley Lab](https://heatisland.lbl.gov/coolscience/cool-pavements) |
+| Links | [White Roof Project, NYC](http://www.whiteroofproject.org/)<br>[Berkeley Lab](https://heatisland.lbl.gov/coolscience/cool-pavements) |
 | Implementation Costs & Impact Factor | CoolSeal costs between \$0.30 to \$0.40 per square foot. Albedo increases lead to a reduction of outdoor air temperatures by 0.2 to 0.9 degrees Fahrenheit. In California cities with a lot of air conditioning, the savings of air conditioning energy due to lowered air temperature is up to 1 kWh (\$0.60) per year per sq.m. of pavement modified. The avoided CO2 is valued at less than a penny a year per sq.m. Lower surface air temperature reduces ground level ozone. |
 | Scalable Potential | Downtown Stockton could benefit from a set of public and private initiatives to retrofit existing commercial roofs and ground surfaces. |
-| Similar | [White Roof Project, NYC](http://www.whiteroofproject.org/)<br>[SMUD Cool Roof Rebate](https://energy-seal.com/wp-content/uploads/crrp_smud_cool_roof_rebate_program.pdf) |
+| Similar | [SMUD Cool Roof Rebate](https://energy-seal.com/wp-content/uploads/crrp_smud_cool_roof_rebate_program.pdf) |
 
 ### Promote permeable pavement to increase groundwater absorption
-| Location | Greenville County, SC |
+| Location | Madison, WI |
 |:------|:-------------------------------------------------------------------|
 | Details | Permeable pavement is a form of pavement that is highly porous pavement that allows rainwater to pass through it and into the ground. In addition to reducing surface runoff, it can trap suspended solids, thereby filtering stormwater. This also reduces peak discharge rates, meaning that flooding is more controlled. It is, however, most appropriate for sidewalks/pedestrian areas and low-speed driving areas. |
 | Links | [USGS](https://www.usgs.gov/science/evaluating-potential-benefits-permeable-pavement-quantity-and-quality-stormwater-runoff?qt-science_center_objects=0#qt-science_center_objects) |
@@ -4843,7 +5018,7 @@ Chapter 2's baseline assessment has already set up the framework for how we will
 include_graphics("images/diagram.jpg")
 ```
 
-- Employment % was observed in ACS data as the ratio between employed residents and population 16 and older. Using a simple linear assumption, the employment rate increases to 72% in 2040. As a point of comparison, the U.S. 2018 employment rate was ~ 70%. To maintain even this "business as usual" trend may depend on aggressive strategies like workforce training and education initiatives. Otherwise, this is considered a variable that can be influenced through specific employment growth strategies. Note that employment rate affects the number of employed residents, which particularly affects VMTs in the GHG model.
+- Employment % was observed in ACS data as the ratio between employed residents and population 16 and older. Using a simple linear assumption, the employment rate increases to 72% in 2040. As a point of comparison, the U.S. 2018 employment rate was ~ 70%. To maintain even this "business-as-usual" trend may depend on aggressive strategies like workforce training and education initiatives. Otherwise, this is considered a variable that can be influenced through specific employment growth strategies. Note that employment rate affects the number of employed residents, which particularly affects VMTs in the GHG model.
 - Increasing Jobs to Employed Residents Ratio is different from increasing local employment rate as it can also include attracting workers who are not Stockton residents to commute to Stockton. Economic development strategies to attract new businesses would be an example of a type of strategy that influences the GHG model through this variable. J/ER affects the number of jobs in Stockton, which particularly affects commercial building emissions in the GHG model. If those local jobs are increasingly held by Stockton residents, it also implies that VMTs have been reduced.
 - Commute One-Way Vehicle Miles Traveled is modeled using the LODES origin-destination data, so any predictions of changes in the distribution and concentration of jobs would affect this variable. Other transportation strategies such as increasing carpooling or transit would also affect this variable.
 - Vehicle Emission Rates
@@ -4852,9 +5027,9 @@ include_graphics("images/diagram.jpg")
 
 ## Building Utilization
 
-As seen in Table \@ref(tab:stockton-pop-jobs), Stockton's population is estimated to grow from 315,000 in 2020 to 339,000 in 2040, and Stockton's job count is estimated to grow from 125,000 in 2020 to 151,000 in 2040. The roughly 24,000 new residents and 26,000 jobs will of course have some baseline amount of energy use that can't be avoided, but the particular ways in which buildings provide for their needs can be made more energy-efficient through specific strategies. This section will focus on ways to reduce the amount of space required per person, which primarily affects energy usage because less heating and cooling is required. Less space per person implies a more dense urban form, which also brings transportation benefits, which we account for elsewhere in the model.
+As seen in [Section 2.9](#ghg-forecast), Stockton's population is estimated to grow from 315,000 in 2020 to 339,000 in 2040, and Stockton's job count is estimated to grow from 125,000 in 2020 to 151,000 in 2040. The roughly 24,000 new residents and 26,000 jobs will of course have some baseline amount of energy use that can't be avoided, but the particular ways in which buildings provide for their needs can be made more energy-efficient through specific strategies. This section will focus on ways to reduce the amount of space required per person, which primarily affects energy usage because less heating and cooling is required. Less space per person implies a more dense urban form, which also brings transportation benefits, which we account for elsewhere in the model.
 
-### Case Study: Accessory Dwelling Units
+### Strategy: Accessory Dwelling Units
 
 The 2019 California state legislative cycle resulted in [accessory dwelling units](#encourage-accessory-dwelling-units) (ADU) laws that took effect on 1/1/2020 and, among other changes, supercede local control to allow ADUs to be built on every single-family parcel. More specifically, local regulations cannot prevent a homeowner from applying to build an internal ADU of up to 500 sqft within their existing structure, as well as a detached ADU of up to 800 sqft in their backyard, with newly enforced maximum setbacks of 4ft from the side and rear. Exact regulatory details are still in flux as individual cities are expected to update their local ordinances to match the new state laws, and loopholes will inevitably come up; refer to [CA Housing and Community Development](https://www.hcd.ca.gov/policy-research/AccessoryDwellingUnits.shtml) for the latest guidance.
 
@@ -4868,7 +5043,7 @@ include_graphics("images/energyuseduplex.png")
 
 $~$
 
-Second, detached ADUs, while not as effective as internal ADUs from a building utilization perspective, still are efficient compared to the average single-family dwelling because they are likely to have a smaller footprint in the constraints of backyard development. A robust model for the relationship between square footage and energy use is outside the scope of this study, so our simplified assumption will be as follows. According to the same RECS, [as analyzed by the National Association of home Builders](https://www.nahbclassic.org/generic.aspx?genericContentID=237901&fromGSA=1) (see figure below), about a third of single-family home energy consumption is for heating/cooling, while the rest is not significantly correlated with square footage. As previously estimated in \@ref(tab: zcta-bldg-stockton-table), the average residential unit size in Stockton today is about 3,200 sqft (conservative because the data includes multifamily units) and consumes about 78,000 kBTUs per year. So we can estimate that a detached ADU of half that size, 1,600 sqft, would reduce its energy consumption by a sixth (to 65,000 kBTUs per year), and so forth.
+Second, detached ADUs, while not as effective as internal ADUs from a building utilization perspective, still are efficient compared to the average single-family dwelling because they are likely to have a smaller footprint in the constraints of backyard development. A robust model for the relationship between square footage and energy use is outside the scope of this study, so our simplified assumption will be as follows. According to the same RECS, [as analyzed by the National Association of home Builders](https://www.nahbclassic.org/generic.aspx?genericContentID=237901&fromGSA=1) (see figure below), about a third of single-family home energy consumption is for heating/cooling, while the rest is not significantly correlated with square footage. As previously estimated in [Section 2.8](#buildings), the average residential unit size in Stockton today is about 3,200 sqft (conservative because the data includes multifamily units) and consumes about 78,000 kBTUs per year. So we can estimate that a detached ADU of half that size, 1,600 sqft, would reduce its energy consumption by a sixth (to 65,000 kBTUs per year), and so forth.
 
 ```{r energy-sqft-diagram, fig.cap="NAHB analysis of HVAC vs non-HVAC energy use. Source: RECS 2009.", out.width = "100%"}
 include_graphics("images/nahbenergy.jpg")
@@ -4938,9 +5113,9 @@ kable(
 
 $~$
 
-Starting first with internal ADUs, technically all 66,000 single-family, duplex, and apartment parcels could build permitted internal ADUs (in fact more than 1 can be allowed in existing multifamily buildings). These are by definition smaller units (less than 500 sqft, typically converting an existing garage, attic, basement, or master bedroom), so can't necessarily support larger household sizes. 
+Starting first with internal ADUs, technically all 66,000 single-family, duplex, and apartment parcels could build permitted internal ADUs (in fact more than one can be allowed in existing multifamily buildings). These are by definition smaller units (less than 500 sqft, typically converting an existing garage, attic, basement, or master bedroom), so can't necessarily support larger household sizes. 
 
-As projected in \@ref(tab: ghg-forecast-prep), only 25,000 new residents are expected between 2020 and 2040. In other words, it could be possible to support this entire population growth (with little increase in building energy consumption) if just half of all eligible existing buildings were to convert existing space to internal ADUs. Of course, for a number of reasons including lifestyle preference (with internal ADUs perhaps being the least palatable social arrangement for two separate households), this is not literally feasible, but should signal the opportunity in encouraging ADU development. 
+As projected in [Section 2.9](#ghg-forecast), only 25,000 new residents are expected between 2020 and 2040. In other words, it could be possible to support this entire population growth (with little increase in building energy consumption) if just half of all eligible existing buildings were to convert existing space to internal ADUs. Of course, for a number of reasons including lifestyle preference (with internal ADUs perhaps being the least palatable social arrangement for two separate households), this is not literally feasible, but should signal the opportunity in encouraging ADU development. 
 
 Detached ADUs may be more palatable (along with attached ADUs which are additions to an existing home, but these are not considered in our analysis), given the greater privacy between households, greater square footage, and potential reduced complexity of new construction vs. retrofitting existing buildings, but are more costly as well. Assessing the viability of detached ADUs is more complicated because it involves geospatial analysis. 
 
@@ -5424,10 +5599,13 @@ test_block_group <-
 test_buildable_area <- clean_buildable_area[test_block_group,]
 test_parcels <- normal_residential_parcels_yards[test_block_group,]
 
-map <- mapview(test_buildable_area, col.regions = "green", lwd=0, layer.name= "Buildable ADU Area") + 
-  mapview(test_parcels %>% st_set_geometry("parcel_geometry"), alpha.region=0, color = "white", layer.name= "Parcel Boundary") + 
-  mapview(test_parcels %>% st_set_geometry("building_geometry"), col.regions = "tan", lwd=0.5, layer.name= "Existing Building")
-map@map
+# map <- mapview(test_buildable_area$geometry, col.regions = "green", lwd=0, layer.name= "Buildable ADU Area") + 
+#   mapview(test_parcels %>% st_set_geometry("parcel_geometry") %>% dplyr::select(parcel_geometry), alpha.region=0, color = "white", layer.name= "Parcel Boundary") + 
+#   mapview(test_parcels %>% st_set_geometry("building_geometry") %>% dplyr::select(building_geometry), col.regions = "tan", lwd=0.5, layer.name= "Existing Building")
+# 
+# mapshot(map, url = "map-adu-example.html")
+
+knitr::include_url("http://web.stanford.edu/~douyang1/map-adu-example.html")
 ```
 
 $~$
@@ -5542,20 +5720,27 @@ routes <-
   ) %>% 
   st_transform(projection)
 
-map <- mapview(downtown_accessible_stops, layer.name= "Bus Stops")+
-  mapview(downtown_accessible_stops %>% filter(stop_id %in% rtd_stops_downtownstation), cex = 10, col.regions = "red", layer.name = "Downtown Bus Station") +
-  mapview(routes$geometry, layer.name = "Bus Routes") +
-  mapview(downtown_accessible_adus_filtered, col.regions = "green", lwd=0.5, layer.name= "Buildable ADU Area")
-map@map
+downtownstation_stops <- 
+  downtown_accessible_stops %>% 
+  filter(stop_id %in% rtd_stops_downtownstation)
+
+# map <- mapview(downtown_accessible_stops$geometry, layer.name= "Bus Stops")+
+#   mapview(downtownstation_stops$geometry, cex = 10, col.regions = "red", layer.name = "Downtown Bus Station") +
+#   mapview(routes$geometry, layer.name = "Bus Routes") +
+#   mapview(downtown_accessible_adus_filtered$geometry, col.regions = "green", lwd=0.5, layer.name= "Buildable ADU Area")
+# 
+# mapshot(map, url = "map-accessible-adus.html")
+
+knitr::include_url("http://web.stanford.edu/~douyang1/map-accessible-adus.html")
 ```
 
 $~$
 
 Such sites are great opportunities to immediately conduct homeowner outreach to increase awareness of new state legislation and the opportunities associated with ADU development, including a possible source of wealth-building or living space for a growing family. This type of analysis could be scaled up to a city-wide strategy in partnership with Stockton's Community Development Department.
 
-To conclude this section, we offer an example of how a progress ADU strategy could impact our GHG forecasts:
+Below, we offer an example of how a progress ADU strategy could impact our GHG forecasts:
 
-- The business-as-usual projection from \@ref(tab: ghg-forecast-prep) suggests that total residential building GHG emissions are already expected to decline from 209,000 tCO2/year in 2020 to 101,000 tCO2/year, driven by climate change that reduces gas heating needs, cleaner PG&E electricity, and continuing trends in energy efficiency improvements and building utilization.
+- The business-as-usual projection from [Section 2.9](#ghg-forecast) suggests that total residential building GHG emissions are already expected to decline from 209,000 tCO2/year in 2020 to 101,000 tCO2/year, driven by climate change that reduces gas heating needs, cleaner PG&E electricity, and continuing trends in energy efficiency improvements and building utilization.
 - As previously noted, 25,000 new residents are projected during the same time, contributing to about 7,400 of the 101,000 tCO2 in 2040.
 - As part of a steady stream of single-family home retrofits happening over the next 20 years (partially driven by energy efficiency strategies covered later), homeowners could be actively encouraged to also consider the conversion of an underutilized space in their homes into an internal ADU, at the same time as other renovations. If just 1% of the 60,000+ single-family homes were to take up this opportunity, 6,000 internal ADUs could be developed, creating highly energy-efficient dwelling opportunities for some of the residential growth (which may include cases of younger Stocktonians growing up and moving into an internal ADU in the same home they grew up in, or their aging parents moving into the internal ADU and giving the main home to their children to start a new family).
 - At the same time, homeowners could be actively encouraged to consider the development of detached ADUs, which can accommodate an even greater range of lifestyle preferences. If just 1% of the 60,000+ property owners eligible for detached ADUs were motivated to build a detached ADU, 6,000 additional detached ADUs could be made available that wouldn't otherwise have existed.
@@ -5563,96 +5748,16 @@ To conclude this section, we offer an example of how a progress ADU strategy cou
 - Using our energy assumptions, 6,000 internal ADUs and 6,000 detached ADUs (assuming an average 600 sqft in size), compared to what could have been 12,000 new single-family homes, would only emit about `r prettyNum(floor((25000/339000*101000*(12000/25000)*(2/3+(1/3)*(600/3200))+25000/339000*101000*(1000/25000))/100)*100,big.mark=",")` tCO2 compared to 7,400 in business-as-usual -- a 2-3% reduction in 2040's residential building GHG footprint.
 - While the GHG reductions in building energy are relatively low because of the progressive reductions already expected in business-as-usual, the combined transportation impacts of ADU development could be relatively significant. There is a projected increase of 59,000 employed residents between 2020-2040. If half of the 12,000 ADUs could support transit-based commuting (given their location, like the demonstration above) for at least 6,000 employed residents (one per household) who would have otherwise been car-dependent, the reduction in projected commute GHGs would be about 46,000 tCO2 in 2040, bringing the total GHG reduction associated with ADU development to 53,000 tCO2 (2-3% of Stockton's total tCO2 in 2016).
 
+Regarding the cost of implementation, more research is needed to quantify the size and effectiveness of different types of expenditures, like outreach to homeowners and reduced permit fees. It is safe to say that ADU development is primarily a market-driven opportunity that can potentially increase a city's bottom line, since new ADU development can yield increased property taxes with less infrastructure development (pipes and roads) and urban servicing (police and fire) cost per unit compared to entirely new suburban growth. We recommend considering ADU promotion a net-zero $/tCO2 strategy, with each incremental ADU having the rough kinds of GHG benefits summarized in the table below:
+
+| ADU Type | tCO2/year Reduction (in 2040) |
+|:------|:-------------------------------------------------------------------|
+| Detached ADU, 600sqft | 0.2 |
+| Internal ADU | 0.6 |
+| Detached ADU, 600sqft, transit-oriented | 7.8 |
+| Internal ADU, transit-oriented | 8.3 |
+
 ## Building Energy
-
-### Case Study: Energy Efficiency Programs in Los Angeles County, CA
-
-[Economic Benefits of Energy Efficiency Programs: A Case Study of Investments by the Los Angeles
-Department of Water & Power](https://innovation.luskin.ucla.edu/wp-content/uploads/2019/03/Economic_Benefits_of_Energy_Efficiency_Programs.pdf) by the UCLA Luskin Center estimates the economic benefits of LADWP's energy efficiency programs through the metrics of number of jobs, value added (e.g. income for workers, profits for businesses, and taxes for local government), and labor income. 
-
-The report notes that for every dollar invested by LADWP ($123M for FY 2016-17:
-- $0.53 in energy cost savings for customers per year (for the lifetime of the measure). Much of these energy cost savings then get reinvested back in the local economy.
-- $0.43 co-invested by local businesses and households (total \$53M for FY 2016-17) through financial inventive programs which require participants to provide matching funds for their energy efficient purchase or upgrade.
-- $1.36 value added (labor income, profits, and taxes)
-- For every $1M dollars of LADWP investment, 13.5 FTE job-years in LA County are supported (1658 total).
-
-One of the limitations of the study is described as follows: "... the ultimate merit of each program should not be solely evaluated in terms of jobs or wealth generation. When making investment decisions, utilities must consider a number of factors, including statuary compliance, grid reliability, costs for ratepayers, greenhouse gas (GHG) emissions reductions, and associated improvements in air quality. Programs that have a low employment or value added multiplier may perform better according to other co-benefits, such as reducing pollution and improving associated environmental health outcomes. Broader analysis of the many co-benefits associated with energy efficiency programs is another worthy task for future research."
-
-Along these lines, we were particularly interested evaluating these programs in terms of net economic cost for GHGs saved, or $/tCO2e, similar to [Climate Smart San Jose](https://www.sanjoseca.gov/your-government/environment/climate-smart-san-jos). In the Luskin report, estimates of energy savings were only given as a 1-yr amount from FY 2016-17 in kWh. It is unclear in each example what combination of electricity and gas savings this entails, and no indication is given of the likely duration of these energy savings, which would be dependent on many factors including the lifetime of the appliance/product. The economic figures, such as the numbers presented above, also come with many model limitations which are described in the report, but appear to be interpretable as the net present value of all total impacts to be realized at some point in the future. Given these interpretations, we estimated net economic cost as investment (by LADWP and co-investors) minus value added to economy and net present value of energy savings. The lifetime of the measure was generally assumed to be 10 years, with the exception of the Refigerator Turn-In & Recycle program which was assumed to be 2.5 years (the amount of time a homeowner may keep using an old fridge instead of retiring it). A 3% real discount rate was applied in the NPV calculations. Total tCO2e reduction was estimated by assuming the annual kWh savings could be realized in PG&E's territory from 2020 onward for the lifetime of the measure, factoring in the emissions factors used in this report. 
-
-```{r luskin}
-luskin <- 
-  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/luskin.csv") %>% 
-  mutate(
-    npv = 
-      map2(energysavings, lifetime, function(x, y){
-        ifelse(
-          is.na(x) | is.na(y),
-          return(0),
-          return(as.numeric(NPV(x, rep(x,y), 1:y, 0.03, plot = FALSE)))
-        )
-      }) %>% unlist(),
-    netcost =
-      funding+coinvestment-npv-valueadded,
-    costperkwh =
-      netcost/(kwh*(lifetime+1)),
-    tco2e = 
-      map2(kwh, lifetime, function(x, y){
-        ifelse(
-          is.na(x) | is.na(y),
-          return(0),
-          return(sum(rep(x,y+1)*((25:(25-y))*7.5/1000*0.000453592)))
-        )
-      }) %>% unlist(),
-    costpertco2e = 
-      netcost/tco2e
-  )
-
-luskin_table <-
-  luskin %>% 
-  filter(!is.na(costperkwh)) %>% 
-  arrange(costpertco2e) %>% 
-  transmute(
-    Program = program,
-    `Intervention Type` = type,
-    `Original LADWP Investment` = paste0("$",prettyNum(round(funding,-3),big.mark=",")),
-    `Net Lifetime Cost` = 
-      ifelse(
-        netcost<0,
-        paste0("-$",prettyNum(round(-netcost,-3),big.mark=",")),
-        paste0("$",prettyNum(round(netcost,-3),big.mark=","))
-      ),
-    `Lifetime tCO2e Reduction` = prettyNum(round(tco2e,-2),big.mark=","),
-    `$/tCO2e` = 
-      ifelse(
-        netcost<0,
-        paste0("-$",prettyNum(round(-costpertco2e,-2),big.mark=",")),
-        paste0("$",prettyNum(round(costpertco2e,-2),big.mark=","))
-      )
-  )
-
-kable(
-  luskin_table,
-  booktabs = TRUE,
-  caption = 'Analysis of net cost per tCO2e saved over lifetime of LADWP energy efficiency programs. Data, Luskin 2019.'
-) %>% 
-  kable_styling() %>% 
-  scroll_box(width = "100%")
-```
-
-$~$
-
-Almost all the programs studied in the Luskin report have a negative net cost per tCO2e, meaning they provide a net economic benefit (note that this is not profit solely recuperated to the original investors, but distributed throughout the economy). Programs should ultimately be evaluated based on the feasibility of the original government investment, the $/tCO2e, and the total tCO2e reduction that can be achieved through the measure.
-
-### Strategy: Solar Installations
-
-According to [Project Drawdown](https://www.drawdown.org/solutions/electricity-generation/rooftop-solar), Rooftop Solar is the 10th most impactful carbon reduction strategy globally.
-
-PG&E has minimum energy bill requirement, so a 90% solar offset is ideal.
-
-### Strategy: Energy Storage
-
-From an emissions standpoint, energy storage solutions primarily provide benefit through demand response capabilities, as is discussed below. Energy storage also has the co-benefit of providing resilience during power shut-off situations. 
 
 ### Strategy: Electrification
 
@@ -5750,24 +5855,7 @@ $~$
 - [MassCEC](https://www.masscec.com/installer-resources-air-source-heat-pumps) provides incentives for residential installation of whole-home air-source heat pumps. Pilot funding for the project is still being allocated so the number of affected homes is not yet recorded. Incentives are based on income category: For >120% of state median income, \$2,500; for 80-120%, \$3,750; for <80% or affordable housing, \$5,000.
 - [City of Palo Alto Utilities](https://cityofpaloalto.org/gov/depts/utl/residents/save_energy_n_water/rebates/heat_pump_water_heater/pilot_program_details.asp) offers rebates with the following eligibility requirements: To participate in the program, you must be a CPAU customer replacing a gas or electric water heater or installing a HPHW in a new or remodeled home; The HPHW must abide by the technical specifications listed by CPAU or must be on the list of Energy Star certified HPHWs.
 
-### Strategy: Demand Response
-
-DR load reductions are of short duration and are made either the day before or the day of a DR program event. In contrast to energy efficiency and traditional time-of-use measures, DR represents the "need of the hour"- the critical period when businesses can mitigate adverse pricing or power system conditions. For instance, DR is most likely to be requested for a few hours between 12 P.M. and 6 P.M., on a hot summer afternoon, when electric demand is generally highest. The figure below illustrates the performance for an example facility participating in a DR event during the period between 2 P.M. and 6 P.M.
-
-Company-led initiatives: PG&E documented pilots with [Community Medical Centers](https://www.pge.com/includes/docs/pdfs/mybusiness/energysavingsrebates/demandresponse/cs/HealthCare_CommunityMedicalCenters_DR_CaseStudy.pdf) in 2006. The centers identified these measures for the summer's first DR event:
-
-- Raise chiller temperature 5 degrees F
-- Shut down the redundant chiller water loop
-- Shut off redundant water pumps
-- Shut down some visitor elevators
-- Use EMS systems to turn off 50% of non-essential lights
-- Shut off booster pumps for outdoor watering
-- Shut off one boiler in order to turn off associated fans
-- Turn off cooking equipment and serve cold food (sandwiches and salads) in the Visitor Cafeteria
-
-The largest hospital, whose typical summer peak demand is between 4578 kW and 4664 kW, dropped more than 500 kW over two to six hour periods on three event days.
-
-A private company, [OhmConnect](https://www.ohmconnect.com/how-it-works/impact), allows individual residential customers to also participate in DR. Stockton could explore cleantech competition in this space or supplementary programs for existing services, such as a focus on introducing more "smart appliances" into the market that can more easily participate in DR. The greatest impact is likely in targeting specific large employers for customized DR programs and rewarding/recognizing them for program outcomes, thereby positioning the local economy as a champion and leader in active energy emissions reduction.
+### Strategy: Solar Installations
 
 ## Employment Growth
 
@@ -5775,49 +5863,106 @@ A private company, [OhmConnect](https://www.ohmconnect.com/how-it-works/impact),
 
 ## Local Jobs
 
-### Case Study: Clusters and Anchors in Pittsburgh, PA
-
-### Strategy: R&D Business Growth
+### Strategy: Attracting Green Jobs
 
 ## Vehicle Miles Traveled
 
-### Case Study: Direct Connect in Pinellas County, FL
-
-The Pinellas Suncoast Transit Authority (PSTA), in Pinellas County, FL, was the first transit agency in the US to sign a service provision agreement with a transportation network company (TNC) to offer joint first/last-mile service subsidized by public dollars. PSTA's "Direct Connect" pilot allows riders to get to and from bus stops in a taxi, wheelchair-accessible vehicle (WAV), or Uber TNC vehicle at a subsidized rate. From August 2017 to March 2018, Uber trips taken via the service (beginning or ending within 800 feet of eight pilot transit stops) were subsidized on average from $7.64 to \$2.64 per ride. The Shared Use Mobility Center conducted a [program evaluation](https://learn.sharedusemobilitycenter.org/wp-content/uploads/SUMC_CaseStudy_Final3_06.21.19-1.pdf) in 2019 and outlined key lessons learned, including:
-
-- The importance of leadersihp within the transit agency, and the strong coordination of key staff members in charge of the project.
-- Heavy investment in public outreach about the program.
-- A common contract for multiple potential TNCs to compete within the program.
-- Negotiating greater data sharing from the TNC and direct investment in other forms of program data, such as user surveys.
-- Identifying clear performance goals to monitor over the project.
-- Refining the financial model and preparing for greater subsidy costs as TNC business models evolve.
-
-### Strategy: Public Transit
-
-In 2019, San Joaquin Regional Transit District released its [Short Range Transit Plan](http://sanjoaquinrtd.com/wp-content/uploads/2019/02/SRTP-2018-Update_FINAL.pdf) for 18/19-27/28. Generally, RTD suffered service reductions after the financial recession but is expecting to be able to regain ground and expand service during this next phase. There are currently 128 active vehicles and 203 employees. Proposed Bus Rapid Transit (BRT) lines throughout Stockton include CO2 reduction projections. For new service, the capital cost of a new vehicle is about \$1M, and capital infrastructure costs are about \$500K per stop, and annual operating costs are \$600-800M per vehicle.
-
-In June of 2018, RTD formed a partnership with PG&E to conduct an electric vehicle pilot to support RTD's long-term electric transportation needs with chargers and infrastructure improvements. This pilot will be a test case for PG&E's new FleetReady program, which supports electric charging for customers with medium-duty, heavy-duty, and off-road fleets. For this new pilot, PG&E will test how smart charging and battery storage can lower operating costs and maximize efficiencies. As RTD transitions to an electric fleet, it will need to purchase electric station infrastructure for the RTC.
-
-RTD has also piloted a variety of mobility management services which act as alternatives to fixed-line service, and expects to expand these, including:
-
-- RTD Go! On July 10, 2017, RTD Go-in partnership with Uber and Journey Via Gurney (JVG)-replaced the former General Public Dial-A-Ride service that operated countywide with a primary focus in rural areas. RTD Go provides public transit connectivity to residents of rural areas of the county where traditional bus service is not practical. This program extends service hours beyond fixed-route hours and offers an innovative mobility option to the public. By partnering with transportation network company Uber, RTD Go provides on-demand transportation that is subsidized 50%, up to \$5 per trip. For customers with physical disabilities or other limitations, RTD Go partnered with accessible service provider, JVG, to provide transportation at a \$10 flat fare per trip.
-- When designing Commuter routes, RTD evaluates the origins and destinations using data from SJCOG's Dibs (formerly Commute Connection) program and current and potential employers. There are emerging needs for the creation of corridor service with multiple trips between Stockton, Lodi, and downtown Sacramento-initially with weekday service, expanding to a seven-days-a-week operation. Additionally, with weekend service to Dublin/Pleasanton BART Station, there is a need to expand the Commuter route to provide better connectivity to Manteca, Escalon, and Ripon.
-
-Local public transit improvements will be modeled as reductions on local amenity VMT, while specific proposed commuter routes will be modeled as reductions on commute VMT.
-
-### Strategy: Employer-based Transportation Management
+### Strategy: Park and Ride
 
 ## Vehicle Emissions
 
 ### Strategy: Electric Vehicle Program
 
+In Section 2.6, we used EMFAC2017 to estimate the penetration of EVs into the market in a business-as-usual situation from now till 2040, reaching about 5% in 2040. Any increase beyond this percentage would contribute to a further reduction in gCO2/mile, which would reduce the overall GHG footprint of Stockton's commute travel.
+
+The following table shows how transportation tCO2 changes in 2040 with different EV penetration percentages. This model assumes that the distribution of vehicle types (car vs. truck, gasoline vs. diesel) does not change apart from the increase in percentage of EVs. For example, within gasoline vehicles, about 70% are projected to be cars and the rest are trucks; we do not change that assumption as we decrease the number of gasoline vehicles overall.
+
+```{r vehicle-electric-forecast}
+non_electric <-
+  emfac_summary %>% 
+  filter(Year == 2040) %>% 
+  filter(`Fuel Type` != "Electric") %>% 
+  pull(`Percent Vehicles`) %>% 
+  sum()
+
+emfac_modify <-
+  c(0,5,10,15,20,25,30,35,40,45) %>% 
+  map_dfr(function(x){
+    temp <-
+      emfac_summary %>% 
+      filter(Year == 2040) %>% 
+      mutate(
+        `Percent Vehicles` = `Percent Vehicles`*(1-x/non_electric),
+        product = `Percent Vehicles`/100*`gCO2 Running Exhaust`,
+        product2 = `Percent Vehicles`/100*`gCO2 Start Exhaust`
+      ) %>% 
+      group_by(Year) %>% 
+      summarize(
+        `gCO2/mile` = sum(product),
+        `gCO2/trip` = sum(product2)
+      ) %>% 
+      left_join(ghg_forecast_prep %>% dplyr::select(vmtperjob, `Employed Residents`, Year), by = "Year") %>% 
+      mutate(
+        `Percent EVs` = 5.19 + x,
+        `gCO2/mile` = `gCO2/mile`,
+        tco2 = vmtperjob * `Employed Residents` *2*369.39*`gCO2/mile`*1.1023e-6 + `Employed Residents`*2*369.39*`gCO2/trip`*1.1023e-6,
+      )
+  })
+
+emfac_modify_table <-
+  emfac_modify %>% 
+  transmute(
+    `Percent EVs` = paste0(round(`Percent EVs`),"%"),
+    `gCO2/mile` = round(`gCO2/mile`),
+    `Transportation tCO2` = prettyNum(round(tco2,-4), big.mark = ",") 
+  )
+
+kable(
+  emfac_modify_table,
+  booktabs = TRUE,
+  caption = 'Impact of increasing EV penetration by increments of 5% on commute GHGs in 2040.'
+) %>% 
+  kable_styling() %>% 
+  scroll_box(width = "100%")
+```
+
+$~$
+
+```{r vehicle-electric-forecast-plot, fig.cap = 'Impact of increasing EV penetration by increments of 5% on commute GHGs in 2040.'}
+emfac_modify %>% 
+  ggplot(
+    aes(
+      x = `Percent EVs`,
+      y = `tco2`
+    )
+  ) +
+  geom_line(size = 2, colour = "forest green") +
+  labs(title = "Commute Emissions in 2040", y = "Transportation tCO2")
+```
+
+$~$
+
+Note that while EVs can be effective at reducing gCO2/mile, transit strategies are even more effective because they reduce VMTs directly. Ultimately Stockton should proactively pursue strategies in both VMT reduction and vehicle emissions reduction because this sector of GHG emissions can use as many interventions as possible.
+
 # Conclusion
+
+**Future Work**
+
+- Acquire data about industrial building emissions, which is currently limited by PG&E data privacy issues. Stockton could form data partnership agreements or benchmarking mandates directly with local corporations.
+- Incorporate non-commute VMTs, such as trips to the grocery store. These VMTs would be added to the VMTs already calculated for commuting, and further increase the already dominant share of transportation emissions.
+- Acquire water consumption data from local water companies.
+- Acquire waste collection data from local waste management companies.
+- Conduct a flood risk analysis for Stockton buildings.
 
 # Appendix A: Index of Case Studies by Place
 
 **Arizona**
 
 - [Engage automobile manufacturers as stakeholders in the EV market](#engage-automobile-manufacturers-as-stakeholders-in-the-ev-market)
+
+**Arkansas**
+
+- [Offer rebates for flood mitigation projects](#offer-rebates-for-flood-mitigation-projects)
 
 **Arlington, VA**
 
@@ -5827,15 +5972,26 @@ Local public transit improvements will be modeled as reductions on local amenity
 **Austin, TX**
 
 - [Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements](#provide-consumer-oriented-programs-to-incentivize-energy-efficiency-retrofits-and-appliance-improvements)
-- Partner with transportation network companies (TNCs) to offer first/last mile discount programs for transit riders
+- [Redesign bus network to prioritize ridership over coverage](#redesign-bus-network-to-prioritize-ridership-over-coverage)
+- [Subsidize first-mile/last-mile transportation services](#subsidize-first-mile-last-mile-transportation-services)
+
+**Berkeley, CA**
+
+- [Create local transportation demand management ordinances](#create-local-transportation-demand-management-ordinances)
 
 **Birmingham, AL**
+
 - [Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements](#provide-consumer-oriented-programs-to-incentivize-energy-efficiency-retrofits-and-appliance-improvements)
+
+**Bogota, Colombia**
+
+- [Use BRT corridors to reduce travel times on public transit](#use-brt-corridors-to-reduce-travel-times-on-public-transit)
 
 **Boston, MA**
 
 - [Create a fund to implement energy savings projects](#create-a-fund-to-implement-energy-savings-projects)
 - [Provide green-oriented job training and education pathways](#provide-green-oriented-job-training-and-education-pathways)
+- [Encourage carsharing strategies](#encourage-carsharing-strategies)
 
 **Bridgeport, CT**
 
@@ -5851,12 +6007,18 @@ Local public transit improvements will be modeled as reductions on local amenity
 - [Revise zoning codes in medium to large cities to facilitate upzoning](#revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning)
 - [Promote a Solar Renewable Energy Certificate program](#promote-a-solar-renewable-energy-certificate-program)
 - [Provide incentives for households to install solar generation and storage, particularly for vulnerable customers](#provide-incentives-for-households-to-install-solar-generation-and-storage-particularly-for-vulnerable-customers)
+- [Use green infrastructure to improve stormwater management](#use-green-infrastructure-to-improve-stormwater-management)
+
+**Centennial, CO**
+
+- [Subsidize first-mile/last-mile transportation services](#subsidize-first-mile-last-mile-transportation-services)
 
 **Chicago, IL**
 
 - [Enable property-assessed clean energy (PACE) financing](#enable-property-assessed-clean-energy-pace-financing)
 - [Create a scholarship fund for students wishing to pursue eco-conscious careers](#create-a-scholarship-fund-for-students-wishing-to-pursue-eco-conscious-careers)
 - [Encourage mortgage refinancing](#encourage-mortgage-refinancing)
+- [Engage automobile manufacturers as stakeholders in the EV market](#engage-automobile-manufacturers-as-stakeholders-in-the-ev-market)
 
 **Cleveland, OH**
 
@@ -5869,6 +6031,7 @@ Local public transit improvements will be modeled as reductions on local amenity
 **Columbus, OH**
 
 - [Offer job creation tax credit](#offer-job-creation-tax-credit)
+- [Redesign bus network to prioritize ridership over coverage](#redesign-bus-network-to-prioritize-ridership-over-coverage)
 
 **Davis, CA**
 
@@ -5878,13 +6041,29 @@ Local public transit improvements will be modeled as reductions on local amenity
 
 - [Provide training and coaching for low-income workers, rather than unemployed workers](#provide-training-and-coaching-for-low-income-workers-rather-than-unemployed-workers)
 
+**Detroit, MI**
+
+- [Promote urban gardens as a substitute for displaced ecosystem services](#promote-urban-gardens-as-a-substitute-for-displaced-ecosystem-services)
+
 **Dublin, CA**
 
 - [Encourage mortgage refinancing](#encourage-mortgage-refinancing)
 
+**Estonia**
+
+- [Provide free public transit](#provide-free-public-transit)
+
+**Georgia**
+
+- [Pursue public-private partnerships for commercial development](#pursue-public-private-partnerships-for-commercial-development)
+
 **Glendale, CA**
 
 - [Use waste to produce electricity](#use-waste-to-produce-electricity)
+
+**Greenville County, SC**
+
+- [Reclaim urban streams and rivers to increase groundwater absorption and filtration](#reclaim-urban-streams-and-rivers-to-increase-groundwater-absorption-and-filtration)
 
 **Hartford, CT**
 
@@ -5895,31 +6074,62 @@ Local public transit improvements will be modeled as reductions on local amenity
 
 - [Use waste to produce electricity](#use-waste-to-produce-electricity)
 
+**Houston, CA**
+
+- [Redesign bus network to prioritize ridership over coverage](#redesign-bus-network-to-prioritize-ridership-over-coverage)
+
 **Indianapolis, IN**
 
 - [Develop public employment program](#develop-public-employment-program)
+- [Redesign bus network to prioritize ridership over coverage](#redesign-bus-network-to-prioritize-ridership-over-coverage)
+
+**Johannesburg, South Africa**
+
+- [Use BRT corridors to reduce travel times on public transit](#use-brt-corridors-to-reduce-travel-times-on-public-transit)
 
 **Kansas**
 
 - [Create a scholarship fund for students wishing to pursue eco-conscious careers](#create-a-scholarship-fund-for-students-wishing-to-pursue-eco-conscious-careers)
+- [Pay remote workers to move to new location](#pay-remote-workers-to-move-to-new-location)
+
+**Kansas City, MO**
+
+- [Provide free public transit](#provide-free-public-transit)
+
+**King County, WA**
+
+- [Give carpoolers priority parking at transit stops](#give-carpoolers-priority-parking-at-transit-stops)
 
 **London, UK**
 
 - [Create a fund to implement energy savings projects](#create-a-fund-to-implement-energy-savings-projects)
 
+**Los Angeles, CA**
+
+- [Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements](#provide-consumer-oriented-programs-to-incentivize-energy-efficiency-retrofits-and-appliance-improvements)
+- [Provide green-oriented job training and education pathways](#provide-green-oriented-job-training-and-education-pathways)
+- [Provide commercial rebates for commercial building owners to install EV charging stations](#provide-commercial-rebates-for-commercial-building-owners-to-install-EV-charging-stations)
+
 **Los Angeles County, CA**
 
 - [Enable property-assessed clean energy (PACE) financing](#enable-property-assessed-clean-energy-pace-financing)
-- [Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements](#provide-consumer-oriented-programs-to-incentivize-energy-efficiency-retrofits-and-appliance-improvements)
-- [Provide green-oriented job training and education pathways](#provide-green-oriented-job-training-and-education-pathways)
 
-**Oakland, CA**
+**Luxembourg**
 
-- [Provide green-oriented job training and education pathways](#provide-green-oriented-job-training-and-education-pathways)
+- [Provide free public transit](#provide-free-public-transit)
 
-**Oregon**
+**Madison, WI**
 
-- [Revise zoning codes in medium to large cities to facilitate upzoning](#revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning)
+- [Promote permeable pavement to increase groundwater absorption](#promote-permeable-pavement-to-increase-groundwater-absorption)
+
+**Madrid, Spain**
+
+- [Ban personal vehicles from certain areas](#ban-personal-vehicles-from-certain-areas)
+
+**Massachusetts**
+
+- [Provide tax credits to investors in community development corporations](#provide-tax-credits-to-investors-in-community-development-corporations)
+- [Reduce vehicle speed limits](#reduce-vehicle-speed-limits)
 
 **Melbourne, Australia**
 
@@ -5933,11 +6143,26 @@ Local public transit improvements will be modeled as reductions on local amenity
 
 - [Set energy savings standards on all public buildings and provide financial and technical assistance for commercial private sector energy savings](#set-energy-savings-standards-on-all-public-buildings-and-provide-financial-and-technical-assistance-for-commercial-private-sector-energy-savings)
 - [Enable property-assessed clean energy (PACE) financing](#enable-property-assessed-clean-energy-pace-financing)
+- [Promote urban gardens as a substitute for displaced ecosystem services](#promote-urban-gardens-as-a-substitute-for-displaced-ecosystem-services)
+
+**Mexico City, Mexico**
+
+- [Use BRT corridors to reduce travel times on public transit](#use-brt-corridors-to-reduce-travel-times-on-public-transit)
 
 **Minneapolis, MN**
 
 - [Revise zoning codes in medium to large cities to facilitate upzoning](#revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning)
 - [Eliminate minimum parking](#eliminate-minimum-parking)
+- [Fund economic development using tax-base sharing](#fund-economic-development-using-tax-base-sharing)
+- [Rezone areas around transit stations and commercial corridors to allow for high-density residential development](#rezone-areas-around-transit-stations-and-commercial-corridors-to-allow-for-high-density-residential-development)
+
+**Montana**
+
+- [Pay remote workers to move to new location](#pay-remote-workers-to-move-to-new-location)
+
+**Montgomery County, OH**
+
+- [Fund economic development using tax-base sharing](#fund-economic-development-using-tax-base-sharing)
 
 **Muskegon, MI**
 
@@ -5953,22 +6178,76 @@ Local public transit improvements will be modeled as reductions on local amenity
 - [Create a fund to implement energy savings projects](#create-a-fund-to-implement-energy-savings-projects)
 - [Provide green-oriented job training and education pathways](#provide-green-oriented-job-training-and-education-pathways)
 - [Offer continued training and support post-employment](#offer-continued-training-and-support-post-employment)
+- [Offset negative externalities of traffic through tolls](#offset-negative-externalities-of-traffic-through-tolls)
+- [Charge for parking](#charge-for-parking)
+- [Reduce vehicle speed limits](#reduce-vehicle-speed-limits)
+- [Promote cool surfaces to reduce heat island effect](#promote-cool-surfaces-to-reduce-heat-island-effect)
+- [Use green infrastructure to improve stormwater management](#use-green-infrastructure-to-improve-stormwater-management)
 
 **Norfolk, VA**
 
 - [Promote solar development in Opportunity Zones](#promote-solar-development-in-opportunity-zones)
 
+**Oakland, CA**
+
+- [Provide green-oriented job training and education pathways](#provide-green-oriented-job-training-and-education-pathways)
+
+**Oregon**
+
+- [Revise zoning codes in medium to large cities to facilitate upzoning](#revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning)
+
 **Palo Alto, CA**
 
 - [Implement “reach” codes which go beyond state minimum requirements for energy use in building design and construction](#implement-reach-codes-which-go-beyond-state-minimum-requirements-for-energy-use-in-building-design-and-construction)
 
+**Paris, France**
+
+- [Ban personal vehicles from certain areas](#ban-personal-vehicles-from-certain-areas)
+
+**Pasadena, CA**
+
+- [Create local transportation demand management ordinances](#create-local-transportation-demand-management-ordinances)
+- [Provide grants to income eligible residents for the replacement of high-emission cars with low-emission cars](#provide-grants-to-income-eligible-residents-for-the-replacement-of-high-emission-cars-with-low-emission-cars)
+
+**Pennsylvania**
+
+- [Provide tax credits to investors in community development corporations](#provide-tax-credits-to-investors-in-community-development-corporations)
+
 **Philadelphia, PA**
 
 - [Offer job creation tax credit](#offer-job-creation-tax-credit)
+- [Reduce vehicle speed limits](#reduce-vehicle-speed-limits)
+- [Promote urban gardens as a substitute for displaced ecosystem services](#promote-urban-gardens-as-a-substitute-for-displaced-ecosystem-services)
+
+**Phoenix, AZ**
+
+- [Use green infrastructure to improve stormwater management](#use-green-infrastructure-to-improve-stormwater-management)
+
+**Pittsburgh, PA**
+
+- [Promote the use of e-scooters and dockless bicycles to reduce reliance on private cars](#promote-the-use-of-e-scooters-and-dockless-bicycles-to-reduce-reliance-on-private-cars)
+
+**Portland, OR**
+
+- [Give carpoolers priority parking at transit stops](#give-carpoolers-priority-parking-at-transit-stops)
+- [Use green infrastructure to improve stormwater management](#use-green-infrastructure-to-improve-stormwater-management)
+
+**Prince George's County, MD**
+
+- [Pursue public-private partnerships for commercial development](#pursue-public-private-partnerships-for-commercial-development)
+
+**Rancho Cucamonga, CA**
+
+- [Provide commercial rebates for commercial building owners to install EV charging stations](#provide-commercial-rebates-for-commercial-building-owners-to-install-EV-charging-stations)
 
 **Richmond, CA**
 
 - [Provide green-oriented job training and education pathways](#provide-green-oriented-job-training-and-education-pathways)
+
+**Sacramento, CA**
+
+- [Fund economic development using tax-base sharing](#fund-economic-development-using-tax-base-sharing)
+- [Promote cool surfaces to reduce heat island effect](#promote-cool-surfaces-to-reduce-heat-island-effect)
 
 **San Diego, CA**
 
@@ -5983,11 +6262,26 @@ Local public transit improvements will be modeled as reductions on local amenity
 - [Enable property-assessed clean energy (PACE) financing](#enable-property-assessed-clean-energy-pace-financing)
 - [Encourage mortgage refinancing](#encourage-mortgage-refinancing)
 - [Develop public employment program](#develop-public-employment-program)
+- [Pursue public-private partnerships for commercial development](#pursue-public-private-partnerships-for-commercial-development)
+- [Create local transportation demand management ordinances](#create-local-transportation-demand-management-ordinances)
+- [Use BRT corridors to reduce travel times on public transit](#use-brt-corridors-to-reduce-travel-times-on-public-transit)
+- [Promote the use of e-scooters and dockless bicycles to reduce reliance on private cars](#promote-the-use-of-e-scooters-and-dockless-bicycles-to-reduce-reliance-on-private-cars)
+- [Charge for parking](#charge-for-parking)
+- [Ban personal vehicles from certain areas](#ban-personal-vehicles-from-certain-areas)
+- [Promote permeable pavement to increase groundwater absorption](#promote-permeable-pavement-to-increase-groundwater-absorption)
+- [Use green infrastructure to improve stormwater management](#use-green-infrastructure-to-improve-stormwater-management)
+
+**San Francisco Bay Area, CA**
+
+- [Encourage carsharing strategies](#encourage-carsharing-strategies)
+- [Provide grants for pollution remediation and reduction initiatives](#provide-grants-for-pollution-remediation-and-reduction-initiatives)
+- [Provide grants to income eligible residents for the replacement of high-emission cars with low-emission cars](#provide-grants-to-income-eligible-residents-for-the-replacement-of-high-emission-cars-with-low-emission-cars)
 
 **San Jose, CA**
 
 - [Set energy savings standards on all public buildings and provide financial and technical assistance for commercial private sector energy savings](#set-energy-savings-standards-on-all-public-buildings-and-provide-financial-and-technical-assistance-for-commercial-private-sector-energy-savings)
 - [Implement “reach” codes which go beyond state minimum requirements for energy use in building design and construction](#implement-reach-codes-which-go-beyond-state-minimum-requirements-for-energy-use-in-building-design-and-construction)
+- [Reclaim urban streams and rivers to increase groundwater absorption and filtration](#reclaim-urban-streams-and-rivers-to-increase-groundwater-absorption-and-filtration)
 
 **San Mateo County, CA**
 
@@ -6001,10 +6295,27 @@ Local public transit improvements will be modeled as reductions on local amenity
 
 - [Encourage accessory dwelling units](#encourage-accessory-dwelling-units)
 - [Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements](#provide-consumer-oriented-programs-to-incentivize-energy-efficiency-retrofits-and-appliance-improvements)
+- [Offset negative externalities of traffic through tolls](#offset-negative-externalities-of-traffic-through-tolls)
+
+**South Holland, IL**
+
+- [Offer rebates for flood mitigation projects](#offer-rebates-for-flood-mitigation-projects)
 
 **St. Louis, MO**
 
 - [Enable property-assessed clean energy (PACE) financing](#enable-property-assessed-clean-energy-pace-financing)
+
+**Stanford, CA**
+
+- [Give carpoolers priority parking at transit stops](#give-carpoolers-priority-parking-at-transit-stops)
+
+**Stockholm, Sweden**
+
+- [Offset negative externalities of traffic through tolls](#offset-negative-externalities-of-traffic-through-tolls)
+
+**Tacoma, WA**
+
+- [Promote the use of e-scooters and dockless bicycles to reduce reliance on private cars](#promote-the-use-of-e-scooters-and-dockless-bicycles-to-reduce-reliance-on-private-cars)
 
 **Toronto, Canada**
 
@@ -6014,16 +6325,33 @@ Local public transit improvements will be modeled as reductions on local amenity
 
 - [Offer continued training and support post-employment](#offer-continued-training-and-support-post-employment)
 
+**Tyson, VA**
+
+- [Rezone areas around transit stations and commercial corridors to allow for high-density residential development](#rezone-areas-around-transit-stations-and-commercial-corridors-to-allow-for-high-density-residential-development)
+
 **Vancouver, Canada**
 
 - [Encourage micro-units](#encourage-micro-units)
+
+**Ventura County, CA**
+
+- [Provide grants for pollution remediation and reduction initiatives](#provide-grants-for-pollution-remediation-and-reduction-initiatives)
+
+**Vermont**
+
+- [Pay remote workers to move to new location](#pay-remote-workers-to-move-to-new-location)
 
 **Washington, DC**
 
 - [Promote solar development in Opportunity Zones](#promote-solar-development-in-opportunity-zones)
 - [Promote a Solar Renewable Energy Certificate program](#promote-a-solar-renewable-energy-certificate-program)
+- [Promote the use of e-scooters and dockless bicycles to reduce reliance on private cars](#promote-the-use-of-e-scooters-and-dockless-bicycles-to-reduce-reliance-on-private-cars)
 
-```{r save}
+**Wisconsin**
+
+- [Offer rebates for flood mitigation projects](#offer-rebates-for-flood-mitigation-projects)
+
+```{r save, include=FALSE}
 # save.image(file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_greeneconomy.Rdata")
 # load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_greeneconomy.Rdata")
 ```
