@@ -869,3 +869,17 @@ Company-led initiatives: PG&E documented pilots with [Community Medical Centers]
 The largest hospital, whose typical summer peak demand is between 4578 kW and 4664 kW, dropped more than 500 kW over two to six hour periods on three event days.
 
 A private company, [OhmConnect](https://www.ohmconnect.com/how-it-works/impact), allows individual residential customers to also participate in DR. Stockton could explore cleantech competition in this space or supplementary programs for existing services, such as a focus on introducing more "smart appliances" into the market that can more easily participate in DR. The greatest impact is likely in targeting specific large employers for customized DR programs and rewarding/recognizing them for program outcomes, thereby positioning the local economy as a champion and leader in active energy emissions reduction.
+
+
+
+# Appendix B: Case Study Matrix
+
+|  | Target Area/Strategy | Primary Lever(s) | Carrot or Stick? | Initial cost | Political will required | Time to implement | Potential Impact | Impact time frame |
+|:-----|:----------------------------------|:---------------------------------------------------------|:------------------|:--------------|:-------------------------|:-------------------|:------------------|:-------------------|
+| 1.1 | Upzoning | Policy: Planning | Carrot | Low |  | 1 | Moderate | Medium-long |
+| 1.2 | Eliminate minimum parking | Policy: Planning | Carrot | Low |  | 1 | Low-moderate | Short |
+| 1.3 | Encourage ADUs | Policy: Planning, Program initiative, Economic | Carrot | Low-moderate | Low | 1-2 | Low-moderate | Medium |
+| 1.4 | Encourage micro-units | Policy: Planning, Program initiative, Economic | Carrot | Low |  | 1 | Low |  |
+| 1.5 | Affordable housing density bonus | Policy: Planning, economic | Carrot | Low | Low | 1 | Low-moderate |  |
+| 1.6 | Shared equity models | Program initiative, Policy: Elected officials, Economic | Carrot | Low |  | 1-3 | Moderate | Short-long |
+| 1.7 | Homeowner and Tenant matching | Program initiative | Carrot | Low-moderate |  | 1-2 | Low | Short-medium |
