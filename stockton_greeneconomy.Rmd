@@ -4580,7 +4580,7 @@ ghg_forecast <-
   transmute(
     Year = Year,
     transport = vmtperjob * `Employed Residents` *2*369.39*`gCO2/mile`*1.1023e-6 + `Employed Residents`*2*369.39*`gCO2/trip`*1.1023e-6,
-    amenity = 4100 * Population*`gCO2/trip`*1.1023e-6,
+    amenity = 4100 * Population*`gCO2/mile`*1.1023e-6,
     residential = `Residential Electricity, kBTU/resident/CDD`*Population*cdd*2.9307e-7*0.000453592 + `Residential Gas, kBTU/resident/HDD`*Population*hdd/99.9761*0.00531,
     commercial = `Commercial Electricity, kBTU/job/CDD`*Jobs*cdd*2.9307e-7*0.000453592 + `Commercial Gas, kBTU/job/HDD`*Jobs*hdd/99.9761*0.00531
   )
@@ -6026,11 +6026,11 @@ emfac_modify <-
         `gCO2/mile` = sum(product),
         `gCO2/trip` = sum(product2)
       ) %>% 
-      left_join(ghg_forecast_prep %>% dplyr::select(vmtperjob, `Employed Residents`, Year), by = "Year") %>% 
+      left_join(ghg_forecast_prep %>% dplyr::select(vmtperjob, `Employed Residents`, Year,Population), by = "Year") %>% 
       mutate(
         `Percent EVs` = 5.19 + x,
         `gCO2/mile` = `gCO2/mile`,
-        tco2 = vmtperjob * `Employed Residents` *2*369.39*`gCO2/mile`*1.1023e-6 + `Employed Residents`*2*369.39*`gCO2/trip`*1.1023e-6 + 4100*Population*`gCO2/trip`*1.1023e-6
+        tco2 = vmtperjob * `Employed Residents` *2*369.39*`gCO2/mile`*1.1023e-6 + `Employed Residents`*2*369.39*`gCO2/trip`*1.1023e-6 + 4100*Population*`gCO2/mile`*1.1023e-6
       )
   })
 

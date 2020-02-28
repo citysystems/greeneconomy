@@ -502,10 +502,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.5.1" data-path="commute-vehicle-miles-traveled.html"><a href="commute-vehicle-miles-traveled.html#county-level-analysis-2"><i class="fa fa-check"></i><b>2.5.1</b> County-level Analysis</a></li>
 <li class="chapter" data-level="2.5.2" data-path="commute-vehicle-miles-traveled.html"><a href="commute-vehicle-miles-traveled.html#city-level-analysis-2"><i class="fa fa-check"></i><b>2.5.2</b> City-level Analysis</a></li>
 </ul></li>
-<li class="chapter" data-level="2.6" data-path="vehicle-emissions.html"><a href="vehicle-emissions.html"><i class="fa fa-check"></i><b>2.6</b> Vehicle Emissions</a></li>
-<li class="chapter" data-level="2.7" data-path="energy.html"><a href="energy.html"><i class="fa fa-check"></i><b>2.7</b> Energy</a></li>
-<li class="chapter" data-level="2.8" data-path="buildings.html"><a href="buildings.html"><i class="fa fa-check"></i><b>2.8</b> Buildings</a></li>
-<li class="chapter" data-level="2.9" data-path="ghg-forecast.html"><a href="ghg-forecast.html"><i class="fa fa-check"></i><b>2.9</b> GHG Forecast</a></li>
+<li class="chapter" data-level="2.6" data-path="non-commute-vehicle-miles-traveled.html"><a href="non-commute-vehicle-miles-traveled.html"><i class="fa fa-check"></i><b>2.6</b> Non-Commute Vehicle Miles Traveled</a></li>
+<li class="chapter" data-level="2.7" data-path="vehicle-emissions.html"><a href="vehicle-emissions.html"><i class="fa fa-check"></i><b>2.7</b> Vehicle Emissions</a></li>
+<li class="chapter" data-level="2.8" data-path="energy.html"><a href="energy.html"><i class="fa fa-check"></i><b>2.8</b> Energy</a></li>
+<li class="chapter" data-level="2.9" data-path="buildings.html"><a href="buildings.html"><i class="fa fa-check"></i><b>2.9</b> Buildings</a></li>
+<li class="chapter" data-level="2.10" data-path="ghg-forecast.html"><a href="ghg-forecast.html"><i class="fa fa-check"></i><b>2.10</b> GHG Forecast</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="overview-of-green-economy-strategies.html"><a href="overview-of-green-economy-strategies.html"><i class="fa fa-check"></i><b>3</b> Overview of Green Economy Strategies</a>
 <ul>
@@ -634,54 +635,54 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">4.7</span> Vehicle Emissions</h2>
 <div id="strategy-electric-vehicle-program" class="section level3" number="4.7.1">
 <h3><span class="header-section-number">4.7.1</span> Strategy: Electric Vehicle Program</h3>
-<p>In Section 2.6, we used EMFAC2017 to estimate the penetration of EVs into the market in a business-as-usual situation from now till 2040, reaching about 5% in 2040. Any increase beyond this percentage would contribute to a further reduction in gCO2/mile, which would reduce the overall GHG footprint of Stockton’s commute travel.</p>
+<p>In Section 2.7, we used EMFAC2017 to estimate the penetration of EVs into the market in a business-as-usual situation from now till 2040, reaching about 5% in 2040. Any increase beyond this percentage would contribute to a further reduction in gCO2/mile, which would reduce the overall GHG footprint of Stockton’s commute travel.</p>
 <p>The following table shows how transportation tCO2 changes in 2040 with different EV penetration percentages. This model assumes that the distribution of vehicle types (car vs. truck, gasoline vs. diesel) does not change apart from the increase in percentage of EVs. For example, within gasoline vehicles, about 70% are projected to be cars and the rest are trucks; we do not change that assumption as we decrease the number of gasoline vehicles overall.</p>
-<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="vehicle-emissions-2.html#cb71-1"></a>non_electric &lt;-</span>
-<span id="cb71-2"><a href="vehicle-emissions-2.html#cb71-2"></a><span class="st">  </span>emfac_summary <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb71-3"><a href="vehicle-emissions-2.html#cb71-3"></a><span class="st">  </span><span class="kw">filter</span>(Year <span class="op">==</span><span class="st"> </span><span class="dv">2040</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb71-4"><a href="vehicle-emissions-2.html#cb71-4"></a><span class="st">  </span><span class="kw">filter</span>(<span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span> <span class="op">!=</span><span class="st"> &quot;Electric&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb71-5"><a href="vehicle-emissions-2.html#cb71-5"></a><span class="st">  </span><span class="kw">pull</span>(<span class="st">`</span><span class="dt">Percent Vehicles</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb71-6"><a href="vehicle-emissions-2.html#cb71-6"></a><span class="st">  </span><span class="kw">sum</span>()</span>
-<span id="cb71-7"><a href="vehicle-emissions-2.html#cb71-7"></a></span>
-<span id="cb71-8"><a href="vehicle-emissions-2.html#cb71-8"></a>emfac_modify &lt;-</span>
-<span id="cb71-9"><a href="vehicle-emissions-2.html#cb71-9"></a><span class="st">  </span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">15</span>,<span class="dv">20</span>,<span class="dv">25</span>,<span class="dv">30</span>,<span class="dv">35</span>,<span class="dv">40</span>,<span class="dv">45</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb71-10"><a href="vehicle-emissions-2.html#cb71-10"></a><span class="st">  </span><span class="kw">map_dfr</span>(<span class="cf">function</span>(x){</span>
-<span id="cb71-11"><a href="vehicle-emissions-2.html#cb71-11"></a>    temp &lt;-</span>
-<span id="cb71-12"><a href="vehicle-emissions-2.html#cb71-12"></a><span class="st">      </span>emfac_summary <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb71-13"><a href="vehicle-emissions-2.html#cb71-13"></a><span class="st">      </span><span class="kw">filter</span>(Year <span class="op">==</span><span class="st"> </span><span class="dv">2040</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb71-14"><a href="vehicle-emissions-2.html#cb71-14"></a><span class="st">      </span><span class="kw">mutate</span>(</span>
-<span id="cb71-15"><a href="vehicle-emissions-2.html#cb71-15"></a>        <span class="st">`</span><span class="dt">Percent Vehicles</span><span class="st">`</span> =<span class="st"> `</span><span class="dt">Percent Vehicles</span><span class="st">`</span><span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>x<span class="op">/</span>non_electric),</span>
-<span id="cb71-16"><a href="vehicle-emissions-2.html#cb71-16"></a>        <span class="dt">product =</span> <span class="st">`</span><span class="dt">Percent Vehicles</span><span class="st">`</span><span class="op">/</span><span class="dv">100</span><span class="op">*</span><span class="st">`</span><span class="dt">gCO2 Running Exhaust</span><span class="st">`</span>,</span>
-<span id="cb71-17"><a href="vehicle-emissions-2.html#cb71-17"></a>        <span class="dt">product2 =</span> <span class="st">`</span><span class="dt">Percent Vehicles</span><span class="st">`</span><span class="op">/</span><span class="dv">100</span><span class="op">*</span><span class="st">`</span><span class="dt">gCO2 Start Exhaust</span><span class="st">`</span></span>
-<span id="cb71-18"><a href="vehicle-emissions-2.html#cb71-18"></a>      ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb71-19"><a href="vehicle-emissions-2.html#cb71-19"></a><span class="st">      </span><span class="kw">group_by</span>(Year) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb71-20"><a href="vehicle-emissions-2.html#cb71-20"></a><span class="st">      </span><span class="kw">summarize</span>(</span>
-<span id="cb71-21"><a href="vehicle-emissions-2.html#cb71-21"></a>        <span class="st">`</span><span class="dt">gCO2/mile</span><span class="st">`</span> =<span class="st"> </span><span class="kw">sum</span>(product),</span>
-<span id="cb71-22"><a href="vehicle-emissions-2.html#cb71-22"></a>        <span class="st">`</span><span class="dt">gCO2/trip</span><span class="st">`</span> =<span class="st"> </span><span class="kw">sum</span>(product2)</span>
-<span id="cb71-23"><a href="vehicle-emissions-2.html#cb71-23"></a>      ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb71-24"><a href="vehicle-emissions-2.html#cb71-24"></a><span class="st">      </span><span class="kw">left_join</span>(ghg_forecast_prep <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(vmtperjob, <span class="st">`</span><span class="dt">Employed Residents</span><span class="st">`</span>, Year), <span class="dt">by =</span> <span class="st">&quot;Year&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb71-25"><a href="vehicle-emissions-2.html#cb71-25"></a><span class="st">      </span><span class="kw">mutate</span>(</span>
-<span id="cb71-26"><a href="vehicle-emissions-2.html#cb71-26"></a>        <span class="st">`</span><span class="dt">Percent EVs</span><span class="st">`</span> =<span class="st"> </span><span class="fl">5.19</span> <span class="op">+</span><span class="st"> </span>x,</span>
-<span id="cb71-27"><a href="vehicle-emissions-2.html#cb71-27"></a>        <span class="st">`</span><span class="dt">gCO2/mile</span><span class="st">`</span> =<span class="st"> `</span><span class="dt">gCO2/mile</span><span class="st">`</span>,</span>
-<span id="cb71-28"><a href="vehicle-emissions-2.html#cb71-28"></a>        <span class="dt">tco2 =</span> vmtperjob <span class="op">*</span><span class="st"> `</span><span class="dt">Employed Residents</span><span class="st">`</span> <span class="op">*</span><span class="dv">2</span><span class="op">*</span><span class="fl">369.39</span><span class="op">*</span><span class="st">`</span><span class="dt">gCO2/mile</span><span class="st">`</span><span class="op">*</span><span class="fl">1.1023e-6</span> <span class="op">+</span><span class="st"> `</span><span class="dt">Employed Residents</span><span class="st">`</span><span class="op">*</span><span class="dv">2</span><span class="op">*</span><span class="fl">369.39</span><span class="op">*</span><span class="st">`</span><span class="dt">gCO2/trip</span><span class="st">`</span><span class="op">*</span><span class="fl">1.1023e-6</span>,</span>
-<span id="cb71-29"><a href="vehicle-emissions-2.html#cb71-29"></a>      )</span>
-<span id="cb71-30"><a href="vehicle-emissions-2.html#cb71-30"></a>  })</span>
-<span id="cb71-31"><a href="vehicle-emissions-2.html#cb71-31"></a></span>
-<span id="cb71-32"><a href="vehicle-emissions-2.html#cb71-32"></a>emfac_modify_table &lt;-</span>
-<span id="cb71-33"><a href="vehicle-emissions-2.html#cb71-33"></a><span class="st">  </span>emfac_modify <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb71-34"><a href="vehicle-emissions-2.html#cb71-34"></a><span class="st">  </span><span class="kw">transmute</span>(</span>
-<span id="cb71-35"><a href="vehicle-emissions-2.html#cb71-35"></a>    <span class="st">`</span><span class="dt">Percent EVs</span><span class="st">`</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(<span class="st">`</span><span class="dt">Percent EVs</span><span class="st">`</span>),<span class="st">&quot;%&quot;</span>),</span>
-<span id="cb71-36"><a href="vehicle-emissions-2.html#cb71-36"></a>    <span class="st">`</span><span class="dt">gCO2/mile</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(<span class="st">`</span><span class="dt">gCO2/mile</span><span class="st">`</span>),</span>
-<span id="cb71-37"><a href="vehicle-emissions-2.html#cb71-37"></a>    <span class="st">`</span><span class="dt">Transportation tCO2</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(tco2,<span class="op">-</span><span class="dv">4</span>), <span class="dt">big.mark =</span> <span class="st">&quot;,&quot;</span>) </span>
-<span id="cb71-38"><a href="vehicle-emissions-2.html#cb71-38"></a>  )</span>
-<span id="cb71-39"><a href="vehicle-emissions-2.html#cb71-39"></a></span>
-<span id="cb71-40"><a href="vehicle-emissions-2.html#cb71-40"></a><span class="kw">kable</span>(</span>
-<span id="cb71-41"><a href="vehicle-emissions-2.html#cb71-41"></a>  emfac_modify_table,</span>
-<span id="cb71-42"><a href="vehicle-emissions-2.html#cb71-42"></a>  <span class="dt">booktabs =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb71-43"><a href="vehicle-emissions-2.html#cb71-43"></a>  <span class="dt">caption =</span> <span class="st">&#39;Impact of increasing EV penetration by increments of 5% on commute GHGs in 2040.&#39;</span></span>
-<span id="cb71-44"><a href="vehicle-emissions-2.html#cb71-44"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb71-45"><a href="vehicle-emissions-2.html#cb71-45"></a><span class="st">  </span><span class="kw">kable_styling</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb71-46"><a href="vehicle-emissions-2.html#cb71-46"></a><span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="vehicle-emissions-2.html#cb75-1"></a>non_electric &lt;-</span>
+<span id="cb75-2"><a href="vehicle-emissions-2.html#cb75-2"></a><span class="st">  </span>emfac_summary <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb75-3"><a href="vehicle-emissions-2.html#cb75-3"></a><span class="st">  </span><span class="kw">filter</span>(Year <span class="op">==</span><span class="st"> </span><span class="dv">2040</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb75-4"><a href="vehicle-emissions-2.html#cb75-4"></a><span class="st">  </span><span class="kw">filter</span>(<span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span> <span class="op">!=</span><span class="st"> &quot;Electric&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb75-5"><a href="vehicle-emissions-2.html#cb75-5"></a><span class="st">  </span><span class="kw">pull</span>(<span class="st">`</span><span class="dt">Percent Vehicles</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb75-6"><a href="vehicle-emissions-2.html#cb75-6"></a><span class="st">  </span><span class="kw">sum</span>()</span>
+<span id="cb75-7"><a href="vehicle-emissions-2.html#cb75-7"></a></span>
+<span id="cb75-8"><a href="vehicle-emissions-2.html#cb75-8"></a>emfac_modify &lt;-</span>
+<span id="cb75-9"><a href="vehicle-emissions-2.html#cb75-9"></a><span class="st">  </span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">15</span>,<span class="dv">20</span>,<span class="dv">25</span>,<span class="dv">30</span>,<span class="dv">35</span>,<span class="dv">40</span>,<span class="dv">45</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb75-10"><a href="vehicle-emissions-2.html#cb75-10"></a><span class="st">  </span><span class="kw">map_dfr</span>(<span class="cf">function</span>(x){</span>
+<span id="cb75-11"><a href="vehicle-emissions-2.html#cb75-11"></a>    temp &lt;-</span>
+<span id="cb75-12"><a href="vehicle-emissions-2.html#cb75-12"></a><span class="st">      </span>emfac_summary <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb75-13"><a href="vehicle-emissions-2.html#cb75-13"></a><span class="st">      </span><span class="kw">filter</span>(Year <span class="op">==</span><span class="st"> </span><span class="dv">2040</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb75-14"><a href="vehicle-emissions-2.html#cb75-14"></a><span class="st">      </span><span class="kw">mutate</span>(</span>
+<span id="cb75-15"><a href="vehicle-emissions-2.html#cb75-15"></a>        <span class="st">`</span><span class="dt">Percent Vehicles</span><span class="st">`</span> =<span class="st"> `</span><span class="dt">Percent Vehicles</span><span class="st">`</span><span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>x<span class="op">/</span>non_electric),</span>
+<span id="cb75-16"><a href="vehicle-emissions-2.html#cb75-16"></a>        <span class="dt">product =</span> <span class="st">`</span><span class="dt">Percent Vehicles</span><span class="st">`</span><span class="op">/</span><span class="dv">100</span><span class="op">*</span><span class="st">`</span><span class="dt">gCO2 Running Exhaust</span><span class="st">`</span>,</span>
+<span id="cb75-17"><a href="vehicle-emissions-2.html#cb75-17"></a>        <span class="dt">product2 =</span> <span class="st">`</span><span class="dt">Percent Vehicles</span><span class="st">`</span><span class="op">/</span><span class="dv">100</span><span class="op">*</span><span class="st">`</span><span class="dt">gCO2 Start Exhaust</span><span class="st">`</span></span>
+<span id="cb75-18"><a href="vehicle-emissions-2.html#cb75-18"></a>      ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb75-19"><a href="vehicle-emissions-2.html#cb75-19"></a><span class="st">      </span><span class="kw">group_by</span>(Year) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb75-20"><a href="vehicle-emissions-2.html#cb75-20"></a><span class="st">      </span><span class="kw">summarize</span>(</span>
+<span id="cb75-21"><a href="vehicle-emissions-2.html#cb75-21"></a>        <span class="st">`</span><span class="dt">gCO2/mile</span><span class="st">`</span> =<span class="st"> </span><span class="kw">sum</span>(product),</span>
+<span id="cb75-22"><a href="vehicle-emissions-2.html#cb75-22"></a>        <span class="st">`</span><span class="dt">gCO2/trip</span><span class="st">`</span> =<span class="st"> </span><span class="kw">sum</span>(product2)</span>
+<span id="cb75-23"><a href="vehicle-emissions-2.html#cb75-23"></a>      ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb75-24"><a href="vehicle-emissions-2.html#cb75-24"></a><span class="st">      </span><span class="kw">left_join</span>(ghg_forecast_prep <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(vmtperjob, <span class="st">`</span><span class="dt">Employed Residents</span><span class="st">`</span>, Year,Population), <span class="dt">by =</span> <span class="st">&quot;Year&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb75-25"><a href="vehicle-emissions-2.html#cb75-25"></a><span class="st">      </span><span class="kw">mutate</span>(</span>
+<span id="cb75-26"><a href="vehicle-emissions-2.html#cb75-26"></a>        <span class="st">`</span><span class="dt">Percent EVs</span><span class="st">`</span> =<span class="st"> </span><span class="fl">5.19</span> <span class="op">+</span><span class="st"> </span>x,</span>
+<span id="cb75-27"><a href="vehicle-emissions-2.html#cb75-27"></a>        <span class="st">`</span><span class="dt">gCO2/mile</span><span class="st">`</span> =<span class="st"> `</span><span class="dt">gCO2/mile</span><span class="st">`</span>,</span>
+<span id="cb75-28"><a href="vehicle-emissions-2.html#cb75-28"></a>        <span class="dt">tco2 =</span> vmtperjob <span class="op">*</span><span class="st"> `</span><span class="dt">Employed Residents</span><span class="st">`</span> <span class="op">*</span><span class="dv">2</span><span class="op">*</span><span class="fl">369.39</span><span class="op">*</span><span class="st">`</span><span class="dt">gCO2/mile</span><span class="st">`</span><span class="op">*</span><span class="fl">1.1023e-6</span> <span class="op">+</span><span class="st"> `</span><span class="dt">Employed Residents</span><span class="st">`</span><span class="op">*</span><span class="dv">2</span><span class="op">*</span><span class="fl">369.39</span><span class="op">*</span><span class="st">`</span><span class="dt">gCO2/trip</span><span class="st">`</span><span class="op">*</span><span class="fl">1.1023e-6</span> <span class="op">+</span><span class="st"> </span><span class="dv">4100</span><span class="op">*</span>Population<span class="op">*</span><span class="st">`</span><span class="dt">gCO2/mile</span><span class="st">`</span><span class="op">*</span><span class="fl">1.1023e-6</span></span>
+<span id="cb75-29"><a href="vehicle-emissions-2.html#cb75-29"></a>      )</span>
+<span id="cb75-30"><a href="vehicle-emissions-2.html#cb75-30"></a>  })</span>
+<span id="cb75-31"><a href="vehicle-emissions-2.html#cb75-31"></a></span>
+<span id="cb75-32"><a href="vehicle-emissions-2.html#cb75-32"></a>emfac_modify_table &lt;-</span>
+<span id="cb75-33"><a href="vehicle-emissions-2.html#cb75-33"></a><span class="st">  </span>emfac_modify <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb75-34"><a href="vehicle-emissions-2.html#cb75-34"></a><span class="st">  </span><span class="kw">transmute</span>(</span>
+<span id="cb75-35"><a href="vehicle-emissions-2.html#cb75-35"></a>    <span class="st">`</span><span class="dt">Percent EVs</span><span class="st">`</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(<span class="st">`</span><span class="dt">Percent EVs</span><span class="st">`</span>),<span class="st">&quot;%&quot;</span>),</span>
+<span id="cb75-36"><a href="vehicle-emissions-2.html#cb75-36"></a>    <span class="st">`</span><span class="dt">gCO2/mile</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(<span class="st">`</span><span class="dt">gCO2/mile</span><span class="st">`</span>),</span>
+<span id="cb75-37"><a href="vehicle-emissions-2.html#cb75-37"></a>    <span class="st">`</span><span class="dt">Transportation tCO2</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(tco2,<span class="op">-</span><span class="dv">4</span>), <span class="dt">big.mark =</span> <span class="st">&quot;,&quot;</span>) </span>
+<span id="cb75-38"><a href="vehicle-emissions-2.html#cb75-38"></a>  )</span>
+<span id="cb75-39"><a href="vehicle-emissions-2.html#cb75-39"></a></span>
+<span id="cb75-40"><a href="vehicle-emissions-2.html#cb75-40"></a><span class="kw">kable</span>(</span>
+<span id="cb75-41"><a href="vehicle-emissions-2.html#cb75-41"></a>  emfac_modify_table,</span>
+<span id="cb75-42"><a href="vehicle-emissions-2.html#cb75-42"></a>  <span class="dt">booktabs =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb75-43"><a href="vehicle-emissions-2.html#cb75-43"></a>  <span class="dt">caption =</span> <span class="st">&#39;Impact of increasing EV penetration by increments of 5% on commute GHGs in 2040.&#39;</span></span>
+<span id="cb75-44"><a href="vehicle-emissions-2.html#cb75-44"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb75-45"><a href="vehicle-emissions-2.html#cb75-45"></a><span class="st">  </span><span class="kw">kable_styling</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb75-46"><a href="vehicle-emissions-2.html#cb75-46"></a><span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
@@ -709,7 +710,7 @@ Transportation tCO2
 256
 </td>
 <td style="text-align:left;">
-1,280,000
+1,670,000
 </td>
 </tr>
 <tr>
@@ -720,7 +721,7 @@ Transportation tCO2
 243
 </td>
 <td style="text-align:left;">
-1,210,000
+1,580,000
 </td>
 </tr>
 <tr>
@@ -731,7 +732,7 @@ Transportation tCO2
 229
 </td>
 <td style="text-align:left;">
-1,140,000
+1,490,000
 </td>
 </tr>
 <tr>
@@ -742,7 +743,7 @@ Transportation tCO2
 216
 </td>
 <td style="text-align:left;">
-1,080,000
+1,410,000
 </td>
 </tr>
 <tr>
@@ -753,7 +754,7 @@ Transportation tCO2
 202
 </td>
 <td style="text-align:left;">
-1,010,000
+1,320,000
 </td>
 </tr>
 <tr>
@@ -764,7 +765,7 @@ Transportation tCO2
 189
 </td>
 <td style="text-align:left;">
-940,000
+1,230,000
 </td>
 </tr>
 <tr>
@@ -775,7 +776,7 @@ Transportation tCO2
 175
 </td>
 <td style="text-align:left;">
-870,000
+1,140,000
 </td>
 </tr>
 <tr>
@@ -786,7 +787,7 @@ Transportation tCO2
 162
 </td>
 <td style="text-align:left;">
-810,000
+1,050,000
 </td>
 </tr>
 <tr>
@@ -797,7 +798,7 @@ Transportation tCO2
 148
 </td>
 <td style="text-align:left;">
-740,000
+970,000
 </td>
 </tr>
 <tr>
@@ -808,22 +809,22 @@ Transportation tCO2
 135
 </td>
 <td style="text-align:left;">
-670,000
+880,000
 </td>
 </tr>
 </tbody>
 </table>
 </div>
 <p><span class="math inline">\(~\)</span></p>
-<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="vehicle-emissions-2.html#cb72-1"></a>emfac_modify <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb72-2"><a href="vehicle-emissions-2.html#cb72-2"></a><span class="st">  </span><span class="kw">ggplot</span>(</span>
-<span id="cb72-3"><a href="vehicle-emissions-2.html#cb72-3"></a>    <span class="kw">aes</span>(</span>
-<span id="cb72-4"><a href="vehicle-emissions-2.html#cb72-4"></a>      <span class="dt">x =</span> <span class="st">`</span><span class="dt">Percent EVs</span><span class="st">`</span>,</span>
-<span id="cb72-5"><a href="vehicle-emissions-2.html#cb72-5"></a>      <span class="dt">y =</span> <span class="st">`</span><span class="dt">tco2</span><span class="st">`</span></span>
-<span id="cb72-6"><a href="vehicle-emissions-2.html#cb72-6"></a>    )</span>
-<span id="cb72-7"><a href="vehicle-emissions-2.html#cb72-7"></a>  ) <span class="op">+</span></span>
-<span id="cb72-8"><a href="vehicle-emissions-2.html#cb72-8"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">colour =</span> <span class="st">&quot;forest green&quot;</span>) <span class="op">+</span></span>
-<span id="cb72-9"><a href="vehicle-emissions-2.html#cb72-9"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Commute Emissions in 2040&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Transportation tCO2&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="vehicle-emissions-2.html#cb76-1"></a>emfac_modify <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb76-2"><a href="vehicle-emissions-2.html#cb76-2"></a><span class="st">  </span><span class="kw">ggplot</span>(</span>
+<span id="cb76-3"><a href="vehicle-emissions-2.html#cb76-3"></a>    <span class="kw">aes</span>(</span>
+<span id="cb76-4"><a href="vehicle-emissions-2.html#cb76-4"></a>      <span class="dt">x =</span> <span class="st">`</span><span class="dt">Percent EVs</span><span class="st">`</span>,</span>
+<span id="cb76-5"><a href="vehicle-emissions-2.html#cb76-5"></a>      <span class="dt">y =</span> <span class="st">`</span><span class="dt">tco2</span><span class="st">`</span></span>
+<span id="cb76-6"><a href="vehicle-emissions-2.html#cb76-6"></a>    )</span>
+<span id="cb76-7"><a href="vehicle-emissions-2.html#cb76-7"></a>  ) <span class="op">+</span></span>
+<span id="cb76-8"><a href="vehicle-emissions-2.html#cb76-8"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">colour =</span> <span class="st">&quot;forest green&quot;</span>) <span class="op">+</span></span>
+<span id="cb76-9"><a href="vehicle-emissions-2.html#cb76-9"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Commute Emissions in 2040&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Transportation tCO2&quot;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:vehicle-electric-forecast-plot"></span>
 <img src="stockton_greeneconomy_files/figure-html/vehicle-electric-forecast-plot-2.png" alt="Impact of increasing EV penetration by increments of 5% on commute GHGs in 2040." width="672" />
 <p class="caption">

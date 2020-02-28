@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2.6 Vehicle Emissions | Stockton Green Economy Report</title>
-  <meta name="description" content="2.6 Vehicle Emissions | Stockton Green Economy Report" />
+  <title>2.7 Vehicle Emissions | Stockton Green Economy Report</title>
+  <meta name="description" content="2.7 Vehicle Emissions | Stockton Green Economy Report" />
   <meta name="generator" content="bookdown 0.17.2 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2.6 Vehicle Emissions | Stockton Green Economy Report" />
+  <meta property="og:title" content="2.7 Vehicle Emissions | Stockton Green Economy Report" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2.6 Vehicle Emissions | Stockton Green Economy Report" />
+  <meta name="twitter:title" content="2.7 Vehicle Emissions | Stockton Green Economy Report" />
   
   
   
@@ -30,7 +30,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="commute-vehicle-miles-traveled.html"/>
+<link rel="prev" href="non-commute-vehicle-miles-traveled.html"/>
 <link rel="next" href="energy.html"/>
 <script src="libs/header-attrs-2.1/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
@@ -502,10 +502,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.5.1" data-path="commute-vehicle-miles-traveled.html"><a href="commute-vehicle-miles-traveled.html#county-level-analysis-2"><i class="fa fa-check"></i><b>2.5.1</b> County-level Analysis</a></li>
 <li class="chapter" data-level="2.5.2" data-path="commute-vehicle-miles-traveled.html"><a href="commute-vehicle-miles-traveled.html#city-level-analysis-2"><i class="fa fa-check"></i><b>2.5.2</b> City-level Analysis</a></li>
 </ul></li>
-<li class="chapter" data-level="2.6" data-path="vehicle-emissions.html"><a href="vehicle-emissions.html"><i class="fa fa-check"></i><b>2.6</b> Vehicle Emissions</a></li>
-<li class="chapter" data-level="2.7" data-path="energy.html"><a href="energy.html"><i class="fa fa-check"></i><b>2.7</b> Energy</a></li>
-<li class="chapter" data-level="2.8" data-path="buildings.html"><a href="buildings.html"><i class="fa fa-check"></i><b>2.8</b> Buildings</a></li>
-<li class="chapter" data-level="2.9" data-path="ghg-forecast.html"><a href="ghg-forecast.html"><i class="fa fa-check"></i><b>2.9</b> GHG Forecast</a></li>
+<li class="chapter" data-level="2.6" data-path="non-commute-vehicle-miles-traveled.html"><a href="non-commute-vehicle-miles-traveled.html"><i class="fa fa-check"></i><b>2.6</b> Non-Commute Vehicle Miles Traveled</a></li>
+<li class="chapter" data-level="2.7" data-path="vehicle-emissions.html"><a href="vehicle-emissions.html"><i class="fa fa-check"></i><b>2.7</b> Vehicle Emissions</a></li>
+<li class="chapter" data-level="2.8" data-path="energy.html"><a href="energy.html"><i class="fa fa-check"></i><b>2.8</b> Energy</a></li>
+<li class="chapter" data-level="2.9" data-path="buildings.html"><a href="buildings.html"><i class="fa fa-check"></i><b>2.9</b> Buildings</a></li>
+<li class="chapter" data-level="2.10" data-path="ghg-forecast.html"><a href="ghg-forecast.html"><i class="fa fa-check"></i><b>2.10</b> GHG Forecast</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="overview-of-green-economy-strategies.html"><a href="overview-of-green-economy-strategies.html"><i class="fa fa-check"></i><b>3</b> Overview of Green Economy Strategies</a>
 <ul>
@@ -630,57 +631,57 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="vehicle-emissions" class="section level2" number="2.6">
-<h2><span class="header-section-number">2.6</span> Vehicle Emissions</h2>
-<p>The previous section estimated the total VMTs due to commuting for Stockton workers from 2011 to 2017, which can be used to forecast VMTs through 2040. While VMTs themselves are an important indicator of quality of life and economic vitality, from a GHG perspective we need to convert vehicle miles to emissions.</p>
+<div id="vehicle-emissions" class="section level2" number="2.7">
+<h2><span class="header-section-number">2.7</span> Vehicle Emissions</h2>
+<p>The previous two sections estimated the total VMTs due to commuting for Stockton workers from 2011 to 2017, and non-commuting travel for 2018, which can be used to forecast VMTs through 2040. While VMTs themselves are an important indicator of quality of life and economic vitality, from a GHG perspective we need to convert vehicle miles to emissions.</p>
 <p>We followed the standard method for calculating vehicle emissions in California using the California Air Resources Board (CARB) <a href="https://ww2.arb.ca.gov/our-work/programs/mobile-source-emissions-inventory/msei-modeling-tools">Emission Factors (EMFAC) model</a>. Using the EMFAC2017 model, we downloaded emissions rates data for 2013-2018, 2020, 2025, 2030, and 2040 in the San Joaquin Valley air basin. The data includes CARB’s model estimates for daily vehicles across passenger cars and trucks of different fuel types, along with emissions per mile for CO2 and other pollutants. A summary of the EMFAC data is provided below.</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="vehicle-emissions.html#cb41-1"></a>emfac &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/emfac.csv&quot;</span>)</span>
-<span id="cb41-2"><a href="vehicle-emissions.html#cb41-2"></a></span>
-<span id="cb41-3"><a href="vehicle-emissions.html#cb41-3"></a>emfac_summary &lt;-</span>
-<span id="cb41-4"><a href="vehicle-emissions.html#cb41-4"></a><span class="st">  </span>emfac <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb41-5"><a href="vehicle-emissions.html#cb41-5"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(</span>
-<span id="cb41-6"><a href="vehicle-emissions.html#cb41-6"></a>    <span class="dt">Year =</span> <span class="st">`</span><span class="dt">Calendar Year</span><span class="st">`</span>,</span>
-<span id="cb41-7"><a href="vehicle-emissions.html#cb41-7"></a>    <span class="st">`</span><span class="dt">Vehicle Category</span><span class="st">`</span>,</span>
-<span id="cb41-8"><a href="vehicle-emissions.html#cb41-8"></a>    <span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span> =<span class="st"> </span>Fuel,</span>
-<span id="cb41-9"><a href="vehicle-emissions.html#cb41-9"></a>    Population,</span>
-<span id="cb41-10"><a href="vehicle-emissions.html#cb41-10"></a>    CO2_RUNEX,</span>
-<span id="cb41-11"><a href="vehicle-emissions.html#cb41-11"></a>    CO2_STREX</span>
-<span id="cb41-12"><a href="vehicle-emissions.html#cb41-12"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb41-13"><a href="vehicle-emissions.html#cb41-13"></a><span class="st">  </span><span class="kw">group_by</span>(Year) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb41-14"><a href="vehicle-emissions.html#cb41-14"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
-<span id="cb41-15"><a href="vehicle-emissions.html#cb41-15"></a>    <span class="st">`</span><span class="dt">Percent Vehicles</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(Population<span class="op">/</span><span class="kw">sum</span>(Population)<span class="op">*</span><span class="dv">100</span>,<span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.numeric</span>(),</span>
-<span id="cb41-16"><a href="vehicle-emissions.html#cb41-16"></a>    <span class="st">`</span><span class="dt">gCO2 Running Exhaust</span><span class="st">`</span> =<span class="st"> </span>CO2_RUNEX <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.integer</span>(),</span>
-<span id="cb41-17"><a href="vehicle-emissions.html#cb41-17"></a>    <span class="st">`</span><span class="dt">gCO2 Start Exhaust</span><span class="st">`</span> =<span class="st"> </span>CO2_STREX <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.integer</span>()</span>
-<span id="cb41-18"><a href="vehicle-emissions.html#cb41-18"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb41-19"><a href="vehicle-emissions.html#cb41-19"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb41-20"><a href="vehicle-emissions.html#cb41-20"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>Population, <span class="op">-</span>CO2_RUNEX, <span class="op">-</span>CO2_STREX) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb41-21"><a href="vehicle-emissions.html#cb41-21"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
-<span id="cb41-22"><a href="vehicle-emissions.html#cb41-22"></a>    <span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span> =<span class="st"> </span></span>
-<span id="cb41-23"><a href="vehicle-emissions.html#cb41-23"></a><span class="st">      </span><span class="kw">case_when</span>(</span>
-<span id="cb41-24"><a href="vehicle-emissions.html#cb41-24"></a>        <span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span> <span class="op">==</span><span class="st"> &quot;GAS&quot;</span> <span class="op">~</span><span class="st"> &quot;Gasoline&quot;</span>,</span>
-<span id="cb41-25"><a href="vehicle-emissions.html#cb41-25"></a>        <span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span> <span class="op">==</span><span class="st"> &quot;DSL&quot;</span> <span class="op">~</span><span class="st"> &quot;Diesel&quot;</span>,</span>
-<span id="cb41-26"><a href="vehicle-emissions.html#cb41-26"></a>        <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> &quot;Electric&quot;</span></span>
-<span id="cb41-27"><a href="vehicle-emissions.html#cb41-27"></a>      ),</span>
-<span id="cb41-28"><a href="vehicle-emissions.html#cb41-28"></a>    <span class="st">`</span><span class="dt">Vehicle Category</span><span class="st">`</span> =<span class="st"> </span></span>
-<span id="cb41-29"><a href="vehicle-emissions.html#cb41-29"></a><span class="st">      </span><span class="kw">case_when</span>(</span>
-<span id="cb41-30"><a href="vehicle-emissions.html#cb41-30"></a>        <span class="st">`</span><span class="dt">Vehicle Category</span><span class="st">`</span> <span class="op">==</span><span class="st"> &quot;LDA&quot;</span> <span class="op">~</span><span class="st"> &quot;Passenger Car&quot;</span>,</span>
-<span id="cb41-31"><a href="vehicle-emissions.html#cb41-31"></a>        <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> &quot;Light Duty Truck&quot;</span></span>
-<span id="cb41-32"><a href="vehicle-emissions.html#cb41-32"></a>      )</span>
-<span id="cb41-33"><a href="vehicle-emissions.html#cb41-33"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb41-34"><a href="vehicle-emissions.html#cb41-34"></a><span class="st">  </span><span class="kw">group_by</span>(Year, <span class="st">`</span><span class="dt">Vehicle Category</span><span class="st">`</span>, <span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb41-35"><a href="vehicle-emissions.html#cb41-35"></a><span class="st">  </span><span class="kw">summarize_all</span>(sum)</span>
-<span id="cb41-36"><a href="vehicle-emissions.html#cb41-36"></a>  </span>
-<span id="cb41-37"><a href="vehicle-emissions.html#cb41-37"></a><span class="kw">kable</span>(</span>
-<span id="cb41-38"><a href="vehicle-emissions.html#cb41-38"></a>  emfac_summary,</span>
-<span id="cb41-39"><a href="vehicle-emissions.html#cb41-39"></a>  <span class="dt">booktabs =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb41-40"><a href="vehicle-emissions.html#cb41-40"></a>  <span class="dt">caption =</span> <span class="st">&#39;EMFAC2017 emission rates for vehicles in San Joaquin Valley, 2013 through 2040.&#39;</span></span>
-<span id="cb41-41"><a href="vehicle-emissions.html#cb41-41"></a>) <span class="op">%&gt;%</span></span>
-<span id="cb41-42"><a href="vehicle-emissions.html#cb41-42"></a><span class="st">  </span><span class="kw">kable_styling</span>() <span class="op">%&gt;%</span></span>
-<span id="cb41-43"><a href="vehicle-emissions.html#cb41-43"></a><span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>, <span class="dt">height =</span> <span class="st">&quot;500px&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="vehicle-emissions.html#cb45-1"></a>emfac &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/emfac.csv&quot;</span>)</span>
+<span id="cb45-2"><a href="vehicle-emissions.html#cb45-2"></a></span>
+<span id="cb45-3"><a href="vehicle-emissions.html#cb45-3"></a>emfac_summary &lt;-</span>
+<span id="cb45-4"><a href="vehicle-emissions.html#cb45-4"></a><span class="st">  </span>emfac <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb45-5"><a href="vehicle-emissions.html#cb45-5"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(</span>
+<span id="cb45-6"><a href="vehicle-emissions.html#cb45-6"></a>    <span class="dt">Year =</span> <span class="st">`</span><span class="dt">Calendar Year</span><span class="st">`</span>,</span>
+<span id="cb45-7"><a href="vehicle-emissions.html#cb45-7"></a>    <span class="st">`</span><span class="dt">Vehicle Category</span><span class="st">`</span>,</span>
+<span id="cb45-8"><a href="vehicle-emissions.html#cb45-8"></a>    <span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span> =<span class="st"> </span>Fuel,</span>
+<span id="cb45-9"><a href="vehicle-emissions.html#cb45-9"></a>    Population,</span>
+<span id="cb45-10"><a href="vehicle-emissions.html#cb45-10"></a>    CO2_RUNEX,</span>
+<span id="cb45-11"><a href="vehicle-emissions.html#cb45-11"></a>    CO2_STREX</span>
+<span id="cb45-12"><a href="vehicle-emissions.html#cb45-12"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb45-13"><a href="vehicle-emissions.html#cb45-13"></a><span class="st">  </span><span class="kw">group_by</span>(Year) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb45-14"><a href="vehicle-emissions.html#cb45-14"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb45-15"><a href="vehicle-emissions.html#cb45-15"></a>    <span class="st">`</span><span class="dt">Percent Vehicles</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(Population<span class="op">/</span><span class="kw">sum</span>(Population)<span class="op">*</span><span class="dv">100</span>,<span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.numeric</span>(),</span>
+<span id="cb45-16"><a href="vehicle-emissions.html#cb45-16"></a>    <span class="st">`</span><span class="dt">gCO2 Running Exhaust</span><span class="st">`</span> =<span class="st"> </span>CO2_RUNEX <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.integer</span>(),</span>
+<span id="cb45-17"><a href="vehicle-emissions.html#cb45-17"></a>    <span class="st">`</span><span class="dt">gCO2 Start Exhaust</span><span class="st">`</span> =<span class="st"> </span>CO2_STREX <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.integer</span>()</span>
+<span id="cb45-18"><a href="vehicle-emissions.html#cb45-18"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb45-19"><a href="vehicle-emissions.html#cb45-19"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb45-20"><a href="vehicle-emissions.html#cb45-20"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>Population, <span class="op">-</span>CO2_RUNEX, <span class="op">-</span>CO2_STREX) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb45-21"><a href="vehicle-emissions.html#cb45-21"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb45-22"><a href="vehicle-emissions.html#cb45-22"></a>    <span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span> =<span class="st"> </span></span>
+<span id="cb45-23"><a href="vehicle-emissions.html#cb45-23"></a><span class="st">      </span><span class="kw">case_when</span>(</span>
+<span id="cb45-24"><a href="vehicle-emissions.html#cb45-24"></a>        <span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span> <span class="op">==</span><span class="st"> &quot;GAS&quot;</span> <span class="op">~</span><span class="st"> &quot;Gasoline&quot;</span>,</span>
+<span id="cb45-25"><a href="vehicle-emissions.html#cb45-25"></a>        <span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span> <span class="op">==</span><span class="st"> &quot;DSL&quot;</span> <span class="op">~</span><span class="st"> &quot;Diesel&quot;</span>,</span>
+<span id="cb45-26"><a href="vehicle-emissions.html#cb45-26"></a>        <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> &quot;Electric&quot;</span></span>
+<span id="cb45-27"><a href="vehicle-emissions.html#cb45-27"></a>      ),</span>
+<span id="cb45-28"><a href="vehicle-emissions.html#cb45-28"></a>    <span class="st">`</span><span class="dt">Vehicle Category</span><span class="st">`</span> =<span class="st"> </span></span>
+<span id="cb45-29"><a href="vehicle-emissions.html#cb45-29"></a><span class="st">      </span><span class="kw">case_when</span>(</span>
+<span id="cb45-30"><a href="vehicle-emissions.html#cb45-30"></a>        <span class="st">`</span><span class="dt">Vehicle Category</span><span class="st">`</span> <span class="op">==</span><span class="st"> &quot;LDA&quot;</span> <span class="op">~</span><span class="st"> &quot;Passenger Car&quot;</span>,</span>
+<span id="cb45-31"><a href="vehicle-emissions.html#cb45-31"></a>        <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> &quot;Light Duty Truck&quot;</span></span>
+<span id="cb45-32"><a href="vehicle-emissions.html#cb45-32"></a>      )</span>
+<span id="cb45-33"><a href="vehicle-emissions.html#cb45-33"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb45-34"><a href="vehicle-emissions.html#cb45-34"></a><span class="st">  </span><span class="kw">group_by</span>(Year, <span class="st">`</span><span class="dt">Vehicle Category</span><span class="st">`</span>, <span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb45-35"><a href="vehicle-emissions.html#cb45-35"></a><span class="st">  </span><span class="kw">summarize_all</span>(sum)</span>
+<span id="cb45-36"><a href="vehicle-emissions.html#cb45-36"></a>  </span>
+<span id="cb45-37"><a href="vehicle-emissions.html#cb45-37"></a><span class="kw">kable</span>(</span>
+<span id="cb45-38"><a href="vehicle-emissions.html#cb45-38"></a>  emfac_summary,</span>
+<span id="cb45-39"><a href="vehicle-emissions.html#cb45-39"></a>  <span class="dt">booktabs =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb45-40"><a href="vehicle-emissions.html#cb45-40"></a>  <span class="dt">caption =</span> <span class="st">&#39;EMFAC2017 emission rates for vehicles in San Joaquin Valley, 2013 through 2040.&#39;</span></span>
+<span id="cb45-41"><a href="vehicle-emissions.html#cb45-41"></a>) <span class="op">%&gt;%</span></span>
+<span id="cb45-42"><a href="vehicle-emissions.html#cb45-42"></a><span class="st">  </span><span class="kw">kable_styling</span>() <span class="op">%&gt;%</span></span>
+<span id="cb45-43"><a href="vehicle-emissions.html#cb45-43"></a><span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>, <span class="dt">height =</span> <span class="st">&quot;500px&quot;</span>)</span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:emfac">Table 2.17: </span>EMFAC2017 emission rates for vehicles in San Joaquin Valley, 2013 through 2040.
+<span id="tab:emfac">Table 2.18: </span>EMFAC2017 emission rates for vehicles in San Joaquin Valley, 2013 through 2040.
 </caption>
 <thead>
 <tr>
@@ -2030,67 +2031,67 @@ Gasoline
 </div>
 <p><span class="math inline">\(~\)</span></p>
 <p>Emissions from N2O and CH4, along with emissions from other types of vehicles, were left out of this analysis.</p>
-<p>We applied the CO2 emission rates above to our 2017 VMTs to estimate the total and average GHG emissions for Stockton workers commuting to each of the top 15 counties (filtering out counties further than 3 hours away). We made the following assumptions:</p>
+<p>We applied the CO2 emission rates above to our 2017 commute VMTs to estimate the total and average GHG emissions for Stockton workers commuting to each of the top 15 counties (filtering out counties further than 3 hours away). We made the following assumptions:</p>
 <ul>
 <li>Assuming that the distribution vehicle types for Stockton commuters matches the EMFAC breakdown, the average GHG emissions is about 440 g/mile running exhaust, and 93 g/trip start exhaust.</li>
 <li>For daily VMT, each vehicle was assumed to take 2 one-way trips.</li>
 <li>To convert daily VMT to annual VMT, the same annualization factor was used as ICLEI: 369.39. The factor appears to account for both expected reductions in VMT because of sick days, as well as expected increases in VMT because of chained trips.</li>
 </ul>
 <p>The following table is sorted by total annual GHG from transportation.</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="vehicle-emissions.html#cb42-1"></a><span class="kw">load</span>(<span class="st">&quot;C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017.Rdata&quot;</span>)</span>
-<span id="cb42-2"><a href="vehicle-emissions.html#cb42-2"></a></span>
-<span id="cb42-3"><a href="vehicle-emissions.html#cb42-3"></a>stockton_lodes_h_counties_ghg &lt;-<span class="st"> </span></span>
-<span id="cb42-4"><a href="vehicle-emissions.html#cb42-4"></a><span class="st">  </span>stockton_lodes_h_mode <span class="op">%&gt;%</span></span>
-<span id="cb42-5"><a href="vehicle-emissions.html#cb42-5"></a><span class="st">  </span><span class="kw">st_set_geometry</span>(<span class="ot">NULL</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb42-6"><a href="vehicle-emissions.html#cb42-6"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
-<span id="cb42-7"><a href="vehicle-emissions.html#cb42-7"></a>    <span class="dt">Workplace =</span> <span class="kw">ifelse</span>(</span>
-<span id="cb42-8"><a href="vehicle-emissions.html#cb42-8"></a>      workplace <span class="op">%in%</span><span class="st"> </span>stockton_bgs_full<span class="op">$</span>GEOID,</span>
-<span id="cb42-9"><a href="vehicle-emissions.html#cb42-9"></a>      <span class="st">&quot;75000&quot;</span>,</span>
-<span id="cb42-10"><a href="vehicle-emissions.html#cb42-10"></a>      <span class="kw">substr</span>(workplace,<span class="dv">3</span>,<span class="dv">5</span>)</span>
-<span id="cb42-11"><a href="vehicle-emissions.html#cb42-11"></a>    )</span>
-<span id="cb42-12"><a href="vehicle-emissions.html#cb42-12"></a>  ) <span class="op">%&gt;%</span></span>
-<span id="cb42-13"><a href="vehicle-emissions.html#cb42-13"></a><span class="st">  </span><span class="kw">group_by</span>(Workplace) <span class="op">%&gt;%</span></span>
-<span id="cb42-14"><a href="vehicle-emissions.html#cb42-14"></a><span class="st">  </span><span class="kw">summarise_at</span>(</span>
-<span id="cb42-15"><a href="vehicle-emissions.html#cb42-15"></a>    <span class="kw">vars</span>(jobs,person_miles,person_hours,vehicles,vmt),</span>
-<span id="cb42-16"><a href="vehicle-emissions.html#cb42-16"></a>    sum, <span class="dt">na.rm=</span>T</span>
-<span id="cb42-17"><a href="vehicle-emissions.html#cb42-17"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb42-18"><a href="vehicle-emissions.html#cb42-18"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
-<span id="cb42-19"><a href="vehicle-emissions.html#cb42-19"></a>    <span class="dt">perc_jobs =</span> jobs<span class="op">/</span><span class="kw">sum</span>(jobs),</span>
-<span id="cb42-20"><a href="vehicle-emissions.html#cb42-20"></a>    <span class="dt">annual_vmt =</span> vmt<span class="op">*</span><span class="dv">2</span><span class="op">*</span><span class="fl">369.39</span>,</span>
-<span id="cb42-21"><a href="vehicle-emissions.html#cb42-21"></a>    <span class="dt">annual_ghg =</span> annual_vmt<span class="op">*</span><span class="fl">439.462</span><span class="op">*</span><span class="fl">1.1023e-6</span> <span class="op">+</span><span class="st"> </span><span class="dv">2</span><span class="op">*</span><span class="fl">369.39</span><span class="op">*</span>vehicles<span class="op">*</span><span class="fl">92.582</span><span class="op">*</span><span class="fl">1.1023e-6</span>,</span>
-<span id="cb42-22"><a href="vehicle-emissions.html#cb42-22"></a>    <span class="dt">perc_ghg =</span> annual_ghg<span class="op">/</span><span class="kw">sum</span>(annual_ghg),</span>
-<span id="cb42-23"><a href="vehicle-emissions.html#cb42-23"></a>    <span class="dt">avg_ghg =</span> annual_ghg<span class="op">/</span>jobs</span>
-<span id="cb42-24"><a href="vehicle-emissions.html#cb42-24"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb42-25"><a href="vehicle-emissions.html#cb42-25"></a><span class="st">  </span><span class="kw">left_join</span>(ca_counties_and_stockton <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb42-26"><a href="vehicle-emissions.html#cb42-26"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(COUNTYFP, NAME), <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;Workplace&quot;</span> =<span class="st"> &quot;COUNTYFP&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb42-27"><a href="vehicle-emissions.html#cb42-27"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>Workplace) <span class="op">%&gt;%</span></span>
-<span id="cb42-28"><a href="vehicle-emissions.html#cb42-28"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(NAME,<span class="kw">everything</span>()) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb42-29"><a href="vehicle-emissions.html#cb42-29"></a><span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb42-30"><a href="vehicle-emissions.html#cb42-30"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(annual_ghg))</span>
-<span id="cb42-31"><a href="vehicle-emissions.html#cb42-31"></a>  </span>
-<span id="cb42-32"><a href="vehicle-emissions.html#cb42-32"></a>stockton_lodes_h_counties_ghg_table &lt;-<span class="st"> </span></span>
-<span id="cb42-33"><a href="vehicle-emissions.html#cb42-33"></a><span class="st">  </span>stockton_lodes_h_counties_ghg[<span class="dv">1</span><span class="op">:</span><span class="dv">15</span>,] <span class="op">%&gt;%</span></span>
-<span id="cb42-34"><a href="vehicle-emissions.html#cb42-34"></a><span class="st">  </span><span class="kw">transmute</span>(</span>
-<span id="cb42-35"><a href="vehicle-emissions.html#cb42-35"></a>    <span class="st">`</span><span class="dt">Workplace (where Stockton residents work)</span><span class="st">`</span> =<span class="st"> </span>NAME,</span>
-<span id="cb42-36"><a href="vehicle-emissions.html#cb42-36"></a>    <span class="st">`</span><span class="dt">Jobs (held by Stockton residents)</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(jobs,<span class="op">-</span><span class="dv">2</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
-<span id="cb42-37"><a href="vehicle-emissions.html#cb42-37"></a>    <span class="st">`</span><span class="dt">Percent Jobs</span><span class="st">`</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(perc_jobs<span class="op">*</span><span class="dv">100</span>),<span class="st">&quot;%&quot;</span>),</span>
-<span id="cb42-38"><a href="vehicle-emissions.html#cb42-38"></a>    <span class="st">`</span><span class="dt">VMT (millions)</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(annual_vmt<span class="op">/</span><span class="dv">1000000</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
-<span id="cb42-39"><a href="vehicle-emissions.html#cb42-39"></a>    <span class="st">`</span><span class="dt">Total Annual GHG (tCO2e)</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(annual_ghg,<span class="op">-</span><span class="dv">3</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
-<span id="cb42-40"><a href="vehicle-emissions.html#cb42-40"></a>    <span class="st">`</span><span class="dt">Percent Annual GHG</span><span class="st">`</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(perc_ghg<span class="op">*</span><span class="dv">100</span>),<span class="st">&quot;%&quot;</span>),</span>
-<span id="cb42-41"><a href="vehicle-emissions.html#cb42-41"></a>    <span class="st">`</span><span class="dt">Average Annual GHG/worker (tCO2e)</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(avg_ghg,<span class="dv">1</span>)</span>
-<span id="cb42-42"><a href="vehicle-emissions.html#cb42-42"></a>  )</span>
-<span id="cb42-43"><a href="vehicle-emissions.html#cb42-43"></a></span>
-<span id="cb42-44"><a href="vehicle-emissions.html#cb42-44"></a><span class="kw">kable</span>(</span>
-<span id="cb42-45"><a href="vehicle-emissions.html#cb42-45"></a>  stockton_lodes_h_counties_ghg_table <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_set_geometry</span>(<span class="ot">NULL</span>),</span>
-<span id="cb42-46"><a href="vehicle-emissions.html#cb42-46"></a>  <span class="dt">booktabs =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb42-47"><a href="vehicle-emissions.html#cb42-47"></a>  <span class="dt">caption =</span> <span class="st">&#39;Top 15 workplaces where Stockton residents work, GHG emissions from transportation. Includes Stockton as a workplace destination separate from the rest of SJC. All other listed workplaces are counties. Los Angeles, San Bernardino, Orange, and San Diego Counties were removed. Data from LODES, 2017.&#39;</span></span>
-<span id="cb42-48"><a href="vehicle-emissions.html#cb42-48"></a>) <span class="op">%&gt;%</span></span>
-<span id="cb42-49"><a href="vehicle-emissions.html#cb42-49"></a><span class="st">  </span><span class="kw">kable_styling</span>() <span class="op">%&gt;%</span></span>
-<span id="cb42-50"><a href="vehicle-emissions.html#cb42-50"></a><span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="vehicle-emissions.html#cb46-1"></a><span class="kw">load</span>(<span class="st">&quot;C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017.Rdata&quot;</span>)</span>
+<span id="cb46-2"><a href="vehicle-emissions.html#cb46-2"></a></span>
+<span id="cb46-3"><a href="vehicle-emissions.html#cb46-3"></a>stockton_lodes_h_counties_ghg &lt;-<span class="st"> </span></span>
+<span id="cb46-4"><a href="vehicle-emissions.html#cb46-4"></a><span class="st">  </span>stockton_lodes_h_mode <span class="op">%&gt;%</span></span>
+<span id="cb46-5"><a href="vehicle-emissions.html#cb46-5"></a><span class="st">  </span><span class="kw">st_set_geometry</span>(<span class="ot">NULL</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb46-6"><a href="vehicle-emissions.html#cb46-6"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb46-7"><a href="vehicle-emissions.html#cb46-7"></a>    <span class="dt">Workplace =</span> <span class="kw">ifelse</span>(</span>
+<span id="cb46-8"><a href="vehicle-emissions.html#cb46-8"></a>      workplace <span class="op">%in%</span><span class="st"> </span>stockton_bgs_full<span class="op">$</span>GEOID,</span>
+<span id="cb46-9"><a href="vehicle-emissions.html#cb46-9"></a>      <span class="st">&quot;75000&quot;</span>,</span>
+<span id="cb46-10"><a href="vehicle-emissions.html#cb46-10"></a>      <span class="kw">substr</span>(workplace,<span class="dv">3</span>,<span class="dv">5</span>)</span>
+<span id="cb46-11"><a href="vehicle-emissions.html#cb46-11"></a>    )</span>
+<span id="cb46-12"><a href="vehicle-emissions.html#cb46-12"></a>  ) <span class="op">%&gt;%</span></span>
+<span id="cb46-13"><a href="vehicle-emissions.html#cb46-13"></a><span class="st">  </span><span class="kw">group_by</span>(Workplace) <span class="op">%&gt;%</span></span>
+<span id="cb46-14"><a href="vehicle-emissions.html#cb46-14"></a><span class="st">  </span><span class="kw">summarise_at</span>(</span>
+<span id="cb46-15"><a href="vehicle-emissions.html#cb46-15"></a>    <span class="kw">vars</span>(jobs,person_miles,person_hours,vehicles,vmt),</span>
+<span id="cb46-16"><a href="vehicle-emissions.html#cb46-16"></a>    sum, <span class="dt">na.rm=</span>T</span>
+<span id="cb46-17"><a href="vehicle-emissions.html#cb46-17"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb46-18"><a href="vehicle-emissions.html#cb46-18"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb46-19"><a href="vehicle-emissions.html#cb46-19"></a>    <span class="dt">perc_jobs =</span> jobs<span class="op">/</span><span class="kw">sum</span>(jobs),</span>
+<span id="cb46-20"><a href="vehicle-emissions.html#cb46-20"></a>    <span class="dt">annual_vmt =</span> vmt<span class="op">*</span><span class="dv">2</span><span class="op">*</span><span class="fl">369.39</span>,</span>
+<span id="cb46-21"><a href="vehicle-emissions.html#cb46-21"></a>    <span class="dt">annual_ghg =</span> annual_vmt<span class="op">*</span><span class="fl">439.462</span><span class="op">*</span><span class="fl">1.1023e-6</span> <span class="op">+</span><span class="st"> </span><span class="dv">2</span><span class="op">*</span><span class="fl">369.39</span><span class="op">*</span>vehicles<span class="op">*</span><span class="fl">92.582</span><span class="op">*</span><span class="fl">1.1023e-6</span>,</span>
+<span id="cb46-22"><a href="vehicle-emissions.html#cb46-22"></a>    <span class="dt">perc_ghg =</span> annual_ghg<span class="op">/</span><span class="kw">sum</span>(annual_ghg),</span>
+<span id="cb46-23"><a href="vehicle-emissions.html#cb46-23"></a>    <span class="dt">avg_ghg =</span> annual_ghg<span class="op">/</span>jobs</span>
+<span id="cb46-24"><a href="vehicle-emissions.html#cb46-24"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb46-25"><a href="vehicle-emissions.html#cb46-25"></a><span class="st">  </span><span class="kw">left_join</span>(ca_counties_and_stockton <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb46-26"><a href="vehicle-emissions.html#cb46-26"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(COUNTYFP, NAME), <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;Workplace&quot;</span> =<span class="st"> &quot;COUNTYFP&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb46-27"><a href="vehicle-emissions.html#cb46-27"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>Workplace) <span class="op">%&gt;%</span></span>
+<span id="cb46-28"><a href="vehicle-emissions.html#cb46-28"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(NAME,<span class="kw">everything</span>()) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb46-29"><a href="vehicle-emissions.html#cb46-29"></a><span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb46-30"><a href="vehicle-emissions.html#cb46-30"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(annual_ghg))</span>
+<span id="cb46-31"><a href="vehicle-emissions.html#cb46-31"></a>  </span>
+<span id="cb46-32"><a href="vehicle-emissions.html#cb46-32"></a>stockton_lodes_h_counties_ghg_table &lt;-<span class="st"> </span></span>
+<span id="cb46-33"><a href="vehicle-emissions.html#cb46-33"></a><span class="st">  </span>stockton_lodes_h_counties_ghg[<span class="dv">1</span><span class="op">:</span><span class="dv">15</span>,] <span class="op">%&gt;%</span></span>
+<span id="cb46-34"><a href="vehicle-emissions.html#cb46-34"></a><span class="st">  </span><span class="kw">transmute</span>(</span>
+<span id="cb46-35"><a href="vehicle-emissions.html#cb46-35"></a>    <span class="st">`</span><span class="dt">Workplace (where Stockton residents work)</span><span class="st">`</span> =<span class="st"> </span>NAME,</span>
+<span id="cb46-36"><a href="vehicle-emissions.html#cb46-36"></a>    <span class="st">`</span><span class="dt">Jobs (held by Stockton residents)</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(jobs,<span class="op">-</span><span class="dv">2</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
+<span id="cb46-37"><a href="vehicle-emissions.html#cb46-37"></a>    <span class="st">`</span><span class="dt">Percent Jobs</span><span class="st">`</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(perc_jobs<span class="op">*</span><span class="dv">100</span>),<span class="st">&quot;%&quot;</span>),</span>
+<span id="cb46-38"><a href="vehicle-emissions.html#cb46-38"></a>    <span class="st">`</span><span class="dt">VMT (millions)</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(annual_vmt<span class="op">/</span><span class="dv">1000000</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
+<span id="cb46-39"><a href="vehicle-emissions.html#cb46-39"></a>    <span class="st">`</span><span class="dt">Total Annual GHG (tCO2e)</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prettyNum</span>(<span class="kw">round</span>(annual_ghg,<span class="op">-</span><span class="dv">3</span>),<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>),</span>
+<span id="cb46-40"><a href="vehicle-emissions.html#cb46-40"></a>    <span class="st">`</span><span class="dt">Percent Annual GHG</span><span class="st">`</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(perc_ghg<span class="op">*</span><span class="dv">100</span>),<span class="st">&quot;%&quot;</span>),</span>
+<span id="cb46-41"><a href="vehicle-emissions.html#cb46-41"></a>    <span class="st">`</span><span class="dt">Average Annual GHG/worker (tCO2e)</span><span class="st">`</span> =<span class="st"> </span><span class="kw">round</span>(avg_ghg,<span class="dv">1</span>)</span>
+<span id="cb46-42"><a href="vehicle-emissions.html#cb46-42"></a>  )</span>
+<span id="cb46-43"><a href="vehicle-emissions.html#cb46-43"></a></span>
+<span id="cb46-44"><a href="vehicle-emissions.html#cb46-44"></a><span class="kw">kable</span>(</span>
+<span id="cb46-45"><a href="vehicle-emissions.html#cb46-45"></a>  stockton_lodes_h_counties_ghg_table <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_set_geometry</span>(<span class="ot">NULL</span>),</span>
+<span id="cb46-46"><a href="vehicle-emissions.html#cb46-46"></a>  <span class="dt">booktabs =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb46-47"><a href="vehicle-emissions.html#cb46-47"></a>  <span class="dt">caption =</span> <span class="st">&#39;Top 15 workplaces where Stockton residents work, GHG emissions from transportation. Includes Stockton as a workplace destination separate from the rest of SJC. All other listed workplaces are counties. Los Angeles, San Bernardino, Orange, and San Diego Counties were removed. Data from LODES, 2017.&#39;</span></span>
+<span id="cb46-48"><a href="vehicle-emissions.html#cb46-48"></a>) <span class="op">%&gt;%</span></span>
+<span id="cb46-49"><a href="vehicle-emissions.html#cb46-49"></a><span class="st">  </span><span class="kw">kable_styling</span>() <span class="op">%&gt;%</span></span>
+<span id="cb46-50"><a href="vehicle-emissions.html#cb46-50"></a><span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:ghg">Table 2.18: </span>Top 15 workplaces where Stockton residents work, GHG emissions from transportation. Includes Stockton as a workplace destination separate from the rest of SJC. All other listed workplaces are counties. Los Angeles, San Bernardino, Orange, and San Diego Counties were removed. Data from LODES, 2017.
+<span id="tab:ghg">Table 2.19: </span>Top 15 workplaces where Stockton residents work, GHG emissions from transportation. Includes Stockton as a workplace destination separate from the rest of SJC. All other listed workplaces are counties. Los Angeles, San Bernardino, Orange, and San Diego Counties were removed. Data from LODES, 2017.
 </caption>
 <thead>
 <tr>
@@ -2468,70 +2469,70 @@ Yolo
 </div>
 <p><span class="math inline">\(~\)</span></p>
 <p>According to the table above, 59% percent of Stockton residents work in San Joaquin County and collectively contribute 19% of all commute GHGs. The next 14 counties comprise another 39% of Stockton residents, but they collectively contribute 73% of all commute GHGs. This significant difference comes down to difference in average commute distance to each county, which is directly related to average GHG emissions per worker. In a later section, we will explore opportunities to stimulate local job creation so that some of these long-distance commutes can be converted into local commutes, reducing both the toll on the environment and the tolls on health and well-being for Stockton residents.</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="vehicle-emissions.html#cb43-1"></a><span class="co"># map = mapview(stockton_lodes_h_counties_ghg[1:15,c(&quot;annual_ghg&quot;)], zcol = &quot;annual_ghg&quot;, map.types = c(&quot;OpenStreetMap&quot;), legend = TRUE, layer.name = &#39;Total Annual&lt;/br&gt;GHG (tCO2e)&#39;)</span></span>
-<span id="cb43-2"><a href="vehicle-emissions.html#cb43-2"></a><span class="co"># </span></span>
-<span id="cb43-3"><a href="vehicle-emissions.html#cb43-3"></a><span class="co"># mapshot(map,url=&quot;map-ghg-map-2.html&quot;)</span></span>
-<span id="cb43-4"><a href="vehicle-emissions.html#cb43-4"></a></span>
-<span id="cb43-5"><a href="vehicle-emissions.html#cb43-5"></a>knitr<span class="op">::</span><span class="kw">include_url</span>(<span class="st">&quot;http://web.stanford.edu/~douyang1/map-ghg-map-2.html&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="vehicle-emissions.html#cb47-1"></a><span class="co"># map = mapview(stockton_lodes_h_counties_ghg[1:15,c(&quot;annual_ghg&quot;)], zcol = &quot;annual_ghg&quot;, map.types = c(&quot;OpenStreetMap&quot;), legend = TRUE, layer.name = &#39;Total Annual&lt;/br&gt;GHG (tCO2e)&#39;)</span></span>
+<span id="cb47-2"><a href="vehicle-emissions.html#cb47-2"></a><span class="co"># </span></span>
+<span id="cb47-3"><a href="vehicle-emissions.html#cb47-3"></a><span class="co"># mapshot(map,url=&quot;map-ghg-map-2.html&quot;)</span></span>
+<span id="cb47-4"><a href="vehicle-emissions.html#cb47-4"></a></span>
+<span id="cb47-5"><a href="vehicle-emissions.html#cb47-5"></a>knitr<span class="op">::</span><span class="kw">include_url</span>(<span class="st">&quot;http://web.stanford.edu/~douyang1/map-ghg-map-2.html&quot;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:ghg-map-2"></span>
 <iframe src="http://web.stanford.edu/~douyang1/map-ghg-map-2.html" width="672" height="400px">
 </iframe>
 <p class="caption">
-Figure 2.24: Top 15 Counties where Stockton residents work - annual GHG emissions from driving. Data from LODES, 2017.
+Figure 2.27: Top 15 Counties where Stockton residents work - annual GHG emissions from driving. Data from LODES, 2017.
 </p>
 </div>
 <p><span class="math inline">\(~\)</span></p>
 <p>To conclude this section, we plotted changes in emissions per mile (just running exhaust) and the percentage of electric vehicles in San Joaquin County from 2013-2040. These projections will contribute to modeling business-as-usual GHG emissions.</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="vehicle-emissions.html#cb44-1"></a>vehicle_emissions_trend &lt;-</span>
-<span id="cb44-2"><a href="vehicle-emissions.html#cb44-2"></a><span class="st">  </span>emfac_summary <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb44-3"><a href="vehicle-emissions.html#cb44-3"></a><span class="st">    </span><span class="kw">mutate</span>(</span>
-<span id="cb44-4"><a href="vehicle-emissions.html#cb44-4"></a>      <span class="dt">product =</span> <span class="st">`</span><span class="dt">Percent Vehicles</span><span class="st">`</span><span class="op">/</span><span class="dv">100</span><span class="op">*</span><span class="st">`</span><span class="dt">gCO2 Running Exhaust</span><span class="st">`</span>,</span>
-<span id="cb44-5"><a href="vehicle-emissions.html#cb44-5"></a>      <span class="dt">product2 =</span> <span class="st">`</span><span class="dt">Percent Vehicles</span><span class="st">`</span><span class="op">/</span><span class="dv">100</span><span class="op">*</span><span class="st">`</span><span class="dt">gCO2 Start Exhaust</span><span class="st">`</span></span>
-<span id="cb44-6"><a href="vehicle-emissions.html#cb44-6"></a>    ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb44-7"><a href="vehicle-emissions.html#cb44-7"></a><span class="st">    </span><span class="kw">group_by</span>(Year) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb44-8"><a href="vehicle-emissions.html#cb44-8"></a><span class="st">    </span><span class="kw">summarize</span>(</span>
-<span id="cb44-9"><a href="vehicle-emissions.html#cb44-9"></a>      <span class="st">`</span><span class="dt">gCO2/mile</span><span class="st">`</span> =<span class="st"> </span><span class="kw">sum</span>(product),</span>
-<span id="cb44-10"><a href="vehicle-emissions.html#cb44-10"></a>      <span class="st">`</span><span class="dt">gCO2/trip</span><span class="st">`</span> =<span class="st"> </span><span class="kw">sum</span>(product2)</span>
-<span id="cb44-11"><a href="vehicle-emissions.html#cb44-11"></a>    )</span>
-<span id="cb44-12"><a href="vehicle-emissions.html#cb44-12"></a></span>
-<span id="cb44-13"><a href="vehicle-emissions.html#cb44-13"></a>vehicle_emissions_trend <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb44-14"><a href="vehicle-emissions.html#cb44-14"></a><span class="st">  </span><span class="kw">ggplot</span>(</span>
-<span id="cb44-15"><a href="vehicle-emissions.html#cb44-15"></a>    <span class="kw">aes</span>(</span>
-<span id="cb44-16"><a href="vehicle-emissions.html#cb44-16"></a>      <span class="dt">x =</span> Year,</span>
-<span id="cb44-17"><a href="vehicle-emissions.html#cb44-17"></a>      <span class="dt">y =</span> <span class="st">`</span><span class="dt">gCO2/mile</span><span class="st">`</span></span>
-<span id="cb44-18"><a href="vehicle-emissions.html#cb44-18"></a>    )</span>
-<span id="cb44-19"><a href="vehicle-emissions.html#cb44-19"></a>  )<span class="op">+</span></span>
-<span id="cb44-20"><a href="vehicle-emissions.html#cb44-20"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">colour =</span> <span class="st">&quot;orange&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb44-21"><a href="vehicle-emissions.html#cb44-21"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;San Joaquin Valley Air Basin&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;gCO2/mile running exhaust&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="vehicle-emissions.html#cb48-1"></a>vehicle_emissions_trend &lt;-</span>
+<span id="cb48-2"><a href="vehicle-emissions.html#cb48-2"></a><span class="st">  </span>emfac_summary <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb48-3"><a href="vehicle-emissions.html#cb48-3"></a><span class="st">    </span><span class="kw">mutate</span>(</span>
+<span id="cb48-4"><a href="vehicle-emissions.html#cb48-4"></a>      <span class="dt">product =</span> <span class="st">`</span><span class="dt">Percent Vehicles</span><span class="st">`</span><span class="op">/</span><span class="dv">100</span><span class="op">*</span><span class="st">`</span><span class="dt">gCO2 Running Exhaust</span><span class="st">`</span>,</span>
+<span id="cb48-5"><a href="vehicle-emissions.html#cb48-5"></a>      <span class="dt">product2 =</span> <span class="st">`</span><span class="dt">Percent Vehicles</span><span class="st">`</span><span class="op">/</span><span class="dv">100</span><span class="op">*</span><span class="st">`</span><span class="dt">gCO2 Start Exhaust</span><span class="st">`</span></span>
+<span id="cb48-6"><a href="vehicle-emissions.html#cb48-6"></a>    ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb48-7"><a href="vehicle-emissions.html#cb48-7"></a><span class="st">    </span><span class="kw">group_by</span>(Year) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb48-8"><a href="vehicle-emissions.html#cb48-8"></a><span class="st">    </span><span class="kw">summarize</span>(</span>
+<span id="cb48-9"><a href="vehicle-emissions.html#cb48-9"></a>      <span class="st">`</span><span class="dt">gCO2/mile</span><span class="st">`</span> =<span class="st"> </span><span class="kw">sum</span>(product),</span>
+<span id="cb48-10"><a href="vehicle-emissions.html#cb48-10"></a>      <span class="st">`</span><span class="dt">gCO2/trip</span><span class="st">`</span> =<span class="st"> </span><span class="kw">sum</span>(product2)</span>
+<span id="cb48-11"><a href="vehicle-emissions.html#cb48-11"></a>    )</span>
+<span id="cb48-12"><a href="vehicle-emissions.html#cb48-12"></a></span>
+<span id="cb48-13"><a href="vehicle-emissions.html#cb48-13"></a>vehicle_emissions_trend <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb48-14"><a href="vehicle-emissions.html#cb48-14"></a><span class="st">  </span><span class="kw">ggplot</span>(</span>
+<span id="cb48-15"><a href="vehicle-emissions.html#cb48-15"></a>    <span class="kw">aes</span>(</span>
+<span id="cb48-16"><a href="vehicle-emissions.html#cb48-16"></a>      <span class="dt">x =</span> Year,</span>
+<span id="cb48-17"><a href="vehicle-emissions.html#cb48-17"></a>      <span class="dt">y =</span> <span class="st">`</span><span class="dt">gCO2/mile</span><span class="st">`</span></span>
+<span id="cb48-18"><a href="vehicle-emissions.html#cb48-18"></a>    )</span>
+<span id="cb48-19"><a href="vehicle-emissions.html#cb48-19"></a>  )<span class="op">+</span></span>
+<span id="cb48-20"><a href="vehicle-emissions.html#cb48-20"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">colour =</span> <span class="st">&quot;orange&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb48-21"><a href="vehicle-emissions.html#cb48-21"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;San Joaquin Valley Air Basin&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;gCO2/mile running exhaust&quot;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:vehicle-emissions-trend"></span>
 <img src="stockton_greeneconomy_files/figure-html/vehicle-emissions-trend-1.png" alt="Average GHG emissions per mile for vehicles in San Joaquin Valley Air Basin, 2013-2040. Source: EMFAC2017." width="672" />
 <p class="caption">
-Figure 2.25: Average GHG emissions per mile for vehicles in San Joaquin Valley Air Basin, 2013-2040. Source: EMFAC2017.
+Figure 2.28: Average GHG emissions per mile for vehicles in San Joaquin Valley Air Basin, 2013-2040. Source: EMFAC2017.
 </p>
 </div>
 <p><span class="math inline">\(~\)</span></p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="vehicle-emissions.html#cb45-1"></a>vehicle_electric_trend &lt;-</span>
-<span id="cb45-2"><a href="vehicle-emissions.html#cb45-2"></a><span class="st">  </span>emfac_summary <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb45-3"><a href="vehicle-emissions.html#cb45-3"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
-<span id="cb45-4"><a href="vehicle-emissions.html#cb45-4"></a>    <span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span> =<span class="st"> </span><span class="kw">ifelse</span>(<span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span> <span class="op">==</span><span class="st"> &quot;Electric&quot;</span>, <span class="st">&quot;Electric&quot;</span>, <span class="st">&quot;Other&quot;</span>)</span>
-<span id="cb45-5"><a href="vehicle-emissions.html#cb45-5"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb45-6"><a href="vehicle-emissions.html#cb45-6"></a><span class="st">  </span><span class="kw">group_by</span>(Year, <span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb45-7"><a href="vehicle-emissions.html#cb45-7"></a><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">count =</span> <span class="kw">sum</span>(<span class="st">`</span><span class="dt">Percent Vehicles</span><span class="st">`</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb45-8"><a href="vehicle-emissions.html#cb45-8"></a><span class="st">  </span><span class="kw">filter</span>(<span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span> <span class="op">==</span><span class="st"> &quot;Electric&quot;</span>)</span>
-<span id="cb45-9"><a href="vehicle-emissions.html#cb45-9"></a></span>
-<span id="cb45-10"><a href="vehicle-emissions.html#cb45-10"></a>vehicle_electric_trend <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb45-11"><a href="vehicle-emissions.html#cb45-11"></a><span class="st">  </span><span class="kw">ggplot</span>(</span>
-<span id="cb45-12"><a href="vehicle-emissions.html#cb45-12"></a>    <span class="kw">aes</span>(</span>
-<span id="cb45-13"><a href="vehicle-emissions.html#cb45-13"></a>      <span class="dt">x =</span> Year,</span>
-<span id="cb45-14"><a href="vehicle-emissions.html#cb45-14"></a>      <span class="dt">y =</span> <span class="st">`</span><span class="dt">count</span><span class="st">`</span></span>
-<span id="cb45-15"><a href="vehicle-emissions.html#cb45-15"></a>    )</span>
-<span id="cb45-16"><a href="vehicle-emissions.html#cb45-16"></a>  )<span class="op">+</span></span>
-<span id="cb45-17"><a href="vehicle-emissions.html#cb45-17"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">colour =</span> <span class="st">&quot;forest green&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb45-18"><a href="vehicle-emissions.html#cb45-18"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;San Joaquin Valley Air Basin&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Percentage electric vehicles on road&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="vehicle-emissions.html#cb49-1"></a>vehicle_electric_trend &lt;-</span>
+<span id="cb49-2"><a href="vehicle-emissions.html#cb49-2"></a><span class="st">  </span>emfac_summary <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb49-3"><a href="vehicle-emissions.html#cb49-3"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb49-4"><a href="vehicle-emissions.html#cb49-4"></a>    <span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span> =<span class="st"> </span><span class="kw">ifelse</span>(<span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span> <span class="op">==</span><span class="st"> &quot;Electric&quot;</span>, <span class="st">&quot;Electric&quot;</span>, <span class="st">&quot;Other&quot;</span>)</span>
+<span id="cb49-5"><a href="vehicle-emissions.html#cb49-5"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb49-6"><a href="vehicle-emissions.html#cb49-6"></a><span class="st">  </span><span class="kw">group_by</span>(Year, <span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb49-7"><a href="vehicle-emissions.html#cb49-7"></a><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">count =</span> <span class="kw">sum</span>(<span class="st">`</span><span class="dt">Percent Vehicles</span><span class="st">`</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb49-8"><a href="vehicle-emissions.html#cb49-8"></a><span class="st">  </span><span class="kw">filter</span>(<span class="st">`</span><span class="dt">Fuel Type</span><span class="st">`</span> <span class="op">==</span><span class="st"> &quot;Electric&quot;</span>)</span>
+<span id="cb49-9"><a href="vehicle-emissions.html#cb49-9"></a></span>
+<span id="cb49-10"><a href="vehicle-emissions.html#cb49-10"></a>vehicle_electric_trend <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb49-11"><a href="vehicle-emissions.html#cb49-11"></a><span class="st">  </span><span class="kw">ggplot</span>(</span>
+<span id="cb49-12"><a href="vehicle-emissions.html#cb49-12"></a>    <span class="kw">aes</span>(</span>
+<span id="cb49-13"><a href="vehicle-emissions.html#cb49-13"></a>      <span class="dt">x =</span> Year,</span>
+<span id="cb49-14"><a href="vehicle-emissions.html#cb49-14"></a>      <span class="dt">y =</span> <span class="st">`</span><span class="dt">count</span><span class="st">`</span></span>
+<span id="cb49-15"><a href="vehicle-emissions.html#cb49-15"></a>    )</span>
+<span id="cb49-16"><a href="vehicle-emissions.html#cb49-16"></a>  )<span class="op">+</span></span>
+<span id="cb49-17"><a href="vehicle-emissions.html#cb49-17"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">colour =</span> <span class="st">&quot;forest green&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb49-18"><a href="vehicle-emissions.html#cb49-18"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;San Joaquin Valley Air Basin&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Percentage electric vehicles on road&quot;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:vehicle-electric-trend"></span>
 <img src="stockton_greeneconomy_files/figure-html/vehicle-electric-trend-1.png" alt="Percentage of electric vehicles in San Joaquin Valley Air Basin, 2013-2040. Source: EMFAC2017." width="672" />
 <p class="caption">
-Figure 2.26: Percentage of electric vehicles in San Joaquin Valley Air Basin, 2013-2040. Source: EMFAC2017.
+Figure 2.29: Percentage of electric vehicles in San Joaquin Valley Air Basin, 2013-2040. Source: EMFAC2017.
 </p>
 </div>
 <p><span class="math inline">\(~\)</span></p>
@@ -2542,7 +2543,7 @@ Figure 2.26: Percentage of electric vehicles in San Joaquin Valley Air Basin, 20
           </div>
         </div>
       </div>
-<a href="commute-vehicle-miles-traveled.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="non-commute-vehicle-miles-traveled.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="energy.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
