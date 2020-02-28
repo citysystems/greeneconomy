@@ -6030,7 +6030,7 @@ emfac_modify <-
       mutate(
         `Percent EVs` = 5.19 + x,
         `gCO2/mile` = `gCO2/mile`,
-        tco2 = vmtperjob * `Employed Residents` *2*369.39*`gCO2/mile`*1.1023e-6 + `Employed Residents`*2*369.39*`gCO2/trip`*1.1023e-6,
+        tco2 = vmtperjob * `Employed Residents` *2*369.39*`gCO2/mile`*1.1023e-6 + `Employed Residents`*2*369.39*`gCO2/trip`*1.1023e-6 + 4100*Population*`gCO2/trip`*1.1023e-6
       )
   })
 
