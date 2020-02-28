@@ -3213,7 +3213,7 @@ Overall, the VMTs associated with non-commute travel in 2018 sum up to about 1.2
 
 ## Vehicle Emissions
 
-The previous section estimated the total VMTs due to commuting for Stockton workers from 2011 to 2017, which can be used to forecast VMTs through 2040. While VMTs themselves are an important indicator of quality of life and economic vitality, from a GHG perspective we need to convert vehicle miles to emissions.
+The previous two sections estimated the total VMTs due to commuting for Stockton workers from 2011 to 2017, and non-commuting travel for 2018, which can be used to forecast VMTs through 2040. While VMTs themselves are an important indicator of quality of life and economic vitality, from a GHG perspective we need to convert vehicle miles to emissions.
 
 We followed the standard method for calculating vehicle emissions in California using the California Air Resources Board (CARB) [Emission Factors (EMFAC) model](https://ww2.arb.ca.gov/our-work/programs/mobile-source-emissions-inventory/msei-modeling-tools). Using the EMFAC2017 model, we downloaded emissions rates data for 2013-2018, 2020, 2025, 2030, and 2040 in the San Joaquin Valley air basin. The data includes CARB's model estimates for daily vehicles across passenger cars and trucks of different fuel types, along with emissions per mile for CO2 and other pollutants. A summary of the EMFAC data is provided below.
 
@@ -3267,7 +3267,7 @@ $~$
 
 Emissions from N2O and CH4, along with emissions from other types of vehicles, were left out of this analysis. 
 
-We applied the CO2 emission rates above to our 2017 VMTs to estimate the total and average GHG emissions for Stockton workers commuting to each of the top 15 counties (filtering out counties further than 3 hours away). We made the following assumptions:
+We applied the CO2 emission rates above to our 2017 commute VMTs to estimate the total and average GHG emissions for Stockton workers commuting to each of the top 15 counties (filtering out counties further than 3 hours away). We made the following assumptions:
 
 - Assuming that the distribution vehicle types for Stockton commuters matches the EMFAC breakdown, the average GHG emissions is about 440 g/mile running exhaust, and 93 g/trip start exhaust.
 - For daily VMT, each vehicle was assumed to take 2 one-way trips.
@@ -4450,7 +4450,7 @@ In summary, the following assumptions go into inputs for the forecasts, which ar
 
 - From Section 2.1, we derived future population, employed resident, and job forecasts, specifically for the years 2020, 2025, 2030, 2035, and 2040.
 - From Section 2.5, we derived commute one-way VMT/workers for 2011-2017. The table below projects this trend to 2040.
-- From Section 2.6, we derived non-commute annual VMT/capita using 2018 data.
+- From Section 2.6, we derived non-commute annual VMT/capita using 2018 data. Without further data, we will assume a constant rate through 2040 of 4100 miles/capita/year, so that non-commute travel increases proportionally with population growth.
 - From Section 2.7, we derived simplified aggregate vehicle emission rates for San Joaquin County through 2040. Average gCO2/mile and % electric vehicles are projected in the table below.
 - From Section 2.7, we derived a linear forecast of PG&E's electricity emissions factor which runs from 2017's data point towards a 2045 target of 100% clean energy.
 - From Section 2.7, we derived linear forecasts of heating and cooling degree days through 2040 from Cal-Adapt's HDD and CDD projections.
@@ -4580,6 +4580,7 @@ ghg_forecast <-
   transmute(
     Year = Year,
     transport = vmtperjob * `Employed Residents` *2*369.39*`gCO2/mile`*1.1023e-6 + `Employed Residents`*2*369.39*`gCO2/trip`*1.1023e-6,
+    amenity = 4100 * Population,
     residential = `Residential Electricity, kBTU/resident/CDD`*Population*cdd*2.9307e-7*0.000453592 + `Residential Gas, kBTU/resident/HDD`*Population*hdd/99.9761*0.00531,
     commercial = `Commercial Electricity, kBTU/job/CDD`*Jobs*cdd*2.9307e-7*0.000453592 + `Commercial Gas, kBTU/job/HDD`*Jobs*hdd/99.9761*0.00531
   )
@@ -4588,7 +4589,8 @@ ghg_forecast_table <-
   ghg_forecast %>% 
   transmute(
     Year=Year,
-    `Transportation tCO2` = prettyNum(round(transport,-4),big.mark=","),
+    `Commute tCO2` = prettyNum(round(transport,-4),big.mark=","),
+    `Non-Commute tCO2` = prettyNum(round(amenity,-3),big.mark=","),
     `Residential Building tCO2` = prettyNum(round(residential,-3),big.mark=","),
     `Commercial Building tCO2` = prettyNum(round(commercial,-3),big.mark=",")
   )
@@ -4609,7 +4611,8 @@ ghg_forecast %>%
   gather(-Year, key = "Sector", value = "tCO2") %>% 
   mutate(
     Sector = case_when(
-      Sector == "transport" ~ "Transportation",
+      Sector == "transport" ~ "Commute Transportation",
+      Sector == "amenity" ~ "Non-commute Transportation",
       Sector == "residential" ~ "Residential Building",
       TRUE ~ "Commercial Building"
     )
