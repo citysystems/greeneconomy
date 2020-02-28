@@ -68,13 +68,40 @@ options(
   tigris_use_cache = TRUE,
   scipen=999
 )
+
+stockton_boundary <- 
+  places("CA", cb = TRUE) %>% 
+  filter(NAME == "Stockton") 
+
+stockton_boundary_buffer <-
+  stockton_boundary %>% 
+  st_transform(26910) %>% 
+  st_buffer(1600) %>% 
+  st_transform(st_crs(stockton_boundary))
+
+stockton_bgs_full <- 
+  block_groups("CA", cb = TRUE)[stockton_boundary_buffer,c("GEOID")] %>% 
+  filter(!(GEOID %in% c("060770051351","060770040011","060770041061","060770041022")))
+
+ca_counties <- counties("CA", cb = TRUE)
+
+ca_counties_and_stockton <-
+  ca_counties %>% 
+  dplyr::select(COUNTYFP, NAME) %>% 
+  rbind(
+    stockton_boundary %>% 
+      mutate(
+        COUNTYFP = PLACEFP
+      ) %>% 
+      dplyr::select(COUNTYFP, NAME)
+  )
 ```
 
 The previous section estimated the total VMTs due to commuting for Stockton workers from 2011 to 2017, which can be used to forecast VMTs through 2040. While VMTs themselves are an important indicator of quality of life and economic vitality, from a GHG perspective we need to convert vehicle miles to emissions.
 
 We followed the standard method for calculating vehicle emissions in California using the California Air Resources Board (CARB) [Emission Factors (EMFAC) model](https://ww2.arb.ca.gov/our-work/programs/mobile-source-emissions-inventory/msei-modeling-tools). Using the EMFAC2017 model, we downloaded emissions rates data for 2020, 2025, 2030, and 2040 in the San Joaquin Valley air basin. The data includes CARB's model estimates for daily vehicles across passenger cars and trucks of different fuel types, along with emissions per mile for CO2 and other pollutants. A summary of the EMFAC data is provided below.
 
-```{r}
+```{r emfac}
 emfac <- read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/emfac.csv")
 
 emfac_summary <-
@@ -120,9 +147,84 @@ kable(
   scroll_box(width = "100%")
 ```
 
-Emissions from N2O and CH4, along with emissions from other types of vehicles, were left out of this analysis. We applied CO2 emission rates above to 
+$~$
 
+Emissions from N2O and CH4, along with emissions from other types of vehicles, were left out of this analysis. 
 
+We applied the CO2 emission rates above to our 2017 VMTs to estimatee the total and average GHG emissions for Stockton workers commuting to each of the top 15 counties (filtering out counties further than 3 hours away). We made the following assumptions:
+
+- Assuming that the distribution vehicle types for Stockton commuters matches the EMFAC breakdown, the average GHG emissions is about 440 g/mile running exhaust, and 93 g/trip start exhaust.
+- For daily VMT, each vehicle was assumed to take 2 one-way trips.
+- To convert daily VMT to annual VMT, the same annualization factor was used as ICLEI: 369.39. The factor appears to account for both expected reductions in VMT because of sick days, as well as expected increases in VMT because of chained trips.
+
+The following table is sorted by total annual GHG from transportation.
+
+```{r ghg}
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/LODES/stockton_lodes_2017.Rdata")
+
+stockton_lodes_h_counties_ghg <- 
+  stockton_lodes_h_mode %>%
+  st_set_geometry(NULL) %>% 
+  mutate(
+    Workplace = ifelse(
+      workplace %in% stockton_bgs_full$GEOID,
+      "75000",
+      substr(workplace,3,5)
+    )
+  ) %>%
+  group_by(Workplace) %>%
+  summarise_at(
+    vars(jobs,person_miles,person_hours,vehicles,vmt),
+    sum, na.rm=T
+  ) %>% 
+  mutate(
+    perc_jobs = jobs/sum(jobs),
+    annual_vmt = vmt*2*369.39,
+    annual_ghg = annual_vmt*439.462*1.1023e-6 + 2*369.39*vehicles*92.582*1.1023e-6,
+    perc_ghg = annual_ghg/sum(annual_ghg),
+    avg_ghg = annual_ghg/jobs
+  ) %>% 
+  left_join(ca_counties_and_stockton %>% 
+  dplyr::select(COUNTYFP, NAME), by = c("Workplace" = "COUNTYFP")) %>% 
+  dplyr::select(-Workplace) %>%
+  dplyr::select(NAME,everything()) %>% 
+  st_as_sf() %>% 
+  arrange(desc(annual_ghg))
+  
+stockton_lodes_h_counties_ghg_table <- 
+  stockton_lodes_h_counties_ghg[1:15,] %>%
+  transmute(
+    `Workplace (where Stockton residents work)` = NAME,
+    `Jobs (held by Stockton residents)` = prettyNum(round(jobs,-2),big.mark=","),
+    `Percent Jobs` = paste0(round(perc_jobs*100),"%"),
+    `VMT (millions)` = prettyNum(round(annual_vmt/1000000),big.mark=","),
+    `Total Annual GHG (tCO2e)` = prettyNum(round(annual_ghg,-3),big.mark=","),
+    `Percent Annual GHG` = paste0(round(perc_ghg*100),"%"),
+    `Average Annual GHG/worker (tCO2e)` = round(avg_ghg,1)
+  )
+
+kable(
+  stockton_lodes_h_counties_ghg_table %>% st_set_geometry(NULL),
+  booktabs = TRUE,
+  caption = 'Top 15 workplaces where Stockton residents work, GHG emissions from transportation. Includes Stockton as a workplace destination separate from the rest of SJC. All other listed workplaces are counties. Los Angeles, San Bernardino, Orange, and San Diego Counties were removed. Data from LODES, 2017.'
+) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%")
+```
+
+$~$
+
+According to the table above, 59% percent of Stockton residents work in San Joaquin County and collectively contribute 19% of all commute GHGs. The next 14 counties comprise another 39% of Stockton residents, but they collectively contribute 73% of all commute GHGs. This significant difference comes down to difference in average commute distance to each county, which is directly related to average GHG emissions per worker. In a later section, we will explore opportunities to stimulate local job creation so that some of these long-distance commutes can be converted into local commutes, reducing both the toll on the environment and the tolls on health and well-being for Stockton residents.
+
+```{r ghg-map-2, fig.cap="Top 15 Counties where Stockton residents work - annual GHG emissions from driving. Data from LODES, 2017."}
+map = mapview(stockton_lodes_h_counties_ghg[1:15,c("annual_ghg")], zcol = "annual_ghg", map.types = c("OpenStreetMap"), legend = TRUE, layer.name = 'Total Annual</br>GHG (tCO2e)')
+
+map@map
+```
+
+$~$
+
+In Section 2.6, we used EMFAC2017 to estimate the emission rates for vehicle miles. Forecasting 
 
 ```{r}
 # save.image(file = "C:/Users/Derek Ouyang/Google Drive/City Systems/Stockton Green Economy/ADU/test_adu_save4.Rdata")
