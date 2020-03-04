@@ -38,10 +38,18 @@ editor_options:
 
 # Test
 
-```{r}
-knitr::include_url("http://web.stanford.edu/~douyang1/map-bgs.html")
+```{r img-dospinos}
+knitr::include_graphics("images/dos-pinos.png")
 ```
+<br>Dos Pinos Housing Cooperative in Davis, CA. Source: [NBCA](https://ncbaclusa.coop/blog/this-california-housing-co-ops-ownership-model-could-create-affordable-housing-nationwide/)
 
+| Location | Davis, CA |
+|:------|:-------------------------------------------------------------------|
+| Details | Shared equity housing is a model used by nonprofit housing associations and municipalities targeting first-time buyers, those with bad loan or credit history, and those who can’t afford downpayments. Typically, a nonprofit or government entity provides a subsidy to lower the cost of purchase through shared appreciation loans, which are second mortgages provided by a public agency that buyers repay in full at the time of resale along with a percentage of home value appreciation. These funds are reinvested to make home ownership more affordable to another low-income buyer.<br><br>`r knitr::include_graphics("images/shared-equity.png")`<br>Source: [FRED](https://fred.stlouisfed.org/) |
+| Links | [Urban Insitute](https://www.urban.org/research/publication/shared-equity-homeownership-evaluation-case-study-dos-pinos-housing-cooperative) |
+| Implementation Costs & Impact Factor | The Davis cooperative is independently run. In San Francisco, the Mayor's Office BMR program subsidizes homes at about $250,000 below their appraised value. According to the [Urban Institute](https://www.urban.org/research/publication/sharing-equity-future-generations-evaluation-long-term-affordable-homeownership-programs-usa), homes that were passed between shared equity owners remained affordable over time, delinquency and foreclosure rates were low, and families who sold their homes were able to use the proceeds to purchase market-rate homes. |
+| Scalable Potential | Stockton's Economic Devleopment Department or the Housing Authority of San Joaquin County could initiate such a program. |
+| Similar | [San Francisco Citywide Inclusionary Affordable Housing Program](https://www.urban.org/research/publication/shared-equity-homeownership-evaluation-case-study-san-francisco-citywide-inclusionary-affordable-housing-program) |
 
 ## Building Utilization
 
