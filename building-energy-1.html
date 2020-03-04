@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="building-utilization-1.html"/>
-<link rel="next" href="employment-growth-1.html"/>
+<link rel="next" href="vehicle-emissions-2.html"/>
 <script src="libs/header-attrs-2.1/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -582,6 +582,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.7.5" data-path="resilience.html"><a href="resilience.html#promote-urban-gardens-as-a-substitute-for-displaced-ecosystem-services"><i class="fa fa-check"></i><b>3.7.5</b> Promote urban gardens as a substitute for displaced ecosystem services</a></li>
 <li class="chapter" data-level="3.7.6" data-path="resilience.html"><a href="resilience.html#offer-rebates-for-flood-mitigation-projects"><i class="fa fa-check"></i><b>3.7.6</b> Offer rebates for flood mitigation projects</a></li>
 </ul></li>
+<li class="chapter" data-level="3.8" data-path="resource-management.html"><a href="resource-management.html"><i class="fa fa-check"></i><b>3.8</b> Resource Management</a>
+<ul>
+<li class="chapter" data-level="3.8.1" data-path="resource-management.html"><a href="resource-management.html#develop-carbon-capture-storage-facilities"><i class="fa fa-check"></i><b>3.8.1</b> Develop carbon capture &amp; storage facilities</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="analysis-of-green-economy-strategies.html"><a href="analysis-of-green-economy-strategies.html"><i class="fa fa-check"></i><b>4</b> Analysis of Green Economy Strategies</a>
 <ul>
@@ -593,23 +597,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.3" data-path="building-energy-1.html"><a href="building-energy-1.html"><i class="fa fa-check"></i><b>4.3</b> Building Energy</a>
 <ul>
 <li class="chapter" data-level="4.3.1" data-path="building-energy-1.html"><a href="building-energy-1.html#strategy-electrification"><i class="fa fa-check"></i><b>4.3.1</b> Strategy: Electrification</a></li>
-<li class="chapter" data-level="4.3.2" data-path="building-energy-1.html"><a href="building-energy-1.html#strategy-solar-installations"><i class="fa fa-check"></i><b>4.3.2</b> Strategy: Solar Installations</a></li>
 </ul></li>
-<li class="chapter" data-level="4.4" data-path="employment-growth-1.html"><a href="employment-growth-1.html"><i class="fa fa-check"></i><b>4.4</b> Employment Growth</a>
+<li class="chapter" data-level="4.4" data-path="vehicle-emissions-2.html"><a href="vehicle-emissions-2.html"><i class="fa fa-check"></i><b>4.4</b> Vehicle Emissions</a>
 <ul>
-<li class="chapter" data-level="4.4.1" data-path="employment-growth-1.html"><a href="employment-growth-1.html#strategy-job-training"><i class="fa fa-check"></i><b>4.4.1</b> Strategy: Job Training</a></li>
-</ul></li>
-<li class="chapter" data-level="4.5" data-path="local-jobs-1.html"><a href="local-jobs-1.html"><i class="fa fa-check"></i><b>4.5</b> Local Jobs</a>
-<ul>
-<li class="chapter" data-level="4.5.1" data-path="local-jobs-1.html"><a href="local-jobs-1.html#strategy-attracting-green-jobs"><i class="fa fa-check"></i><b>4.5.1</b> Strategy: Attracting Green Jobs</a></li>
-</ul></li>
-<li class="chapter" data-level="4.6" data-path="vehicle-miles-traveled-1.html"><a href="vehicle-miles-traveled-1.html"><i class="fa fa-check"></i><b>4.6</b> Vehicle Miles Traveled</a>
-<ul>
-<li class="chapter" data-level="4.6.1" data-path="vehicle-miles-traveled-1.html"><a href="vehicle-miles-traveled-1.html#strategy-park-and-ride"><i class="fa fa-check"></i><b>4.6.1</b> Strategy: Park and Ride</a></li>
-</ul></li>
-<li class="chapter" data-level="4.7" data-path="vehicle-emissions-2.html"><a href="vehicle-emissions-2.html"><i class="fa fa-check"></i><b>4.7</b> Vehicle Emissions</a>
-<ul>
-<li class="chapter" data-level="4.7.1" data-path="vehicle-emissions-2.html"><a href="vehicle-emissions-2.html#strategy-electric-vehicle-program"><i class="fa fa-check"></i><b>4.7.1</b> Strategy: Electric Vehicle Program</a></li>
+<li class="chapter" data-level="4.4.1" data-path="vehicle-emissions-2.html"><a href="vehicle-emissions-2.html#strategy-electric-vehicle-program"><i class="fa fa-check"></i><b>4.4.1</b> Strategy: Electric Vehicle Program</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>5</b> Conclusion</a></li>
@@ -636,55 +627,55 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="strategy-electrification" class="section level3" number="4.3.1">
 <h3><span class="header-section-number">4.3.1</span> Strategy: Electrification</h3>
 <p>Building electrification refers generally to the conversion of building systems and appliances that are powered directly by fossil fuels into alternative systems and appliances that are powered by electricity, which is becoming increasingly low-carbon. The primary opportunities for electrification are in suburban areas with old homes that have water and space heating powered by natural gas. Household heating fuel type in Stockton from 2018 ACS 1-Yr data is shown below.</p>
-<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="building-energy-1.html#cb89-1"></a><span class="co"># acs_vars &lt;-</span></span>
-<span id="cb89-2"><a href="building-energy-1.html#cb89-2"></a><span class="co">#   listCensusMetadata(</span></span>
-<span id="cb89-3"><a href="building-energy-1.html#cb89-3"></a><span class="co">#     name = &quot;2018/acs/acs1&quot;,</span></span>
-<span id="cb89-4"><a href="building-energy-1.html#cb89-4"></a><span class="co">#     type = &quot;variables&quot;</span></span>
-<span id="cb89-5"><a href="building-energy-1.html#cb89-5"></a><span class="co">#   )</span></span>
-<span id="cb89-6"><a href="building-energy-1.html#cb89-6"></a><span class="co"># </span></span>
-<span id="cb89-7"><a href="building-energy-1.html#cb89-7"></a><span class="co"># save(acs_vars, file=&quot;C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_2018.Rdata&quot;)</span></span>
-<span id="cb89-8"><a href="building-energy-1.html#cb89-8"></a></span>
-<span id="cb89-9"><a href="building-energy-1.html#cb89-9"></a><span class="kw">load</span>(<span class="st">&quot;C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_2018.Rdata&quot;</span>)</span>
-<span id="cb89-10"><a href="building-energy-1.html#cb89-10"></a></span>
-<span id="cb89-11"><a href="building-energy-1.html#cb89-11"></a>heating_fuel &lt;-</span>
-<span id="cb89-12"><a href="building-energy-1.html#cb89-12"></a><span class="st">  </span><span class="kw">getCensus</span>(</span>
-<span id="cb89-13"><a href="building-energy-1.html#cb89-13"></a>    <span class="dt">name =</span> <span class="st">&quot;acs/acs1&quot;</span>,</span>
-<span id="cb89-14"><a href="building-energy-1.html#cb89-14"></a>    <span class="dt">vintage =</span> <span class="dv">2018</span>,</span>
-<span id="cb89-15"><a href="building-energy-1.html#cb89-15"></a>    <span class="dt">vars =</span> <span class="st">&quot;group(B25040)&quot;</span>,</span>
-<span id="cb89-16"><a href="building-energy-1.html#cb89-16"></a>    <span class="dt">region =</span> <span class="st">&quot;place:75000&quot;</span>,</span>
-<span id="cb89-17"><a href="building-energy-1.html#cb89-17"></a>    <span class="dt">regionin =</span> <span class="st">&quot;state:06&quot;</span></span>
-<span id="cb89-18"><a href="building-energy-1.html#cb89-18"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb89-19"><a href="building-energy-1.html#cb89-19"></a><span class="st">  </span><span class="kw">select_if</span>(<span class="op">!</span><span class="kw">names</span>(.) <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;GEO_ID&quot;</span>,<span class="st">&quot;state&quot;</span>,<span class="st">&quot;place&quot;</span>,<span class="st">&quot;NAME&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb89-20"><a href="building-energy-1.html#cb89-20"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span><span class="kw">c</span>(<span class="kw">contains</span>(<span class="st">&quot;EA&quot;</span>),<span class="kw">contains</span>(<span class="st">&quot;MA&quot;</span>),<span class="kw">contains</span>(<span class="st">&quot;M&quot;</span>))) <span class="op">%&gt;%</span></span>
-<span id="cb89-21"><a href="building-energy-1.html#cb89-21"></a><span class="st">  </span><span class="kw">gather</span>(</span>
-<span id="cb89-22"><a href="building-energy-1.html#cb89-22"></a>    <span class="dt">key =</span> <span class="st">&quot;variable&quot;</span>,</span>
-<span id="cb89-23"><a href="building-energy-1.html#cb89-23"></a>    <span class="dt">value =</span> <span class="st">&quot;estimate&quot;</span></span>
-<span id="cb89-24"><a href="building-energy-1.html#cb89-24"></a>  ) <span class="op">%&gt;%</span></span>
-<span id="cb89-25"><a href="building-energy-1.html#cb89-25"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
-<span id="cb89-26"><a href="building-energy-1.html#cb89-26"></a>    <span class="dt">label =</span> acs_vars<span class="op">$</span>label[<span class="kw">match</span>(variable,acs_vars<span class="op">$</span>name)]</span>
-<span id="cb89-27"><a href="building-energy-1.html#cb89-27"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb89-28"><a href="building-energy-1.html#cb89-28"></a><span class="st">  </span><span class="kw">transmute</span>(</span>
-<span id="cb89-29"><a href="building-energy-1.html#cb89-29"></a>    <span class="st">`</span><span class="dt">Heating Fuel Type</span><span class="st">`</span> =<span class="st"> </span></span>
-<span id="cb89-30"><a href="building-energy-1.html#cb89-30"></a><span class="st">      </span><span class="kw">substr</span>(</span>
-<span id="cb89-31"><a href="building-energy-1.html#cb89-31"></a>        label,</span>
-<span id="cb89-32"><a href="building-energy-1.html#cb89-32"></a>        <span class="kw">lapply</span>(</span>
-<span id="cb89-33"><a href="building-energy-1.html#cb89-33"></a>          label, <span class="cf">function</span>(x){</span>
-<span id="cb89-34"><a href="building-energy-1.html#cb89-34"></a>            <span class="kw">max</span>(<span class="kw">unlist</span>(<span class="kw">gregexpr</span>(<span class="st">&#39;!!&#39;</span>,x)))<span class="op">+</span><span class="dv">2</span></span>
-<span id="cb89-35"><a href="building-energy-1.html#cb89-35"></a>          }</span>
-<span id="cb89-36"><a href="building-energy-1.html#cb89-36"></a>        ),</span>
-<span id="cb89-37"><a href="building-energy-1.html#cb89-37"></a>        <span class="kw">nchar</span>(label)</span>
-<span id="cb89-38"><a href="building-energy-1.html#cb89-38"></a>      ),</span>
-<span id="cb89-39"><a href="building-energy-1.html#cb89-39"></a>    <span class="st">`</span><span class="dt">Number of Households</span><span class="st">`</span> =<span class="st"> </span>estimate,</span>
-<span id="cb89-40"><a href="building-energy-1.html#cb89-40"></a>    <span class="st">`</span><span class="dt">Percent of Households</span><span class="st">`</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(estimate<span class="op">/</span><span class="dv">95557</span><span class="op">*</span><span class="dv">100</span>,<span class="dv">2</span>),<span class="st">&quot;%&quot;</span>)</span>
-<span id="cb89-41"><a href="building-energy-1.html#cb89-41"></a>  )</span>
-<span id="cb89-42"><a href="building-energy-1.html#cb89-42"></a></span>
-<span id="cb89-43"><a href="building-energy-1.html#cb89-43"></a><span class="kw">kable</span>(</span>
-<span id="cb89-44"><a href="building-energy-1.html#cb89-44"></a>  heating_fuel,</span>
-<span id="cb89-45"><a href="building-energy-1.html#cb89-45"></a>  <span class="dt">booktabs =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb89-46"><a href="building-energy-1.html#cb89-46"></a>  <span class="dt">caption =</span> <span class="st">&#39;Heating fuel type for Stockton households. Data from ACS 1-yr, 2018.&#39;</span></span>
-<span id="cb89-47"><a href="building-energy-1.html#cb89-47"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb89-48"><a href="building-energy-1.html#cb89-48"></a><span class="st">  </span><span class="kw">kable_styling</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb89-49"><a href="building-energy-1.html#cb89-49"></a><span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="building-energy-1.html#cb73-1"></a><span class="co"># acs_vars &lt;-</span></span>
+<span id="cb73-2"><a href="building-energy-1.html#cb73-2"></a><span class="co">#   listCensusMetadata(</span></span>
+<span id="cb73-3"><a href="building-energy-1.html#cb73-3"></a><span class="co">#     name = &quot;2018/acs/acs1&quot;,</span></span>
+<span id="cb73-4"><a href="building-energy-1.html#cb73-4"></a><span class="co">#     type = &quot;variables&quot;</span></span>
+<span id="cb73-5"><a href="building-energy-1.html#cb73-5"></a><span class="co">#   )</span></span>
+<span id="cb73-6"><a href="building-energy-1.html#cb73-6"></a><span class="co"># </span></span>
+<span id="cb73-7"><a href="building-energy-1.html#cb73-7"></a><span class="co"># save(acs_vars, file=&quot;C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_2018.Rdata&quot;)</span></span>
+<span id="cb73-8"><a href="building-energy-1.html#cb73-8"></a></span>
+<span id="cb73-9"><a href="building-energy-1.html#cb73-9"></a><span class="kw">load</span>(<span class="st">&quot;C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs1_vars_2018.Rdata&quot;</span>)</span>
+<span id="cb73-10"><a href="building-energy-1.html#cb73-10"></a></span>
+<span id="cb73-11"><a href="building-energy-1.html#cb73-11"></a>heating_fuel &lt;-</span>
+<span id="cb73-12"><a href="building-energy-1.html#cb73-12"></a><span class="st">  </span><span class="kw">getCensus</span>(</span>
+<span id="cb73-13"><a href="building-energy-1.html#cb73-13"></a>    <span class="dt">name =</span> <span class="st">&quot;acs/acs1&quot;</span>,</span>
+<span id="cb73-14"><a href="building-energy-1.html#cb73-14"></a>    <span class="dt">vintage =</span> <span class="dv">2018</span>,</span>
+<span id="cb73-15"><a href="building-energy-1.html#cb73-15"></a>    <span class="dt">vars =</span> <span class="st">&quot;group(B25040)&quot;</span>,</span>
+<span id="cb73-16"><a href="building-energy-1.html#cb73-16"></a>    <span class="dt">region =</span> <span class="st">&quot;place:75000&quot;</span>,</span>
+<span id="cb73-17"><a href="building-energy-1.html#cb73-17"></a>    <span class="dt">regionin =</span> <span class="st">&quot;state:06&quot;</span></span>
+<span id="cb73-18"><a href="building-energy-1.html#cb73-18"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb73-19"><a href="building-energy-1.html#cb73-19"></a><span class="st">  </span><span class="kw">select_if</span>(<span class="op">!</span><span class="kw">names</span>(.) <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;GEO_ID&quot;</span>,<span class="st">&quot;state&quot;</span>,<span class="st">&quot;place&quot;</span>,<span class="st">&quot;NAME&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb73-20"><a href="building-energy-1.html#cb73-20"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span><span class="kw">c</span>(<span class="kw">contains</span>(<span class="st">&quot;EA&quot;</span>),<span class="kw">contains</span>(<span class="st">&quot;MA&quot;</span>),<span class="kw">contains</span>(<span class="st">&quot;M&quot;</span>))) <span class="op">%&gt;%</span></span>
+<span id="cb73-21"><a href="building-energy-1.html#cb73-21"></a><span class="st">  </span><span class="kw">gather</span>(</span>
+<span id="cb73-22"><a href="building-energy-1.html#cb73-22"></a>    <span class="dt">key =</span> <span class="st">&quot;variable&quot;</span>,</span>
+<span id="cb73-23"><a href="building-energy-1.html#cb73-23"></a>    <span class="dt">value =</span> <span class="st">&quot;estimate&quot;</span></span>
+<span id="cb73-24"><a href="building-energy-1.html#cb73-24"></a>  ) <span class="op">%&gt;%</span></span>
+<span id="cb73-25"><a href="building-energy-1.html#cb73-25"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb73-26"><a href="building-energy-1.html#cb73-26"></a>    <span class="dt">label =</span> acs_vars<span class="op">$</span>label[<span class="kw">match</span>(variable,acs_vars<span class="op">$</span>name)]</span>
+<span id="cb73-27"><a href="building-energy-1.html#cb73-27"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb73-28"><a href="building-energy-1.html#cb73-28"></a><span class="st">  </span><span class="kw">transmute</span>(</span>
+<span id="cb73-29"><a href="building-energy-1.html#cb73-29"></a>    <span class="st">`</span><span class="dt">Heating Fuel Type</span><span class="st">`</span> =<span class="st"> </span></span>
+<span id="cb73-30"><a href="building-energy-1.html#cb73-30"></a><span class="st">      </span><span class="kw">substr</span>(</span>
+<span id="cb73-31"><a href="building-energy-1.html#cb73-31"></a>        label,</span>
+<span id="cb73-32"><a href="building-energy-1.html#cb73-32"></a>        <span class="kw">lapply</span>(</span>
+<span id="cb73-33"><a href="building-energy-1.html#cb73-33"></a>          label, <span class="cf">function</span>(x){</span>
+<span id="cb73-34"><a href="building-energy-1.html#cb73-34"></a>            <span class="kw">max</span>(<span class="kw">unlist</span>(<span class="kw">gregexpr</span>(<span class="st">&#39;!!&#39;</span>,x)))<span class="op">+</span><span class="dv">2</span></span>
+<span id="cb73-35"><a href="building-energy-1.html#cb73-35"></a>          }</span>
+<span id="cb73-36"><a href="building-energy-1.html#cb73-36"></a>        ),</span>
+<span id="cb73-37"><a href="building-energy-1.html#cb73-37"></a>        <span class="kw">nchar</span>(label)</span>
+<span id="cb73-38"><a href="building-energy-1.html#cb73-38"></a>      ),</span>
+<span id="cb73-39"><a href="building-energy-1.html#cb73-39"></a>    <span class="st">`</span><span class="dt">Number of Households</span><span class="st">`</span> =<span class="st"> </span>estimate,</span>
+<span id="cb73-40"><a href="building-energy-1.html#cb73-40"></a>    <span class="st">`</span><span class="dt">Percent of Households</span><span class="st">`</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(estimate<span class="op">/</span><span class="dv">95557</span><span class="op">*</span><span class="dv">100</span>,<span class="dv">2</span>),<span class="st">&quot;%&quot;</span>)</span>
+<span id="cb73-41"><a href="building-energy-1.html#cb73-41"></a>  )</span>
+<span id="cb73-42"><a href="building-energy-1.html#cb73-42"></a></span>
+<span id="cb73-43"><a href="building-energy-1.html#cb73-43"></a><span class="kw">kable</span>(</span>
+<span id="cb73-44"><a href="building-energy-1.html#cb73-44"></a>  heating_fuel,</span>
+<span id="cb73-45"><a href="building-energy-1.html#cb73-45"></a>  <span class="dt">booktabs =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb73-46"><a href="building-energy-1.html#cb73-46"></a>  <span class="dt">caption =</span> <span class="st">&#39;Heating fuel type for Stockton households. Data from ACS 1-yr, 2018.&#39;</span></span>
+<span id="cb73-47"><a href="building-energy-1.html#cb73-47"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb73-48"><a href="building-energy-1.html#cb73-48"></a><span class="st">  </span><span class="kw">kable_styling</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb73-49"><a href="building-energy-1.html#cb73-49"></a><span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
@@ -828,26 +819,26 @@ No fuel used
 <ul>
 <li><a href="https://www.smud.org/en">Sacramento Municipal Utility District</a> has an All-Electric Smart Home Program, part of the SMUD Smart Home Program, in which participating homeowners receive the financial incentives for single and multi-family homes shown in the table below. The minimum requirements include: all electric appliances and mechanical systems; no gas line in the home; and no gas service at the property. The public-private partnership has reached more than 1,000 homes and is expected to reach 2,000 by the end of the year.</li>
 </ul>
-<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="building-energy-1.html#cb90-1"></a>smud &lt;-</span>
-<span id="cb90-2"><a href="building-energy-1.html#cb90-2"></a><span class="st">  </span><span class="kw">data.frame</span>(</span>
-<span id="cb90-3"><a href="building-energy-1.html#cb90-3"></a>    <span class="dt">Type =</span> <span class="kw">c</span>(<span class="st">&quot;Single-family unit&quot;</span>,<span class="st">&quot;Multi-family unit&quot;</span>),</span>
-<span id="cb90-4"><a href="building-energy-1.html#cb90-4"></a>    <span class="st">`</span><span class="dt">Standard Incentive</span><span class="st">`</span> =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;$4,000&quot;</span>,<span class="st">&quot;$1,250&quot;</span>),</span>
-<span id="cb90-5"><a href="building-energy-1.html#cb90-5"></a>    <span class="st">`</span><span class="dt">Induction cooking appliance bonus</span><span class="st">`</span> =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;$1,000&quot;</span>,<span class="st">&quot;$500&quot;</span>),</span>
-<span id="cb90-6"><a href="building-energy-1.html#cb90-6"></a>    <span class="st">`</span><span class="dt">Total possible incentives</span><span class="st">`</span> =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;$5,000&quot;</span>,<span class="st">&quot;$1,750&quot;</span>)</span>
-<span id="cb90-7"><a href="building-energy-1.html#cb90-7"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb90-8"><a href="building-energy-1.html#cb90-8"></a><span class="st">  </span><span class="kw">rename</span>(</span>
-<span id="cb90-9"><a href="building-energy-1.html#cb90-9"></a>    <span class="st">`</span><span class="dt">Standard incentive</span><span class="st">`</span> =<span class="st"> </span>Standard.Incentive,</span>
-<span id="cb90-10"><a href="building-energy-1.html#cb90-10"></a>    <span class="st">`</span><span class="dt">Induction cooking appliance bonus</span><span class="st">`</span> =<span class="st"> </span>Induction.cooking.appliance.bonus,</span>
-<span id="cb90-11"><a href="building-energy-1.html#cb90-11"></a>    <span class="st">`</span><span class="dt">Total possible incentives</span><span class="st">`</span> =<span class="st"> </span>Total.possible.incentives</span>
-<span id="cb90-12"><a href="building-energy-1.html#cb90-12"></a>  )</span>
-<span id="cb90-13"><a href="building-energy-1.html#cb90-13"></a></span>
-<span id="cb90-14"><a href="building-energy-1.html#cb90-14"></a><span class="kw">kable</span>(</span>
-<span id="cb90-15"><a href="building-energy-1.html#cb90-15"></a>  smud,</span>
-<span id="cb90-16"><a href="building-energy-1.html#cb90-16"></a>  <span class="dt">booktabs =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb90-17"><a href="building-energy-1.html#cb90-17"></a>  <span class="dt">caption =</span> <span class="st">&#39;Financial incentives for single-family and multi-family homes in the SMUD All-Electric Smart Home Program.&#39;</span></span>
-<span id="cb90-18"><a href="building-energy-1.html#cb90-18"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb90-19"><a href="building-energy-1.html#cb90-19"></a><span class="st">  </span><span class="kw">kable_styling</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb90-20"><a href="building-energy-1.html#cb90-20"></a><span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="building-energy-1.html#cb74-1"></a>smud &lt;-</span>
+<span id="cb74-2"><a href="building-energy-1.html#cb74-2"></a><span class="st">  </span><span class="kw">data.frame</span>(</span>
+<span id="cb74-3"><a href="building-energy-1.html#cb74-3"></a>    <span class="dt">Type =</span> <span class="kw">c</span>(<span class="st">&quot;Single-family unit&quot;</span>,<span class="st">&quot;Multi-family unit&quot;</span>),</span>
+<span id="cb74-4"><a href="building-energy-1.html#cb74-4"></a>    <span class="st">`</span><span class="dt">Standard Incentive</span><span class="st">`</span> =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;$4,000&quot;</span>,<span class="st">&quot;$1,250&quot;</span>),</span>
+<span id="cb74-5"><a href="building-energy-1.html#cb74-5"></a>    <span class="st">`</span><span class="dt">Induction cooking appliance bonus</span><span class="st">`</span> =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;$1,000&quot;</span>,<span class="st">&quot;$500&quot;</span>),</span>
+<span id="cb74-6"><a href="building-energy-1.html#cb74-6"></a>    <span class="st">`</span><span class="dt">Total possible incentives</span><span class="st">`</span> =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;$5,000&quot;</span>,<span class="st">&quot;$1,750&quot;</span>)</span>
+<span id="cb74-7"><a href="building-energy-1.html#cb74-7"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb74-8"><a href="building-energy-1.html#cb74-8"></a><span class="st">  </span><span class="kw">rename</span>(</span>
+<span id="cb74-9"><a href="building-energy-1.html#cb74-9"></a>    <span class="st">`</span><span class="dt">Standard incentive</span><span class="st">`</span> =<span class="st"> </span>Standard.Incentive,</span>
+<span id="cb74-10"><a href="building-energy-1.html#cb74-10"></a>    <span class="st">`</span><span class="dt">Induction cooking appliance bonus</span><span class="st">`</span> =<span class="st"> </span>Induction.cooking.appliance.bonus,</span>
+<span id="cb74-11"><a href="building-energy-1.html#cb74-11"></a>    <span class="st">`</span><span class="dt">Total possible incentives</span><span class="st">`</span> =<span class="st"> </span>Total.possible.incentives</span>
+<span id="cb74-12"><a href="building-energy-1.html#cb74-12"></a>  )</span>
+<span id="cb74-13"><a href="building-energy-1.html#cb74-13"></a></span>
+<span id="cb74-14"><a href="building-energy-1.html#cb74-14"></a><span class="kw">kable</span>(</span>
+<span id="cb74-15"><a href="building-energy-1.html#cb74-15"></a>  smud,</span>
+<span id="cb74-16"><a href="building-energy-1.html#cb74-16"></a>  <span class="dt">booktabs =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb74-17"><a href="building-energy-1.html#cb74-17"></a>  <span class="dt">caption =</span> <span class="st">&#39;Financial incentives for single-family and multi-family homes in the SMUD All-Electric Smart Home Program.&#39;</span></span>
+<span id="cb74-18"><a href="building-energy-1.html#cb74-18"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb74-19"><a href="building-energy-1.html#cb74-19"></a><span class="st">  </span><span class="kw">kable_styling</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb74-20"><a href="building-energy-1.html#cb74-20"></a><span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
@@ -907,9 +898,6 @@ $1,750
 <li><a href="https://cityofpaloalto.org/gov/depts/utl/residents/save_energy_n_water/rebates/heat_pump_water_heater/pilot_program_details.asp">City of Palo Alto Utilities</a> offers rebates with the following eligibility requirements: To participate in the program, you must be a CPAU customer replacing a gas or electric water heater or installing a HPHW in a new or remodeled home; The HPHW must abide by the technical specifications listed by CPAU or must be on the list of Energy Star certified HPHWs.</li>
 </ul>
 </div>
-<div id="strategy-solar-installations" class="section level3" number="4.3.2">
-<h3><span class="header-section-number">4.3.2</span> Strategy: Solar Installations</h3>
-</div>
 </div>
             </section>
 
@@ -917,7 +905,7 @@ $1,750
         </div>
       </div>
 <a href="building-utilization-1.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="employment-growth-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="vehicle-emissions-2.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

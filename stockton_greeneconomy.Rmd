@@ -124,9 +124,9 @@ The following document describes our methodology and results. Given the scope of
 | If you are interested in... | Skip to... |
 |:---|:---|
 | Baseline assessment of economy and GHG footprint | [Chapter 2](#baseline-assessment) |
-| Overview of over fifty green economy strategies from around the U.S. | [Chapter 3](overview-of-green-economy-strategies) |
-| Analysis of five green economy strategies for Stockton | [Chapter 4](analysis-of-green-economy-strategies) |
-| U.S. strategy overview organized by city/county/state | [Appendix A](appendix-a-index-of-case-studies-by-place) |
+| Overview of over fifty green economy strategies from around the U.S. | [Chapter 3](#overview-of-green-economy-strategies) |
+| Analysis of specific green economy strategies for Stockton | [Chapter 4](#analysis-of-green-economy-strategies) |
+| U.S. strategy overview organized by city/county/state | [Appendix A](#appendix-a-index-of-case-studies-by-place) |
 
 $~$
 
@@ -4446,15 +4446,22 @@ Our simplified model of transportation emissions assumes that commute one-way ve
 
 Our simplified model of energy emissions will assume that building square footage increases with population and job growth through fixed ratios, and an underlying energy use factor for commercial and residential electricity and gas will follow the same trends as the last six years through 2040. Otherwise, a basic climate change model of heating and cooling degree days will drive additional changes in the forecasts.
 
-In summary, the following assumptions go into inputs for the forecasts, which are also shown in the table below:
+In summary, the following assumptions go into inputs for the 2020-2040 forecast:
 
-- From Section 2.1, we derived future population, employed resident, and job forecasts, specifically for the years 2020, 2025, 2030, 2035, and 2040.
-- From Section 2.5, we derived commute one-way VMT/workers for 2011-2017. The table below projects this trend to 2040.
-- From Section 2.6, we derived non-commute annual VMT/capita using 2018 data. Without further data, we will assume a constant rate through 2040 of 4100 miles/capita/year, so that non-commute travel increases proportionally with population growth.
-- From Section 2.7, we derived simplified aggregate vehicle emission rates for San Joaquin County through 2040. Average gCO2/mile and % electric vehicles are projected in the table below.
-- From Section 2.7, we derived a linear forecast of PG&E's electricity emissions factor which runs from 2017's data point towards a 2045 target of 100% clean energy.
-- From Section 2.7, we derived linear forecasts of heating and cooling degree days through 2040 from Cal-Adapt's HDD and CDD projections.
-- From Section 2.7, we derived linear forecasts of energy use per capita per degree-day through 2040. For Commercial Gas, we leveled out the forecast at 1 kBTU/job/HDD from 2035 on.
+| Section | Assumption | Source/Reasoning |
+|:------|:---------|:----------------------------------------------------------------|
+| [2.1](#population-and-jobs) | Population increases | [Nature study](https://www.nature.com/articles/sdata20195) by Mathew Hauer. Includes a "middle of the road" assumption for global sustainability. Population 15+ is used specifically to forecast employment. |
+| [2.1](#population-and-jobs) | Employment rate increases | Our choice: employment rate increases linearly based on trend from 2010-2018. |
+| [2.1](#population-and-jobs) | Job to employed residents ratio decreases | Our choice: J/ER ratio decreases linearly based on trend from 2010-2018. |
+| [2.5](#commute-vehicle-miles-traveled) | Commute one-way VMT per worker increases | Our choice: Commute VMT/worker increases linearly based on trend from 2011-2017. |
+| [2.6](#non-commute-vehicle-miles-traveled) | Non-commute VMT per resident stays constant | Our choice: Without trend information, we assume non-commute VMT/resident stays constant. Further analysis pending data collection is likely to reveal an upwards trend over the past few years. |
+| [2.7](#vehicle-emissions) | GHG per vehicle mile decreases | CARB [EMFAC2017](https://ww2.arb.ca.gov/our-work/programs/mobile-source-emissions-inventory/msei-modeling-tools) model forecasts declining emissions rates based on assumed alignment with state and federal regulations. |
+| [2.7](#vehicle-emissions) | Electric vehicle adoption increases | CARB [EMFAC2017](https://ww2.arb.ca.gov/our-work/programs/mobile-source-emissions-inventory/msei-modeling-tools) model forecasts increasing EV adoption based on regressions on historical data. |
+| [2.8](#energy) | PG&E electricity emissions factor decreases | Our choice: We assume a linear forecast which runs from 2017's reported factor towards a 2045 target of 100% clean energy. |
+| [2.8](#energy) | Heating and cooling degree days | [Cal-Adapt](https://cal-adapt.org/tools/degree-days) forecasts using the average simulation (CanESM2) under the Representative Concentration Pathway (RCP) 4.5 scenario |
+| [2.8](#energy) | Energy use per capita per degree-day decreases | Our choice: combining climate, energy, and population/jobs data, we found downwards trends between 2013-2018 and assumed these trends to continue to 2040. For Commercial Gas, we leveled out the forecast at 1 kBTU/job/HDD from 2035 on. |
+
+The table below shows the results of the various assumptions above on quantitative inputs for each year, which are used to calculate GHG emissions.
 
 ```{r ghg-forecast-prep}
 summary_TCO2E_norm_projection <-
@@ -4572,7 +4579,7 @@ kable(
 
 $~$
 
-The input assumptions above result in the following GHG forecasts.
+The inputs above result in the following GHG forecasts.
 
 ```{r ghg-forecast}
 ghg_forecast <-
@@ -4615,7 +4622,8 @@ ghg_forecast %>%
       Sector == "amenity" ~ "Non-commute Transportation",
       Sector == "residential" ~ "Residential Building",
       TRUE ~ "Commercial Building"
-    )
+    ),
+    Sector = factor(Sector, levels = c("Commercial Building","Residential Building","Non-commute Transportation", "Commute Transportation"))
   ) %>% 
   ggplot(
     aes(
@@ -4643,6 +4651,24 @@ The assumptions built into these forecasts are necessarily simplistic given the 
 This chapter provides a survey of over fifty green economy strategies that have been implemented, or are being considered, in over eighty cities and regions across the U.S. and beyond. It is organized by overall strategy domain (with explanations for why the domain is chosen) and by specific strategy (where cities with similar examples as the primary case study are grouped together). In Appendix A, this list is re-organized by city or region. [See a matrix summary of the case studies here](https://docs.google.com/spreadsheets/d/1N5Z4KeE4ryFMpzMZZUkxq5P3sjj1ykJ30HubVaFKQ_Y/edit?ts=5e59003d#gid=0).
 
 Given the focus of this body of research on Stockton's green economy strategies, we generally prioritized searching for city-level initiatives over state or federal level policies and private sector initiatives. Compared to the technical analysis elsewhere in this report, which focuses on the GHG footprints of building and transportation and job geography, the strategies in this overview span a broader range of "green" topics, including water and resilience.
+
+Among many others, the following knowledge sources were researched in the development of this survey:
+
+- [American Council for an Energy-Efficient Economy](https://database.aceee.org/)
+- [Better Buildings Challenge](https://betterbuildingssolutioncenter.energy.gov/challenge)
+- [Brookings](https://www.brookings.edu/)
+- [City Observatory](http://cityobservatory.org/)
+- [CityLab](https://www.citylab.com/)
+- [Clean Cities Coalition Network](https://cleancities.energy.gov/)
+- [Meeting of the Minds](https://meetingoftheminds.org/)
+- [MRDC](https://www.mdrc.org/)
+- [National Bureau of Economic Research](https://www.nber.org/)
+- [National Resource Defense Council](https://www.nrdc.org/)
+- [Pew Charitable Trusts](https://www.pewtrusts.org/en/research-and-analysis/articles/2019/11/19/mitigation-matters-policy-solutions-to-reduce-local-flood-risk)
+- [Rocky Mountain Institute](https://rmi.org/)
+- [Shared-Use Mobility Center](https://sharedusemobilitycenter.org/)
+- [UCLA Luskin Center for Innovation](https://innovation.luskin.ucla.edu/)
+- [Urban Institute](https://www.urban.org/)
 
 The following chapter will revisit each strategy domain with a focus on specific strategies that can be technically evaluated using the quantitative approach that has been developed in Chapter 2, and that may be applicable to Stockton. While this deeper analysis cannot be applied to all the strategies researched in this chapter, we believe the handful that are detailed are good starting points for Stockton's green economy initiative in the 2020s.
 
@@ -4906,7 +4932,7 @@ This domain covers strategies with the outcome of increasing the employment rate
 
 ### Offer continued training and support post-employment
 
-`r include_graphics("images/workadvance.png")`
+`r include_graphics("images/workadvance.jpg")`
 <br>Source: [National Service](https://nationalservice.tumblr.com/post/162823944555/sif-builds-financial-stability-for-families)
 
 | Location | New York City, NY |
@@ -5084,8 +5110,8 @@ This domain includes transportation-oriented strategies that lead to fewer vehic
 
 ### Rezone areas around transit stations and commercial corridors to allow for high-density residential development
 
-`r include_graphics("images/lyft.jpg")`
-<br>Source: [SF Examiner](https://www.sfexaminer.com/the-city/lyft-rolls-out-new-rental-bikes/)
+`r include_graphics("images/tod.png")`
+<br>Source: [TOD Institute](http://www.tod.org/)
 
 | Location | Tyson, VA |
 |:------|:-------------------------------------------------------------------|
@@ -5096,6 +5122,10 @@ This domain includes transportation-oriented strategies that lead to fewer vehic
 | Similar | [Minneapolis 2040](https://minneapolis2040.com/) |
 
 ### Offset negative externalities of traffic through tolls 
+
+`r include_graphics("images/congestion.png")`
+<br>Source: [Wikipedia](https://en.wikipedia.org/wiki/Congestion_pricing)
+
 | Location | New York City, NY |
 |:------|:-------------------------------------------------------------------|
 | Details | New York placed tolls in two locations that are typically congested. 80% of the funds from tolling will go to capital projects while 20% goes towards the public transit system. Drivers can only be tolled once per day. Additionally, toll exemptions are made for emergency vehicles, drivers with disabilities, and those who make under $60,000 per year. The goal of the program is to reduce congestion by encouraging the use of carpooling and public transit. |
@@ -5105,6 +5135,10 @@ This domain includes transportation-oriented strategies that lead to fewer vehic
 | Similar | [Seattle Department of Transportation](https://www.seattle.gov/Documents/Departments/SDOT/About/SeattleCongestionPricingStudy_SummaryReport_20190520.pdf)<br>[Stockholm, Sweden](https://docs.google.com/spreadsheets/d/1wfzrP3pYT7yDMCnIthztelqYMdhkURePtL_N114HtIw/edit#gid=0) |
 
 ### Charge for parking
+
+`r include_graphics("images/parking.jpg")`
+<br>Source: [Denver Urbanism](https://denverurbanism.com/2016/12/choosing-to-build-two-parking-spaces-or-two-bedrooms-shouldnt-be-difficult.html)
+
 | Location | New York City, NY |
 |:------|:-------------------------------------------------------------------|
 | Details | Cities that charge for parking have realized an increase in the use of public transit for commuting (r-squared of .83) and a reduction in commuting alone. This is made more effective when they eliminate zoning requirements about parking and change the cost of parking over the day. In New York, sensors have allowed the tracking of parking spaces, bringing vehicles directly to open parking spaces, rather than having them drive around looking for a spot. |
@@ -5114,6 +5148,10 @@ This domain includes transportation-oriented strategies that lead to fewer vehic
 | Similar | [SFpark](http://sfpark.org/) |
 
 ### Give carpoolers priority parking at transit stops
+
+`r include_graphics("images/carpool.jpg")`
+<br>Source: [News Tribune](https://www.thenewstribune.com/news/local/traffic/article101595332.html)
+
 | Location | King County, WA |
 |:------|:-------------------------------------------------------------------|
 | Details | At all light rail stations, commuters who drive together are able to park for free at Sound Transit priority parking. Drivers must arrive with at least two other riders to be eligible and half the spaces at each parking location are dedicated to carpoolers. |
@@ -5123,6 +5161,10 @@ This domain includes transportation-oriented strategies that lead to fewer vehic
 | Similar | [Stanford Commute Club](https://transportation.stanford.edu/rideshare/learn-about-carpooling/start-a-carpool)<br>[Portland Carpool Program](https://www.portlandoregon.gov/TRANSPORTATION/article/725534) |
 
 ### Ban personal vehicles from certain areas
+
+`r include_graphics("images/market.png")`
+<br>Source: [SFMTA](https://www.sfmta.com/projects/better-market-street-project)
+
 | Location | Madrid, Spain |
 |:------|:-------------------------------------------------------------------|
 | Details | Madrid 360 has made 472 hectares of the city center off-limits to traffic, except for local residents and public transit. Non-residents with appropriate labels may enter to leave their vehicle in a public parking lot, and exceptions are made for people with reduced mobility, ambulances, taxis, private-hire cars, and delivery vans. Electric vehicles will also be allowed into the city center. |
@@ -5132,6 +5174,10 @@ This domain includes transportation-oriented strategies that lead to fewer vehic
 | Similar | [Better Market Street SF](https://www.sfmta.com/projects/better-market-street-project)<br>[Paris, France](https://www.independent.co.uk/travel/news-and-advice/paris-car-free-sundays-city-centre-france-pedestrian-a8566991.html) |
  
 ### Encourage carsharing strategies
+
+`r include_graphics("images/carshare.jpg")`
+<br>Source: [SF Environment](https://sfenvironment.org/ccsf-carsharing)
+
 | Location | San Francisco Bay Area, CA |
 |:------|:-------------------------------------------------------------------|
 | Details | On June 13, 2018 the Metropolitan Transportation Commission (MTC, the Bay Area’s transportation planning, financing, and coordinating agency) allocated $1.2 million under the Climate Initiatives Program to implement the strategies recommended in the attached report; “Bay Area Carsharing Implementation Strategy”, completed in Spring 2018. The Carsharing Implementation Strategy documents were outlined in a report to MTC’s Board which reviews the development and current state of carsharing in the Bay Area, explores regional challenges and opportunities as they apply to various carsharing business models (round-trip, one-way, and peer-to-peer), presents findings from interviews and workshops with stakeholders in the region, and provides specific strategies to support the expansion of carsharing. The Carsharing Strategy is intended to identify opportunities to grow carsharing membership and usage in the Bay Area as a method of reducing single-occupancy vehicle trips and vehicles miles traveled, with the overall goal of reducing greenhouse gases. |
@@ -5141,6 +5187,10 @@ This domain includes transportation-oriented strategies that lead to fewer vehic
 | Similar | [Boston Fleethub](https://www.zipcar.com/press/releases/zipcar-launches-new-boston-fleethub-program) |
 
 ### Provide free public transit
+
+`r include_graphics("images/kansas.jpg")`
+<br>Source: [Curbed](https://www.curbed.com/2019/12/6/20998617/kansas-city-missouri-free-public-transportation)
+
 | Location | Kansas City, MO |
 |:------|:-------------------------------------------------------------------|
 | Details | Kansas City, Missouri, will be the first major US city to offer free bus service to residents by 2020. City Council members in a metropolis of about 490,000 people, voted unanimously in early December 2019. The council still needs to decide how the system will be funded and where that money will come from in the budget. |
@@ -5150,6 +5200,10 @@ This domain includes transportation-oriented strategies that lead to fewer vehic
 | Similar | [Luxembourg](https://www.bbc.com/worklife/article/20190128-the-cost-of-luxembourgs-free-public-transport-plan)<br>[Estonia](https://www.economist.com/europe/2019/05/09/free-public-transport-in-estonia) |
 
 ### Subsidize first-mile/last-mile transportation services
+
+`r include_graphics("images/centennial.png")`
+<br>Source: [Shared-Use Mobility Center](https://learn.sharedusemobilitycenter.org/casestudy/centennial-colorado-and-lyft-first-last-mile-pilot-project-review/)
+
 | Location | Centennial, CO |
 |:------|:-------------------------------------------------------------------|
 | Details | The First and Last Mile Pilot (FLMP) was a public-private partnership between the City of Centennial, CH2M, the Denver South Transportation Management Association (DSTMA), Southeast Public Improvement Metropolitan District (SPIMD), Lyft, Via Mobility Services (Via), and Xerox (Conduent). Beginning August 17th, residents were able to request a free Lyft Line (carpooling) ride to and from the Dry Creek LRT station. The Go Denver app powered by Xerox integrated scheduling and payment systems for both transit and Lyft, thus allowing users to select the FLMP options including “Light Rail + Lyft Line.” |
@@ -5163,6 +5217,10 @@ This domain includes transportation-oriented strategies that lead to fewer vehic
 This domain focuses on strategies that reduce the emissions of combustion engine vehicles or increase the share of electric vehicles on the road.
 
 ### Provide grants for pollutant remediation and reduction initiatives
+
+`r include_graphics("images/moyer.png")`
+<br>Source: [BAAQMD](https://www.baaqmd.gov/publications/air-currents/2019/080119)
+
 | Location | Ventura County, CA |
 |:------|:-------------------------------------------------------------------|
 | Details | The Carl Moyer Memorial Air Quality Standards Attainment Program, which is jointly run by CARB and the VCAPCB, provides grants for the following projects: Repower commercial fishing boats with lower emission engines; Repower farm equipment with lower emission engines; Replace emergency vehicles with lower emission engines; Replace heavy duty diesel trucks with lower emission engines; New, conversion of existing, or expansion of battery charging/alternative fueling stations. |
@@ -5172,6 +5230,10 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 | Similar | [Transportation Fund for Clean Air County Program Manager Fund, BAAQMD](https://www.baaqmd.gov/funding-and-incentives/public-agencies/county-program-manager-fund) |
 
 ### Provide commercial rebates for commercial building owners to install EV charging stations
+
+`r include_graphics("images/ev.jpg")`
+<br>Source: [Walmart](https://corporate.walmart.com/newsroom/2019/06/06/electrify-america-walmart-announce-completion-of-over-120-charging-stations-at-walmart-stores-nationwide-with-plans-for-further-expansion)
+
 | Location | Los Angeles, CA |
 |:------|:-------------------------------------------------------------------|
 | Details | The Los Angeles Department of Water and Power (LADWP) provides rebates to commercial customers toward the purchase of a Level 2 electric vehicle charging station. Commercial customers who purchase and install EV charging stations for employee and public use can receive up to \$5,000 for each charger, with up to \$750 in additional rebate funds per extra charge port. Eligible customers may qualify for up to 40 rebate rewards depending on the number of parking spaces at the installation site. EV charging stations must be installed within the LADWP service area. Rebates are available on a first-come, first-served basis through June 30, 2021, or until funds are exhausted. |
@@ -5181,6 +5243,10 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 | Similar | [Rancho Cucamonga Municipal Utility](https://www.cityofrc.us/sites/default/files/2019-08/ENG-RCMU-Commercial-EV-Rebate-Application_2019.pdf) |
 
 ### Provide grants to income eligible residents for the replacement of high-emission cars with low-emission cars
+
+`r include_graphics("images/cleancars.jpg")`
+<br>Source: [BAAQMD](https://www.baaqmd.gov/funding-and-incentives/residents/clean-cars-for-all)
+
 | Location | San Francisco Bay Area, CA |
 |:------|:-------------------------------------------------------------------|
 | Details | The Bay Area Air Quality Management District's (BAAQMD) Clean Cars for All program offers grants up to \$9,500 to income-eligible residents to replace a vehicle eligible for retirement with a PEV or HEV. Eligible vehicles for replacement should have a model year 15 years or older than the current year. Recipients may buy or lease a new or used PEV or HEV. Grants vary depending on the household income and vehicle technology. Vehicles that are replaced must be turned in at an authorized dismantler. Individuals that purchase an all-electric vehicle are eligible to receive up to \$2,000 for the purchase and installation of a Level 2 electric vehicle supply equipment. |
@@ -5190,6 +5256,10 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 | Similar | [City of Pasadena](https://ww5.cityofpasadena.net/water-and-power/residentialevrebate/) |
 
 ### Engage automobile manufacturers as stakeholders in the EV market
+
+`r include_graphics("images/dealership.jpg")`
+<br>Source: [Electrek](https://electrek.co/2020/02/18/plug-in-america-campaign-ev-adoption-car-dealers/)
+
 | Location | Arizona |
 |:------|:-------------------------------------------------------------------|
 | Details | Arizona requires car dealers to make information about alternative fuel vehicles and Arizona-based incentives for purchasing or leasing alternative fuel vehicles available to the public. The state also created an Electric Vehicles Arizona stakeholder group to bring together auto dealers and other interested parties so that they better understand the opportunities and barriers that electric vehicles face in the state. |
@@ -5199,6 +5269,10 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 | Similar | [Chicago Area Clean Cities](https://www.chicago.gov/city/en/depts/cdot/supp_info/chicago_area_cleancities.html) |
 
 ### Reduce vehicle speed limits
+
+`r include_graphics("images/slow.png")`
+<br>Source: [NACTO](https://nacto.org/wp-content/uploads/2012/10/ViolaRob_Neighborhood-Slow-Zones-NACTO-Conference-2012.pdf)
+
 | Location | Massachusetts |
 |:------|:-------------------------------------------------------------------|
 | Details | Introducing lower speed limits on motorways cuts fuel consumption and pollutant emissions. The exact impact is contingent upon vehicle type, driving patterns, frequency of speeding, congestion, and traffic diversion. |
@@ -5210,6 +5284,10 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 ## Resilience
 
 ### Promote cool surfaces to reduce heat island effect
+
+`r include_graphics("images/heat.jpg")`
+<br>Thermal infrared (left) and visible (right) images of a road with light and dark segments. The infrared image shows that the light segment (bottom) is about 17 degrees Celsius (30 degrees Fahrenheit) cooler than the dark segment (top). Source: [Berkeley Lab](https://heatisland.lbl.gov/coolscience/cool-pavements)
+
 | Location | New York City, NY |
 |:------|:-------------------------------------------------------------------|
 | Details | Rather than using dark pavements, which attract 80-95% of sunlight, solar reflective "cool" pavements have increased reflectance. They typically use a reflective or clear binder, or a reflective surface coating. |
@@ -5219,6 +5297,10 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 | Similar | [SMUD Cool Roof Rebate](https://energy-seal.com/wp-content/uploads/crrp_smud_cool_roof_rebate_program.pdf) |
 
 ### Promote permeable pavement to increase groundwater absorption
+
+`r include_graphics("images/pavers.png")`
+<br>Source: [City of Melbourne](http://urbanwater.melbourne.vic.gov.au/industry/treatment-types/what-is-porous-pavement/)
+
 | Location | Madison, WI |
 |:------|:-------------------------------------------------------------------|
 | Details | Permeable pavement is a form of pavement that is highly porous pavement that allows rainwater to pass through it and into the ground. In addition to reducing surface runoff, it can trap suspended solids, thereby filtering stormwater. This also reduces peak discharge rates, meaning that flooding is more controlled. It is, however, most appropriate for sidewalks/pedestrian areas and low-speed driving areas. |
@@ -5228,6 +5310,10 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 | Similar | [SF Permeable Sidewalks](https://www.sfbetterstreets.org/find-project-types/greening-and-stormwater-management/stormwater-overview/permeable-paving/) |
 
 ### Reclaim urban streams and rivers to increase groundwater absorption and filtration
+
+`r include_graphics("images/reclamation.png")`
+<br>Source: [Earth Economics](https://static1.squarespace.com/static/561dcdc6e4b039470e9afc00/t/5e4581cf81c87071297f8e61/1581613539633/ReedyRiver_FactSheet_0220-0.pdf)
+
 | Location | Greenville County, SC |
 |:------|:-------------------------------------------------------------------|
 | Details | Reclaiming urban streams and rivers helps to restore the watercycle back to its natural processes. This helps to restore groundwater recharge, as well as natural water filtration processes. From an environmental perspective, it restores sensitive natural habitats. |
@@ -5237,6 +5323,10 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 | Similar | [Guadalupe River, San Jose](https://www.hydroreform.org/sites/default/files/Hurd_Economic_Benefits_2009_0.pdf) |
 
 ### Use green infrastructure to improve stormwater management
+
+`r include_graphics("images/chinatown.jpg")`
+<br>Source: [Rain Guardians](https://www.rainguardians.org/)
+
 | Location | San Francisco, CA |
 |:------|:-------------------------------------------------------------------|
 | Details | Green Infrastructure is a method of reducing stormwater and pollution burden from stormwater systems. It does this through the creation of micro urban watersheds that have the potential to decrease erosion, improve air quality, increase land value, and reduce urban heat effects (thereby also reducing cooling loads). |
@@ -5246,6 +5336,10 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 | Similar | [Hunts Point, NY](https://static1.squarespace.com/static/561dcdc6e4b039470e9afc00/t/5d435f106f6e7a0001f5b304/1564696351697/HuntsPoint_EarthEconomics_062719-1.pdf)<br>[NE Siskiyou Green Street, Portland, OR](https://www.urbanraindesign.com/ne-siskiyou)<br>[Caltrans](https://www.owp.csus.edu/research/papers/papers/PP061.pdf)<br>[Tres Rios Demonstration Constructed Wetlands, Phoenix](https://www.wetlandsolutionsinc.com/download/TreatmentWetlands/Tres_Rios_Biomonitoring_Aug%202004.pdf) |
 
 ### Promote urban gardens as a substitute for displaced ecosystem services
+
+`r include_graphics("images/urbangarden.jpg")`
+<br>Source: [Philadelphia Inquirer](https://www.inquirer.com/science/climate/urban-farm-agriculture-philadelphia-plan-garden-plots-20190320.html)
+
 | Location | Philadelphia, PA |
 |:------|:-------------------------------------------------------------------|
 | Details | As a result of their greying environment, cities often suffer from greater fluctuations in weather conditions, poor water infiltration, improper nutrient cycling, and lack of vegetative cover. These lead to reduced water quality and flooding, heat islands, and lack of ecological diversity. Using vacant lots, which reduce property values, residents of Philadelphia have developed urban gardens  as a means of food production, increase property values, and provide educational opportunities on sustainability. |
@@ -5255,6 +5349,10 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 | Similar | [Detroit Garden Resource Program](http://detroitagriculture.net/)<br>[HOME GR/OWN Milwaukee](https://city.milwaukee.gov/homegrownmilwaukee.com#.XlXwGmhKiUk) |
 
 ### Offer rebates for flood mitigation projects
+
+`r include_graphics("images/holland.jpg")`
+<br>Source: [Pew](https://www.pewtrusts.org/en/research-and-analysis/issue-briefs/2019/11/illinois-village-offers-rebates-for-flood-mitigation-projects)
+
 | Location | South Holland, IL |
 |:------|:-------------------------------------------------------------------|
 | Details | Due to flooding from a local river, South Holland, IL offers up to \$2500 per project per property. Approved projects include measures to prevent water from entering a home, including adding downspouts and floodwalls, sewer backup projects, such as installing overhead sewers, and removal of connections from stormwater sewers. In 2016, the program was further extended to cover up to \$5,000 in costs if residents install systems to prevent sewer backups. |
@@ -5263,9 +5361,28 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 | Scalable Potential | Historical data on snowpack flooding has shown that 3 feet of flooding in Stockton could impact as many as 12,000 acres of land, with 20,000 housing units. Factoring in sea level rise projections, [Climate Central](http://ssrf.climatecentral.org.s3-website-us-east-1.amazonaws.com/Buffer2/states/CA/downloads/pdf_reports/Town/CA_Stockton-report.pdf) estimates a 34 percent multi-year risk of at least one flood exceeding 3 feet from 2016 to 2030, a 93 percent risk by from 2016 to midcentury, and a 100 percent risk by 2100. Under the National Resaerch Council's high-end projections, these chances increase to 50, 100, and 100 percent, respectively, and they compute a 100 percent risk of at least one flood exceeding 6 feet by the end of the century.
 | Similar | [Wisconsin Department of Natural Resources](https://www.pewtrusts.org/en/research-and-analysis/issue-briefs/2019/11/wisconsin-grant-program-helps-people-relocate-from-flood-prone-areas)<br>[Arkansas Private Wetland and Riparian Zone Creation and Restoration Incentives Act](https://www.pewtrusts.org/en/research-and-analysis/issue-briefs/2019/11/arkansas-tax-credit-rewards-landowners-for-conserving-wetlands) |
 
+## Resource Management
+
+This domain includes management of natural resources beyond what has already been covered (e.g. energy in buildings, floodwater).
+
+### Develop carbon capture & storage facilities 
+
+`r include_graphics("images/ccs.jpg")`
+<br>Source: [Global CCS Institute](https://www.globalccsinstitute.com/resources/)
+
+| Location | Decatur, IL |
+|:------|:-------------------------------------------------------------------|
+| Details | In October 2009, DOE selected the Archer Daniels Midland Company (ADM) team to conduct one of 12 projects in Phase 1 of its Industrial Carbon Capture and Storage (ICCS) program. The ADM Illinois ICCS project includes the design, construction, and demonstration of a CO2 compression and dehydration facility as a precursor to CO2 storage and subsequent monitoring, verification, and accounting of the stored CO2. The injected CO2 will come from the byproduct from processing corn into fuel-grade ethanol at ADM’s biofuels plant adjacent to the storage site in Decatur, Illinois. This gas stream will be compressed and dehydrated to deliver supercritical CO2 to the injection wellhead for storage. The injection operations will be conducted on a 200-acre site adjacent to the ethanol plant, which is also owned by ADM. Because all of the captured CO2 is produced from biologic fermentation, a significant feature of the project is its "negative carbon footprint," meaning that the sequestration results in a net reduction of atmospheric CO2. Integral to the project will be the formation of an educational and training facility, the National Sequestration Education Center, at nearby Richland Community College in Decatur. The center will contain classrooms, training, and laboratory facilities, and it will offer students associate degrees in sequestration technology. The ADM Illinois ICCS project is located in Decatur, Illinois. Partners include: Schlumberger Carbon Services, Illinois State Geological Survey (ISGS), and Richland Community College (RCC). |
+| Links | [U.S. Department of Energy](https://www.energy.gov/fe/articles/doe-announces-major-milestone-reached-illinois-industrial-ccs-project)<br>[Energy Futures Initiative](https://static1.squarespace.com/static/58ec123cb3db2bd94e057628/t/5d2ce5a6d73552000171a460/1563223469397/EFI_Advancing%2BLarge%2BScale%2BCarbon%2BManagement-%2BExpansion%2Bof%2Bthe%2B45Q%2BTax%2BCredit_2018.pdf)<br>[Global CCS Institute](https://www.globalccsinstitute.com/resources/publications-reports-research/the-lcfs-and-ccs-protocol-an-overview-for-policymakers-and-project-developers/) |
+| Implementation Costs & Impact Factor | This project received a \$141 million investment from DOE, matched by over \$66 million in private-sector cost share. The Archer Daniels Midland project can store roughly 1 million tons of CO2 per year in the Mt. Simon Sandstone, Illinois Basin, which has an estimated storage potential of over 250 million tons of CO2 per year. |
+| Scalable Potential | According to Dr. Julio Freidmann, senior research scholar at the Center on Global Energy Policy at Columbia University, the California Central Valley is one of a few geological areas in Northern America particularly conducive to CCS. In California, the Low Carbon Fuel Standard (LCFS) enables CCS projects to generate credits that have traded on average between \$122-190/tCO2 in 2018-2019. On top of LCFS, federal 45Q credits worth \$31/tCO2 for geological storage are expected to increase in value and scale, with estimates that the U.S. Treasury will provide between \$3.5-5 billion per year of tax credits starting in 2025. |
+| Similar | [Port Arthur, TX](https://www.energy.gov/fe/articles/doe-supported-co2-capture-project-hits-major-milestone-4-million-metric-tons)<br>[Petra Nova, Houston](https://www.energy.gov/fe/articles/doe-supported-petra-nova-captures-more-1-million-tons-co2) |
+
 # Analysis of Green Economy Strategies
 
 While the previous chapter is presented as a broad overview of different green economy strategies from locations across the U.S. and other countries, this chapter hand-picks a limited subset of strategies to examine in greater detail. These strategies are selected because of their ability to be modeled using the same framework as developed in Chapter 2, as well as their identification as practical options for Stockton by Stockton stakeholders. After a description of how the strategies will be quantitatively evaluated within our existing GHG framework, the following sections are once again organized by domain of green economy strategies. Each section introduces key model assumptions, and then a specific set of recommended strategies are modeled in terms of their possible impact on GHG reduction and economic benefits. Where possible, short-term and operational costs are also estimated.
+
+More strategies will be analyzed over time. Refer to the Conclusion (Chapter 5) for a list of upcoming analyses.
 
 ## Methodology
 
@@ -6112,20 +6229,6 @@ $~$
 - [MassCEC](https://www.masscec.com/installer-resources-air-source-heat-pumps) provides incentives for residential installation of whole-home air-source heat pumps. Pilot funding for the project is still being allocated so the number of affected homes is not yet recorded. Incentives are based on income category: For >120% of state median income, \$2,500; for 80-120%, \$3,750; for <80% or affordable housing, \$5,000.
 - [City of Palo Alto Utilities](https://cityofpaloalto.org/gov/depts/utl/residents/save_energy_n_water/rebates/heat_pump_water_heater/pilot_program_details.asp) offers rebates with the following eligibility requirements: To participate in the program, you must be a CPAU customer replacing a gas or electric water heater or installing a HPHW in a new or remodeled home; The HPHW must abide by the technical specifications listed by CPAU or must be on the list of Energy Star certified HPHWs.
 
-### Strategy: Solar Installations
-
-## Employment Growth
-
-### Strategy: Job Training
-
-## Local Jobs
-
-### Strategy: Attracting Green Jobs
-
-## Vehicle Miles Traveled
-
-### Strategy: Park and Ride
-
 ## Vehicle Emissions
 
 ### Strategy: Electric Vehicle Program
@@ -6205,11 +6308,29 @@ Note that while EVs can be effective at reducing gCO2/mile, transit strategies a
 
 **Future Work**
 
+This report is designed to be a living document that is continually updated with new research, new analyses, and new recommendations for Stockton's green economy. The following are anticipated next steps in data collection and analysis:
+
+- Analyze commercial infill growth as a Building Utilization strategy.
+- Complete quantitative analysis of building electrification a Building Energy strategy.
+- Analyze solar installations as a Building Energy strategy.
+- Analyze green job training as an Employment Growth strategy.
+- Analyze green business development as a Local Jobs strategy.
+- Analyze park-and-ride as a Vehicle Miles Traveled strategy.
 - Acquire data about industrial building emissions, which is currently limited by PG&E data privacy issues. Stockton could form data partnership agreements or benchmarking mandates directly with local corporations.
-- Incorporate non-commute VMTs, such as trips to the grocery store. These VMTs would be added to the VMTs already calculated for commuting, and further increase the already dominant share of transportation emissions.
 - Acquire water consumption data from local water companies.
 - Acquire waste collection data from local waste management companies.
 - Conduct a flood risk analysis for Stockton buildings.
+
+The following are knowledge sources to review for additional case studies to be added to Chapter 3:
+
+- [100 Resilient Cities](https://www.100resilientcities.org/)
+- [Climate Mayors](http://climatemayors.org/)
+- [FUSE Corps](https://fusecorps.org/)
+- [ICLEI](https://www.iclei.org/)
+- [Lincoln Institute of Land Policy](https://www.lincolninst.edu/)
+- [New America Foundation](https://www.newamerica.org/)
+- [SPUR](https://www.spur.org/)
+- [What Works Cities](https://whatworkscities.bloomberg.org/)
 
 # Appendix A: Index of Case Studies by Place
 
@@ -6298,6 +6419,10 @@ Note that while EVs can be effective at reducing gCO2/mile, transit strategies a
 
 - [Provide training and coaching for low-income workers, rather than unemployed workers](#provide-training-and-coaching-for-low-income-workers-rather-than-unemployed-workers)
 
+**Decatur, IL**
+
+- [Develop carbon capture & storage facilities](#develop-carbon-capture-storage-facilities)
+
 **Detroit, MI**
 
 - [Promote urban gardens as a substitute for displaced ecosystem services](#promote-urban-gardens-as-a-substitute-for-displaced-ecosystem-services)
@@ -6331,9 +6456,10 @@ Note that while EVs can be effective at reducing gCO2/mile, transit strategies a
 
 - [Use waste to produce electricity](#use-waste-to-produce-electricity)
 
-**Houston, CA**
+**Houston, TX**
 
 - [Redesign bus network to prioritize ridership over coverage](#redesign-bus-network-to-prioritize-ridership-over-coverage)
+- [Develop carbon capture & storage facilities](#develop-carbon-capture-storage-facilities)
 
 **Indianapolis, IN**
 
@@ -6483,6 +6609,10 @@ Note that while EVs can be effective at reducing gCO2/mile, transit strategies a
 **Pittsburgh, PA**
 
 - [Promote the use of e-scooters and dockless bicycles to reduce reliance on private cars](#promote-the-use-of-e-scooters-and-dockless-bicycles-to-reduce-reliance-on-private-cars)
+
+**Port Arthur, TX**
+
+- [Develop carbon capture & storage facilities](#develop-carbon-capture-storage-facilities)
 
 **Portland, OR**
 
