@@ -4698,7 +4698,7 @@ include_graphics("images/adu.png")
 ### Encourage micro-units
 
 ```{r img-microunit}
-include_graphics("images/microunit.png")
+include_graphics("images/microunit.jpg")
 ```
 <br>Schematic of a microunit in SF. Source: [SF Gate](https://www.sfgate.com/realestate/article/Micro-apartments-next-for-S-F-3706648.php)
 
@@ -4713,7 +4713,7 @@ include_graphics("images/microunit.png")
 ### Provide a density bonus for affordable housing
 
 ```{r img-densitybonus}
-include_graphics("images/densitybonus.png")
+include_graphics("images/densitybonus.jpg")
 ```
 <br>Illustration of a density bonus. Source: [City of North Vancouver](https://www.cnv.org/city-services/planning-and-policies/land-use/density-bonusing)
 
@@ -4743,7 +4743,7 @@ include_graphics("images/dos-pinos.png")
 ### Match homeowners with vacant spaces with individuals looking for affordable housing
 
 ```{r img-hiphousing}
-include_graphics("images/hiphousing.png")
+include_graphics("images/hiphousing.jpg")
 ```
 <br>Source: [HIP Housing](https://hiphousing.org/)
 
@@ -4762,7 +4762,7 @@ This domain covers all strategies that reduce the amount of energy use in buildi
 ### Promote solar development in Opportunity Zones
 
 ```{r img-solar}
-include_graphics("images/solar.png")
+include_graphics("images/solar.jpg")
 ```
 <br>Source: [PV Magazine](https://pv-magazine-usa.com/2019/05/06/clean-energy-in-opportunity-zones-an-interview-with-jon-bonanno/)
 
@@ -4777,7 +4777,7 @@ include_graphics("images/solar.png")
 ### Promote a Solar Renewable Energy Certificate program
 
 ```{r img-srec}
-include_graphics("images/srec.png")
+include_graphics("images/srec.jpg")
 ```
 <br>Source: [Aurora Solar](https://blog.aurorasolar.com/financial-incentives-for-installing-solar/)
 
@@ -4822,7 +4822,7 @@ include_graphics("images/boston.png")
 ### Enable property-assessed clean energy (PACE) financing
 
 ```{r img-pace}
-include_graphics("images/pace.png")
+include_graphics("images/pace.jpg")
 ```
 <br>Source: [Solect Energy](https://solect.com/deep-dive-c-pace-solar-financing/)
 
@@ -4882,7 +4882,7 @@ include_graphics("images/reach.png")
 ### Use waste to produce electricity
 
 ```{r img-bio}
-include_graphics("images/bio.png")
+include_graphics("images/bio.jpg")
 ```
 <br>Anaeraboic digestion process. Source: [EESI](https://www.eesi.org/papers/view/fact-sheet-biogasconverting-waste-to-energy)
 
