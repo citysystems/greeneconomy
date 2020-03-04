@@ -4652,9 +4652,7 @@ Building Utilization refers to the amount of building space used per person thro
 
 ### Revise zoning codes in medium to large cities to facilitate upzoning
 
-```{r img-missingmiddle}
-include_graphics("images/missingmiddle.png")
-```
+`r include_graphics("images/missingmiddle.png")`
 <br>Illustration of missing middle housing achievable through upzoning. Source: [Missing Middle Housing](https://missingmiddlehousing.com/)
 
 | Location | Oregon |
@@ -4667,9 +4665,7 @@ include_graphics("images/missingmiddle.png")
 
 ### Eliminate minimum parking
 
-```{r img-parking}
-include_graphics("images/parking.png")
-```
+`r include_graphics("images/parking.png")`
 <br>Illustration of the impact of parking minimums on building design. Source: [Strong Towns](https://www.strongtowns.org/journal/2018/11/20/the-many-costs-of-too-much-parking)
 
 | Location | Buffalo, NY |
@@ -4682,9 +4678,7 @@ include_graphics("images/parking.png")
  
 ### Encourage accessory dwelling units
 
-```{r img-adu}
-include_graphics("images/adu.png")
-```
+`r include_graphics("images/adu.png")`
 <br>Different types of ADUs. Source: [Housable](https://www.housable.com/)
 
 | Location | California |
@@ -4697,9 +4691,7 @@ include_graphics("images/adu.png")
 
 ### Encourage micro-units
 
-```{r img-microunit}
-include_graphics("images/microunit.jpg")
-```
+`r include_graphics("images/microunit.jpg")`
 <br>Schematic of a microunit in SF. Source: [SF Gate](https://www.sfgate.com/realestate/article/Micro-apartments-next-for-S-F-3706648.php)
 
 | Location | San Francisco, CA |
@@ -4712,9 +4704,7 @@ include_graphics("images/microunit.jpg")
 
 ### Provide a density bonus for affordable housing
 
-```{r img-densitybonus}
-include_graphics("images/densitybonus.jpg")
-```
+`r include_graphics("images/densitybonus.jpg")`
 <br>Illustration of a density bonus. Source: [City of North Vancouver](https://www.cnv.org/city-services/planning-and-policies/land-use/density-bonusing)
 
 | Location | San Francisco, CA |
@@ -4727,9 +4717,7 @@ include_graphics("images/densitybonus.jpg")
 
 ### Develop a shared equity program for high-density housing 
 
-```{r img-dospinos}
-include_graphics("images/dos-pinos.png")
-```
+`r include_graphics("images/dos-pinos.png")`
 <br>Dos Pinos Housing Cooperative in Davis, CA. Source: [NBCA](https://ncbaclusa.coop/blog/this-california-housing-co-ops-ownership-model-could-create-affordable-housing-nationwide/)
 
 | Location | Davis, CA |
@@ -4742,9 +4730,7 @@ include_graphics("images/dos-pinos.png")
 
 ### Match homeowners with vacant spaces with individuals looking for affordable housing
 
-```{r img-hiphousing}
-include_graphics("images/hiphousing.jpg")
-```
+`r include_graphics("images/hiphousing.jpg")`
 <br>Source: [HIP Housing](https://hiphousing.org/)
 
 | Location | San Mateo County, CA  |
@@ -4761,9 +4747,7 @@ This domain covers all strategies that reduce the amount of energy use in buildi
 
 ### Promote solar development in Opportunity Zones
 
-```{r img-solar}
-include_graphics("images/solar.jpg")
-```
+`r include_graphics("images/solar.jpg")`
 <br>Source: [PV Magazine](https://pv-magazine-usa.com/2019/05/06/clean-energy-in-opportunity-zones-an-interview-with-jon-bonanno/)
 
 | Location |  Washington, DC |
@@ -4776,9 +4760,7 @@ include_graphics("images/solar.jpg")
 
 ### Promote a Solar Renewable Energy Certificate program
 
-```{r img-srec}
-include_graphics("images/srec.jpg")
-```
+`r include_graphics("images/srec.jpg")`
 <br>Source: [Aurora Solar](https://blog.aurorasolar.com/financial-incentives-for-installing-solar/)
 
 | Location |  Washington, DC |
@@ -4791,9 +4773,7 @@ include_graphics("images/srec.jpg")
 
 ### Set energy savings standards on all public buildings and provide financial and technical assistance for commercial private sector energy savings
 
-```{r img-energystar}
-include_graphics("images/energystar.png")
-```
+`r include_graphics("images/energystar.png")`
 <br>Milwaukee utilizes ENERGY STAR Portfolio Manager to help buildings benchmark their performance and to track participant progress for awards. Source: [Better Buildings Challenge Milwaukee](https://city.milwaukee.gov/bbc/services/Benchmarking)
 
 | Location | Milwaukee, WI |
@@ -4806,9 +4786,7 @@ include_graphics("images/energystar.png")
 
 ### Create a fund to implement energy savings projects
 
-```{r img-boston}
-include_graphics("images/boston.png")
-```
+`r include_graphics("images/boston.png")`
 <br>Map of Renew Boston Trust projects. Source: [City of Boston](https://www.boston.gov/environment-and-energy/renew-boston-trust)
 
 | Location | Boston, MA |
@@ -4821,9 +4799,7 @@ include_graphics("images/boston.png")
 
 ### Enable property-assessed clean energy (PACE) financing
 
-```{r img-pace}
-include_graphics("images/pace.jpg")
-```
+`r include_graphics("images/pace.jpg")`
 <br>Source: [Solect Energy](https://solect.com/deep-dive-c-pace-solar-financing/)
 
 | Location | Hartford, CT |
@@ -4836,9 +4812,7 @@ include_graphics("images/pace.jpg")
 
 ### Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements
 
-```{r img-ladwp}
-include_graphics("images/ladwp.png")
-```
+`r include_graphics("images/ladwp.png")`
 <br>Promotional graphics on website. Source: [LADWP](https://www.ladwp.com/ladwp/faces/ladwp/residential/r-savemoney/r-sm-rebatesandprograms?_adf.ctrl-state=twrhey9jv_17&_afrLoop=216411342287214)
 
 | Location | Los Angeles, CA |
@@ -4851,9 +4825,7 @@ include_graphics("images/ladwp.png")
 
 ### Provide incentives for households to install on-site batteries, particularly for vulnerable customers
 
-```{r img-storage}
-include_graphics("images/storage.png")
-```
+`r include_graphics("images/storage.png")`
 <br>Source: [Smart Energy](https://www.smart-energy.com/industry-sectors/smart-energy/two-states-drive-surge-in-residential-battery-storage-installations/)
 
 | Location | California |
@@ -4866,9 +4838,7 @@ include_graphics("images/storage.png")
 
 ### Implement "reach" codes which go beyond state minimum requirements for energy use in building design and construction
 
-```{r img-reach}
-include_graphics("images/reach.png")
-```
+`r include_graphics("images/reach.png")`
 <br>Source: [NRDC](https://www.nrdc.org/experts/pierre-delforge/san-joses-proposed-building-reach-code-explained)
 
 | Location | San Jose, CA  |
@@ -4881,9 +4851,7 @@ include_graphics("images/reach.png")
 
 ### Use waste to produce electricity
 
-```{r img-bio}
-include_graphics("images/bio.jpg")
-```
+`r include_graphics("images/bio.jpg")`
 <br>Anaeraboic digestion process. Source: [EESI](https://www.eesi.org/papers/view/fact-sheet-biogasconverting-waste-to-energy)
 
 | Location | Hayward, CA  |
@@ -4899,6 +4867,10 @@ include_graphics("images/bio.jpg")
 This domain covers strategies with the outcome of increasing the employment rate for the resident population, such as job training. While this strategy domain generally is not restricted to “green” strategies and can include employment strategies that provide broad economic benefits to Stockton, this report ultimately will focus on “green jobs” in particular. In addition, any strategies that increase employment opportunity and employment wages can increase the purchasing power of households, enabling them to invest in many of the other GHG reduction strategies considered in this report.
 
 ### Provide training and coaching for low-income workers, rather than unemployed workers
+
+`r include_graphics("images/wef.png")`
+<br>Source: [WEF](https://reports.weforum.org/future-of-jobs-2016/future-workforce-strategy/?doing_wp_cron=1583169752.6856560707092285156250)
+
 | Location | Dayton, OH |
 |:------|:-------------------------------------------------------------------|
 | Details | The Workforce Advancement and Support Center (WASC) offered participating workers intensive employment retention and advancement services, including career coaching and access to skills training. It also offered them easier access to work support, in an effort to increase their incomes in the short run and help stabilize their employment. The program was found to be most effective in cities with the lowest baseline of work support. |
@@ -4908,6 +4880,10 @@ This domain covers strategies with the outcome of increasing the employment rate
 | Similar | San Diego, CA<br>Bridgeport, CT |
 
 ### Provide green-oriented job training and education pathways
+
+`r include_graphics("images/richmond.jpg")`
+<br>Source: [RichmondBUILD](http://www.ci.richmond.ca.us/1243/RichmondBUILD)
+
 | Location | Richmond, CA |
 |:------|:-------------------------------------------------------------------|
 | Details | The construction component of [Richmond BUILD's](http://www.ci.richmond.ca.us/1243/RichmondBUILD) main track is a pre-apprenticeship program. About 25% of the program's placements have been into formal building trades apprenticeship programs. Furthermore, after the completion of the 15-week training program, Richmond BUILD partners with employers to provide on-the-job training, funding half of graduates' wages for a probationary period of 12 weeks.|
@@ -4917,6 +4893,10 @@ This domain covers strategies with the outcome of increasing the employment rate
 | Similar | [CDTech Green Corps, Los Angeles, CA](http://www.cdtech.org/)<br>[East Los Angeles Skills Center](https://www.eastlaskillscenter.org/)<br>[Los Angeles Trade-Technical College](http://www.lattc.edu/)<br>[Oakland Green Jobs Corps](https://www.cypressmandela.org/)<br>[JobTrain, Menlo Park, CA](http://www.jobtrainworks.org/)<br>[Green Jobs Boston](https://sites.google.com/site/greenjobsboston/home)<br>[Win-Win, New York City, NY](https://www.nycservice.org/organizations/936) |
 
 ### Create a scholarship fund for students wishing to pursue eco-conscious careers
+
+`r include_graphics("images/skill.png")`
+<br>Number of green occupations, by green sector and skill level. Source: [Urban Institute](https://www.urban.org/sites/default/files/publication/32921/412096-Low-Skill-Workers-Access-to-Quality-Green-Jobs.PDF)
+
 | Location | N/A |
 |:------|:-------------------------------------------------------------------|
 | Details | San Joaquin Delta Community College does not require that you have a GED or High School diploma to attend. However, if you do not have a GED/High School Diploma, you are not eligible for federally funded student aid. Tuition is $46.00 per unit, which may represent a barrier for some students. If a fund were created that did not require GED/High School Diploma eligibility for financial aid and was targeted towards those pursuing environmentally-oriented careers, then it would incentivize more to pursue those careers. |
@@ -4925,6 +4905,10 @@ This domain covers strategies with the outcome of increasing the employment rate
 | Scalable Potential | San Joaquin Delta College or Stockton Scholars could explore this idea. |
 
 ### Offer continued training and support post-employment
+
+`r include_graphics("images/workadvance.png")`
+<br>Source: [National Service](https://nationalservice.tumblr.com/post/162823944555/sif-builds-financial-stability-for-families)
+
 | Location | New York City, NY |
 |:------|:-------------------------------------------------------------------|
 | Details | WorkAdvance is a sector-based workforce development model that continues training and support post-employment. The developers of the program focused on sectors with strong demand for entry-level and middle-skill employees and relatively short training time. For this program, they focused on transportation & manufacturing, IT, environmental remediation, and healthcare. The program itself has five components including: (1) Intensive screening of program applicants for motivation and readiness; (2) Sector appropriate pre-employment and career readiness, including orientation to the sector and career advancement coaching; (3) Sector-specific occupational skills training aligned with employer needs and leading to certifications that are in demand in the regional labor market; (4) Sector-specific job development and placement services based on strong relationships with employers; and (5) Post-employment retention and advancement services, including ongoing contact, coaching, skills training, and rapid reemployment help if needed. |
@@ -4938,6 +4922,10 @@ This domain covers strategies with the outcome of increasing the employment rate
 This domain includes strategies with the outcome of increasing the number of jobs based in Stockton. This is distinct from the previous section because local job creation may be attracting companies and workers who aren't necessarily Stockton residents, so as to increase the jobs to employed residents ratio.
 
 ### Offer job creation tax credit
+
+`r include_graphics("images/incentives.png")`
+<br>Source: [Brookings](https://www.brookings.edu/research/examining-the-local-value-of-economic-development-incentives/)
+
 | Location | Philadelphia, PA |
 |:------|:-------------------------------------------------------------------|
 | Details | Philadelphia's Job Creation Tax Credit rewards businesses that increase the number of jobs available in the City. A business firm can apply this credit to its Business Income and Receipts Tax (BIRT) liability if it either creates 25 new jobs or increases its number of employees by at least 20% within five years of the designated start date. Program participants must commit to maintaining business operations in the City of Philadelphia for five years. The credit amount for jobs created is 2% of annual wages paid for each new job or $5,000 per new job created, whichever is higher, subject to the maximum amount specified in the commitment agreement. |
@@ -4947,6 +4935,10 @@ This domain includes strategies with the outcome of increasing the number of job
 | Similar | [Columbus, OH](https://www.columbus.gov/development/economic-development/Business-Attraction---Expansion/) |
 
 ### Encourage mortgage refinancing
+
+`r include_graphics("images/mortgage.jpg")`
+<br>Source: [DFI](https://dfi.wa.gov/financial-education/information/mortgage-refinancing-basics)
+
 | Location | San Francisco, CA |
 |:------|:-------------------------------------------------------------------|
 | Details | Mortgage refinancing encourages consumers to take out a new loan to take advantage of lower interest rates. This creates a wealth effect whereby they develop greater disposable income. From a Keynesian perspective, this leads to more consumer spending in the local economy. The corollary to this is that growth in aggregate demand leads to job growth, or at least stability. HUD has a class on First-Time Homebuyer Education and Counseling. |
@@ -4957,6 +4949,10 @@ This domain includes strategies with the outcome of increasing the number of job
 | Similar | [Dublin, CA](https://dublin.ca.gov/470/Refinancing)<br>[Chicago Department of Housing](https://www.chicago.gov/city/en/depts/doh/provdrs/homeowners/svcs/refinancing-of-affordable-units.html) |
 
 ### Develop public employment program
+
+`r include_graphics("images/jobsnow.jpg")`
+<br>Source: [SFHSA](https://www.sfhsa.org/services/jobs-money/jobsnow)
+
 | Location | San Francisco, CA |
 |:------|:-------------------------------------------------------------------|
 | Details | A public employment program places unemployed, willing-to-work, workers in in-demand jobs across the community. In post-Keynesian thought, the job creation element of a public employment program is two-fold. On one hand, you are giving participants a job. On the other hand, their increase in discretionary income leads to greater aggregate spending and by extension, an increase demand for employment in sectors where money is being spent. Additionally, due to macroeconomic overemployment, it is important to target such a program to those who experience structural unemployment, not frictional. |
@@ -4966,6 +4962,10 @@ This domain includes strategies with the outcome of increasing the number of job
 | Similar | [RecycleForce, Indianapolis](https://www.brightmarkenergy.com/recycleforce) |
 
 ### Provide tax credits to investors in advanced industries
+
+`r include_graphics("images/angel.png")`
+<br>Source: [PharmExpand](http://pharmexpand.com/our-services/startup-financing/startup-financing-cycle-pex/)
+
 | Location | Nebraska |
 |:------|:-------------------------------------------------------------------|
 | Details | By making these credits refundable, the State of Nebraska Angel Investment Tax Credit has effectively subsidized the angel investment. If a qualified investor makes a qualified investment of \$100,000 in a Nebraska start-up company, and receives Nebraska’s 40% angel investment credit, that investor would receive \$40,000 in cash (in reduced taxes or direct payment) from the state. |
@@ -4975,6 +4975,10 @@ This domain includes strategies with the outcome of increasing the number of job
 | Similar | [Colorado Advanced Industry Investment Tax Credit](https://choosecolorado.com/doing-business/incentives-financing/advanced-industry-investment-tax-credit/) |
 
 ### Provide tax credits to investors in community development corporations
+
+`r include_graphics("images/neighborhood.png")`
+<br>Source: [PA Department of Community & Economic Development](https://dced.pa.gov/download/neighborhood-assistance-program-impact/?wpdmdl=84815)
+
 | Location | Pennsylvania |
 |:------|:-------------------------------------------------------------------|
 | Details | The program is broken down into four other subparts: The Neighborhood Partnership Program, Special Priorities Program, Charitable Food Program and the Enterprise Zone Tax Credit. Neighborhood organizations must apply to the program by documenting that they have the capacity to complete the proposed project, confirm their collaborations, demonstrate the need for the project and provide required documentation. Eligible projects must serve distressed areas or support neighborhood conservation in a number of focus areas within community development. Any businesses in the state are then eligible to donate to an eligible project and receive up to a 55% tax credit.  |
@@ -4984,6 +4988,10 @@ This domain includes strategies with the outcome of increasing the number of job
 | Similar | [Massachusetts Community Investment Tax Credit](https://macdc.org/how-it-works) |
 
 ### Pursue public-private partnerships for commercial development
+
+`r include_graphics("images/kia.jpg")`
+<br>Kia's 2,200-acre plant in West Point and local suppliers employ 14,000 people, according to the car company. Source: [NPR](https://www.npr.org/2018/07/27/631839199/trumps-proposed-auto-tariffs-threaten-kia-plant-in-georgia)
+
 | Location | Georgia |
 |:------|:-------------------------------------------------------------------|
 | Details | Georgia partnered with Kia to develop a manufacturing plant that suited the needs of the company. No appropriate size plot existed so, Georgia purchased multiple adjacent plots near deepwater ports and leased them to Kia at a low sum. Quick Start, Georgia's innovative workforce training and development program, developed a specific program just for the needs of Kia. |
@@ -4993,6 +5001,10 @@ This domain includes strategies with the outcome of increasing the number of job
 | Similar | [Prince George's County Maryland Clean Water Partnership](https://www.epa.gov/G3/prince-georges-county-maryland-clean-water-partnership)<br>[Mission Bay, San Francisco](https://www.mbaydevelopment.com/mission-bay-new) |
 
 ### Fund economic development using tax-base sharing
+
+`r include_graphics("images/taxbase.png")`
+<br>Source: [North Star Policy Institute](https://northstarpolicy.org/fiscal-disparity-program-reduces-business-tax-disparities)
+
 | Location | Montgomery County, OH |
 |:------|:-------------------------------------------------------------------|
 | Details | The Economic Development and Government Equity Program (ED/GE) serves as a tool to make the County more competitive and enhance cooperation among local jurisdictions. The ED/GE program consists of two parts. The “ED” side consists of grant funding generated by sales tax revenue. The “GE” side is a tax-based sharing formula that calculates disbursements based on income and property tax valuations. |
@@ -5002,6 +5014,10 @@ This domain includes strategies with the outcome of increasing the number of job
 | Similar | [Twin Cities Fiscal Disparities Program](https://ilsr.org/rule/tax-base-sharing/2301-2/)<br>[Sacramento AB 680](https://ilsr.org/rule/tax-base-sharing/2302-2/) |
 
 ### Pay remote workers to move to new location
+
+`r include_graphics("images/vermont.png")`
+<br>Source: [Vermont Agency of Commerce & Community Development](https://accd.vermont.gov/sites/accdnew/files/documents/DED/Remoteworker/2019RemoteWorkerReport.pdf)
+
 | Location | Vermont |
 |:------|:-------------------------------------------------------------------|
 | Details | This program offers up to $10,000 a year that can be spent on office supplies, coworking space, relocation, and housing for remote workers to move to Vermont. It also comes with various in-kind benefits. |
@@ -5015,6 +5031,10 @@ This domain includes strategies with the outcome of increasing the number of job
 This domain includes transportation-oriented strategies that lead to fewer vehicle miles traveled, such as public transit improvements, transportation demand management, and carpooling incentives. Electrification of vehicles is considered as a separate domain. Land use strategies that reduce sprawl are also part of this domain.
 
 ### Create local transportation demand management ordinances
+
+`r include_graphics("images/tdm.jpg")`
+<br>Source: [Mobility Lab](https://mobilitylab.org/about-us/what-is-tdm/)
+
 | Location | Pasadena, CA |
 |:------|:-------------------------------------------------------------------|
 | Details | Transportation Demand Management can include a variety of ordinances designed to reduce traffic congestion, increase safety and mobility, and conserve energy and reducing greenhouse gases. The Pasadena TDM focuses on encouraging alternative modes of transportation, such as transit, vanpools, carpools, and bicycles, as well as encouraging alternative work hours to reduce typical peak period demands upon the roadway network. The Trip Reduction Ordinance requires preferential parking spaces for carpool vehicles, providing employees with commuter-matching services and trip reduction information, and providing bicycle parking facilities and/or other non-auto enhancements. |
@@ -5024,6 +5044,10 @@ This domain includes transportation-oriented strategies that lead to fewer vehic
 | Similar | [Downtown Berkeley Parking and Transportation Demand Management](https://www.cityofberkeley.info/Public_Works/Transportation/Downtown_Berkeley_Parking_and_Transportation_Demand_Management_Report.aspx)<br>[SF Planning](https://sfplanning.org/transportation-demand-management-program) |
 
 ### Redesign bus network to prioritize ridership over coverage
+
+`r include_graphics("images/houston.png")`
+<br>Source: [NACTO](https://nacto.org/case-study/metro-bus-network-redesign-houston/)
+
 | Location | Houston, TX |
 |:------|:-------------------------------------------------------------------|
 | Details | After an extensive community engagement process, the METRO Board of Directors directed the System Reimagining team to design a network where 80% of resources are aimed at maximum ridership and 20% of resources are used for coverage (compared to about 50%-50% today). The result is a simpler, easier to understand network that better aligns with the Houston of today. At all times, the plan strives to keep service to as many existing riders as possible. |
@@ -5033,15 +5057,23 @@ This domain includes transportation-oriented strategies that lead to fewer vehic
 | Similar | [IndyGo](https://www.indygo.net/projects/)<br>[Austin Capital Metro Connections 2025](https://capmetro.org/connections2025/)<br>[Central Ohio Transit Authority](https://www.cota.com/initiatives/tsr/) |
 
 ### Use BRT corridors to reduce travel times on public transit
+
+`r include_graphics("images/brt.png")`
+<br>RTD 2018 Short Range Transit Plan. Source: [SJRTD](http://sanjoaquinrtd.com/wp-content/uploads/2019/02/SRTP-2018-Update_FINAL.pdf)
+
 | Location | San Francisco, CA |
 |:------|:-------------------------------------------------------------------|
 | Details | Bus rapid transit is a system that allocates designated lanes to buses and light rail, in order to make for faster travel on bus. Additionally, off-board fare collection is key to reduce delay caused by passengers waiting to pay on board. |
 | Links | [San Francisco Van Ness Improvement Project](https://www.sfcta.org/projects/van-ness-improvement-project)<br>[Institute for Transportation & Development Policy](https://www.itdp.org/library/standards-and-guides/the-bus-rapid-transit-standard/what-is-brt/) |
 | Implementation Costs & Impact Factor | [RTD has planned](http://sanjoaquinrtd.com/wp-content/uploads/2019/02/SRTP-2018-Update_FINAL.pdf) for about $30 million of BRT service expansion between 2019-2026. When fully deployed, RTD's BRT routes will create a high-frequency network covering the major arterials of the County, connecting them with central Stockton. RTD projects almost 3.7 million annual trips on the BRT network by FY 25. By attracting new riders, RTD's BRT network can eliminate over one million tons of carbon emissions. |
-| Scalable Potential | BRT service is currently planned for a range of corridors throughout the City of Stockton, with potential service extension to Lodi via BRT Express. RTD will implement BRT Express service over time as funding becomes available and as demand grows due to new development. Therefore, BRT design may differ by corridor but should follow a set of requirements to ensure system characteristics remain consistent. Figure below from RTD 2018 Short Range Transit Plan.<br><br>`r knitr::include_graphics("images/brt.png")` |
+| Scalable Potential | BRT service is currently planned for a range of corridors throughout the City of Stockton, with potential service extension to Lodi via BRT Express. RTD will implement BRT Express service over time as funding becomes available and as demand grows due to new development. Therefore, BRT design may differ by corridor but should follow a set of requirements to ensure system characteristics remain consistent. |
 | Similar | [Bogota TransMilenio, Mexico City Metrobus, Johannesburg BRT](https://docs.google.com/spreadsheets/d/1JixMHuX0ArT3MDNrJgYliGE77TqYZe5bGwms8D6oblE/edit#gid=0) |
 
 ### Promote the use of e-scooters and dockless bicycles to reduce reliance on private cars
+
+`r include_graphics("images/lyft.jpg")`
+<br>Source: [SF Examiner](https://www.sfexaminer.com/the-city/lyft-rolls-out-new-rental-bikes/)
+
 | Location | San Francisco, CA |
 |:------|:-------------------------------------------------------------------|
 | Details | Shared scooters and bikes, which can be used in dedicated bike lanes, have already become a major source of transportation in large metropolitan areas. Bird had 10 million rides in its first 12 months alone, while Lime users took 34 million trips in its first year. Additionally, they are more conducive to the short trips made by most commuters. |
@@ -5051,6 +5083,10 @@ This domain includes transportation-oriented strategies that lead to fewer vehic
 | Similar | [Pittsburgh Mobility Collective](https://pittsburghpa.gov/press-releases/press-releases.html?id=3152)<br>[Tacoma, WA](https://www.cityoftacoma.org/cms/one.aspx?pageId=158101)<br>[Washington, DC](https://ddot.dc.gov/page/micromobility-district) |
 
 ### Rezone areas around transit stations and commercial corridors to allow for high-density residential development
+
+`r include_graphics("images/lyft.jpg")`
+<br>Source: [SF Examiner](https://www.sfexaminer.com/the-city/lyft-rolls-out-new-rental-bikes/)
+
 | Location | Tyson, VA |
 |:------|:-------------------------------------------------------------------|
 | Details | This plan increased the permissible floor area ratio from 2.0 to 5.0 while also providing incentives to reserve 20% of new residential units for affordable and workforce housing (residents earning between 50% and 120% of area median income). City officials hope that this will also help to facilitate the use of public transit due to close proximity to stations. |
