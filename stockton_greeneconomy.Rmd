@@ -1,5 +1,5 @@
 ---
-title: "Stockton Green Economy Report"
+title: "Green Economy Analysis: Opportunities for Stockton"
 author: "City Systems"
 date: "Last Updated: February 2020"
 output: 
@@ -111,13 +111,16 @@ $(document).ready(function () {
 readr::write_lines(htmlhead, path = "header.html")
 ```
 
-The Office of the Mayor in Stockton, CA is seeking to differentiate the City's investment opportunities, including potential capital from public (e.g. Transformative Climate Communities), private (e.g. Opportunity Zones), and philanthropic (e.g. foundations) sources, through the lens of **green economy**. The challenge at hand is to conduct a comprehensive assessment of Stockton's assets and opportunities across a wide range of industry, infrastructure, development, and policy domains which could be marketed as green economy investment opportunities, thereby enabling City representatives to prioritize and drive evidence-informed discussions with investors, as opposed to agendas being driven by one-off outside interests. In particular, the City is focused on leveraging such a framework to target and scope a green demonstration project in the short-term (2020-2021), which already has committed capital, that generates the most useful short-term results, both in realized environmental and economic benefits and in attracting further investment interest.
+The Office of the Mayor in Stockton, CA is seeking to differentiate and expand the City's investment opportunities, including potential capital from public (e.g. Transformative Climate Communities, AB 617), private (e.g. Opportunity Zones, startups), and philanthropic (e.g. foundations) sources, through the lens of **green economy**. The challenge at hand is to conduct a comprehensive assessment of Stockton's assets and opportunities across a wide range of industry, infrastructure, development, and policy domains which could be viewed as green economy investment opportunities. This would then enable City and community representatives to prioritize and drive evidence-informed discussions with environmental justice groups, prospective outside partners, and investors. In particular, there are opportunities to explore how data and insights gathered from this framework could inform cutting-edge educational opportunities as well as research & development efforts. The net benefits here are an informed community, demonstrable short-term projects that generate environmental and economic benefits, long-term alignment with future educational initiatives, and further investment interest.
 
-City Systems has conducted a research activity with the following outcomes:
+City Systems has conducted a research activity with the following intended outcomes:
 
-1. A repository of information about green economy investment opportunities in Stockton, including relevant technical review, case studies of implementation in other cities, key risks/challenges, and estimated ranges of possible environmental and economic benefits per dollar of investment.
-2. Communication materials for the City of Stockton and partners to use in investor outreach.
-3. A detailed design and implementation plan for a green demonstration project, informed by consensus-building discussion with City-identified stakeholders throughout the research phase, and likely to have initiated before the conclusion of the research phase.
+1. An active repository of data to inform green economy investment opportunities, including: relevant technical review, practical case studies of implementation in other cities, key risks/challenges, and estimated ranges of possible environmental and economic benefits per dollar of investment.
+2. Education & communication materials for Stockton's City representatives, community stakeholders, and partners to use in external outreach.
+3. A decision-making aide for a series of green demonstration projects in the short-term (2020-2022) informed by consensus-building discussion with local stakeholders.
+4. Guide the discussion on what it would look like for Stockton and San Joaquin County to build a green economy lab in the region that addresses aggressive GHG reduction and creates jobs and workforce opportunities for residents.
+
+Additionally, robust background reading is available in the City's 2014 [Climate Action Plan](http://www.stocktongov.com/files/Climate_Action_Plan_August_2014.pdf). It's also recommended that this green economy analysis is paired with the 2019 [Sustainable Neighborhood Plan](https://drive.google.com/file/d/1hroKcJ2fpoxKp8Mae2_cit8TJ0l7TpHe/view?usp=sharing) to get a sense of current and evolving community priorities. 
 
 The following document describes our methodology and results. Given the scope of this report, readers are encouraged to navigate freely throughout different sections using the table of contents on the left, or with the summary table below.
 
@@ -133,6 +136,8 @@ $~$
 **Acknowledgements**
 
 Ann Rogan provided the motivation for and guided this entire project. Jasmine Leek, Amanda Ford, Taylor Williams, Finn Dobkin, Darryl Rutherford, and others attended regular check-ins and gave valuable feedback. Greg Forbes, Kevin Lin, Max O'Krepki, and John Zhao provided support on portions of code. Rachel Galowich, Christian Giadolor, Greg Forbes, Julia Wagenfehr, Armelle Coutant, Abdul Aleem, Matt Nissen, and Dorian Lumarque participated in practicum projects at Stanford that produced outcomes that are integrated into this work. Finn Dobkin led the research in Chapter 3 on green economy strategies. Tyler Pullen reviewed the report and offered helpful revisions.
+
+**Lead Author:** Derek Ouyang, derekouyang\@gmail.com
 
 ## Approach
 
@@ -6308,18 +6313,31 @@ Note that while EVs can be effective at reducing gCO2/mile, transit strategies a
 
 **Future Work**
 
-This report is designed to be a living document that is continually updated with new research, new analyses, and new recommendations for Stockton's green economy. The following are anticipated next steps in data collection and analysis:
+This report is designed to be a living document that is continually updated with new research, new analyses, and new recommendations for Stockton's green economy. The following are anticipated next steps in data collection, analysis, and research:
+
+*Buildings*
 
 - Analyze commercial infill growth as a Building Utilization strategy.
 - Complete quantitative analysis of building electrification a Building Energy strategy.
 - Analyze solar installations as a Building Energy strategy.
+- Acquire data about industrial building emissions, which is currently limited by PG&E data privacy issues. Stockton could form data partnership agreements or benchmarking mandates directly with local corporations.
+- Conduct a flood risk analysis for Stockton buildings.
+
+*Employment & Local Jobs*
+
 - Analyze green job training as an Employment Growth strategy.
 - Analyze green business development as a Local Jobs strategy.
+
+*Transportation*
+
 - Analyze park-and-ride as a Vehicle Miles Traveled strategy.
-- Acquire data about industrial building emissions, which is currently limited by PG&E data privacy issues. Stockton could form data partnership agreements or benchmarking mandates directly with local corporations.
+
+*Resource Management*
+
 - Acquire water consumption data from local water companies.
 - Acquire waste collection data from local waste management companies.
-- Conduct a flood risk analysis for Stockton buildings.
+
+*Case Studies*
 
 The following are knowledge sources to review for additional case studies to be added to Chapter 3:
 

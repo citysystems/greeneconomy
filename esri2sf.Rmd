@@ -1,0 +1,28 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(devtools)
+install_github("yonghah/esri2sf")
+library(esri2sf)
+```
+
+```{r}
+#east palo alto
+url <- "https://services8.arcgis.com/0IC8hha3hgQkmGoa/arcgis/rest/services/EastPaloAltoGeneralPlan_WFL1/FeatureServer/0"
+
+#full safegraph, doesn't work
+url <- "https://services7.arcgis.com/1EHlBtDZfCcbIqb1/arcgis/rest/services/aaa19f/FeatureServer/0"
+
+#restaurants
+url <- "https://services7.arcgis.com/1EHlBtDZfCcbIqb1/arcgis/rest/services/Restaurants_in_SafeGraph_Places_for_ArcGIS_(Marketplace_Offering)/FeatureServer/0"
+```
+
+```{r}
+df <- esri2sf(url)
+```
+
+
