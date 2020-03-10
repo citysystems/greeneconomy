@@ -2,7 +2,9 @@
 title: "MAKE SPACE Analysis"
 author: "City Systems"
 date: "3/9/2020"
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
 editor_options: 
   chunk_output_type: console
 ---
@@ -53,11 +55,11 @@ Sys.setenv(CENSUS_KEY="c8aa67e4086b4b5ce3a8717f59faa9a28f611dab")
 projection <- "+proj=utm +zone=10 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=ft +no_defs"
 ```
 
-The following is analysis for Make Space.
+The following is analysis for Make Space. All tables can be downloaded as CSVs [here](https://drive.google.com/open?id=1j-MqoZmC8Uq9OOy3xAvHsR0b-7aaVqON).
 
-# Population
+# Population and Jobs
 
-The map below shows the Stockton city boundary in red, block groups within Stockton in gray, and 2 specific block groups I've selected in blue to represent downtown Stockton. This is a choice you can refine. If you'd like to include other block groups, zoom in and click on the gray shapes, and let me know the GEOIDs of other block groups you'd like to include in the "downtown" category.
+The map below shows the official Stockton city boundary in red, block groups we chose to represent Stockton in gray, and a few specific block groups I've selected in blue to represent downtown Stockton. This is a choice you can refine. If you'd like to omit/include other block groups, zoom in and click on the gray shapes, and let me know the GEOIDs of other block groups you'd like to omit/include in the "downtown" category.
 
 ```{r}
 ca_bgs <- 
@@ -69,25 +71,472 @@ stockton_boundary <-
   filter(NAME == "Stockton") %>% 
   st_transform(projection)
   
+stockton_boundary_buffer <-
+  stockton_boundary %>% 
+  st_transform(26910) %>% 
+  st_buffer(1600) %>% 
+  st_transform(st_crs(stockton_boundary))
+  
+# includes unincorporated areas on periphery that have addresses in Stockton, but removing Lodi and Manteca areas
 stockton_bgs_full <- 
-  ca_bgs %>% 
-  filter(
-    GEOID %in% st_centroid(ca_bgs)[stockton_boundary,]$GEOID
-  )
+  ca_bgs[stockton_boundary_buffer,c("GEOID")] %>% 
+  filter(!(GEOID %in% c("060770051351","060770040011","060770041061","060770041022")))
 
 downtown_bgs <-
   stockton_bgs_full %>% 
-  filter(GEOID %in% c("060770001002","060770001001"))
+  filter(GEOID %in% c("060770001002","060770001001","060770005002","060770006001"))
  
-mapview(stockton_boundary, alpha.regions = 0, color = "red", lwd = 4) +
-  mapview(stockton_bgs_full, col.regions = "gray") +
+mapview(stockton_boundary, alpha.regions = 0, color = "red", lwd = 4, legend = FALSE) +
+  mapview(stockton_bgs_full, col.regions = "gray", legend = FALSE) +
   mapview(downtown_bgs, col.regions = "blue")
 ```
 
-The following table gives population data for the whole of Stockton (red), as well as for the "downtown" selection. Since block group population data is only available as an American Communities Survey 5-year summary from 2014-2018, this first table also gives the whole of Stockton using the same ACS data.
+The following table gives population and employment data for the whole of Stockton (red). For areas of 65000+ population, the American Communities Survey provides annual estimates up to 2018. The table also includes projections to 2040. See Appendix A for the more specific assumptions and data sources.
 
 ```{r}
+pop_sjc <- data.frame(matrix(ncol=3,nrow=0))
+colnames(pop_sjc) <- c("Population","Population15andolder","year")
 
+for(year in 2010:2018){
+
+  temp <-
+    getCensus(
+      name = "acs/acs1",
+      vintage = year,
+      vars = c("B01003_001E"),
+      region = "county:077",
+      regionin = "state:06"
+    ) %>%
+    mutate(
+      Population = B01003_001E,
+      year = year
+    ) %>%
+    dplyr::select(
+      Population,
+      year
+    )
+
+  pop_sjc<- rbind(pop_sjc,temp)
+
+}
+
+sjc_projection <-
+  read_csv("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/SSP_asrc_STATEfiles/DATA-PROCESSED/SPLITPROJECTIONS/CA.csv") %>%
+  filter(COUNTY == "077") %>%
+  group_by(YEAR) %>%
+  summarize(
+    Population = sum(SSP2),
+    Population15andOlder = sum(SSP2[which(AGE > 3)])
+  ) %>%
+  filter(YEAR %in% c(2020,2025,2030,2035,2040)) %>%
+  dplyr::select(Population, Population15andOlder, year = YEAR)
+
+pop_sjc_w_projection <-
+  bind_rows(pop_sjc,sjc_projection)
+
+pop_stockton <- data.frame(matrix(ncol=3,nrow=0))
+colnames(pop_stockton) <- c("PopulationStockton","Population15andolder","year")
+
+for(year in 2010:2018){
+
+  temp <-
+    getCensus(
+      name = "acs/acs1",
+      vintage = year,
+      vars = c("B01003_001E"),
+      region = "place:75000",
+      regionin = "state:06"
+    ) %>%
+    mutate(
+      PopulationStockton = B01003_001E,
+      year = year
+    ) %>%
+    dplyr::select(
+      PopulationStockton,
+      year
+    )
+
+  pop_stockton<- rbind(pop_stockton,temp)
+
+}
+
+emp_stockton <- data.frame(matrix(ncol=2,nrow=0))
+colnames(emp_stockton) <- c("EmployedResidents","year")
+
+for(year in 2010:2018){ 
+
+  temp <-
+    getCensus(
+      name = "acs/acs1/subject",
+      vintage = year,
+      vars = c("S2301_C01_001E","S2301_C03_001E","S2301_C04_001E"),
+      region = "place:75000",
+      regionin = "state:06"
+    ) %>%
+    mutate(
+      Population16andOlder = S2301_C01_001E,
+      PercEmployedResidents = S2301_C03_001E,
+      EmployedResidents = PercEmployedResidents/100*Population16andOlder,
+      UnemploymentRate = S2301_C04_001E,
+      year = year
+    ) %>%
+    dplyr::select(
+      Population16andOlder,
+      PercEmployedResidents,
+      EmployedResidents,
+      UnemploymentRate,
+      year
+    )
+
+  emp_stockton<- rbind(emp_stockton,temp)
+
+}
+
+pop_emp_stockton_w_projection <-
+  pop_sjc_w_projection %>%
+  left_join(pop_stockton, by = "year") %>% 
+  left_join(emp_stockton, by = "year") %>%
+  mutate(
+    PercStockton = PopulationStockton/Population,
+    PercStocktonAdult = Population16andOlder/PopulationStockton,
+    PercStockton = ifelse(
+      !is.na(PercStockton),
+      PercStockton,
+      lm(
+        formula = `PercStockton`[1:9] ~ year[1:9]
+      )$coefficients[1]+
+        lm(
+          formula = `PercStockton`[1:9] ~ year[1:9]
+        )$coefficients[2]*year
+    ),
+    PopulationStockton = Population * PercStockton,
+    PopulationStockton15andOlder = Population15andOlder * PercStockton,
+    PercEmployedResidents = ifelse(
+      !is.na(PercEmployedResidents),
+      PercEmployedResidents,
+      lm(
+        formula = `PercEmployedResidents`[1:9] ~ year[1:9]
+      )$coefficients[1]+
+        lm(
+          formula = `PercEmployedResidents`[1:9] ~ year[1:9]
+        )$coefficients[2]*year
+    ),
+    EmployedResidents = ifelse(
+      !is.na(EmployedResidents),
+      EmployedResidents,
+      PopulationStockton15andOlder*PercEmployedResidents/100
+    )
+  )
+
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/stockton_wac.Rdata")
+
+jobs_stockton <-
+  stockton_wac %>% 
+  group_by(year) %>% 
+  summarize(Jobs = sum(C000))
+
+#Add 2018 jobs projection
+jobs_stockton[9,1] <- 2018
+jobs_stockton[9,2] <- 
+  lm(formula = jobs_stockton$Jobs[1:8] ~ jobs_stockton$year[1:8])$coefficients[1]+
+  lm(formula = jobs_stockton$Jobs[1:8] ~ jobs_stockton$year[1:8])$coefficients[2]*2018
+
+pop_jobs_stockton_w_projection <-
+  pop_emp_stockton_w_projection %>%
+  left_join(jobs_stockton, by = "year") %>%
+  mutate(
+    ratio = ifelse(
+      !is.na(Jobs),
+      Jobs/EmployedResidents,
+      lm(
+        formula = Jobs[1:9]/EmployedResidents[1:9] ~ year[1:9]
+      )$coefficients[1]+
+        lm(
+          formula = Jobs[1:9]/EmployedResidents[1:9] ~ year[1:9]
+        )$coefficients[2]*year
+    ),
+    Jobs = ifelse(!is.na(Jobs),Jobs,EmployedResidents*ratio)
+  ) %>%
+  transmute(
+    Year = year,
+    Population = PopulationStockton,
+    Jobs = Jobs,
+    `Employed Residents` = EmployedResidents,
+    `J/ER Ratio` = ratio,
+    `Percent Employed Residents` = PercEmployedResidents
+  )
+
+write_csv(pop_jobs_stockton_w_projection, "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Make Space Data/pop_jobs_stockton_w_projection.csv")
+
+pop_jobs_stockton_w_projection_table <-
+  pop_jobs_stockton_w_projection %>%
+  transmute(
+    Year = Year,
+    Population = prettyNum(round(Population,-3),big.mark=","),
+    Jobs = prettyNum(round(Jobs,-3),big.mark=","),
+    `Employed Residents` = prettyNum(round(`Employed Residents`,-3),big.mark=","),
+    `J/ER Ratio` = round(`J/ER Ratio`,2),
+    `Percent Employed Residents` = paste0(round(`Percent Employed Residents`),"%")
+  )
+
+kable(
+  pop_jobs_stockton_w_projection_table, 
+  booktabs = TRUE,
+  caption = 'Historical population and job counts for Stockton 2010-2018, followed by projections to 2040.'
+  ) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%")
 ```
 
+$~$
 
+Since block group population data is only available as an American Communities Survey 5-year summary from 2014-2018, and the block group boundaries do not line up exactly with Stockton's formal city boundaries, 5-year block group analysis can't be directly compared with the 1-year summary data. So the following is a separate analysis that allows for a more consistent comparison between Stockton's overall growth (represented as a larger area than the previous "red" boundary") and the growth of downtown. The most relevant data points are from 2011 (the center of the summary of 2009-2013) and 2016 (the center of the summary of 2014-2018) -- the other years can be considered a "smoothing out of the gap". The table also includes job counts using the same methodology as the previous table. 2040 projections are not provided for downtown because of the uncertainty level associated with such a small and dynamically changing area.
+
+```{r}
+pop_stockton_acs5 <- NULL
+
+for(year in 2013:2018){
+
+  temp <-
+    getCensus(
+      name = "acs/acs5",
+      vintage = year,
+      vars = c("B01003_001E"),
+      region = "block group:*",
+      regionin = "state:06+county:077"
+    ) %>% 
+    mutate(
+      GEOID = paste0(state,county,tract,block_group),
+      PopulationStockton = B01003_001E,
+      year = year - 2
+    ) %>%
+    dplyr::select(
+      GEOID,
+      PopulationStockton,
+      year
+    ) %>%
+    filter(GEOID %in% stockton_bgs_full$GEOID)
+
+  pop_stockton_acs5<- rbind(pop_stockton_acs5,temp)
+
+}
+
+pop_stockton_acs5_sum <-
+  pop_stockton_acs5 %>% 
+  group_by(year) %>% 
+  summarize(PopulationStockton = sum(PopulationStockton))
+
+pop_downtown_acs5_sum <-
+  pop_stockton_acs5 %>% 
+  filter(GEOID %in% downtown_bgs$GEOID) %>% 
+  group_by(year) %>% 
+  summarize(PopulationDT= sum(PopulationStockton))
+
+jobs_stockton <-
+  stockton_wac %>% 
+  group_by(year) %>% 
+  summarize(JobsStockton = sum(C000))
+
+jobs_downtown <-
+  stockton_wac %>% 
+  filter(GEOID %in% downtown_bgs$GEOID) %>% 
+  group_by(year) %>% 
+  summarize(JobsDT = sum(C000))
+
+stockton_vs_downtown <-
+  pop_stockton_acs5_sum %>% 
+  left_join(pop_downtown_acs5_sum, by = "year") %>% 
+  left_join(jobs_stockton %>% st_set_geometry(NULL), by = "year") %>% 
+  left_join(jobs_downtown %>% st_set_geometry(NULL), by = "year") %>% 
+  mutate(
+    PopulationStocktonNorm = 
+      PopulationStockton/pop_stockton_acs5_sum$PopulationStockton[1]*100,
+    PopulationDTNorm = 
+      PopulationDT/pop_downtown_acs5_sum$PopulationDT[1]*100,
+    JobsStocktonNorm = 
+      JobsStockton/jobs_stockton$JobsStockton[2]*100,
+    JobsDTNorm = 
+      JobsDT/jobs_downtown$JobsDT[2]*100
+  )
+
+stockton_vs_downtown_table <-
+  stockton_vs_downtown %>% 
+  transmute(
+    Year = year,
+    `Population in Stockton` = prettyNum(round(PopulationStockton,-3),big.mark=","),
+    `Population in Downtown` = prettyNum(round(PopulationDT,-2),big.mark=","),
+    `Jobs in Stockton` = prettyNum(round(JobsStockton,-3),big.mark=","),
+    `Jobs in Downtown` = prettyNum(round(JobsDT,-2),big.mark=",")
+  )
+
+write_csv(stockton_vs_downtown_table, "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Make Space Data/stockton_vs_downtown.csv")
+
+kable(
+  stockton_vs_downtown_table, 
+  booktabs = TRUE,
+  caption = 'Population and jobs counts for Stockton and Downtown Stockton, 2011-2016.'
+  ) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%")
+```
+
+$~$
+
+The following are two graphs with one way of visualizing change in population and job in Stockton vs. downtown over the five year period. 100% is set relative to the 2011 values, so movement upwards means some % increase relative to 2011, and movement downwards means some % decrease relative to 2011. Downtown will appear more volatile because it's a smaller size.
+
+```{r}
+stockton_vs_downtown %>% 
+  ggplot(
+    aes(x = year)
+  ) + 
+  geom_line(aes(y = PopulationStocktonNorm, color = "Stockton")) +
+  geom_line(aes(y = PopulationDTNorm, color = "Downtown")) +
+  labs(title = "Population in Stockton vs. Downtown",y = "Population % relative to 2011", colour = "Legend")
+```
+
+```{r}
+stockton_vs_downtown %>% 
+  ggplot(
+    aes(x = year)
+  ) + 
+  geom_line(aes(y = JobsStocktonNorm, color = "Stockton")) +
+  geom_line(aes(y = JobsDTNorm, color = "Downtown")) +
+  labs(title = "Jobs in Stockton vs. Downtown",y = "Job % relative to 2011",colour = "Legend")
+```
+
+$~$
+
+Other population and jobs analyses can be viewed [here](http://web.stanford.edu/~douyang1/population-and-jobs.html#city-level-analysis).
+
+# Ratio of residents to food & beverage leisure outlets
+
+We have data from [Safegraph](https://www.safegraph.com/) which is freely available online about "places of interest" in Stockton, updated March 2020. The map below shows all "Restaurants" in Stockton. The second map shows places of all types in downtown.  
+
+```{r}
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/safegraph_restaurants_ca.Rdata")
+
+df <- df %>% st_transform(projection)
+
+stockton_places <-
+  df[stockton_boundary,]
+
+stockton_places_table <-
+  stockton_places$topCat %>% 
+  table() %>% 
+  as.data.frame() %>% 
+  rename(Category = ".", Count = Freq) %>% 
+  arrange(desc(Count))
+
+write_csv(stockton_places, "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Make Space Data/stockton_places.csv")
+
+write_csv(stockton_places_table, "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Make Space Data/stockton_places_summary.csv")
+
+mapview(stockton_places %>% filter(topCat == "Restaurants and Other Eating Places") %>% dplyr::select(poiName, brands, topCat, address), legend=FALSE)
+```
+
+```{r}
+downtown_places <-
+  stockton_places[downtown_bgs,]
+
+mapview(downtown_places %>% dplyr::select(poiName, brands, topCat, address), zcol = "topCat", legend=FALSE)
+```
+
+$~$
+
+The following table includes the 36 jurisdictions in San Joaquin County + the 20 largest cities in California (including Stockton). For each jurisdiction, we got the population from the 2014-2018 ACS 5-yr summary data, and the count of restaurants from Safegraph 
+
+```{r}
+places_ca <- places("CA") %>% st_transform(projection)
+sjc <- counties("CA") %>% filter(COUNTYFP == "077") %>% st_transform(projection)
+
+places_population <-
+    getCensus(
+      name = "acs/acs5",
+      vintage = 2018,
+      vars = c("B01003_001E"),
+      region = "place:*",
+      regionin = "state:06"
+    ) %>% 
+  arrange(desc(B01003_001E))
+
+places_sjc <-
+  places_ca[sjc,]
+
+places_sjc_plus_big <-
+  places_ca %>% 
+  filter(PLACEFP %in% places_sjc$PLACEFP | PLACEFP %in% places_population[1:20,]$place)
+
+# restaurants_summary <- NULL
+# for(row in 1:nrow(places_sjc_plus_big)){
+#   print(row)
+#   temp <-
+#     getCensus(
+#       name = "acs/acs5",
+#       vintage = 2018,
+#       vars = c("B01003_001E"),
+#       region = paste0("place:",places_sjc_plus_big$PLACEFP[row]),
+#       regionin = "state:06"
+#     ) %>% 
+#     mutate(
+#       Population = B01003_001E,
+#       Name = places_sjc_plus_big$NAME[row],
+#       Restaurants = 
+#         df[places_sjc_plus_big[row,],] %>% 
+#         filter(topCat == "Restaurants and Other Eating Places") %>% 
+#         nrow()
+#     ) %>%
+#     dplyr::select(
+#       Name,
+#       Population,
+#       Restaurants
+#     )
+#   
+#   restaurants_summary <- rbind(restaurants_summary,temp)
+# }
+# 
+# save(restaurants_summary, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/restaurants_summary.Rdata")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/restaurants_summary.Rdata")
+
+restaurants_summary <- 
+  restaurants_summary %>% 
+  mutate(
+    `Restaurants per 1000 Capita` = round(Restaurants/Population*1000,1)
+  ) %>% 
+  arrange(desc(`Restaurants per 1000 Capita`))
+
+write_csv(restaurants_summary,"C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Make Space Data/restaurants_summary.csv")
+
+kable(
+  restaurants_summary, 
+  booktabs = TRUE,
+  caption = 'Restaurants per capita in San Joaquin County cities + Top 20 California cities'
+  ) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%")
+```
+
+$~$
+
+# Business established in 2019 
+
+We do not have direct access to this data. Stockton publishes monthly listings on [this page](http://stocktongov.com/government/departments/adminServices/blicNewList.html); if we were able to file an information request to receive all listings from 2019 (which cannot be accessed via the public site), then we could perform analysis on business locations and types. The [license application](http://stocktongov.com/files/Businesslicenseapplication.pdf) also includes other information like employee count and monthly growth receipts -- if this data were also digitized and accessible, we could analyze it as well.
+
+# Comparison with other cities
+
+TBD
+
+# Appendix A
+
+The following datasets were collected for the population and job analyses:
+
+- [Total Population, American Communities Survey, 1-Yr Estimates, 2010-2018](https://www.census.gov/programs-surveys/acs)
+- [Population projections for US counties, 2020-2100](https://osf.io/9ynfc/)
+- [Longitudinal Employer-Household Dynamics Origin-Destination Employment Statistics, 2010-2017](https://lehd.ces.census.gov/data/), available at the block level
+
+A few notes on methodology and assumptions:
+
+1. From the ACS, we collected Total Population, Total Population 16 and Older, Total Employed Residents (16+), and Unemployment Rate (for 16+). In order to forecast the future number of employed residents, which would then be used to forecast the future number of jobs, we chose to perform a linear regression on employment rate projecting to 2040, given that the unemployment rate was significantly more variable from 2010-2018.
+2. Population projections come from a [study](https://www.nature.com/articles/sdata20195) published in Nature in 2019. The specific methodology is beyond the scope of this project to unpack. What's notable is that five different projections were made by the author based on diferent "potential futures involving various growth policies, fossil-fuel usage, mitigation policies (i.e. emission reductions), adaptation policies (i.e. deployment of flood defenses), and population change". We used the "Middle of the road" projection.
+3. Projections from the above study were available in 5-year age groups. While the total population projection is directly used in the final table below for SJC, Population of 15+ was also collected which was multiplied by the previously projected Employment Rate (#1) to forecast total Employed Residents. Note that given data limitations we have a discontinuity between Population 16+ data from 2010-2018 and Population 15+ data from 2020-2040. We assume this difference is negligible for the purposes of our analysis, but it would have the effect of overestimating job count.
+4. From LODES we collected "Primary Jobs" at the block group level and aggregated all jobs for block groups in Stockton. These are meant to match the number of individual workers in a region.
+5. We calculated J/ER for 2010-2018 by dividing total Jobs by Employed Residents. Then, we chose to perform a linear regression on J/ER ratio projecting to 2040, and multiplied this by our projected Employed Residents (#3) to forecast total Jobs.
