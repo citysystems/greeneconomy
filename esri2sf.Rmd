@@ -22,7 +22,11 @@ url <- "https://services7.arcgis.com/1EHlBtDZfCcbIqb1/arcgis/rest/services/Resta
 ```
 
 ```{r}
-df <- esri2sf(url)
+df <- 
+  esri2sf(
+    url,
+    where = "state = 'CA'"
+  )
 ```
 
 

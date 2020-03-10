@@ -1,0 +1,93 @@
+---
+title: "MAKE SPACE Analysis"
+author: "City Systems"
+date: "3/9/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, include=FALSE}
+library(tidycensus)
+library(censusapi)
+library(tigris)
+library(units)
+library(lehdr)
+library(sf)
+library(osrm)
+library(mapview)
+library(tidyverse)
+library(magrittr)
+library(lwgeom)
+library(knitr)
+library(DT)
+library(bookdown)
+library(kableExtra)
+library(FinancialMath)
+library(smoothr)
+library(lwgeom)
+library(geosphere)
+library(tidytransit)
+opts_chunk$set(
+  echo = TRUE, 
+  warning=FALSE, 
+  message=FALSE,
+  cache=TRUE
+)
+mapviewOptions(
+  basemaps = "OpenStreetMap",
+  leafletWidth = "100%")
+options(
+  tigris_use_cache = TRUE,
+  tigris_class = "sf",
+  osrm.server = "http://127.0.0.1:5000/",
+  scipen=999
+)
+census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", install = TRUE, overwrite = TRUE)
+Sys.setenv(CENSUS_KEY="c8aa67e4086b4b5ce3a8717f59faa9a28f611dab")
+
+projection <- "+proj=utm +zone=10 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=ft +no_defs"
+```
+
+The following is analysis for Make Space.
+
+# Population
+
+The map below shows the Stockton city boundary in red, block groups within Stockton in gray, and 2 specific block groups I've selected in blue to represent downtown Stockton. This is a choice you can refine. If you'd like to include other block groups, zoom in and click on the gray shapes, and let me know the GEOIDs of other block groups you'd like to include in the "downtown" category.
+
+```{r}
+ca_bgs <- 
+  block_groups("CA", cb = TRUE) %>% 
+  st_transform(projection)
+
+stockton_boundary <- 
+  places("CA", cb = TRUE) %>% 
+  filter(NAME == "Stockton") %>% 
+  st_transform(projection)
+  
+stockton_bgs_full <- 
+  ca_bgs %>% 
+  filter(
+    GEOID %in% st_centroid(ca_bgs)[stockton_boundary,]$GEOID
+  )
+
+downtown_bgs <-
+  stockton_bgs_full %>% 
+  filter(GEOID %in% c("060770001002","060770001001"))
+ 
+mapview(stockton_boundary, alpha.regions = 0, color = "red", lwd = 4) +
+  mapview(stockton_bgs_full, col.regions = "gray") +
+  mapview(downtown_bgs, col.regions = "blue")
+```
+
+The following table gives population data for the whole of Stockton (red), as well as for the "downtown" selection. Since block group population data is only available as an American Communities Survey 5-year summary from 2014-2018, this first table also gives the whole of Stockton using the same ACS data.
+
+```{r}
+
+```
+
+
