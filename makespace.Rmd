@@ -4,6 +4,9 @@ author: "City Systems"
 date: "3/9/2020"
 output: 
   html_document:
+    toc: false
+    toc_float: false
+    collapsed: false
     code_folding: hide
 editor_options: 
   chunk_output_type: console
@@ -37,8 +40,7 @@ library(tidytransit)
 opts_chunk$set(
   echo = TRUE, 
   warning=FALSE, 
-  message=FALSE,
-  cache=TRUE
+  message=FALSE
 )
 mapviewOptions(
   basemaps = "OpenStreetMap",
@@ -523,7 +525,390 @@ We do not have direct access to this data. Stockton publishes monthly listings o
 
 # Comparison with other cities
 
-TBD
+The following jurisdictions were recommended for a side-by-side comparison with Stockton on multiple demographic characteristics:
+
+10 Miles:
+
+- Lodi
+- Lathrop
+
+20 Miles:
+
+- Ripon
+- Tracy
+- Manteca
+- Galt
+
+30 Miles:
+
+- Antioch
+- Elk Grove
+
+50 Miles:
+
+- Modesto
+- Sacramento
+
+The places are shown below.
+
+```{r}
+places_comparison <-
+  places_ca %>% 
+  filter(
+    NAME %in% c(
+      "Stockton",
+      "Lodi",
+      "Lathrop",
+      "Ripon",
+      "Tracy",
+      "Manteca",
+      "Galt",
+      "Antioch",
+      "Elk Grove",
+      "Modesto",
+      "Sacramento"
+    )
+  )
+
+mapview(places_comparison, legend=FALSE)
+```
+
+$~$
+
+The following variables are available from the American Communities Survey 2018 5-yr summary that we believe are relevant to the project. To explore what's available yourself, go to the [Census Data website](https://data.census.gov/cedsci/) and do search queries to find tables that are available. There are lots of cross-tabulations of age, income, etc. with other variables you might be interested in.
+
+- HOUSEHOLD INCOME IN THE PAST 12 MONTHS (IN 2018 INFLATION-ADJUSTED DOLLARS)
+- SEX BY AGE BY EDUCATIONAL ATTAINMENT FOR THE POPULATION 18 YEARS AND OVER
+
+The data can be downloaded in the Drive folder linked at the top of this page.
+
+```{r}
+# acs_vars <-
+#   listCensusMetadata(
+#     name = "2018/acs/acs5",
+#     type = "variables"
+#   )
+# save(acs_vars, file = "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_2018")
+load("C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/acs5_vars_2018")
+
+compare_census <-
+  rbind(
+    getCensus(
+        name = "acs/acs5",
+        vintage = 2018,
+        vars = c("group(B19001)"),
+        region = "place:*",
+        regionin = "state:06"
+      ) %>% 
+      filter(place %in% places_comparison$PLACEFP) %>%
+      select_if(!names(.) %in% c("GEO_ID","state","county","NAME")) %>%
+      dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
+      gather(
+        key = "variable",
+        value = "estimate",
+        -place
+      ) %>%
+      mutate(
+        label = acs_vars$label[match(variable,acs_vars$name)],
+        category = "income"
+      ) %>% 
+      dplyr::select(-variable) %>% 
+      # separate(
+      #   label,
+      #   into = c(NA,NA,"ethnicity","race"),
+      #   sep = "!!"
+      # ) %>% 
+      left_join(places_comparison %>% st_set_geometry(NULL) %>% dplyr::select(NAME,PLACEFP), by = c("place" = "PLACEFP")),
+    getCensus(
+        name = "acs/acs5",
+        vintage = 2018,
+        vars = c("group(B15001)"),
+        region = "place:*",
+        regionin = "state:06"
+      ) %>% 
+      filter(place %in% places_comparison$PLACEFP) %>%
+      select_if(!names(.) %in% c("GEO_ID","state","county","NAME")) %>%
+      dplyr::select(-c(contains("EA"),contains("MA"),contains("M"))) %>%
+      gather(
+        key = "variable",
+        value = "estimate",
+        -place
+      ) %>%
+      mutate(
+        label = acs_vars$label[match(variable,acs_vars$name)],
+        category = "age sex education"
+      ) %>% 
+      dplyr::select(-variable) %>% 
+      # separate(
+      #   label,
+      #   into = c(NA,NA,"ethnicity","race"),
+      #   sep = "!!"
+      # ) %>% 
+      left_join(places_comparison %>% st_set_geometry(NULL) %>% dplyr::select(NAME,PLACEFP), by = c("place" = "PLACEFP"))
+  )
+
+write_csv(compare_census, "C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/Make Space Data/compare_census.csv")
+```
+
+Here are some plots of the data. First, stacked bar chart of # of households by income tier.
+
+```{r}
+income_tiers <-
+  compare_census %>% 
+  filter(category == "income") %>%
+  filter(label != "Estimate!!Total") %>% 
+  pull(label) %>% 
+  substr(18,nchar(.)) %>% 
+  unique()
+
+city_order <-
+  compare_census %>% 
+  filter(category == "income") %>%
+  filter(label == "Estimate!!Total") %>% 
+  arrange(desc(estimate)) %>% 
+  pull(NAME)
+  
+compare_census %>% 
+  filter(category == "income") %>%
+  filter(label != "Estimate!!Total") %>% 
+  mutate(
+    label = substr(label,18,nchar(.)) %>% factor(levels = income_tiers),
+    NAME = NAME %>% factor(levels = city_order)
+  ) %>% 
+  ggplot() +
+  geom_bar(
+    aes(
+      x = NAME,
+      y = estimate,
+      fill = label
+    ),
+    position = position_stack(reverse = T),
+    stat = "identity",
+    size = 3
+  ) +
+  coord_flip()+
+  labs(
+    title = "Household income",
+    subtitle = "2014-2018 American Community Survey",
+    y = "",
+    x = "ACS estimate",
+    fill = "Income Tier"
+  )
+
+# geom_errorbarh(
+#   aes(
+#     xmin = estimate - moe, 
+#     xmax = estimate + moe
+#   )
+```
+
+$~$
+
+Second, the same data but shown as a spread bar chart.
+
+```{r}
+compare_census %>% 
+  filter(category == "income") %>%
+  filter(label != "Estimate!!Total") %>% 
+  mutate(
+    label = substr(label,18,nchar(.)) %>% factor(levels = income_tiers),
+    NAME = NAME %>% factor(levels = city_order)
+  ) %>% 
+  ggplot() +
+  geom_bar(
+    aes(
+      x = NAME,
+      y = estimate,
+      fill = label
+    ),
+    position = position_fill(reverse = T),
+    stat = "identity",
+    size = 3
+  ) +
+  coord_flip()+
+  labs(
+    title = "Household income",
+    subtitle = "2014-2018 American Community Survey",
+    y = "",
+    x = "ACS estimate",
+    fill = "Income Tier"
+  )
+```
+
+$~$
+
+Next, breakdown by age and sex.
+
+```{r}
+sex_age_tiers <-
+  compare_census %>% 
+  filter(category == "age sex education") %>%
+  filter(label != "Estimate!!Total") %>% 
+  mutate(
+    label = substr(label,18,nchar(.))
+  ) %>% 
+  separate(label, sep="!!", into=c("sex","age","education")) %>% 
+  filter(!is.na(age)) %>%
+  mutate(
+    sex_age = paste0(sex, ", ", age)
+  ) %>% 
+  pull(sex_age) %>% 
+  unique()
+  
+compare_census %>% 
+  filter(category == "age sex education") %>%
+  filter(label != "Estimate!!Total") %>% 
+  mutate(
+    label = substr(label,18,nchar(.)),
+    NAME = NAME %>% factor(levels = city_order)
+  ) %>%
+  separate(label, sep="!!", into=c("sex","age","education")) %>% 
+  filter(!is.na(age)) %>%
+  mutate(
+    sex_age = paste0(sex, ", ", age) %>% factor(levels = sex_age_tiers)
+  ) %>% 
+  filter(is.na(education)) %>%
+  ggplot() +
+  geom_bar(
+    aes(
+      x = NAME,
+      y = estimate,
+      fill = sex_age
+    ),
+    position = position_stack(reverse = T),
+    stat = "identity",
+    size = 3
+  ) +
+  coord_flip()+
+  labs(
+    title = "Sex and Age",
+    subtitle = "2014-2018 American Community Survey, Population over 18 years old",
+    y = "",
+    x = "ACS estimate",
+    fill = "Sex and Age"
+  )
+```
+
+$~$
+
+```{r}
+compare_census %>% 
+  filter(category == "age sex education") %>%
+  filter(label != "Estimate!!Total") %>% 
+  mutate(
+    label = substr(label,18,nchar(.)),
+    NAME = NAME %>% factor(levels = city_order)
+  ) %>%
+  separate(label, sep="!!", into=c("sex","age","education")) %>% 
+  filter(!is.na(age)) %>%
+  mutate(
+    sex_age = paste0(sex, ", ", age) %>% factor(levels = sex_age_tiers)
+  ) %>% 
+  filter(is.na(education)) %>%
+  ggplot() +
+  geom_bar(
+    aes(
+      x = NAME,
+      y = estimate,
+      fill = sex_age
+    ),
+    position = position_fill(reverse = T),
+    stat = "identity",
+    size = 3
+  ) +
+  coord_flip()+
+  labs(
+    title = "Sex and Age",
+    subtitle = "2014-2018 American Community Survey, Population over 18 years old",
+    y = "",
+    x = "ACS estimate",
+    fill = "Sex and Age"
+  )
+```
+
+$~$
+
+Last, breakdown by educational attainment.
+
+```{r}
+education_tiers <-
+  compare_census %>% 
+  filter(category == "age sex education") %>%
+  filter(label != "Estimate!!Total") %>% 
+  mutate(
+    label = substr(label,18,nchar(.))
+  ) %>% 
+  separate(label, sep="!!", into=c("sex","age","education")) %>% 
+  filter(!is.na(education)) %>%
+  pull(education) %>% 
+  unique()
+  
+compare_census %>% 
+  filter(category == "age sex education") %>%
+  filter(label != "Estimate!!Total") %>% 
+  mutate(
+    label = substr(label,18,nchar(.)),
+    NAME = NAME %>% factor(levels = city_order)
+  ) %>%
+  separate(label, sep="!!", into=c("sex","age","education")) %>% 
+  filter(!is.na(education)) %>%
+  ggplot() +
+  geom_bar(
+    aes(
+      x = NAME,
+      y = estimate,
+      fill = education
+    ),
+    position = position_stack(reverse = T),
+    stat = "identity",
+    size = 3
+  ) +
+  coord_flip()+
+  labs(
+    title = "Educational Attainment",
+    subtitle = "2014-2018 American Community Survey, Population over 18 years old",
+    y = "",
+    x = "ACS estimate",
+    fill = "Attainment"
+  )
+```
+
+$~$
+
+```{r}
+compare_census %>% 
+  filter(category == "age sex education") %>%
+  filter(label != "Estimate!!Total") %>% 
+  mutate(
+    label = substr(label,18,nchar(.)),
+    NAME = NAME %>% factor(levels = city_order)
+  ) %>%
+  separate(label, sep="!!", into=c("sex","age","education")) %>% 
+  filter(!is.na(education)) %>%
+  ggplot() +
+  geom_bar(
+    aes(
+      x = NAME,
+      y = estimate,
+      fill = education
+    ),
+    position = position_fill(reverse = T),
+    stat = "identity",
+    size = 3
+  ) +
+  coord_flip()+
+  labs(
+    title = "Educational Attainment",
+    subtitle = "2014-2018 American Community Survey, Population over 18 years old",
+    y = "",
+    x = "ACS estimate",
+    fill = "Attainment"
+  )
+```
+
+$~$
+
+As previously mentioned, the full raw data is available as a CSV at a link above, but if you would like help viewing different cross sections of the data, or other variables you think are useful from the Census Bureau, just reach out.
 
 # Appendix A
 
