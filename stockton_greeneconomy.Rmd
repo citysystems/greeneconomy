@@ -12,7 +12,8 @@ output:
       toc:
         collapse: none
         scroll_highlight: yes
-        before: null
+        before: |
+          <li><a href="https://city.systems">City Systems</a></li>
         after: null
       toolbar:
         position: fixed
@@ -561,7 +562,7 @@ stockton_tracts_full <-
 # 
 # mapshot(map,url="map-bgs.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-bgs.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-bgs.html")
 ```
 
 $~$
@@ -1527,7 +1528,7 @@ The following maps help to visualize the specific distribution of Stockton resid
 # 
 # mapshot(map,url="map-stockton-lodes-w-top-counties-youth.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-lodes-w-top-counties-youth.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-lodes-w-top-counties-youth.html")
 ```
 
 $~$
@@ -1540,7 +1541,7 @@ $~$
 # 
 # mapshot(map,url="map-stockton-lodes-w-top-counties-lowinc.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-lodes-w-top-counties-lowinc.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-lodes-w-top-counties-lowinc.html")
 ```
 
 $~$
@@ -1552,7 +1553,7 @@ $~$
 # 
 # mapshot(map,url="map-stockton-lodes-w-top-counties-highinc.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-lodes-w-top-counties-highinc.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-lodes-w-top-counties-highinc.html")
 ```
 
 $~$
@@ -1564,7 +1565,7 @@ $~$
 # 
 # mapshot(map,url="map-stockton-lodes-w-top-counties-goods.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-lodes-w-top-counties-goods.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-lodes-w-top-counties-goods.html")
 ```
 
 $~$
@@ -1576,7 +1577,7 @@ $~$
 # 
 # mapshot(map,url="map-stockton-lodes-w-top-counties-trade.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-lodes-w-top-counties-trade.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-lodes-w-top-counties-trade.html")
 ```
 
 $~$
@@ -1588,7 +1589,7 @@ $~$
 # 
 # mapshot(map,url="map-stockton-lodes-w-top-counties-services.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-lodes-w-top-counties-services.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-lodes-w-top-counties-services.html")
 ```
 
 $~$
@@ -1784,7 +1785,7 @@ stockton_lodes_w_construction_high <-
 # 
 # mapshot(map,url="map-stockton-lodes-w-construction-high.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-lodes-w-construction-high.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-lodes-w-construction-high.html")
 ```
 
 $~$
@@ -1808,7 +1809,7 @@ stockton_lodes_w_scientific_high <-
 # 
 # mapshot(map,url="map-stockton-lodes-w-scientific-high.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-lodes-w-scientific-high.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-lodes-w-scientific-high.html")
 ```
 
 $~$
@@ -2501,7 +2502,7 @@ stockton_jobs_map <-
 # 
 # mapshot(map,url="map-stockton-jobs-map.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-jobs-map.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-jobs-map.html")
 ```
 
 $~$
@@ -2522,7 +2523,7 @@ stockton_commute_avg <-
 # 
 # mapshot(map,url="map-stockton-commute-avg.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-stockton-commute-avg.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-commute-avg.html")
 ```
 
 $~$
@@ -3126,7 +3127,7 @@ amenity_VMT <- amenity_VMT[,c("total VMT", "location name", "business type", "st
 # 
 # mapshot(map, url = "map-amenity-vmt-location.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-amenity-vmt-location.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-amenity-vmt-location.html")
 ```
 
 $~$
@@ -3209,7 +3210,7 @@ The following map shows the same data aggregated back to Stockton blockgroups, a
 # 
 # mapshot(map, url = "map-amenity-vmt-bg.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-amenity-vmt-bg.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-amenity-vmt-bg.html")
 ```
 
 $~$
@@ -3342,7 +3343,7 @@ According to the table above, 59% percent of Stockton residents work in San Joaq
 # 
 # mapshot(map,url="map-ghg-map-2.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-ghg-map-2.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-ghg-map-2.html")
 ```
 
 $~$
@@ -3428,7 +3429,7 @@ zcta_stockton <- zcta[stockton_boundary_influence,] %>%
 # 
 # mapshot(map, url = "map-zcta.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-zcta.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-zcta.html")
 ```
 
 $~$
@@ -4178,7 +4179,7 @@ bg_bldg_norm_r <-
 # 
 # mapshot(map, url = "map-residential-density.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-residential-density.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-residential-density.html")
 ```
 
 $~$
@@ -4229,7 +4230,7 @@ bg_bldg_norm_c <-
 # 
 # mapshot(map, url = "map-commercial-density.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-commercial-density.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-commercial-density.html")
 ```
 
 $~$
@@ -4286,7 +4287,7 @@ zcta_bldg_stockton_joined <-
 # 
 # mapshot(map, url = "map-res-customer.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-res-customer.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-res-customer.html")
 ```
 
 $~$
@@ -4296,7 +4297,7 @@ $~$
 # 
 # mapshot(map, url = "map-comm-customer.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-comm-customer.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-comm-customer.html")
 ```
 
 $~$
@@ -5383,6 +5384,19 @@ This domain includes management of natural resources beyond what has already bee
 | Scalable Potential | According to Dr. Julio Freidmann, senior research scholar at the Center on Global Energy Policy at Columbia University, the California Central Valley is one of a few geological areas in Northern America particularly conducive to CCS. In California, the Low Carbon Fuel Standard (LCFS) enables CCS projects to generate credits that have traded on average between \$122-190/tCO2 in 2018-2019. On top of LCFS, federal 45Q credits worth \$31/tCO2 for geological storage are expected to increase in value and scale, with estimates that the U.S. Treasury will provide between \$3.5-5 billion per year of tax credits starting in 2025. |
 | Similar | [Port Arthur, TX](https://www.energy.gov/fe/articles/doe-supported-co2-capture-project-hits-major-milestone-4-million-metric-tons)<br>[Petra Nova, Houston](https://www.energy.gov/fe/articles/doe-supported-petra-nova-captures-more-1-million-tons-co2) |
 
+### Develop pneumatic waste collection systems
+
+`r include_graphics("images/envac.jpeg")`
+<br>Source: [Sidewalk Talk](https://medium.com/sidewalk-talk/vacuum-waste-a-tech-whose-time-has-finally-come-f265b4f662cc)
+
+| Location | Wembley Park, UK |
+|:------|:-------------------------------------------------------------------|
+| Details | Wembley Park’s automated waste collection system serves a mixture of residential, retail, and hotel properties with more than two and a half miles of underground tubes. It has the capacity to handle nearly 6,000 metric tons of waste and recycling per year — and its recycling rate is double the U.K. average. The system’s pneumatic tubes are powered by large vacuum pumps located in the collection center. The pumps are powerful enough to transport waste at speeds of up to 40 miles per hour. That requires a lot of electricity, but the pumps don’t operate continuously; rather, they run only as the system’s valves are opened. Wembley Park’s vacuum waste system consumes 300 kilowatt hours of electricity daily. That’s about one-tenth of a kilowatt-hour per day for each residence served by the system, roughly equivalent to the consumption of a 100-watt incandescent lightbulb for 70 minutes. |
+| Links | [Sidewalk Talk](https://medium.com/sidewalk-talk/vacuum-waste-a-tech-whose-time-has-finally-come-f265b4f662cc)<br>[Brent Council](https://www.yumpu.com/en/document/read/27225270/collection-costs-vanish-for-brent-council-as-wembley-citys-waste-) |
+| Implementation Costs & Impact Factor | The up-front capital costs for the Envac system amounted to more than \$16 million. Once built, however, its operation has come at substantial savings: that same Brent Council study pegged the operational cost of the Envac system at under \$275,000 per year, compared to the nearly \$900,000 annual cost of curbside collection. To make the finances work, the borough and the developer arrived at a unique arrangement: the developer would pay for the system’s construction and operation, while the borough would pay for part of the collection service. In Wembley Park, truck movements for waste collection have been reduced by 90 percent, saving more than 400 tons per year in carbon dioxide emissions. That figure is expected to rise to nearly 700 tons per year once the redevelopment is complete. |
+| Scalable Potential | North America remains a laggard, but some promising projects are underway. Typically, installing pneumatic systems in older urban districts can be a more expensive proposition than a new, large-scale redevelopment, since it requires retrofitting existing underground infrastructure to accommodate the vacuum tubes. |
+| Similar | [New York City, NY](http://www.closedloops.net/high-line-corridor-project)<br>[Bergen, Norway](http://www.infrastructure-intelligence.com/article/nov-2016/world%E2%80%99s-largest-automated-vacuum-waste-collection-system-set-bergen) |
+
 # Analysis of Green Economy Strategies
 
 While the previous chapter is presented as a broad overview of different green economy strategies from locations across the U.S. and other countries, this chapter hand-picks a limited subset of strategies to examine in greater detail. These strategies are selected because of their ability to be modeled using the same framework as developed in Chapter 2, as well as their identification as practical options for Stockton by Stockton stakeholders. After a description of how the strategies will be quantitatively evaluated within our existing GHG framework, the following sections are once again organized by domain of green economy strategies. Each section introduces key model assumptions, and then a specific set of recommended strategies are modeled in terms of their possible impact on GHG reduction and economic benefits. Where possible, short-term and operational costs are also estimated.
@@ -5984,7 +5998,7 @@ test_parcels <- normal_residential_parcels_yards[test_block_group,]
 # 
 # mapshot(map, url = "map-adu-example.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-adu-example.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-adu-example.html")
 ```
 
 $~$
@@ -6110,7 +6124,7 @@ downtownstation_stops <-
 # 
 # mapshot(map, url = "map-accessible-adus.html")
 
-knitr::include_url("http://web.stanford.edu/~douyang1/map-accessible-adus.html")
+knitr::include_url("https://city.systems/stockton-greeneconomy/map-accessible-adus.html")
 ```
 
 $~$
@@ -6371,6 +6385,10 @@ The following are knowledge sources to review for additional case studies to be 
 - [Redesign bus network to prioritize ridership over coverage](#redesign-bus-network-to-prioritize-ridership-over-coverage)
 - [Subsidize first-mile/last-mile transportation services](#subsidize-first-mile-last-mile-transportation-services)
 
+**Bergen, Norway**
+
+- [Develop pneumatic waste collection systems](#develop-pneumatic-waste-collection-systems)
+
 **Berkeley, CA**
 
 - [Create local transportation demand management ordinances](#create-local-transportation-demand-management-ordinances)
@@ -6584,6 +6602,7 @@ The following are knowledge sources to review for additional case studies to be 
 - [Reduce vehicle speed limits](#reduce-vehicle-speed-limits)
 - [Promote cool surfaces to reduce heat island effect](#promote-cool-surfaces-to-reduce-heat-island-effect)
 - [Use green infrastructure to improve stormwater management](#use-green-infrastructure-to-improve-stormwater-management)
+- [Develop pneumatic waste collection systems](#develop-pneumatic-waste-collection-systems)
 
 **Norfolk, VA**
 
@@ -6751,6 +6770,10 @@ The following are knowledge sources to review for additional case studies to be 
 - [Promote solar development in Opportunity Zones](#promote-solar-development-in-opportunity-zones)
 - [Promote a Solar Renewable Energy Certificate program](#promote-a-solar-renewable-energy-certificate-program)
 - [Promote the use of e-scooters and dockless bicycles to reduce reliance on private cars](#promote-the-use-of-e-scooters-and-dockless-bicycles-to-reduce-reliance-on-private-cars)
+
+**Wembley Park, UK**
+
+- [Develop pneumatic waste collection systems](#develop-pneumatic-waste-collection-systems)
 
 **Wisconsin**
 
