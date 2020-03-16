@@ -5056,7 +5056,7 @@ This domain includes strategies with the outcome of increasing the number of job
 | Links | [Think Vermont](https://www.thinkvermont.com/remote-worker-grant-program-2019/)<br>[Stay to Stay](https://www.vermontvacation.com/staytostay) |
 | Implementation Costs & Impact Factor | Between January 1 and September 15, 2019, ACCD awarded \$320,834 to 84 new Vermont remote workers. Grants ranged from $400 to \$5,000; the average grant awarded was \$3,819. As of September 15, 2019, the grant application was downloaded 4,201 times. Grantees brought with them an additional 134 family members (including 44 children), for a total of 218 new Vermonters. The top fields of employment represented by grantees were information technology (31%), management (13%), writing and editing (8%), finance and sales (both tied at 6%), and marketing (5%). Other fields represented included insurance, education, project management, and law. Vermont co-working space memberships were purchased by fourteen grantees and six additional grantees indicated they are considering doing so. [Read more here](https://accd.vermont.gov/sites/accdnew/files/documents/DED/Remoteworker/2019RemoteWorkerReport.pdf). |
 | Scalable Potential | Stockton's Economic Development Department could develop a similar program to attract remote workers from the Bay Area. Proximity to Silicon Valley may facilitate the networking effects that draw people to the region. Solutions have included [investments](https://www.nber.org/papers/w25913) targeting issues that are unique to Stockton e.g. healthcare access, educational outcomes. There are additional local investments for immigrants on H1B visas. |
-| Similar | [Montana House Bill 405](https://montanafreepress.org/2019/03/08/kansas-and-vermont-pay-college-grads-to-move-to-small-towns-montana-could-follow-suit/)<br>[Kansas Rural Opportunity Zone Program](https://www.kansascommerce.gov/wp-content/uploads/2018/12/ROZ-program-guidelines-FY19_201810080934581436.pdf) |
+| Similar | [Montana House Bill 405](https://montanafreepress.org/2019/03/08/kansas-and-vermont-pay-college-grads-to-move-to-small-towns-montana-could-follow-suit/)<br>[Kansas Rural Opportunity Zone Program](https://www.kansascommerce.gov/wp-content/uploads/2018/12/ROZ-program-guidelines-FY19_201810080934581436.pdf)<br>[Tulsa Remote](https://tulsaremote.com/) |
 
 ## Vehicle Miles Traveled
 
@@ -5339,7 +5339,7 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 | Links | [SFWater](https://sfwater.org/modules/showdocument.aspx?documentid=13249) |
 | Implementation Costs & Impact Factor | Contingent upon site. [See table](https://docs.google.com/spreadsheets/d/1Z1Q1j1GJpgI8-M9XGKHMgTds0wqyB-twr-RLR7xX-JU/edit#gid=414331495).
 | Scalable Potential | There are several key risks to Stockton’s water quality, most of which are tied to Stockton historic and present manufacturing activities. The Sharpe Army Depot and McCormick & Baxter Creosoting Company are both listed on the Environmental Protection Agencies National Priorities List, indicating they are a high priority superfund site. The EPA has identified additional sites of concern including Stockton Iron Works, Colberg Boat Works, Norge Cleaning Village, and Brea Agricultural Services. Two additonal sites, Stockton Naval Communications Station and the General Services Administration, are both located at the Naval Supply Center at Rough and Ready Island. As a result of these sites, as well as agricultural run-off and other sources, Stockton has elevated levels of Arsenic that are, on average, 4.5 times higher than recommended levels. [Read more](https://docs.google.com/document/d/1O8eMspahozBkoB3-uIw3Azvwyv6xEJvca1XV76TwgFY/edit). |
-| Similar | [Hunts Point, NY](https://static1.squarespace.com/static/561dcdc6e4b039470e9afc00/t/5d435f106f6e7a0001f5b304/1564696351697/HuntsPoint_EarthEconomics_062719-1.pdf)<br>[NE Siskiyou Green Street, Portland, OR](https://www.urbanraindesign.com/ne-siskiyou)<br>[Caltrans](https://www.owp.csus.edu/research/papers/papers/PP061.pdf)<br>[Tres Rios Demonstration Constructed Wetlands, Phoenix](https://www.wetlandsolutionsinc.com/download/TreatmentWetlands/Tres_Rios_Biomonitoring_Aug%202004.pdf) |
+| Similar | [Hunts Point, NY](https://static1.squarespace.com/static/561dcdc6e4b039470e9afc00/t/5d435f106f6e7a0001f5b304/1564696351697/HuntsPoint_EarthEconomics_062719-1.pdf)<br>[NE Siskiyou Green Street, Portland, OR](https://www.urbanraindesign.com/ne-siskiyou)<br>[Caltrans](https://www.owp.csus.edu/research/papers/papers/PP061.pdf)<br>[Tres Rios Demonstration Constructed Wetlands, Phoenix](https://www.wetlandsolutionsinc.com/download/TreatmentWetlands/Tres_Rios_Biomonitoring_Aug%202004.pdf)<br>[Oakland Green Stormwater Spine](https://blog.bayareametro.gov/posts/unclean-green-downtown-oakland-project-protects-bay-polluted-runoff) |
 
 ### Promote urban gardens as a substitute for displaced ecosystem services
 
@@ -5396,6 +5396,19 @@ This domain includes management of natural resources beyond what has already bee
 | Implementation Costs & Impact Factor | The up-front capital costs for the Envac system amounted to more than \$16 million. Once built, however, its operation has come at substantial savings: that same Brent Council study pegged the operational cost of the Envac system at under \$275,000 per year, compared to the nearly \$900,000 annual cost of curbside collection. To make the finances work, the borough and the developer arrived at a unique arrangement: the developer would pay for the system’s construction and operation, while the borough would pay for part of the collection service. In Wembley Park, truck movements for waste collection have been reduced by 90 percent, saving more than 400 tons per year in carbon dioxide emissions. That figure is expected to rise to nearly 700 tons per year once the redevelopment is complete. |
 | Scalable Potential | North America remains a laggard, but some promising projects are underway. Typically, installing pneumatic systems in older urban districts can be a more expensive proposition than a new, large-scale redevelopment, since it requires retrofitting existing underground infrastructure to accommodate the vacuum tubes. |
 | Similar | [New York City, NY](http://www.closedloops.net/high-line-corridor-project)<br>[Bergen, Norway](http://www.infrastructure-intelligence.com/article/nov-2016/world%E2%80%99s-largest-automated-vacuum-waste-collection-system-set-bergen) |
+
+### Charge for waste disposal except recycling and compost
+
+`r include_graphics("images/korea.jpg")`
+<br>Source: [Brink News](https://www.brinknews.com/south-korea-once-recycled-2-of-its-food-waste-now-it-recycles-95/)
+
+| Location | Seoul, South Korea |
+|:------|:-------------------------------------------------------------------|
+| Details | In 1995, South Korea replaced its flat tax for waste disposal with a new system. Recycling materials were picked up free of charge, but for all other trash the city imposed a fee, which was calculated by measuring the size and number of bags. By 2006, it was illegal to send food waste to landfills and dumps; citizens were required to separate it out. The new waste policies were supported with grants to the then nascent recycling industry. Residents of Seoul can buy designated biodegradable bags for their food scraps, which are disposed of in automated bins, usually situated in an apartment building’s parking area. The bins weigh and charge per kilogram of organic waste. The thirteen thousand tons of food waste produced daily in South Korea now become one of three things: compost (thirty per cent), animal feed (sixty per cent), or biofuel (ten per cent). |
+| Links | [New Yorker](https://www.newyorker.com/magazine/2020/03/09/how-south-korea-is-composting-its-way-to-sustainability)<br>[Korea Zero Waste Movement Network](http://www.waste21.or.kr/html/eng.asp) |
+| Implementation Costs & Impact Factor | These measures have led to a decrease in food waste, per person, of about three-quarters of a pound a day—the weight of a Big Mac and fries, or a couple of grapefruits. The country estimates the economic benefit of these policies to be, over the years, in the billions of dollars. |
+| Scalable Potential | Mandatory organics recycling could save money. Sanitation trucks would have waste to pick up throughout the city, as opposed to gathering bits and pieces from participating households. (Organics collection currently averages between one and two tons per truck shift, a fraction of the capacity of ten to twelve tons.) There’s even a small amount of money to be made from selling compost, though for now much of it is given away in the interest of generating enthusiasm and awareness. |
+| Similar | [New York City, NY](https://resource-recycling.com/recycling/2018/02/06/nyc-study-pay-throw-potential/)<br>[Seattle, WA](https://www.seattle.gov/utilities/services/garbage/garbage-at-home/garbage-can-rates) |
 
 # Analysis of Green Economy Strategies
 
@@ -6603,6 +6616,7 @@ The following are knowledge sources to review for additional case studies to be 
 - [Promote cool surfaces to reduce heat island effect](#promote-cool-surfaces-to-reduce-heat-island-effect)
 - [Use green infrastructure to improve stormwater management](#use-green-infrastructure-to-improve-stormwater-management)
 - [Develop pneumatic waste collection systems](#develop-pneumatic-waste-collection-systems)
+- [Charge for waste disposal except recycling and compost](#charge-for-waste-disposal-except-recycling-and-compost)
 
 **Norfolk, VA**
 
@@ -6611,6 +6625,7 @@ The following are knowledge sources to review for additional case studies to be 
 **Oakland, CA**
 
 - [Provide green-oriented job training and education pathways](#provide-green-oriented-job-training-and-education-pathways)
+- [Use green infrastructure to improve stormwater management](#use-green-infrastructure-to-improve-stormwater-management)
 
 **Oregon**
 
@@ -6720,6 +6735,11 @@ The following are knowledge sources to review for additional case studies to be 
 - [Encourage accessory dwelling units](#encourage-accessory-dwelling-units)
 - [Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements](#provide-consumer-oriented-programs-to-incentivize-energy-efficiency-retrofits-and-appliance-improvements)
 - [Offset negative externalities of traffic through tolls](#offset-negative-externalities-of-traffic-through-tolls)
+- [Charge for waste disposal except recycling and compost](#charge-for-waste-disposal-except-recycling-and-compost)
+
+**Seoul, South Korea**
+
+- [Charge for waste disposal except recycling and compost](#charge-for-waste-disposal-except-recycling-and-compost)
 
 **South Holland, IL**
 
@@ -6748,6 +6768,7 @@ The following are knowledge sources to review for additional case studies to be 
 **Tulsa, OK**
 
 - [Offer continued training and support post-employment](#offer-continued-training-and-support-post-employment)
+- [Pay remote workers to move to new location](#pay-remote-workers-to-move-to-new-location)
 
 **Tyson, VA**
 
