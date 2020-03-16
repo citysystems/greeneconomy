@@ -4805,7 +4805,7 @@ This domain covers all strategies that reduce the amount of energy use in buildi
 
 ### Set energy savings standards on all public buildings and provide financial and technical assistance for commercial private sector energy savings
 
-`r include_graphics("images/energystar.png")`
+`r include_graphics("images/energystar.PNG")`
 <br>Milwaukee utilizes ENERGY STAR Portfolio Manager to help buildings benchmark their performance and to track participant progress for awards. Source: [Better Buildings Challenge Milwaukee](https://city.milwaukee.gov/bbc/services/Benchmarking)
 
 | Location | Milwaukee, WI |
