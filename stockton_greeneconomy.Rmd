@@ -1596,9 +1596,9 @@ $~$
 
 While LODES origin-destination data doesn't provide job types at a granularity lower than the three broad industry sector categories in the previous three maps, one possible assumption to make is that the distribution of NAICS industry sectors in a destination block group, which is available through the separate Workplace Area Characteristics dataset from LODES, is the same distribution for specifically Stockton residents who work in that block group. Using this assumption, we created estimates of the locations of specific types of industries and wage levels for Stockton employed residents.
 
-The percentages in the table below should be interpreted as the % of overall jobs held by Stockton residents of that industry sector and wage tier that are based in San Joaquin County (the remainder being based in other counties). Particularly notable here are the low-percentage estimates of high-wage jobs in sectors generally related to the "knowledge economy": Finance and Insurance (38%), Information (28%), and Professional, Scientific, and Technical Services (19%). Also notable is the low percentage of high-wage jobs in Construction (35%), which may include specialized building trades such as solar installation. These percentages are relative to an overall 64% of high-wage jobs being based in SJC, which suggests that the best jobs in these notable industries are significantly underrepresented in the local economy.
+The following table summarizes the number of Stockton workers estimated in each NAICS industry, by wage level.
 
-```{r stockton-lodes-w-sjc-detail-table}
+```{r stockton-naics-jobs-summary}
 # ca_wac <-
 #   2010:2017 %>%
 #   map_dfr(function(year){
@@ -1663,31 +1663,120 @@ stockton_lodes_h_join_wac_normalize <-
   filter(value > 0) %>% 
   dplyr::select(-value)
 
-stockton_lodes_w_counties_detail<-
-  stockton_lodes_h_join_wac_normalize %>%
-  mutate(
-    Workplace = ifelse(
-      w_bg %in% stockton_bgs_full$GEOID,
-      "75000",
-      substr(w_bg,3,5)
-    )
-  ) %>%
-  group_by(Workplace) %>%
-  summarise_at(
+
+stockton_naics_jobs <-
+  stockton_lodes_h_join_wac_normalize %>% 
+  group_by(w_bg) %>% 
+  summarize_at(
     vars(S000,SE01,SE02,SE03,high_CNS01:mid_CNS20),
     sum, 
     na.rm=T
-  ) %>%
+  ) %>% 
   mutate_at(
     .vars = vars(high_CNS01:mid_CNS20),
     .funs = list(~ round(.,0))
   )
 
-stockton_lodes_w_sjc_detail <-
+stockton_naics_jobs <-
+  stockton_lodes_h_join_wac_normalize %>% 
+  group_by(w_bg) %>% 
+  summarize_at(
+    vars(S000,SE01,SE02,SE03,high_CNS01:mid_CNS20),
+    sum, 
+    na.rm=T
+  ) %>% 
+  mutate_at(
+    .vars = vars(high_CNS01:mid_CNS20),
+    .funs = list(~ round(.))
+  )
+
+stockton_naics_jobs_summary <-
   rbind(
-    stockton_lodes_w_counties_detail[which(stockton_lodes_w_counties_detail$Workplace == "75000"),-1],
-    stockton_lodes_w_counties_detail[,-1] %>% 
-    colSums()
+    stockton_naics_jobs[,-1] %>% colSums()
+  ) %>% 
+  t() %>%
+  as.data.frame() %>% 
+  rownames_to_column() %>% 
+  mutate(
+    jobs = V1,
+    rowname = 
+      case_when(
+        rowname == "SE01" ~ "low_Total",
+        rowname == "SE02" ~ "mid_Total",
+        rowname == "SE03" ~ "high_Total",
+        TRUE ~ rowname
+      )
+  ) %>% 
+  dplyr::select(-V1) %>% 
+  filter(!rowname %in% c("S000")) %>% 
+  separate(
+    rowname,
+    into = c("wage","industry"),
+    sep = "_"
+  ) %>% 
+  mutate(
+    industry =
+      case_when(
+        industry == "CNS01" ~ "Agriculture, Forestry, Fishing and Hunting",
+        industry == "CNS02" ~ "Mining, Quarrying, and Oil and Gas Extraction",
+        industry == "CNS03" ~ "Utilities",
+        industry == "CNS04" ~ "Construction",
+        industry == "CNS05" ~ "Manufacturing",
+        industry == "CNS06" ~ "Wholesale Trade",
+        industry == "CNS07" ~ "Retail Trade",
+        industry == "CNS08" ~ "Transportation and Warehousing",
+        industry == "CNS09" ~ "Information",
+        industry == "CNS10" ~ "Finance and Insurance",
+        industry == "CNS11" ~ "Real Estate and Rental and Leasing",
+        industry == "CNS12" ~ "Professional, Scientific, and Technical Services",
+        industry == "CNS13" ~ "Management of Companies and Enterprises",
+        industry == "CNS14" ~ "Administrative and Support and Waste Management and Remediation Services",
+        industry == "CNS15" ~ "Educational Services",
+        industry == "CNS16" ~ "Health Care and Social Assistance",
+        industry == "CNS17" ~ "Arts, Entertainment, and Recreation",
+        industry == "CNS18" ~ "Accommodation and Food Services",
+        industry == "CNS20" ~ "Public Administration",
+        industry == "CNS19" ~ "Other Services",
+        TRUE ~ industry
+      )
+  ) %>% 
+  spread(wage,jobs) %>% 
+  dplyr::select(
+    `NAICS Industry` = industry,
+    `Stockton Jobs with earnings $1250/month or less` = low,
+    `Stockton Jobs with earnings $1251/month to $3333/month` = mid,
+    `Stockton Jobs with earnings greater than $3333/month` = high
+  )
+
+stockton_naics_jobs_summary_table <-
+  rbind(
+    stockton_naics_jobs_summary[which(stockton_naics_jobs_summary$`NAICS Industry`=="Total"),],
+    stockton_naics_jobs_summary[which(stockton_naics_jobs_summary$`NAICS Industry`!="Total"),]
+  ) %>% 
+  mutate_at(
+    .vars = vars(-`NAICS Industry`),
+    .funs = list(~ prettyNum(round(./10^(nchar(.)-2))*10^(nchar(.)-2),big.mark=","))
+  )
+
+kable(
+  stockton_naics_jobs_summary_table, 
+  booktabs = TRUE, 
+  caption = 'Number of Stockton employed residents, by NAICS industry and wage tier. Data from LODES, 2017.'
+  ) %>% 
+  kable_styling() %>%
+  scroll_box(width = "100%")
+```
+
+$~$
+
+The percentages in the table below should be interpreted as the % of overall jobs held by Stockton residents of that industry sector and wage tier that are based in Stockton (the remainder being based in other counties). Particularly notable here are the low-percentage estimates of high-wage jobs in sectors generally related to the "knowledge economy": Finance and Insurance (27%), Information (28%), and Professional, Scientific, and Technical Services (16%). Also notable is the low percentage of high-wage jobs in Construction (24%), which may include specialized building trades such as solar installation. These percentages are relative to an overall 51% of high-wage jobs being based in Stockton, which suggests that the best jobs in these notable industries are significantly underrepresented in the local economy.
+
+```{r stockton-naics-localjobs-summary}
+
+stockton_naics_localjobs_summary <-
+  rbind(
+    stockton_naics_jobs[which(stockton_naics_jobs$w_bg %in% stockton_bgs_full$GEOID),-1] %>% colSums(),
+    stockton_naics_jobs[,-1] %>% colSums()
   ) %>% 
   t() %>%
   as.data.frame() %>% 
@@ -1743,10 +1832,10 @@ stockton_lodes_w_sjc_detail <-
     `% Stockton Jobs in Stockton with earnings greater than $3333/month` = high
   )
 
-stockton_lodes_w_sjc_detail_table <-
+stockton_naics_localjobs_summary_table <-
   rbind(
-    stockton_lodes_w_sjc_detail[which(stockton_lodes_w_sjc_detail$`NAICS Industry`=="Total"),],
-    stockton_lodes_w_sjc_detail[which(stockton_lodes_w_sjc_detail$`NAICS Industry`!="Total"),]
+    stockton_naics_localjobs_summary[which(stockton_naics_localjobs_summary$`NAICS Industry`=="Total"),],
+    stockton_naics_localjobs_summary[which(stockton_naics_localjobs_summary$`NAICS Industry`!="Total"),]
   ) %>% 
   mutate_at(
     .vars = vars(-`NAICS Industry`),
@@ -1754,7 +1843,7 @@ stockton_lodes_w_sjc_detail_table <-
   )
 
 kable(
-  stockton_lodes_w_sjc_detail_table, 
+  stockton_naics_localjobs_summary_table, 
   booktabs = TRUE, 
   caption = 'Percent of Stockton employed residents working in Stockton, by NAICS industry and wage tier. Data from LODES, 2017.'
   ) %>% 
@@ -1767,6 +1856,28 @@ $~$
 The following maps highlight where some of these "underrepresented" jobs are distributed throughout the top counties where Stockton residents work.
 
 ```{r stockton-lodes-w-construction-high, fig.cap = "Top 10 counties where Stockton residents work, not including jobs in Stockton - number of high-wage jobs in Construction. Amount in Stockton: 900. Data from LODES, 2017."}
+
+stockton_lodes_w_counties_detail <-
+  stockton_lodes_h_join_wac_normalize %>% 
+  mutate(
+    Workplace =
+      ifelse(
+        w_bg %in% stockton_bgs_full$GEOID,
+        "75000",
+        substr(w_bg,3,5)
+      )
+  ) %>% 
+  group_by(Workplace) %>% 
+  summarize_at(
+    vars(S000,SE01,SE02,SE03,high_CNS01:mid_CNS20),
+    sum, 
+    na.rm=T
+  ) %>% 
+  mutate_at(
+    .vars = vars(high_CNS01:mid_CNS20),
+    .funs = list(~ round(.))
+  )
+
 stockton_lodes_w_construction_high <-
   ca_counties_and_stockton %>% 
   dplyr::select(COUNTYFP, NAME) %>% 
@@ -3348,6 +3459,117 @@ knitr::include_url("https://city.systems/stockton-greeneconomy/map-ghg-map-2.htm
 
 $~$
 
+Similar to Table 2.14 and Table 2.15, the following table disaggregates annual GHG/commuter by NAICS industry and wage tier.
+
+```{r stockton-naics-ghg-summary}
+stockton_lodes_h_bgs_ghg <- 
+  stockton_lodes_h_mode %>%
+  st_set_geometry(NULL) %>%
+  group_by(workplace) %>%
+  summarise_at(
+    vars(jobs,person_miles,person_hours,vehicles,vmt),
+    sum, na.rm=T
+  ) %>% 
+  mutate(
+    annual_vmt = vmt*2*369.39,
+    annual_ghg = annual_vmt*439.462*1.1023e-6 + 2*369.39*vehicles*92.582*1.1023e-6
+  )
+
+stockton_naics_ghg <-
+  stockton_lodes_h_join_wac_normalize %>% 
+  left_join(stockton_lodes_h_bgs_ghg, by = c("w_bg" = "workplace")) %>% 
+  group_by(w_bg) %>% 
+  summarize_at(
+    vars(S000,SE01,SE02,SE03,high_CNS01:mid_CNS20,annual_ghg),
+    sum, 
+    na.rm=T
+  ) %>% 
+  mutate(jobs = S000) %>% 
+  mutate_at(
+    .vars = vars(S000,SE01,SE02,SE03,high_CNS01:mid_CNS20),
+    .funs = list(~ .*annual_ghg/jobs)
+  )
+
+stockton_naics_ghg_summary <-
+  rbind(
+    stockton_naics_jobs[,-1] %>% colSums(),
+    stockton_naics_ghg[,-1] %>% dplyr::select(-annual_ghg,-jobs) %>% colSums(na.rm=T)
+  ) %>% 
+  t() %>%
+  as.data.frame() %>% 
+  rownames_to_column() %>% 
+  mutate(
+    ghg_per_worker = round(V2/V1),
+    rowname = 
+      case_when(
+        rowname == "SE01" ~ "low_Total",
+        rowname == "SE02" ~ "mid_Total",
+        rowname == "SE03" ~ "high_Total",
+        TRUE ~ rowname
+      )
+  ) %>% 
+  dplyr::select(-V1,-V2) %>% 
+  filter(!rowname %in% c("S000")) %>% 
+  separate(
+    rowname,
+    into = c("wage","industry"),
+    sep = "_"
+  ) %>% 
+  mutate(
+    industry =
+      case_when(
+        industry == "CNS01" ~ "Agriculture, Forestry, Fishing and Hunting",
+        industry == "CNS02" ~ "Mining, Quarrying, and Oil and Gas Extraction",
+        industry == "CNS03" ~ "Utilities",
+        industry == "CNS04" ~ "Construction",
+        industry == "CNS05" ~ "Manufacturing",
+        industry == "CNS06" ~ "Wholesale Trade",
+        industry == "CNS07" ~ "Retail Trade",
+        industry == "CNS08" ~ "Transportation and Warehousing",
+        industry == "CNS09" ~ "Information",
+        industry == "CNS10" ~ "Finance and Insurance",
+        industry == "CNS11" ~ "Real Estate and Rental and Leasing",
+        industry == "CNS12" ~ "Professional, Scientific, and Technical Services",
+        industry == "CNS13" ~ "Management of Companies and Enterprises",
+        industry == "CNS14" ~ "Administrative and Support and Waste Management and Remediation Services",
+        industry == "CNS15" ~ "Educational Services",
+        industry == "CNS16" ~ "Health Care and Social Assistance",
+        industry == "CNS17" ~ "Arts, Entertainment, and Recreation",
+        industry == "CNS18" ~ "Accommodation and Food Services",
+        industry == "CNS20" ~ "Public Administration",
+        industry == "CNS19" ~ "Other Services",
+        TRUE ~ industry
+      )
+  ) %>%  
+  spread(wage,ghg_per_worker) %>% 
+  dplyr::select(
+    `NAICS Industry` = industry,
+    `Annual GHG per Stockton worker with earnings $1250/month or less` = low,
+    `Annual GHG per Stockton worker with earnings $1251/month to $3333/month` = mid,
+    `Annual GHG per Stockton worker with earnings greater than $3333/month` = high
+  )
+
+stockton_naics_ghg_summary_table <-
+  rbind(
+    stockton_naics_ghg_summary[which(stockton_naics_ghg_summary$`NAICS Industry`=="Total"),],
+    stockton_naics_ghg_summary[which(stockton_naics_ghg_summary$`NAICS Industry`!="Total"),]
+  ) %>% 
+  mutate_at(
+    .vars = vars(-`NAICS Industry`),
+    .funs = list(~ prettyNum(round(./10^(nchar(.)-2))*10^(nchar(.)-2),big.mark=","))
+  )
+
+kable(
+  stockton_naics_ghg_summary_table, 
+  booktabs = TRUE, 
+  caption = 'Commute tCO2e per Stockton commuter, by NAICS industry and wage tier. Data from LODES, 2017.'
+  ) %>% 
+  kable_styling() %>%
+  scroll_box(width = "100%")
+```
+
+$~$
+
 To conclude this section, we plotted changes in emissions per mile (just running exhaust) and the percentage of electric vehicles in San Joaquin County from 2013-2040. These projections will contribute to modeling business-as-usual GHG emissions.
 
 ```{r vehicle-emissions-trend, fig.cap="Average GHG emissions per mile for vehicles in San Joaquin Valley Air Basin, 2013-2040. Source: EMFAC2017."}
@@ -3448,12 +3670,12 @@ After downloading and aggregating the PG&E residential and commercial data by mo
 
 pge_elec_emissions_factor <-
   data.frame(
-    year = c(2013:2018,2020,2025,2030,2035,2040),
-    factor = c(427,434.92,404.51,293.67,210,202.5,187.5,150,112.5,75,37.5)
+    year = c(2013:2019,2020,2025,2030,2035,2040),
+    factor = c(427,434.92,404.51,293.67,210,202.5,195,187.5,150,112.5,75,37.5)
   )
 # 
 # pge_data <-
-#   2013:2018 %>% # Supply a list of years, 2013 to 2018. Recall the syntax for a list of numbers from past assignments.
+#   2013:2019 %>% # Supply a list of years, 2013 to 2018. Recall the syntax for a list of numbers from past assignments.
 #   map_dfr(function(year){ # This is another variation of map() that automatically binds rows together into a dataframe (what we used rbindlist() in the past for), assuming you’re working with dataframes. Otherwise it works exactly the same way as map().
 # 
 #     factor <- pge_elec_emissions_factor$factor[match(year,pge_elec_emissions_factor$year)] # You will want to use match() to get the correct emissions factor from the lookup table you made in the previous chunk. Refer back to the lines where we used match() on acs_vars in the past for the correct syntax.
@@ -3564,7 +3786,7 @@ summary_TCO2E_average_table <-
 kable(
   summary_TCO2E_average_table,
   booktabs = TRUE,
-  caption = 'Stockton annual residential and commercial energy usage, 2013 to 2018. Data from PG&E.'
+  caption = 'Stockton annual residential and commercial energy usage, 2013 to 2019. Data from PG&E.'
 ) %>% 
   kable_styling() %>% 
   scroll_box(width = "100%")
@@ -3574,7 +3796,7 @@ $~$
 
 The graphs below illustrate that total energy usage (in kBTU) for electricity and gas has stayed roughly level across the last six years, but given that electricity has become cleaner through renewable power sources, the overall carbon footprint of electricity has decreased dramatically in comparison to gas.
 
-```{r summary-kBTU-average, fig.cap="Stockton annual residential and commercial energy usage, 2013 to 2018, in kBTU. Data from PG&E."}
+```{r summary-kBTU-average, fig.cap="Stockton annual residential and commercial energy usage, 2013 to 2019, in kBTU. Data from PG&E."}
 ggplot(
   summary_TCO2E_average, 
   aes(
@@ -3583,13 +3805,13 @@ ggplot(
   )
 ) + 
   geom_bar(stat = "identity", aes(fill = ENERGYTYPE), position = "dodge") + 
-  labs(x = "Year", y = "GBTU", title = "Stockton Annual Energy Usage, 2013 to 2018") + 
+  labs(x = "Year", y = "GBTU", title = "Stockton Annual Energy Usage, 2013 to 2019") + 
   scale_fill_discrete(name="Energy Type",labels = c("Electricity","Gas"))
 ```
 
 $~$
 
-```{r summary-TCO2E-average, fig.cap="Stockton annual residential and commercial energy usage, 2013 to 2018, in tCO2e. Data from PG&E."}
+```{r summary-TCO2E-average, fig.cap="Stockton annual residential and commercial energy usage, 2013 to 2019, in tCO2e. Data from PG&E."}
 ggplot(
   summary_TCO2E_average, 
   aes(
@@ -3598,7 +3820,7 @@ ggplot(
   )
 ) + 
   geom_bar(stat = "identity", aes(fill = ENERGYTYPE), position = "dodge") + 
-  labs(x = "Year", y = "tCO2e", title = "Stockton Annual Energy Usage, 2013 to 2018") + 
+  labs(x = "Year", y = "tCO2e", title = "Stockton Annual Energy Usage, 2013 to 2019") + 
   scale_fill_discrete(name="Energy Type",labels = c("Electricity","Gas"))
 ```
 
@@ -3606,7 +3828,7 @@ $~$
 
 The following graph plots monthly tCO2e for electricity vs. gas. The peaks in gas usage occur in January, corresponding to heating load, and the peaks in electricity usage occur in July, corresponding to cooling load, and overall decreasing as previously noted. As we'll explore in a later section, electrification of air and water heating in buildings may be a particularly effective strategy to shift the peak gas consumption to less carbon-intensive electricity loads.
 
-```{r summary-TCO2E-monthly, fig.cap = "Stockton monthly residential and commercial energy usage, 2013 to 2018, in tCO2e. Data from PG&E."}
+```{r summary-TCO2E-monthly, fig.cap = "Stockton monthly residential and commercial energy usage, 2013 to 2019, in tCO2e. Data from PG&E."}
 summary_TCO2E_monthly <- 
   pge_data %>% 
   filter(!CUSTOMERCLASS %in% c("EI","EA")) %>%
@@ -3651,7 +3873,7 @@ ggplot(
       color = ENERGYTYPE
     )
   ) + 
-  labs(x = "Month", y = "tCO2e", title = "Stockton Monthly Energy Usage, 2013 to 2018") + 
+  labs(x = "Month", y = "tCO2e", title = "Stockton Monthly Energy Usage, 2013 to 2019") + 
   scale_color_manual(
     name= "Energy Type",
     values = c("blue","red"),
@@ -3828,6 +4050,7 @@ $~$
 
 ```{r summary-TCO2E-norm-all-graph, fig.cap="Stockton annual energy use per capita per degree-day, 2013 to 2018."}
 summary_TCO2E_norm_all %>%
+  filter(Year != 2019) %>% 
   ggplot(
     aes(
       x = Year
@@ -5285,7 +5508,7 @@ This domain focuses on strategies that reduce the emissions of combustion engine
 | Links | [European Environment Agency](https://www.eea.europa.eu/themes/transport/speed-limits-fuel-consumption-and/speed-limits) |
 | Implementation Costs & Impact Factor | Pollution: Depending on [driving behavior](https://www.eea.europa.eu/themes/transport/speed-limits-fuel-consumption-and/speed-limits), it is possible to expect anything from 2-18% reductions in GHGs.<br>Public Health: In an 83-city [study](https://ehjournal.biomedcentral.com/articles/10.1186/1476-069X-9-65), PM2.5-related mortality reduction is worth \$31 billion (2007 dollars).<br>Fatalities and Injuries: 2200 crashes, 18 fatalities, and 1200 injuries reduced in Massachusetts.<br>Economic Benefits: Massachusetts predicted to save \$210 million (30mph to 25mph reduction). |
 | Scalable Potential | According to the California [Clean Vehicle Rebate Project](https://cleanvehiclerebate.org/eng/rebate-statistics), San Joaquin County customers have received about 3,000 rebates, compared to 366,000 state-wide, leaving a lot of growth potential compared to other counties. |
-| Similar | [NYC Neighborhood Slow Zones](https://www1.nyc.gov/html/dot/html/motorist/slowzones.shtml)<br>[Philadelphia Neighborhood Slow Zones](http://visionzerophl.com/get-involved) |
+| Similar | [NYC Neighborhood Slow Zones](https://www1.nyc.gov/html/dot/html/motorist/slowzones.shtml)<br>[Philadelphia Neighborhood Slow Zones](http://visionzerophl.com/get-involved)<br>[Minneapolis, MN](http://m.startribune.com/minneapolis-st-paul-to-lower-speed-limits-together-this-spring/568524002) |
 
 ## Resilience
 
@@ -5418,16 +5641,18 @@ More strategies will be analyzed over time. Refer to the Conclusion (Chapter 5) 
 
 ## Methodology
 
-Chapter 2's baseline assessment has already set up the framework for how we will evaluate the effectiveness of any green economy strategies we might consider. Whatever the strategy may be, it would need to have a predicted effect on one of the variable inputs in our GHG model. The following diagram shows those variables highlighted in yellow, and their business-as-usual trends as up/down arrows.
+Chapter 2's baseline assessment has already set up the framework for how we will evaluate the effectiveness of any green economy strategies we might consider. Whatever the strategy may be, it would need to have a predicted positive effect on one of the variable inputs in our GHG model. The following diagram shows those variables highlighted in yellow, and their business-as-usual trends as up/down arrows.
 
 ```{r diagram, fig.cap="GHG model diagram."}
 include_graphics("images/diagram.jpg")
 ```
 
+$~$
+
 - Employment % was observed in ACS data as the ratio between employed residents and population 16 and older. Using a simple linear assumption, the employment rate increases to 72% in 2040. As a point of comparison, the U.S. 2018 employment rate was ~ 70%. To maintain even this "business-as-usual" trend may depend on aggressive strategies like workforce training and education initiatives. Otherwise, this is considered a variable that can be influenced through specific employment growth strategies. Note that employment rate affects the number of employed residents, which particularly affects VMTs in the GHG model.
 - Increasing Jobs to Employed Residents Ratio is different from increasing local employment rate as it can also include attracting workers who are not Stockton residents to commute to Stockton. Economic development strategies to attract new businesses would be an example of a type of strategy that influences the GHG model through this variable. J/ER affects the number of jobs in Stockton, which particularly affects commercial building emissions in the GHG model. If those local jobs are increasingly held by Stockton residents, it also implies that VMTs have been reduced.
-- Commute One-Way Vehicle Miles Traveled is modeled using the LODES origin-destination data, so any predictions of changes in the distribution and concentration of jobs would affect this variable. Other transportation strategies such as increasing carpooling or transit would also affect this variable.
-- Vehicle Emission Rates
+- Commute One-Way Vehicle Miles Traveled is modeled using the LODES origin-destination data, so any predictions of changes in the distribution and concentration of jobs would affect this variable. Other transportation strategies such as increasing carpooling or transit ridership would also affect this variable.
+- Vehicle Emission Rates is modeled based on EMFAC2017 projections of improvement in miles-per-gallon and EV adoption over the next two decades. Any active strategies to improve the fuel efficiency of Stockton commuter-owned vehicles and to increase EV adoption above expected rates would affect this variable.
 - Building Utilization and Building Energy Efficiency are built into the variables of Energy Use per Capita per Degree Day as "hidden variables" that can't easily be isolated without more data, but any strategies directed at reducing the amount of floor space per capita, or increasing floor area ratio on sites, or retrofitting buildings can be predicted as affecting Building Utilization or Building Energy Efficiency, which in turn would proportionally affect Energy Use per Capita.
 - Energy Emission Rates also affect the ultimate emissions estimated out of some amount of energy use. We have already incorporated PG&E's target to steadily eliminate the emissions associated with electricity use. Strategies that shift energy use from gas to electricity would result in quantitative changes at this leverage point in the model.
 
@@ -6221,6 +6446,8 @@ kable(
   scroll_box(width = "100%")
 ```
 
+$~$
+
 The 65% of households with "Utility gas" represent the opportunity to replace space heating systems with electric alternatives like heat pumps, moving those households over to the "Electricity" category currently at 32%. The other households using other fuels like kerosene or biomass represent a very small number, but targeting these households may be particularly important because of the extra cost-effectiveness of electrification, and the likely co-benefits of improving health outcomes for a relatively more low-income and rural population. The California Public Utilities Commission is in the process of piloting projects to "[Identify Disadvantaged Communities in the San Joaquin Valley and Analyze Economically Feasible Options to Increase Access to Affordable Energy in those Disadvantaged Communities](http://docs.cpuc.ca.gov/PublishedDocs/Efile/G000/M199/K979/199979978.PDF)". Unfortunately, at least [one pilot in California City](https://www.socalgas.com/1443741594585/Exhibit-5---SoCalGas-Pilot-Project-Proposal-for-California-City--Revised-.pdf) is moving forward with natural gas infrastructure, seemingly because of bureaucratic issues related to the electricity alternative. We would recommend that the City of Stockton stay actively involved in this CPUC project by providing comments on the upcoming phases and advocating for further pilo ts in Stockton and its peripheral rural areas to involve electrification. 
 
 The Rocky Mountain Institute produced a report in 2018 titled ["The Economics of Electrifying Buildings"](https://rmi.org/insight/the-economics-of-electrifying-buildings/). This report includes Oakland as the most geographically proximate case study with estimates of average annual tCO2e reduction and net $ savings for every household that converts under different initial conditions, which will be modeled for Stockton. Their overall recommendations include:
@@ -6260,6 +6487,125 @@ $~$
 
 - [MassCEC](https://www.masscec.com/installer-resources-air-source-heat-pumps) provides incentives for residential installation of whole-home air-source heat pumps. Pilot funding for the project is still being allocated so the number of affected homes is not yet recorded. Incentives are based on income category: For >120% of state median income, \$2,500; for 80-120%, \$3,750; for <80% or affordable housing, \$5,000.
 - [City of Palo Alto Utilities](https://cityofpaloalto.org/gov/depts/utl/residents/save_energy_n_water/rebates/heat_pump_water_heater/pilot_program_details.asp) offers rebates with the following eligibility requirements: To participate in the program, you must be a CPAU customer replacing a gas or electric water heater or installing a HPHW in a new or remodeled home; The HPHW must abide by the technical specifications listed by CPAU or must be on the list of Energy Star certified HPHWs.
+
+The City of Palo Alto commissioned a [2016 study by TRC Energy Services](https://www.cityofpaloalto.org/civicax/filebank/documents/55069) which modeled the costs and impact of electrifying air and space gas heaters with heat pumps. 
+
+The pasted figure below shows results for their model combining simulations of retrofitting a typical existing single family residential home of either one-story 2,100 or two-story 2,700 sqft in Palo Alto's climate zone (CZ4). 
+
+```{r electrification-screenshot-1, fig.cap="Figure from the City of Palo Alto's 2016 Electrification study. Single family retrofit."}
+include_graphics("images/electrification-1.png")
+```
+
+$~$
+
+In the row labeled "Heat pump package (gas storage baseline)", which describes a replacement of both an air and space gas heater with electric heat pumps, the modeled impact on annual energy consumption is an increase of electricity use by 3,680 kWh (because gas appliances have been replaced with electric appliances) and a decrease of gas use by 445 therms. This comes at a net cost to customers of $6,094.  
+
+Converting kWh and therms to kBTU and tCO2e yields the following:
+
+**Single Family Residential Retrofit**
+
+| Description | Amount |
+|:------|:------|
+| kBTU in one kWh | 3.4 |
+| kBTU in one therm | 100 |
+| kBTU electricity added per customer | 12,600 |
+| kBTU gas saved per customer | 44,500 |
+| lb CO2 in one electricity kWh (in 2020) | 0.1875 |
+| lb CO2 in one gas therm | 11.7 |
+| tCO2e electricity added per customer | 0.4 |
+| tCO2e gas saved per customer | 2.4 |
+| net tCO2e saved per customer | 2.0 |
+
+The study also produced the same kinds of estimates for electrification in low-rise multifamily (7,000 sqft, two-story, 8 units) and small office (5,500 sqft, two-story) buildings (medium office building retrofits were considered to be significantly cost-prohibitive). 
+
+```{r electrification-screenshot-2, fig.cap="Figure from the City of Palo Alto's 2016 Electrification study. Low-rise multifamily retrofit."}
+include_graphics("images/electrification-2.png")
+```
+
+$~$
+
+```{r electrification-screenshot-3, fig.cap="Figure from the City of Palo Alto's 2016 Electrification study. Small office retrofit."}
+include_graphics("images/electrification-3.png")
+```
+
+$~$
+
+The table below summarizes the estimated net savings tCO2e per customer, using the same methodology as above, as well as the approximate number of buildings of each type in Stockton and their average building size.
+
+```{r electrification-building-summary}
+
+bldg_electrification_summary <-
+  bldg_join %>% 
+  st_set_geometry(NULL) %>% 
+  dplyr::select(bldg_tot, ZONE) %>% 
+  mutate(
+    bldg_type =
+      case_when(
+        ZONE %in% c("RL","R-L","RLP","(RL)") ~ "Single family",
+        ZONE %in% c("RM","(RM)","R-M","RMP","RH","RHP","(RH)") ~ "Low-rise multifamily",
+        ZONE %in% c("CO","C-O") & bldg_tot < 17500 ~ "Small office",
+        TRUE ~ "Other"
+      ),
+    bldg_type = bldg_type %>% factor(levels = c("Single family","Low-rise multifamily","Small office","Other"))
+  ) %>% 
+  filter(bldg_type != "Other") %>% 
+  group_by(bldg_type) %>% 
+  summarize(
+    Count = n(),
+    Average_size = mean(bldg_tot, na.rm = T)
+  ) %>% 
+  mutate(
+    savings = 
+      case_when(
+        bldg_type == "Single family" ~ (445*11.7 - 3680*0.1875)*0.000453592,
+        bldg_type == "Low-rise multifamily" ~ (1378*11.7 - 8919*0.1875)*0.000453592,
+        bldg_type == "Small office" ~ (747*11.7 - 5714*0.1875)*0.000453592
+      )
+  )
+
+bldg_electrification_summary_table <-
+  bldg_electrification_summary %>% 
+  transmute(
+    `Building Type` = bldg_type,
+    Count = prettyNum(round(Count/10^(nchar(Count)-2))*10^(nchar(Count)-2),big.mark=","),
+    `Average Sqft` = prettyNum(round(Average_size,-2),big.mark=","),
+    `tCO2e Savings` = round(savings,1)
+  )
+
+kable(
+  bldg_electrification_summary_table,
+  booktabs = TRUE,
+  caption = 'Summary of electrification impacts for different building types in Stockton.'
+) %>% 
+  kable_styling() %>% 
+  scroll_box(width = "100%")
+```
+
+$~$
+
+Note the following caveats:
+
+- At Stockton's climate zone (CZ12) experiences cooler winters and a greater number of heating degree days than Palo Alto, so the estimated savings for electrification should be even greater than estimated in Palo Alto. 
+- In the estimates above, electricity use is converted to tCO2e using 2020 emissions factors from PG&E. In 2040, if we assume that PG&E has reduced its electricity emissions factor to 0, then the savings for single family, multifamily, and small office buildings increase to 2.4, 7.3, and 4.0, respectively.
+- Stockton's single family housing stock is larger on average than Palo Alto's, so savings should also be greater than estimated due to size.
+
+The findings suggest that electrification of existing single family and multifamily residential buildings is a significant market and GHG reduction strategy. 
+
+In Section 2.10, we modeled the business-as-usual trends in energy efficiency and estimated that residential gas use per capita would naturally drop by 50% from 2020 to 2040 (while electricity use would naturally drop by 30%), based on the trends from 2013 to 2018. It is possible that some of this business-as-usual reduction is due to the natural replacement of old air and space gas heaters with more energy-efficient gas appliances or with electric appliances. But a proactive electrification campaign can be targeted towards those least likely to pursue electrification, either because of income or tensureship (renter as opposed to owner), and the estimated 2.0 tCO2/customer savings by 2040 either represents an entirely new set of households that wouldn't have otherwise electrified, or a set of households that was encouraged to electrify a few years earlier than they would have. 
+
+Note that the City of Palo Alto study estimated that the electrification work would not lead to a net savings for customers, and instead cost them \$6,000 (single family) to \$34,000 (multifamily building owner) over the lifetime of the system. This likely represents the major barrier to electrification for residential customers. The City of Stockton could provide rebates to customers to reduce the cost of electrification in Stockton (which may be similar to Palo Alto's estimate but deserves its own professional analysis outside the scope of this report), as well as educate residents about the health and environmental benefits of electrification.
+
+The total environmental impact, as well as the impact on local jobs and public funding, depends on the number of retrofits that can be completed. As a ballpark estimate, Section 2.10 estimates the business-as-usual savings in annual residential tCO2e from 2020 to 2040 as 108,000. If these were entirely attributable to electrification retrofits (though in reality, energy efficiency improves would also include improvements many other factors), this would be equivalent to 36,000 single family homes (1,800 per year, 46% of total) and 5,500 multifamily buildings (275 per year), and the remaining gas footprint in 2040 would be equivalent to an additional 44,000 single family homes and 6,700 multifamily buildings yet to electrify. 
+
+According to the [U.S. Department of Energy's Better Buildings Neighborhood Program](https://www1.eere.energy.gov/buildings/betterbuildings/neighborhoods/pdfs/bbnp_business_models_guide.pdf), a typical HVAC contractor employs around 10-15 employees and should target an average of 500 service contracts to be a sustainable business. So, the estimated range of high-wage jobs that could be sustained through electrification projects alone range from 50 to 100. The City of Stockton could support these workers by subsidizing training (or partnering with product manufacturers who have an incentive to provide free training so as to promote their products), helping to connect HVAC contractors to prospective customers, and providing additional business licensing and tax incentives.
+
+As previously noted in Section 2.4, only 23% of Stockton high-wage construction workers work in Stockton. 
+
+```{r}
+
+```
+
+
 
 ## Vehicle Emissions
 
@@ -6587,6 +6933,7 @@ The following are knowledge sources to review for additional case studies to be 
 - [Eliminate minimum parking](#eliminate-minimum-parking)
 - [Fund economic development using tax-base sharing](#fund-economic-development-using-tax-base-sharing)
 - [Rezone areas around transit stations and commercial corridors to allow for high-density residential development](#rezone-areas-around-transit-stations-and-commercial-corridors-to-allow-for-high-density-residential-development)
+- [Reduce vehicle speed limits](#reduce-vehicle-speed-limits)
 
 **Montana**
 
