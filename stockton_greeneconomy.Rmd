@@ -1,7 +1,7 @@
 ---
 title: "Green Economy Analysis: Opportunities for Stockton"
 author: "City Systems"
-date: "Last Updated: February 2020"
+date: "Last Updated: March 2020"
 output: 
   bookdown::gitbook:
     df_print: paged
@@ -3685,7 +3685,7 @@ kable(
 
 $~$
 
-To conclude this section, we plotted changes in emissions per mile (just running exhaust) and the percentage of electric vehicles in San Joaquin County from 2013-2040. These projections will contribute to modeling business-as-usual GHG emissions.
+To conclude this section, we plotted changes in emissions per mile (just running exhaust) and the percentage of electric vehicles in San Joaquin County from 2013-2040. These projections will contribute to modeling business-as-usual GHG emissions. Later, one of our strategies will model the GHG reductions associated with even more progressive EV adoption beyond 5% by 2040.
 
 ```{r vehicle-emissions-trend, fig.cap="Average GHG emissions per mile for vehicles in San Joaquin Valley Air Basin, 2013-2040. Source: EMFAC2017."}
 vehicle_emissions_trend <-
@@ -3736,7 +3736,51 @@ vehicle_electric_trend %>%
 
 $~$
 
-The projected busines-as-usual increase in electric vehicles on the road is a driver of the reduction in emissions/mile (along with fuel efficiency improvements and other factors). Later, one of our strategies will model the GHG reductions associated with even more progressive EV adoption beyond 5% by 2040.
+The projected busines-as-usual increase in electric vehicles on the road is a driver of the reduction in emissions/mile, namely because this electric vehicle adoption increase corresponds to a decrease in use of gasoline vehicles. However, based on a basic contribution analysis, the shift to EVs is roughly responsible for 14% of the overall gCO2/mile running exhaust reduction from 2020 to 2040 (399 to 256 gCO2/mile), while fuel efficiency improvements to gasoline vehicles is roughly responsible for 86%. This is a reminder that while EV adoption is an important driver, unless adoption can triple, improving fuel efficiency of new gasoline vehicles, retiring old vehicles, and simply reducing the amount of driving will play a greater role in reducing transportation emissions.
+
+```{r compare-emfac-contribution, include = F}
+emfac_comparison <-
+  emfac_summary %>% 
+  filter(Year %in% c(2020,2040))
+
+emfac_change <-
+  cbind(
+    emfac_comparison[1:6,2:6],
+    emfac_comparison[7:12,4:6]
+  )
+
+colnames(emfac_change)[3:5] <-
+  c("perc2020","run2020","start2020")
+colnames(emfac_change)[6:8] <- 
+  c("perc2040","run2040","start2040")
+
+emfac_change <-
+  emfac_change %>% 
+  mutate(
+    contribution_perc = (perc2040-perc2020)/100*run2020,
+    contribution_run = perc2020/100*(run2040-run2020),
+    contribution_combine = (perc2040-perc2020)/100*(run2040-run2020),
+    contribution_all = perc2040/100*run2040-perc2020/100*run2020,
+    contribution_perc = abs(contribution_perc/ (contribution_perc+contribution_run))+contribution_perc,
+    # contribution_run = contribution_all/ (contribution_perc+contribution_run)*contribution_run,
+    # contribution_percstart = (perc2040-perc2020)/100*start2020,
+    # contribution_start = perc2020/100*(start2040-start2020),
+    # contribution_combinestart = perc2040/100*start2040-perc2020/100*start2020
+  )
+
+emfac_comparison_miles <-
+  emfac_change %>% 
+  dplyr::select(`Vehicle Category`,`Fuel Type`,`Contribution of Vehicle Percentage Change` = contribution_perc,`Contribution of Fuel Efficiency Change` = contribution_run, `Contribution Combined` = contribution_combine)
+
+stockton_naics_ghg <-
+  stockton_lodes_h_join_wac_normalize %>% 
+  left_join(stockton_lodes_h_mode %>%
+  st_set_geometry(NULL), by = c("h_bg" = "residence", "w_bg" = "workplace")) %>% 
+  mutate(
+    annual_vmt = vmt*2*369.39,
+    annual_ghg = annual_vmt*439.462*1.1023e-6 + 2*369.39*vehicles*92.582*1.1023e-6
+  )
+```
 
 ## Energy
 
@@ -6499,7 +6543,7 @@ start_hour <- 16
 end_hour <- 20
 max_time_minutes <- 15
 
-stop_times <- filter_stop_times(rtd_gtfs, "2020-02-24", start_hour*3600, end_hour*3600)
+stop_times <- filter_stop_times(rtd_gtfs, "2020-03-30", start_hour*3600, end_hour*3600)
 
 stop_frequency <-
   get_stop_frequency(
@@ -6768,7 +6812,7 @@ $~$
 
 Note the following caveats:
 
-- At Stockton's climate zone (CZ12) experiences cooler winters and a greater number of heating degree days than Palo Alto, so the estimated savings for electrification should be even greater than estimated in Palo Alto. 
+- Stockton's climate zone (CZ12) experiences cooler winters and a greater number of heating degree days than Palo Alto, so the estimated savings for electrification should be even greater than estimated in Palo Alto. 
 - In the estimates above, electricity use is converted to tCO2e using 2020 emissions factors from PG&E. In 2040, if we assume that PG&E has reduced its electricity emissions factor to 0, then the savings for single family, multifamily, and small office buildings increase to 2.4, 7.3, and 4.0, respectively.
 - Stockton's single family housing stock is larger on average than Palo Alto's, so savings should also be greater than estimated due to size.
 
