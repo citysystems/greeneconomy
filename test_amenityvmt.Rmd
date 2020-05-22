@@ -1,0 +1,1645 @@
+---
+title: "Stockton Green Economy Report"
+author: "City Systems"
+date: "Last Updated: February 2020"
+output: 
+  bookdown::gitbook:
+    df_print: paged
+    includes:
+      in_header: header.html
+    config:
+      toc:
+        collapse: none
+        scroll_highlight: yes
+        before: null
+        after: null
+      toolbar:
+        position: fixed
+      edit : null
+      download: null
+      search: yes
+      fontsettings:
+        theme: white
+        family: sans
+        size: 2
+      sharing:
+        facebook: no
+        github: no
+        twitter: no
+        linkedin: no
+        weibo: no
+        instapaper: no
+        vk: no
+        all: no
+      info: no
+editor_options: 
+  chunk_output_type: inline
+---
+
+# Test Amenity VMT
+
+This documentation provides a description of the Vehicle-Miles-Traveled (VMT) analysis performed for the Stockton Green Economy project. The purpose of this project is to provide an order-of-magnitude estimation of the VMTs by Stockton’s residents. The VMTs produced by Stockton’s residents are aggregated by census block groups.
+
+This project is currently in process, with an expectation to finish by the middle of Stanford’s winter quarter (end of February of 2020). Up until this point, this documentation consists of the following sections:
+
+1.	Libraries Upload
+2.	‘tigris’ Package Options
+3.	Imported Files
+4.	Uploading California block groups through the Census API
+5.	‘safegraphplaces’ Upload
+6.	Calculation of NHTS Nudge #1: Linked-Trips
+7.	Calculation of NHTS Nudge #2: Median-to-Mean Conversion
+8.	Calculation of NHTS Nudge #3: Carpool-Vehicle Modification
+9.	Filtration of ‘m_patterns’ Safegraph Data
+10.	Monthly VMT Calculation
+11.	Future Next Steps & Trajectory
+
+Section 10: Monthly VMT Calculation is the largest, most significant section in this analysis. This section was further divided by the following sub-categories:
+
+A.	Conversion Factors & Construction of VMT Data Structures
+B.	Monthly VMT Analysis
+C.	Uploading filtered ‘m_patterns’ Safegraph Data (from Section 9)
+D.	Construction of Monthly VMT Data Structures
+E.	Monthly VMT Calculations for Recorded and Non-Recorded Drivers
+F.	OSRM Isochrone Analysis for VMT Allocation to Non-Recorded Destinations
+G.	VMT Calculation for Destinations of Interest
+H.	Aggregation of VMTs by block group origins and Safegraph Destinations
+I.	Mapping of VMTs through R’s ‘sf’ package
+
+Section 10: Monthly VMT Calculation is the last section, which is not complete. The next steps in the analysis include finishing Sub-Section F: OSRM Isochrone Analysis for VMT Allocation to Non-Recorded Destinations. The other things needed to be finished are small, mostly involved within Sub-Section E: Monthly VMT Calculations for Recorded and Non-Recorded Drivers. This is all discussed within Section 11: Future Next Steps & Trajectory.
+
+### Section #1: Uploaded Libraries
+
+The “install.packages()” and “library()” commands were employed to upload the library packages necessary to perform this analysis. The “install.packages()” command only needs to be performed once. The “library()” command needs to be run every time the script is used.
+
+For this analysis, I installed and uploaded necessary library packages with the following code:
+
+```{r eval=FALSE}
+library(tidycensus)
+library(censusapi)
+library(tigris)
+library(dplyr)
+library(ggplot2)
+library(sf)
+library(osrm)
+library(mapview)
+library(readr)
+library(ggmap)
+library(censusr)
+library(maptools)
+library(rgeos)
+library(microbenchmark)
+```
+
+### Section #2: ‘tigris’ Package Options
+
+This involves the following code:
+
+```{r eval=FALSE}
+### Local server to run the st_intersects package at a faster rate.
+options(osrm.server = "http://127.0.0.1:5000/")
+```
+
+Two of the options for the ‘tigris’ package were set to a desired default.
+
+First, the ‘tigris_use_cache’ option set to ‘TRUE’ in order to store any Census shapefile downloads.
+
+Second, the ‘tigris_class’ option was set to ‘sf’ to make ‘sf’ shapefiles the default in use of any analysis using the ‘tigris’ package.
+
+This involves the following code:
+
+```{r eval=FALSE}
+options(tigris_use_cache = TRUE)
+options(tigris_class = “sf”)
+```
+
+### Section #3: Files Imported
+
+One dataset and 15 R scripts were imported into R for this analysis.
+
+The dataset uploaded into R included that of the National Housing Travel Survey (NHTS). This survey was administered by the U.S. Department of Transportation and was priorly cleansed to include trip features associated only with Stockton, CA.
+
+```{r eval=FALSE}
+NHTS_df_final <- read.csv(file = "S:/CCF/CSVdata_files/NHTS_df_final.csv", header = TRUE)
+```
+
+The first R script imported into R includes that of the patterns_choice.R file. This file is later used for the VMT analysis to select which m_patterns dataset is necessary for monthly analysis. The use of this file is output into the “patterns_text” feature.
+
+```{r eval=FALSE}
+patterns_choice <- function(num){
+  
+  if(num == 1){patterns_text <- "C:/Users/Derek/Desktop/VMT_calc_important_files/m_patterns_new/m_01_patterns.csv"}
+  else if(num == 2){patterns_text <- "C:/Users/Derek/Desktop/VMT_calc_important_files/m_patterns_new/m_02_patterns.csv"}
+  else if(num == 3){patterns_text <- "C:/Users/Derek/Desktop/VMT_calc_important_files/m_patterns_new/m_03_patterns.csv"}
+  else if(num == 4){patterns_text <- "C:/Users/Derek/Desktop/VMT_calc_important_files/m_patterns_new/m_04_patterns.csv"}
+  else if(num == 5){patterns_text <- "C:/Users/Derek/Desktop/VMT_calc_important_files/m_patterns_new/m_05_patterns.csv"}
+  else if(num == 6){patterns_text <- "C:/Users/Derek/Desktop/VMT_calc_important_files/m_patterns_new/m_06_patterns.csv"}
+  else if(num == 7){patterns_text <- "C:/Users/Derek/Desktop/VMT_calc_important_files/m_patterns_new/m_07_patterns.csv"}
+  else if(num == 8){patterns_text <- "C:/Users/Derek/Desktop/VMT_calc_important_files/m_patterns_new/m_08_patterns.csv"}
+  else if(num == 9){patterns_text <- "C:/Users/Derek/Desktop/VMT_calc_important_files/m_patterns_new/m_09_patterns.csv"}
+  else if(num == 10){patterns_text <- "C:/Users/Derek/Desktop/VMT_calc_important_files/m_patterns_new/m_10_patterns.csv"}
+  else if(num == 11){patterns_text <- "C:/Users/Derek/Desktop/VMT_calc_important_files/m_patterns_new/m_11_patterns.csv"}
+  else if(num == 12){patterns_text <- "C:/Users/Derek/Desktop/VMT_calc_important_files/m_patterns_new/m_12_patterns.csv"}
+  else{patterns_text <-"error"}
+  
+  # if(num == 1){patterns_text <- "S:/Restricted Data Library/Safegraph/y=2018/m_01_patterns.csv"}
+  # else if(num == 2){patterns_text <- "S:/Restricted Data Library/Safegraph/y=2018/m_02_patterns.csv"}
+  # else if(num == 3){patterns_text <- "S:/Restricted Data Library/Safegraph/y=2018/m_03_patterns.csv"}
+  # else if(num == 4){patterns_text <- "S:/Restricted Data Library/Safegraph/y=2018/m_04_patterns.csv"}
+  # else if(num == 5){patterns_text <- "S:/Restricted Data Library/Safegraph/y=2018/m_05_patterns.csv"}
+  # else if(num == 6){patterns_text <- "S:/Restricted Data Library/Safegraph/y=2018/m_06_patterns.csv"}
+  # else if(num == 7){patterns_text <- "S:/Restricted Data Library/Safegraph/y=2018/m_07_patterns.csv"}
+  # else if(num == 8){patterns_text <- "S:/Restricted Data Library/Safegraph/y=2018/m_08_patterns.csv"}
+  # else if(num == 9){patterns_text <- "S:/Restricted Data Library/Safegraph/y=2018/m_09_patterns.csv"}
+  # else if(num == 10){patterns_text <- "S:/Restricted Data Library/Safegraph/y=2018/m_10_patterns.csv"}
+  # else if(num == 11){patterns_text <- "S:/Restricted Data Library/Safegraph/y=2018/m_11_patterns.csv"}
+  # else if(num == 12){patterns_text <- "S:/Restricted Data Library/Safegraph/y=2018/m_12_patterns.csv"}
+  # else{patterns_text <-"error"}
+  
+  return(patterns_text)
+  
+}
+```
+
+The second R script imported into R includes that of the safegraphplaces_cleanse.R file. This file filters through the following features from the original safegraphplaces for use in the VMT analysis: “safegraph_place_id”, “location_name”, “latitude”, “longitude”, “street_address”, “city”, “state”, and “zip_code”. Moreover, a field named “name_address” is created for the new filtered dataset. This “name_address” field pastes the street_address, city, state, and zip_code fields all together, where a “, ” is chosen as the separator. The use of this file is output into the “safegraplaces” feature.
+
+```{r eval=FALSE}
+safegraphplaces_cleanse <- function(safegraphplaces){
+  
+  safegraphplaces <- dplyr::select(safegraphplaces, c("safegraph_place_id", "location_name", "latitude", "longitude", "street_address", "city", "state", "zip_code"))
+  
+  name_address <- paste(safegraphplaces$street_address, safegraphplaces$city, safegraphplaces$state, safegraphplaces$zip_code, sep = ", ")
+  full_address <- paste(safegraphplaces$location_name, safegraphplaces$street_address, safegraphplaces$city, safegraphplaces$state, safegraphplaces$zip_code, sep = ", ")
+  
+  safegraphplaces <- cbind(safegraphplaces$safegraph_place_id, safegraphplaces$longitude, safegraphplaces$latitude, name_address, full_address)
+  colnames(safegraphplaces) <- c("safegraph_place_id", "longitude", "latitude", "name_address", "full_address")
+  
+  safegraphplaces <- subset(safegraphplaces, !duplicated(safegraphplaces[,"full_address"]))
+  
+  safegraphplaces_cleanse <- data.frame(safegraphplaces, stringsAsFactors = FALSE)
+  
+  return(safegraphplaces_cleanse)
+  
+}
+```
+
+The third R script imported into R includes that of m_patterns_cleanse.R file. This file reads in the m_patterns data for a particular month and cleanses it to include only the following features: “location_name”, “street_address”, “city”, “state”, “zip_code”, “distance_from_home”, “raw_visit_counts”, “raw_visitor_counts”, “visitor_home_cbgs”, and “visit_home_cbgs”. Subsequently, exactly like that of the previous script, a “name_address” field is created. The use of this file is output into the “m_patterns” feature.
+
+```{r eval=FALSE}
+safegraphplaces_cleanse <- function(safegraphplaces){
+  
+  safegraphplaces <- dplyr::select(safegraphplaces, c("safegraph_place_id", "location_name", "latitude", "longitude", "street_address", "city", "state", "zip_code"))
+  
+  name_address <- paste(safegraphplaces$street_address, safegraphplaces$city, safegraphplaces$state, safegraphplaces$zip_code, sep = ", ")
+  full_address <- paste(safegraphplaces$location_name, safegraphplaces$street_address, safegraphplaces$city, safegraphplaces$state, safegraphplaces$zip_code, sep = ", ")
+  
+  safegraphplaces <- cbind(safegraphplaces$safegraph_place_id, safegraphplaces$longitude, safegraphplaces$latitude, name_address, full_address)
+  colnames(safegraphplaces) <- c("safegraph_place_id", "longitude", "latitude", "name_address", "full_address")
+  
+  safegraphplaces <- subset(safegraphplaces, !duplicated(safegraphplaces[,"full_address"]))
+  
+  safegraphplaces_cleanse <- data.frame(safegraphplaces, stringsAsFactors = FALSE)
+  
+  return(safegraphplaces_cleanse)
+  
+}
+```
+
+The fourth R script imported into R includes that of m_patterns_join_cleanse.R file. This file intakes both the “m_patterns” and “safegraphplaces” datasets. The “safegraphplaces” dataset is filtered so that any rows with duplicate fields of “name_address” are deleted. This filtered dataset is then left-joined with the “m_patterns” field so that all “m_patterns” datasets have longitude and latitude coordinates, which are changed to be numeric. The use of this file is output into the “m_patterns_join” feature.
+
+```{r eval=FALSE}
+m_patterns_cleanse <- function(p_text){
+  
+  m_patterns <- read.csv(p_text, header=TRUE, stringsAsFactors = FALSE)
+  m_patterns <- dplyr::select(m_patterns, c("location_name", "street_address", "city", "state", "zip_code", "distance_from_home", "raw_visit_counts", "raw_visitor_counts", "visitor_home_cbgs", "visit_home_cbgs"))
+  # m_patterns <- filter(m_patterns, city == 'stockton')
+  
+  name_address <- paste(m_patterns$street_address, m_patterns$city, m_patterns$state, m_patterns$zip_code, sep = ", ")
+  full_address <- paste(m_patterns$location_name, m_patterns$street_address, m_patterns$city, m_patterns$state, m_patterns$zip_code, sep = ", ")
+  m_patterns <- cbind(m_patterns$location_name, m_patterns$street_address, m_patterns$city, m_patterns$state, m_patterns$zip_code, m_patterns$distance_from_home,
+                      name_address, full_address, m_patterns$raw_visit_counts, m_patterns$raw_visitor_counts, m_patterns$visit_home_cbgs, m_patterns$visitor_home_cbgs)
+  colnames(m_patterns) <- c("location_name", "street_address", "city", "state", "zip_code", "distance_from_home", "name_address", "full_address", "raw_visit_counts", "raw_visitor_counts", "visit_home_cbgs", "visitor_home_cbgs")
+  
+  m_patterns <- data.frame(m_patterns, stringsAsFactors = FALSE)
+  
+  return(m_patterns)
+  
+}
+```
+
+The fifth R script imported into R includes that of home_panel_summary.R file. This file intakes which month of analysis is being performed. This month is used to subsequently understand which home panel summary dataset will be used for analysis. This dataset is critical in that it holds the number of devices being recorded by safegraph from each block group in California. The use of this file is output into the “m_hps” feature.
+
+```{r eval=FALSE}
+home_panel_summary <- function(num){
+
+  ### m_hps from "home_panel_summary"
+    
+  if(num == 1){m_hps <- read.csv("C:/Users/Derek/Desktop/safegraphplaces/home_panel_summary/m_01.csv", header=TRUE, stringsAsFactors = FALSE)}
+  else if(num == 2){m_hps <- read.csv("C:/Users/Derek/Desktop/safegraphplaces/home_panel_summary/m_02.csv", header=TRUE, stringsAsFactors = FALSE)}
+  else if(num == 3){m_hps <- read.csv("C:/Users/Derek/Desktop/safegraphplaces/home_panel_summary/m_03.csv", header=TRUE, stringsAsFactors = FALSE)}
+  else if(num == 4){m_hps <- read.csv("C:/Users/Derek/Desktop/safegraphplaces/home_panel_summary/m_04.csv", header=TRUE, stringsAsFactors = FALSE)}
+  else if(num == 5){m_hps <- read.csv("C:/Users/Derek/Desktop/safegraphplaces/home_panel_summary/m_05.csv", header=TRUE, stringsAsFactors = FALSE)}
+  else if(num == 6){m_hps <- read.csv("C:/Users/Derek/Desktop/safegraphplaces/home_panel_summary/m_06.csv", header=TRUE, stringsAsFactors = FALSE)}
+  else if(num == 7){m_hps <- read.csv("C:/Users/Derek/Desktop/safegraphplaces/home_panel_summary/m_07.csv", header=TRUE, stringsAsFactors = FALSE)}
+  else if(num == 8){m_hps <- read.csv("C:/Users/Derek/Desktop/safegraphplaces/home_panel_summary/m_08.csv", header=TRUE, stringsAsFactors = FALSE)}
+  else if(num == 9){m_hps <- read.csv("C:/Users/Derek/Desktop/safegraphplaces/home_panel_summary/m_09.csv", header=TRUE, stringsAsFactors = FALSE)}
+  else if(num == 10){m_hps <- read.csv("C:/Users/Derek/Desktop/safegraphplaces/home_panel_summary/m_10.csv", header=TRUE, stringsAsFactors = FALSE)}
+  else if(num == 11){m_hps <- read.csv("C:/Users/Derek/Desktop/safegraphplaces/home_panel_summary/m_11.csv", header=TRUE, stringsAsFactors = FALSE)}
+  else if(num == 12){m_hps <- read.csv("C:/Users/Derek/Desktop/safegraphplaces/home_panel_summary/m_12.csv", header=TRUE, stringsAsFactors = FALSE)}
+  
+  m_hps <- filter(m_hps, state == "ca")
+  m_hps <- dplyr::select(m_hps, c("census_block_group", "number_devices_residing"))
+  colnames(m_hps) <- c("block_id", "number_devices_residing")
+  
+  return(m_hps)
+  
+}
+```
+
+The sixth R script imported into R includes that of pop_blockgroup_stockton.R file. This file intakes the monthly home panel summary data. The file uploads Stockton’s boundary of influence shapefile, the block group shapefiles within Stockton, and the population for each block group within Stockton. The block group shapefiles of Stockton are filtered so that any block groups with a centroid outside of the bounds of the spheres of influence are not included. The resulting block groups are then paired up with their populations and the number of devices being recorded within their location. The use of this file is output into the “pop_bg_stockton” feature.
+
+```{r eval=FALSE}
+pop_blockgroup_stockton <- function(month_hps){
+ 
+  ### Finding the census population for each block group goint to amenities in Stockton.
+   
+  stockton_boundary_influence <- st_read("C:/Users/Derek/Desktop/VMT_calc_important_files/SpheresOfInfluence/SpheresOfInfluence.shp") %>% filter(SPHERE == "STOCKTON") %>% st_transform(st_crs(4326))
+  sjc_bgs <- block_groups("California", "San Joaquin County", cb = TRUE) %>% st_transform(st_crs(4326))
+  stockton_bgs <- sjc_bgs[which(sjc_bgs$GEOID %in% st_centroid(sjc_bgs)[stockton_boundary_influence,]$GEOID),]
+  stockton_bgs <- stockton_bgs %>% dplyr::select(GEOID)
+  colnames(stockton_bgs) <- c("origin", "geometry")
+  
+  ### pop_blockgroup_stockton <- getCensus(name = "acs/acs5", vintage = 2017, key = "c8aa67e4086b4b5ce3a8717f59faa9a28f611dab",
+  ###                                      vars = c("B00001_001E"), region = "block group:*", regionin = "state:06+county:077")
+  
+  ### pop_blockgroup_stockton_B23025 <-
+  ###   getCensus(
+  ###     key = "c8aa67e4086b4b5ce3a8717f59faa9a28f611dab",
+  ###     name = "acs/acs5",
+  ###     vintage = 2018,
+  ###     vars = c("B23025_001E", "B23025_002E", "B23025_003E", "B23025_004E", "B23025_005E", "B23025_006E", "B23025_007E"),
+  ###     region = "block group:*",
+  ###     regionin = "state:06+county:077"
+  ###   ) %>%
+  ###   mutate(
+  ###     total = B23025_001E,
+  ###     total_laborforce = B23025_002E,
+  ###     total_laborforce_civilian = B23025_003E,
+  ###     total_laborforce_civilian_empl = B23025_004E,
+  ###     total_laborforce_civilian_not_empl = B23025_005E,
+  ###     total_laborforce_civilian_armed_forces = B23025_006E,
+  ###     total_laborforce_civilian_not_in_labor = B23025_007E
+  ###   ) %>%
+  ###   dplyr::select(
+  ###     total_laborforce_civilian_empl,
+  ###     total_laborforce_civilian_not_empl,
+  ###     total_laborforce_civilian_armed_forces,
+  ###     total_laborforce_civilian_not_in_labor
+  ###   )
+  
+  pop_blockgroup_stockton <- # pop_blockgroup_stockton_B23025
+    getCensus(
+      key = "c8aa67e4086b4b5ce3a8717f59faa9a28f611dab",
+      name = "acs/acs5",
+      vintage = 2018,
+      vars = c("B23027_001E", "B23027_003E", "B23027_006E", "B23027_008E", "B23027_011E", "B23027_013E",
+               "B23027_016E", "B23027_018E", "B23027_021E", "B23027_023E", "B23027_026E", "B23027_028E",
+               "B23027_031E", "B23027_033E", "B23027_036E"),
+      region = "block group:*",
+      regionin = "state:06+county:077"
+    ) %>%
+    mutate(
+      worked_16_to_19 = B23027_003E,
+      no_work_16_to_19 = B23027_006E,
+      worked_20_to_24 = B23027_008E,
+      no_work_20_to_24 = B23027_011E,
+      worked_25_to_44 = B23027_013E,
+      no_work_25_to_44 = B23027_016E,
+      worked_45_to_54 = B23027_018E,
+      no_work_45_to_54 = B23027_021E,
+      worked_55_to_64 = B23027_023E,
+      no_work_55_to_64 = B23027_026E,
+      worked_64_to_69 = B23027_028E,
+      no_work_64_to_69 = B23027_031E,
+      worked_70_plus = B23027_033E,
+      no_work_70_plus = B23027_036E
+    ) %>%
+    dplyr::select(
+      state,
+      county,
+      tract,
+      block_group,
+      worked_16_to_19,
+      worked_20_to_24,
+      worked_25_to_44,
+      worked_45_to_54,
+      worked_55_to_64,
+      worked_64_to_69,
+      worked_70_plus
+    )
+  
+  pop_blockgroup_stockton <- data.frame(cbind(paste(pop_blockgroup_stockton[, 1], pop_blockgroup_stockton[, 2], pop_blockgroup_stockton[, 3], pop_blockgroup_stockton[, 4], sep = ""), rowSums(pop_blockgroup_stockton[, 5:11])), stringsAsFactors = FALSE)
+  # pop_blockgroup_stockton <- data.frame(cbind(paste(pop_blockgroup_stockton[, 1], pop_blockgroup_stockton[, 2], pop_blockgroup_stockton[, 3], pop_blockgroup_stockton[, 4], sep = ""), pop_blockgroup_stockton[, 5]), stringsAsFactors = FALSE)
+  colnames(pop_blockgroup_stockton) <- c("origin", "origin_population")
+  
+  pop_blockgroup_stockton <- left_join(stockton_bgs, pop_blockgroup_stockton, by = "origin")
+  
+  pop_blockgroup_stockton$origin_numeric <- as.numeric(pop_blockgroup_stockton$origin)
+  
+  colnames(month_hps)[1] <- "origin_numeric"
+  pop_blockgroup_stockton_hps <- left_join(pop_blockgroup_stockton, month_hps, by = "origin_numeric")
+  
+  return(pop_blockgroup_stockton_hps)
+}
+```
+
+The seventh R script imported into R includes that of month_patterns_new.R file. This file involves creating a new “m_patterns_new” data frame based on filtered “month_patterns_join” data. The filtration of this data occurs in a manner in which all origins are extracted and their total visit counts and unique visit counts are presented in separate data cells. This involves three steps in this script. The first step involves breaking down the “month_patterns_join” safegraph destination data by block group origins in the file. The second step involves taking the safegraph destination data that has block group origin data associated with it and specifically extracting the “visit_home_cbgs” (the total visitor count) and “visitor_home_cbgs” (the unique visit count) for each block group origin. Once this is performed, the third step is undertaken where the block group origins are identified as being inside or outside of the Stockton boundary of influence. Any safegraph destination with at least one Stockton block group was saved and stored into the “m_patterns_new” data frame. In addition to these three steps, there is an option to geocode any safegraph destination that does not have longitude and latitude coordinates associated with itself. This code is currently commented out to save for time, though the geocoder will be used for the final analysis. This is the most critical, involved file of all imported R scripts. This code to this file and an elaboration are specifically provided in Appendix A of this documentation. The use of this file is output into the “m_patterns_new” feature.
+
+```{r eval=FALSE}
+month_patterns_new <- function(month_patterns_join, pop_blockgroup_stockton){
+  
+  ### Looping through the data to disaggregate the census blocks from the monthly patterns .csv files.
+  
+  m_patterns_new <- data.frame(stringsAsFactors = FALSE)
+  
+  ### This first for loop breaks up all of the origin block groups from one string to individual strings.
+  
+  for(counter1 in 1:nrow(month_patterns_join)){
+    
+    string_visit <- month_patterns_join$visit_home_cbgs[counter1]
+    string_visit <- substring(string_visit, 3)
+    string_visit <- substr(string_visit,1,nchar(string_visit)-1)
+    string_visit <- strsplit(string_visit, split = ",\"")[[1]]
+    
+    string_visitor <- month_patterns_join$visitor_home_cbgs[counter1]
+    string_visitor <- substring(string_visitor, 3)
+    string_visitor <- substr(string_visitor,1,nchar(string_visitor)-1)
+    string_visitor <- strsplit(string_visitor, split = ",\"")[[1]]
+    
+    matrix_visit <- data.frame(matrix(data = NA, nrow = length(string_visit), ncol = 2))
+    colnames(matrix_visit) <- c("block_id", "visit_count")
+    
+    matrix_visitor <- data.frame(matrix(data = NA, nrow = length(string_visitor), ncol = 2))
+    colnames(matrix_visitor) <- c("block_id", "unique_visitor_count")
+    
+    m_patterns_holder <- data.frame(stringsAsFactors = FALSE)
+    
+    if(nrow(matrix_visit) > 0){
+      
+      ### This second for loop breaks up each individual block group string
+      ### into the block group and either the visit or visitor count.
+      
+      for(counter2 in 1:nrow(matrix_visit)){
+        
+        matrix_visit[counter2, 1] <- as.numeric(substr(string_visit[counter2], 1, 12))
+        matrix_visit[counter2, 2] <- as.numeric(substr(string_visit[counter2], 15, 30))
+        
+        matrix_visitor[counter2, 1] <- as.numeric(substr(string_visitor[counter2], 1, 12))
+        matrix_visitor[counter2, 2] <- as.numeric(substr(string_visitor[counter2], 15, 30))
+        
+        amenity <- month_patterns_join[counter1, 1:7]
+        
+        m_patterns_holder <- rbind(m_patterns_holder, amenity)
+        
+      }
+      
+    }
+    
+    ### This if-statement checks to see if any of the block groups being analyzed are within the 
+    ### Stockton boundary. If so, these block groups are inserted into the m_patterns_new matrix.
+    ### Otherwise, don't take these block groups into consideration.
+    
+    bgs_origin <- paste("0", as.character(matrix_visit$block_id), sep = "")
+    
+    if( any(bgs_origin %in% pop_blockgroup_stockton$origin) ){
+      
+      matrix_m <- left_join(matrix_visit, matrix_visitor, by = "block_id")
+      matrix_m_tot <- cbind(m_patterns_holder, matrix_m)
+      
+      ### Some of the Safegraph lines of code have destinations without geocodes.
+      ### These lines of code check if the destination being considered has a latlon geocode.
+      ### If these lines of code do not have a latlon code, then the following geocodes them in.
+      
+      if(is.na(matrix_m_tot[1, "longitude"])){
+        
+        resdf <- geocodeSL(matrix_m_tot[1, "name_address"])
+        
+        matrix_m_tot[, "longitude"] <- resdf["lon"]
+        matrix_m_tot[, "latitude"] <- resdf["lat"]
+        
+      }
+      
+      m_patterns_new <- rbind(m_patterns_new, matrix_m_tot)
+      
+    }
+    
+  }
+  
+  return(m_patterns_new)
+  
+}
+```
+
+The eighth R script imported into R includes that of origin_trips.R file. This file is used to intake the “m_patterns_new” data frame and output a shape file with the centroid coordinates called “m_origin_sf”. This file specifically has the origin block group ID, the destination safegraphplaces ID, and the centroid of the origin block group. It should be noted that this file was originally used when the distance of each origin-destination pair was calculated using the OSRM routing functions. However, a simpler, valid estimation was used to calculate this distance and this file became obsolete. It is currently archived in the case where its future use is warranted. 
+
+```{r eval=FALSE}
+month_origin <- function(month_patterns_new){
+
+  # Origin Points for Trips (for osrmRoute)
+    
+  m_origin <- dplyr::select(month_patterns_new, c("safegraph_place_id", "block_id"))
+  
+  zeroPaste <- paste(matrix(data = '0', nrow = length(m_patterns_new$block_id), ncol = 1))
+  m_origin$GEOID <- paste(zeroPaste, paste(m_origin$block_id), sep = "")
+  m_origin_centroids <- st_centroid(ca_bgs[which(ca_bgs$GEOID %in% m_origin$GEOID),])
+  m_origin_centroids <- dplyr::select(m_origin_centroids, c("GEOID", "geometry"))
+  
+  m_origin <- left_join(m_origin, m_origin_centroids, by = "GEOID")
+  m_origin <- dplyr::select(m_origin, c("GEOID", "safegraph_place_id", "geometry"))
+  colnames(m_origin) <- c("origin", "destination", "geometry_origin")
+  m_origin_sf <- st_as_sf(m_origin)
+  m_origin_sf <- st_set_crs(m_origin_sf, "+proj=longlat +datum=WGS84 +nodefs")
+  
+  return(m_origin_sf)
+  
+}
+```
+
+The ninth R script imported into R includes that of dest_trips.R file. This file imports the “m_patterns_new” and the “m_origin_sf” data frames. The safegraphplaces destination and coordinates are selected, then binded with the block group origins IDs that are associated with those destinations. This file is then converted into a shape file to create coordinate centroids for the safegraphplaces destinations. It should be noted that this file was originally used when the distance of each origin-destination pair was calculated using the OSRM routing functions. However, a simpler, valid estimation was used to calculate this distance and this file became obsolete. It is currently archived in the case where its future use is warranted.
+
+```{r eval=FALSE}
+month_dest <- function(month_patterns_new, month_origin_sf){
+
+  # Destination Points for Trips (for osrmRoute)
+    
+  m_dest <- dplyr::select(month_patterns_new, c("safegraph_place_id", "longitude", "latitude"))
+  colnames(m_dest) <- c("safegraph_place_id", "longitude", "latitude")
+  
+  m_dest <- cbind(m_dest, month_origin_sf$origin)
+  colnames(m_dest) <- c("destination", "longitude_dest", "latitude_dest", "origin")
+  
+  m_dest <- dplyr::select(m_dest, c("origin", "destination", "longitude_dest", "latitude_dest"))
+  m_dest_sf <- st_as_sf(m_dest, coords = c("longitude_dest", "latitude_dest"), crs = 4326)
+  m_dest_sf <- st_set_crs(m_dest_sf, "+proj=longlat +datum=WGS84 +nodefs")
+  colnames(m_dest_sf) <- c("origin", "destination", "geometry_destination")
+  
+  return(m_dest_sf)
+  
+}
+```
+
+The tenth R script imported into R includes that of origin_locations.R file. This file imports the  “m_patterns_new”, “m_hps”, and “pop_bg_stockton” data frames. The file first chooses specific features within the “m_patterns_new” file and appends this data frame with the “m_hps” file by the “block_id” feature. This resulting data frame is subsequently converted into a shape file, where centroid coordinates are created for the origin, and left-joined with the “pop_bg_stockton” file to append the block group population for each of Stockton’s block groups that appear in the data. The use of this file is output into the “m_origin_matrix_sf” feature.
+
+```{r eval=FALSE}
+month_origin_matrix <- function(month_patterns_new, month_hps, population_bg_stockton){
+
+  # Origin Points for Locations
+    
+  m_origin_matrix <- dplyr::select(month_patterns_new, c("safegraph_place_id", "location_name", "name_address", "block_id", "visit_count", "unique_visitor_count", "distance_from_home"))
+  m_origin_matrix <- left_join(m_origin_matrix, month_hps, by = "block_id")
+  
+  zeroPaste <- paste(matrix(data = '0', nrow = length(month_patterns_new$block_id), ncol = 1))
+  m_origin_matrix$GEOID <- paste(zeroPaste, paste(m_origin_matrix$block_id), sep = "")
+  m_origin_matrix$full_address <- paste(m_origin_matrix$location_name, m_origin_matrix$name_address, sep = ", ")
+  m_origin_centroids <- st_centroid(ca_bgs[which(ca_bgs$GEOID %in% m_origin_matrix$GEOID),])
+  m_origin_centroids <- dplyr::select(m_origin_centroids, c("GEOID", "geometry"))
+  
+  m_origin_matrix <- left_join(m_origin_matrix, m_origin_centroids, by = "GEOID")
+  m_origin_matrix <- dplyr::select(m_origin_matrix, c("GEOID", "visit_count", "unique_visitor_count", "number_devices_residing", "distance_from_home", "safegraph_place_id", "location_name", "name_address", "full_address", "geometry"))
+  colnames(m_origin_matrix)[1] <- "origin"; colnames(m_origin_matrix)[6] <- "destination"; colnames(m_origin_matrix)[7] <- "location_name"; colnames(m_origin_matrix)[8] <- "destination_address"; colnames(m_origin_matrix)[9] <- "full_address"; colnames(m_origin_matrix)[10] <- "geometry_origin";
+  # m_origin_matrix_sf <- st_as_sf(m_origin_matrix)
+  # m_origin_matrix_sf <- st_set_crs(m_origin_matrix_sf, "+proj=longlat +datum=WGS84 +nodefs")
+  
+  # population_bg_stockton <- data.frame(cbind(population_bg_stockton$origin, population_bg_stockton$origin_population))
+  # colnames(population_bg_stockton) <- c("origin", "origin_population")
+  
+  m_origin_matrix <- left_join(m_origin_matrix, dplyr::select(population_bg_stockton, c("origin", "origin_population", "origin_numeric")), by = "origin")
+  
+  m_origin_matrix <- dplyr::select(m_origin_matrix, c("origin", "visit_count", "unique_visitor_count", "number_devices_residing","origin_population", "distance_from_home", 
+                                                      "destination", "location_name", "destination_address", "full_address", "geometry_origin", "geometry"))
+  # colnames(m_origin_matrix)[11] <- "geometry_shape"
+  
+  # m_origin_matrix_sf <- left_join(m_origin_matrix_sf, population_bg_stockton, by = "origin")
+  # m_origin_matrix_sf <- dplyr::select(m_origin_matrix_sf, c("origin", "visit_count", "number_devices_residing","origin_population", "distance_from_home", 
+  #                                                           "destination", "location_name", "destination_address", "geometry_origin"))
+  
+  return(m_origin_matrix)
+  
+}
+```
+
+The eleventh R script imported into R includes that of dest_locations.R file.  This file imports the “m_patterns_join”, “dest_unique”, and “safegraphplaces” data frames. The functionality of this file is simple where the “m_patterns_join” data frame is left-joined with the “safegraphplaces” data by the “name_address” to associate destinations with its centroid coordinates. The use of this file is output into the “m_dest_matrix_sf” feature.
+
+```{r eval=FALSE}
+month_dest_matrix <- function(month_patterns_join, safegraphplaces){
+
+  # Destination Points for Location
+    
+  month_patterns_join <- unique(dplyr::select(month_patterns_join, c("location_name", "name_address", "full_address", "distance_from_home", "raw_visit_counts", "raw_visitor_counts", "visit_home_cbgs", "visitor_home_cbgs")))
+  month_patterns_join$safegraph_place_id <- NA; month_patterns_join$longitude <- NA; month_patterns_join$latitude <- NA
+  month_patterns_join <- dplyr::select(month_patterns_join, c("safegraph_place_id", "location_name", "name_address", "full_address", "longitude", "latitude",
+                                                              "distance_from_home", "raw_visit_counts", "raw_visitor_counts", "visit_home_cbgs", "visitor_home_cbgs"))
+  
+  m_dest_matrix <- dplyr::select(month_patterns_join, c("safegraph_place_id", "location_name", "name_address", "full_address", "longitude", "latitude", "distance_from_home", "raw_visit_counts", "raw_visitor_counts", "visit_home_cbgs", "visitor_home_cbgs"))
+  # m_dest_matrix$full_address <- paste(m_dest_matrix$location_name, m_dest_matrix$name_address, sep = ", ")
+  colnames(m_dest_matrix) <- c("destination", "location_name", "name_address", "full_address", "longitude", "latitude", "distance_from_home", "raw_visit_counts", "raw_visitor_counts", "origin_visit_cbgs", "origin_visitor_cbgs")
+  # m_dest_matrix_sf <- st_as_sf(m_dest_matrix, coords = c("longitude", "latitude"), crs = 4326)
+  # m_dest_matrix_sf <- st_set_crs(m_dest_matrix_sf, "+proj=longlat +datum=WGS84 +nodefs")
+  # colnames(m_dest_matrix_sf)[8] <- "geometry_destination"
+  
+  destinations <- unique(m_dest_matrix$full_address)
+  
+  for(counter in destinations){
+    
+    if(nrow(m_dest_matrix[m_dest_matrix$full_address == counter, ]) > 1){
+      
+      row_temp <- m_dest_matrix[m_dest_matrix$full_address == counter, ]
+      
+      row_new <- row_temp[1,]
+      row_new$distance_from_home <- as.character( round( sum( as.numeric(row_temp$distance_from_home) * as.numeric(row_temp$raw_visit_counts) ) / sum( as.numeric(row_temp$raw_visit_counts) ) ) )
+      row_new$raw_visit_counts <- as.character(sum(as.numeric(row_temp$raw_visit_counts)))
+      row_new$raw_visitor_counts <- as.character(sum(as.numeric(row_temp$raw_visitor_counts)))
+      
+      m_dest_matrix <- m_dest_matrix[!(m_dest_matrix$full_address == counter), ]
+      
+      m_dest_matrix <- rbind(m_dest_matrix, row_new)
+      
+    }
+    
+  }
+  
+  m_dest_matrix$longitude <- NULL
+  m_dest_matrix$latitude <- NULL
+  
+  safegraphplaces_filtered <- subset(safegraphplaces, !duplicated(safegraphplaces[,"full_address"]))
+  m_dest_matrix_longlat <- left_join(m_dest_matrix, select(safegraphplaces_filtered, c("full_address", "longitude", "latitude")), by = "full_address")
+  m_dest_matrix_longlat <- unique(m_dest_matrix_longlat)
+  
+  return(m_dest_matrix_longlat)
+  
+}
+```
+
+The twelfth R script imported into R includes that of geocodeSL.R file. This file is a Stanford geo-coder used to provide longitude-latitude coordinates to safegraphplaces destinations that do not have coordinates associated with them (link provided, here). This is used within the month_patterns_new.R file when analyzing which safegraphplaces have Stockton block groups associated with them.
+
+The thirteenth R script imported into R includes that of nudge_MeanMedConv.R file. This file outputs the median-to-mean adjustment factor that is applied to the safegraph median distance values used in the VMT analysis. A further description of this analysis is given in section #6.
+
+```{r eval=FALSE}
+nudge_MeanMedConv <- function(NHTS_df_final){
+
+  ### Nudge: Peforming the median to mean converison.
+    
+  # NHTS_df_final <- NHTS_df_final[NHTS_df_final$trptransfilt == 3 && NHTS_df_final$trptransfilt == 4, ]
+  
+  NHTS_wghtAvg <- sum(NHTS_df_final$trpmiles * NHTS_df_final$wttrdfin) / sum(NHTS_df_final$wttrdfin)
+  NHTS_medVal <- as.numeric(median(rep(NHTS_df_final$trpmiles, round(NHTS_df_final$wttrdfin))))
+  NHTS_MeanMedConv <- NHTS_wghtAvg / NHTS_medVal # Need to filter by "trptransmode" and use of variables for the network distance (e.g., TRPMILES or VMT_MILES).
+  
+  return(NHTS_MeanMedConv)
+  
+}
+```
+
+The fourteenth R script imported into R includes that of nudge_LinkedTrips.R file. With the use of the safegraph data, any linked trips are modeled as individual trips. This file outputs an adjustment factor that modifies the VMTs so that the trips analyzed are modeled as linked trips. A further description of this analysis is given in section #7.
+
+```{r eval=FALSE}
+nudge_LinkedTrips <- function(NHTS_df_final){
+ 
+  ### Nudge: Performing the linked trips conversion factor.
+   
+  # NHTS_df_linkedTrips <- NHTS_df_final[NHTS_df_final$trptransfilt == 3 && NHTS_df_final$trptransfilt == 4, ]
+  NHTS_df_linkedTrips <- NHTS_df_final
+  
+  ##########
+  
+  # Manual removal of outlier: 304216040202 (TDCASEID) & 322.673 (TRPMILES)
+  
+  NHTS_df_linkedTrips <- subset(NHTS_df_linkedTrips, tdcaseid != 304216040202)
+  
+  ##########
+  
+  key_num <- c(1, 2, 3, 99)
+  key_name <- c("Home", "Work", "SG_Dest", "Other")
+  key_matrix <- data.frame(key_num, key_name)
+  
+  from = length( unique(NHTS_df_linkedTrips$whytofilt) )
+  to = length( unique(NHTS_df_linkedTrips$whyfromfilt) )
+  
+  matrix_tripCount <- data.frame(matrix(data = NA, nrow = to, ncol = from))
+  colnames(matrix_tripCount) <- key_name
+  rownames(matrix_tripCount) <- key_name
+  
+  matrix_tripVMT <- data.frame(matrix(data = NA, nrow = to, ncol = from))
+  colnames(matrix_tripVMT) <- key_name
+  rownames(matrix_tripVMT) <- key_name
+  
+  for(linkedTo in sort(unique(NHTS_df_linkedTrips$whytofilt))){
+    
+    for(linkedFrom in sort(unique(NHTS_df_linkedTrips$whyfromfilt))){
+      
+      row_name = as.character(key_matrix[key_num == linkedTo, 2])
+      col_name = as.character(key_matrix[key_num == linkedFrom, 2])
+      matrix_tripCount[row_name, col_name] <- nrow(NHTS_df_linkedTrips[NHTS_df_linkedTrips$whytofilt == linkedTo & NHTS_df_linkedTrips$whyfromfilt == linkedFrom, ])
+      matrix_tripVMT[row_name, col_name] <- sum(NHTS_df_linkedTrips[NHTS_df_linkedTrips$whytofilt == linkedTo & NHTS_df_linkedTrips$whyfromfilt == linkedFrom, ]$trpmiles)
+      
+    }
+    
+  }
+  
+  VMT_HomeAmenity_Avg <- 2 * (matrix_tripVMT["Home" ,"SG_Dest"] + matrix_tripVMT["SG_Dest", "Home"]) / (matrix_tripCount["Home" ,"SG_Dest"] + matrix_tripCount["SG_Dest", "Home"])
+  model_SGmodel <-  2 * matrix_tripVMT["SG_Dest", "Home"] + (matrix_tripCount["SG_Dest", "SG_Dest"] * VMT_HomeAmenity_Avg)
+  # model_SGmodel <- matrix_tripVMT["Home" ,"SG_Dest"] + matrix_tripVMT["SG_Dest", "Home"] + (matrix_tripCount["SG_Dest", "SG_Dest"] * VMT_HomeAmenity_Avg)
+  model_realEst <- matrix_tripVMT["Home" ,"SG_Dest"] + matrix_tripVMT["SG_Dest", "Home"] + matrix_tripVMT["SG_Dest", "SG_Dest"]
+  NHTS_LinkedTripsConv <- model_realEst / model_SGmodel
+  
+  return(NHTS_LinkedTripsConv)
+  
+}
+```
+
+The fifteenth R script imported into R includes that of nudge_CarpoolVehicleFilter.R file. With the use of the safegraphplaces data, all trips are assumed to be those of single occupancy. This file outputs an adjustment factor that modifies the VMTs so that car pools are accounted for. A further description of this analysis is given in section #8.
+
+```{r eval=FALSE}
+nudge_carpoolVehicleFilter <- function(NHTS_df_final){
+
+  ### Nudge: Peforming the nudge for the single-occupancy vehicle (SOV) drive vs. all possible modes of transit times the number of occupants in drive.
+    
+  # The feature to use includes the following: "numontrp".
+  
+  # All "trpmiles"
+  
+  ratio_cVF <- sum(NHTS_df_final[NHTS_df_final$trptransfilt == 4, "wttrdfin"] * NHTS_df_final[NHTS_df_final$trptransfilt == 4, "trpmiles"]) / 
+    sum(NHTS_df_final[, "wttrdfin"] * NHTS_df_final[, "numontrp"] * NHTS_df_final[, "trpmiles"])
+  
+  ### This is just a test to see the average amount of people per ride: test <- sum(NHTS_df_final[, "numontrp"]) / nrow(NHTS_df_final)
+  
+  # "trpmiles" < 2 miles
+  
+  ratio_cVF_less2 <- sum(NHTS_df_final[NHTS_df_final$trptransfilt == 4 & NHTS_df_final$trpmiles < 2, "wttrdfin"] *
+                           NHTS_df_final[NHTS_df_final$trptransfilt == 4 & NHTS_df_final$trpmiles < 2, "trpmiles"]) / 
+    sum(NHTS_df_final[NHTS_df_final$trpmiles < 2, "wttrdfin"] *
+          NHTS_df_final[NHTS_df_final$trpmiles < 2, "numontrp"] *
+          NHTS_df_final[NHTS_df_final$trpmiles < 2, "trpmiles"])
+  
+  # "trpmiles" > 2 miles & < 5 miles
+  
+  ratio_cVF_2to5 <- sum(NHTS_df_final[NHTS_df_final$trptransfilt == 4 & NHTS_df_final$trpmiles >= 2 & NHTS_df_final$trpmiles < 5, "wttrdfin"] *
+                          NHTS_df_final[NHTS_df_final$trptransfilt == 4 & NHTS_df_final$trpmiles >= 2 & NHTS_df_final$trpmiles < 5, "trpmiles"]) / 
+    sum(NHTS_df_final[NHTS_df_final$trpmiles >= 2 & NHTS_df_final$trpmiles < 5, "wttrdfin"] *
+          NHTS_df_final[NHTS_df_final$trpmiles >= 2 & NHTS_df_final$trpmiles < 5, "numontrp"] *
+          NHTS_df_final[NHTS_df_final$trpmiles >= 2 & NHTS_df_final$trpmiles < 5, "trpmiles"])
+  
+  # "trpmiles" > 5 miles & < 10 miles
+  
+  ratio_cVF_5to10 <- sum(NHTS_df_final[NHTS_df_final$trptransfilt == 4 & NHTS_df_final$trpmiles >= 5 & NHTS_df_final$trpmiles < 10, "wttrdfin"] *
+                           NHTS_df_final[NHTS_df_final$trptransfilt == 4 & NHTS_df_final$trpmiles >= 5 & NHTS_df_final$trpmiles < 10, "trpmiles"]) / 
+    sum(NHTS_df_final[NHTS_df_final$trpmiles >= 5 & NHTS_df_final$trpmiles < 10, "wttrdfin"] *
+          NHTS_df_final[NHTS_df_final$trpmiles >= 5 & NHTS_df_final$trpmiles < 10, "numontrp"] *
+          NHTS_df_final[NHTS_df_final$trpmiles >= 5 & NHTS_df_final$trpmiles < 10, "trpmiles"])
+  
+  # "trpmiles" > 10 miles & < 50 miles
+  
+  ratio_cVF_10to50 <- sum(NHTS_df_final[NHTS_df_final$trptransfilt == 4 & NHTS_df_final$trpmiles >= 10 & NHTS_df_final$trpmiles < 50, "wttrdfin"] *
+                            NHTS_df_final[NHTS_df_final$trptransfilt == 4 & NHTS_df_final$trpmiles >= 10 & NHTS_df_final$trpmiles < 50, "trpmiles"]) / 
+    sum(NHTS_df_final[NHTS_df_final$trpmiles >= 10 & NHTS_df_final$trpmiles < 50, "wttrdfin"] *
+          NHTS_df_final[NHTS_df_final$trpmiles >= 10 & NHTS_df_final$trpmiles < 50, "numontrp"] *
+          NHTS_df_final[NHTS_df_final$trpmiles >= 10 & NHTS_df_final$trpmiles < 50, "trpmiles"])
+  
+  # "trpmiles" > 50 miles
+  
+  ratio_cVF_50plus <- sum(NHTS_df_final[NHTS_df_final$trptransfilt == 4 & NHTS_df_final$trpmiles > 50, "wttrdfin"] *
+                            NHTS_df_final[NHTS_df_final$trptransfilt == 4 & NHTS_df_final$trpmiles > 50, "trpmiles"]) / 
+    sum(NHTS_df_final[NHTS_df_final$trpmiles > 50, "wttrdfin"] *
+          NHTS_df_final[NHTS_df_final$trpmiles > 50, "numontrp"] *
+          NHTS_df_final[NHTS_df_final$trpmiles > 50, "trpmiles"])
+  
+  return(ratio_cVF)
+  
+}
+```
+
+The following code is used to upload the one dataset and these 15 R scripts:
+
+```{r eval=FALSE}
+source("S:/CCF/VMT_calc_functions/geocodeSL.R")
+```
+
+### Section #4: Uploading California Block Groups through the Census API
+
+A census API key is first loaded into R for ability to use the Census API. This key is as follows:
+
+"c8aa67e4086b4b5ce3a8717f59faa9a28f611dab"
+
+Subsequently, block groups for all of California are loaded into R with the use of the “block_groups” function.
+
+The following code is used to upload the census API key and the California block groups:
+
+```{r eval=FALSE}
+census_api_key("c8aa67e4086b4b5ce3a8717f59faa9a28f611dab", overwrite = TRUE)
+ca_bgs <- block_groups("CA", cb = TRUE)
+```
+
+### Section #5: ‘safegraphplaces’ Upload
+
+The safegraphplaces is uploaded within this section of the VMT analysis. Currently, the safegraphplaces for San Joaquin are uploaded. However, in the future, this may be substituted for the safegraphplaces throughout the whole U.S. This is still in process.
+
+Subsequenetly, this safegraphplaces dataset is inserted into the ‘safegraphplaces_cleanse’ function that was previously uploaded.
+
+The following code is used to upload and cleanse the safegraphplaces dataset.
+
+
+```{r eval=FALSE}
+filename_SJ <- "S:/Restricted Data Library/Safegraph/poi/safegraphplaces.csv"
+safegraphplaces_SJ <- read.csv(filename_SJ, header=TRUE, stringsAsFactors = FALSE)
+
+filename_CA <- "S:/Restricted Data Library/Safegraph/poi/safegraphplaces_CA.csv"
+safegraphplaces_CA <- read.csv(, header=TRUE, stringsAsFactors = FALSE)
+
+safegraphplaces_tot <- rbind(safegraphplaces_SJ, safegraphplaces_CA)
+safegraphplaces <- safegraphplaces_cleanse(safegraphplaces_tot)
+```
+
+It should be noted that this code is still being updated. It is most likely that this code will only necessitate the use of the safegraphplaces file representing that of California.
+
+### Section #6: Calculation of NHTS Nudge #1: Linked-Trips
+
+This is a file uploaded externally, containing an analysis on the NHTS to understand how many trips within Stockton were linked trips. First, the trips within Stockton were filtered by its origin and destination positions. The trip origins and destinations included the following: home, work, a safegraph destination, or other. Subsequently, for each origin-destination type (16 types in total), the total number of trips and the total miles traveled were calculated.
+
+An outlier was taken out of the NHTS data which included TDCASEID 304216040202. This one trip consisted of 322.673 miles, which was much greater than the second longest trip.
+
+The first piece of the code uploads the NHTS dataset for Stockton and filters out the outlier:
+
+```{r eval=FALSE}
+NHTS_df_linkedTrips <- NHTS_df_final
+NHTS_df_linkedTrips <- subset(NHTS_df_linkedTrips, tdcaseid != 304216040202)
+```
+
+The next section of code creates a matrix that identifies the numbers in NHTS with their origin/destination type:
+
+```{r eval=FALSE}
+key_num <- c(1, 2, 3, 99)
+key_name <- c("Home", "Work", "SG_Dest", "Other")
+key_matrix <- data.frame(key_num, key_name)
+```
+
+Subsequently, matrices for the counts and total VMTs of trips for each origin-destination pair are constructed, as follows:
+
+```{r eval=FALSE}
+from = length( unique(NHTS_df_linkedTrips$whytofilt) )
+to = length( unique(NHTS_df_linkedTrips$whyfromfilt) )
+
+matrix_tripCount <- data.frame(matrix(data = NA, nrow = to, ncol = from))
+colnames(matrix_tripCount) <- key_name
+rownames(matrix_tripCount) <- key_name
+
+matrix_tripVMT <- data.frame(matrix(data = NA, nrow = to, ncol = from))
+colnames(matrix_tripVMT) <- key_name
+rownames(matrix_tripVMT) <- key_name
+```
+
+This analysis subsequently examines all origin-destination types within the NHTS dataset for Stockton. For each origin-destination case, the number of surveys associated with the case and the total trip miles are calculated. The following code implements this analysis:
+
+```{r eval=FALSE}
+for(linkedTo in sort(unique(NHTS_df_linkedTrips$whytofilt))){
+  for(linkedFrom in sort(unique(NHTS_df_linkedTrips$whyfromfilt))){
+
+    r_name = as.character(key_matrix[key_num == linkedTo, 2])
+    c_name = as.character(key_matrix[key_num == linkedFrom, 2])
+
+    row_conditionals <- NHTS_df_linkedTrips$whytofilt == linkedTo &
+                                    NHTS_df_linkedTrips$whyfromfilt == linkedFrom
+    matrix_tripCount[r_name, c_name] <- nrow(NHTS_df_linkedTrips[row_conditionals, ])
+    matrix_tripVMT[r_name, c_name] <- sum(NHTS_df_linkedTrips[row_conditionals, ]$trpmiles)
+      
+  }
+}
+```
+
+Last, a comparative analysis is performed that compares the current model being created with the safegraphplaces data (“model_SGmodel”) to a more realistic estimate (“model_realEst”). This is all performed with the following code:
+
+```{r eval=FALSE}
+VMT_HomeAmenity_Avg <- 2 * (matrix_tripVMT["Home" ,"SG_Dest"] +
+			          matrix_tripVMT["SG_Dest", "Home"]) /
+          (matrix_tripCount["Home" ,"SG_Dest"] +
+          matrix_tripCount["SG_Dest", "Home"])
+
+model_SGmodel <-  2 * matrix_tripVMT["SG_Dest", "Home"] +
+		         (matrix_tripCount["SG_Dest", "SG_Dest"] * VMT_HomeAmenity_Avg)
+
+model_realEst <- matrix_tripVMT["Home" ,"SG_Dest"] + matrix_tripVMT["SG_Dest", "Home"] +
+		     matrix_tripVMT["SG_Dest", "SG_Dest"]
+
+NHTS_LinkedTripsConv <- model_realEst / model_SGmodel
+
+return(NHTS_LinkedTripsConv)
+```
+
+To provide a more in-depth explanation of the code above, each constituent of the comparative analysis is elaborated upon further. First, the calculation of the average VMT of a home-amenity-home trip was calculated (“VMT_HomeAmenity_Avg”). This is defined as the total VMTs for this type of trip divided by the number of these trip types performed, multiplied by a factor of two for two-way trips. This is used for the VMT estimation of the current model with the safegraphplaces data (“model_SGmodel”). The VMTs estimated for this model calculates every trip from a safegraph destination to a home multiplied by a factor of two, to account for two-way trips, which is subsequently added to the number of amenity-amenity trips multiplied by “VMT_HomeAmenity_Avg”. The reason for adding the VMTs associated with the amenity-amenity trips was to account for the few cases in which a trip includes a trip from one amenity to another. All trips were multiplied by two to account for the fact that linked-trips are modeled as two, two-way trips. The next estimation includes that of a more realistic home-amenity-home VMT calculation (“model_realEst”). This model estimates a linked trip as one that sums the VMTs associated with all home-amenity trips, amenity-home trips, and the amenity-amenity trips. Last, the ratio of the VMTs in “model_realEst” to “model_SGmodel” is performed and returned for use in the VMT analysis.
+
+### Section #7: Calculation of NHTS Nudge #2: Median-to-Mean Conversion
+
+This is a file uploaded externally, containing an analysis to understand the median and mean values for the trip distances within Stockton, based on the NHTS.
+
+The mean trip distance is calculated as the sum of all trip miles across all trips, divided by all trips. The median distance of all trips within the NHTS data is subsequently calculated. Last, the ratio of the mean number of trips to the median number of trips is calculated. This is the output value.
+
+The following code implements this analysis, where the weighted average of the trip miles, the median value of the trip miles, and the mean-to-median conversion are all calculated:
+
+```{r eval=FALSE}
+NHTS_wghtAvg <- sum(NHTS_df_final$trpmiles * NHTS_df_final$wttrdfin) /
+		        sum(NHTS_df_final$wttrdfin)
+
+NHTS_medVal <- as.numeric( median( rep( NHTS_df_final$trpmiles,
+     round( NHTS_df_final$wttrdfin ) ) ) )
+
+NHTS_MeanMedConv <- NHTS_wghtAvg / NHTS_medVal
+
+return(NHTS_MeanMedConv)
+```
+
+### Section #8: Calculation of NHTS Nudge #3: Carpool-Vehicle Modification
+
+This is a file uploaded externally, containing an analysis to understand what proportion of trip miles are those of all cars (which contains car pools). This value is divided by the trip miles of all vehicles multiplied by the number of those on each trip (which overcounts the trip miles by the additional passengers in the vehicle). A proportion is computed by taking the first value and dividing it by the second. This proportion is used as the adjustment which is applied to all VMTs in the analysis.
+
+The following code implements this analysis:
+
+```{r eval=FALSE}
+ratio_cVF <-
+sum(NHTS_df_final[ NHTS_df_final$trptransfilt == 4, "wttrdfin" ] *
+        NHTS_df_final[ NHTS_df_final$trptransfilt == 4, "trpmiles" ] ) /
+sum(NHTS_df_final[ , "wttrdfin" ] * NHTS_df_final[ , "numontrp" ] * NHTS_df_final[ , "trpmiles" ] )
+```
+
+### Section #9: Filtration of ‘m_patterns’ Safegraph Data
+
+Subsequent to uploading all adjustment factors, the “m_patterns” data for every month is filtered and cleansed for the VMT analysis. This is done by uploading many of the above factors for each month (described in the next paragraph) and creating three new data frames: “m_patterns_new”, “m_origin_matrix_sf”, and “m_dest_matrix_sf”.
+
+The “m_patterns_new” data frame was constructed to save the filtered m_patterns data, just in case it may have been necessary for future cases. The “m_origin_matrix_sf” data frame was constructed so that all origin information and geometries per trip could be saved. The “m_dest_matrix_sf” data frame was constructed so that all destination information and geometries per trip could be saved.
+
+To describe the process, this analysis uses a for loop to analyze the m_patterns datasets for each month. For each month, the m_patterns dataset is first uploaded with the ‘patterns_choice’ and ‘m_patterns_cleanses’ functions. It is then joined with the safegraphplaces dataset and cleansed for further analysis with the ‘m_patterns_join_cleanse’ function. Subsequently, the number of devices being recorded from and the population of each block group were calculated with the ‘home_panel_summary’ and ‘pop_blockgroup_stockton’ functions.
+
+This section of the analysis is implemented with the following code:
+
+```{r eval=FALSE}
+
+for(num in 1:12){
+
+  patterns_text <- patterns_choice(num)
+  m_patterns <- m_patterns_cleanse(patterns_text)
+  m_patterns_join <- m_patterns_join_cleanse(m_patterns, safegraphplaces)
+
+  # m_hps from "home_panel_summary"
+  m_hps <- home_panel_summary(num)
+
+  # Finding census population for each block group with residents going to Stockton amenities.
+  pop_bg_stockton <- pop_blockgroup_stockton(m_hps)
+
+  ### [2nd part of code, here.]
+
+  ### [3rd part of code, here.]
+
+}
+
+```
+
+The next part of the process generates the three data frames necessary for the VMT analysis. The ‘month_patterns_new’ function generates the m_patterns_new data frame. The ‘origin_trips’ function generates the m_origins_matrix_sf data frame. The m_origins_matrix_sf data frame is subsequently used to create the dest_unique data frame. This data frame calculates the unique destinations within the m_origins_matrix_sf. The ‘dest_trips’ function generates the m_dest_matrix_sf data frame.
+
+This section of the analysis is implemented with the following code:
+
+```{r eval=FALSE}
+for(num in 1:12){
+
+  ### [1st part of code, here.]
+
+  # Looping through data to disaggregate the census blocks from the monthly patterns .csv files.
+  m_patterns_new <- month_patterns_new(m_patterns_join, pop_bg_stockton)
+
+  # Origin Points for Locations
+  # Finding census population for block group with residents going to Stockton amenities.
+  m_origin_matrix_sf <- month_origin_matrix(m_patterns_new, m_hps, pop_bg_stockton)
+  
+  # Destination Points for Location
+  dest_unique <- data.frame(unique(m_origin_matrix_sf$full_address))
+  m_dest_matrix_sf <- month_dest_matrix(m_patterns_join, dest_unique, safegraphplaces)
+
+  ### [3rd part of code, here.]
+
+}
+```
+
+Last, these three datasets are then saved for each month of analysis. For each month, the three data frames are saved to a file-name given for that particular month. Last, once saved, these files are removed to clear all data for analysis of the next month’s m_patterns data.
+
+This section of the analysis is implemented with the following code:
+
+```{r eval=FALSE}
+for(num in 1:12){
+
+  ### [1st part of code, here.]
+
+  ### [2nd part of code, here.]
+
+  filename <- paste( "S:/CCF/m_patterns_new/", substr(patterns_text, 45, 57), "_new.RData",
+		       sep = "" )
+  
+  save(m_origin_matrix_sf, m_dest_matrix_sf, m_patterns_new, file = filename)
+   
+  rm(m_origin_matrix_sf, m_dest_matrix_sf, m_patterns_new, filename)
+
+}
+```
+
+### Section #10: Monthly VMT Calculation
+
+#### Sub-Section A: Conversion Factors & Construction of VMT Data Structures
+
+Before performing any analyses, conversion factors are generated and data structures are initialized. 
+
+The conversion factors used include the following: meter-to-mile conversion, two-way trip factor, months in a year, and VMT considerations. The meter-to-mile conversion was set as 0.000621371. The two-way trip factor was set as 2. The months in a year factor was set as 12. The VMT considerations was set as 3. The months of consideration factor multiplies together the year factor and the VMT considerations. These three VMT considerations will be described in Sub-Section E. The following code initializes these factors:
+
+```{r eval=FALSE}
+conv_MeterToMile <- 0.000621371
+factor_twoWayTrip <- 2
+months_in_year <- 12
+VMT_considerations <- 3
+months_considerations <- months_in_year * VMT_considerations
+```
+
+To calculate the VMTs associated with the origins, three data frames were constructed for three different VMT calculation cases. These three data frames were named as follows: ‘VMT_origin_recorded’, ‘VMT_origin_nonrecorded’, and ‘VMT_origin_otherdest_nonrecorded’. These data frames had 205 rows, each one representing one of Stockton’s 205 block groups within the boundary of influence. These data frames also have 13 columns. The first column had the block group identification number. The other 12 columns represented the VMTs for each month. The column names given include that of the identification number and the 12 months. The row numbers consisted of the block group identification number. The following code initializes these data frames:
+
+```{r eval=FALSE}
+VMT_Origin_recorded <- data.frame(matrix(0, nrow = nrow(pop_bg_stockton), ncol = 13))
+VMT_Origin_nonrecorded <- data.frame(matrix(0, nrow = nrow(pop_bg_stockton), ncol = 13))
+VMT_Origin_otherdest_nonrecorded <- data.frame(matrix(0, nrow = nrow(pop_bg_stockton), ncol = 13))
+
+VMT_Origin_recorded[, 1] <- pop_bg_stockton$origin
+VMT_Origin_nonrecorded[, 1] <- pop_bg_stockton$origin
+VMT_Origin_otherdest_nonrecorded[, 1] <- pop_bg_stockton$origin
+
+colnames_VMT <- c("origin",
+                	          "VMTs_m_1",
+                  	          "VMTs_m_2",
+                  	          "VMTs_m_3",
+                  	          "VMTs_m_4",
+                  	          "VMTs_m_5",
+                  	          "VMTs_m_6",
+                  	          "VMTs_m_7",
+                  	          "VMTs_m_8",
+                  	          "VMTs_m_9",
+                  	          "VMTs_m_10",
+                  	          "VMTs_m_11",
+                  	          "VMTs_m_12"
+)
+
+colnames(VMT_Origin_recorded) <- colnames_VMT
+colnames(VMT_Origin_nonrecorded) <- colnames_VMT
+colnames(VMT_Origin_otherdest_nonrecorded) <- colnames_VMT
+
+rownames(VMT_Origin_recorded) <- pop_bg_stockton$origin
+rownames(VMT_Origin_nonrecorded) <- pop_bg_stockton$origin
+rownames(VMT_Origin_otherdest_nonrecorded) <- pop_bg_stockton$origin
+```
+
+The Stockton Boundary of Influence was again introduced. A buffer of about 1 mile was created around this boundary of influence. This boundary of influence is used later to understand which safegraph destinations are within Stockton’s vicinity (up to 1 mile outwards). This feature is explained further in Sub-Section E. The following code initializes both the stockton boundary of influence with and without the 1 miles buffer:
+
+```{r eval=FALSE}
+# Creating shapefiles that include
+# (1) the Stockton boundary and
+# (2) the Stockton boundary with a 1-mile buffer.
+
+stockton_boundary_influence <-
+( st_read("S:/CCF/SpheresOfInfluence/SpheresOfInfluence.shp") %>%
+filter( SPHERE == "STOCKTON" ) %>%
+st_transform(st_crs(4326) ) )[1,]
+
+stockton_boundary_influence_milebuffer <-
+st_buffer(stockton_boundary_influence, 1/deci_degree_mile_conversion)
+```
+
+It should be noted that the “deci_degree_mile_conversion” feature has not been shown in this documentation. Though useful, it only helps provide an estimate for the 1-mile buffer. This code will be altered in the future to provide a better representation of the 1-mile buffer.
+
+A data frame for the VMTs associated with traveling to destinations was included. This was implemented as an empty shapefile with 47 columns. This data frame is later used to associate all destinations within the buffered Stockton Boundary of influence with the VMTs produced for each VMT category (3 categories) for every month (12 months). This code is implemented as follows:
+
+```{r eval=FALSE}
+# Creating a blank shapefile data frame for the destinations of consideration.
+
+locations_of_consideration <-
+st_sf(data.frame(matrix(data = NA, nrow = 0, ncol = 47), geom = st_sfc()), crs = 4326)
+```
+
+Last, two empty columns vectors were produced to intake the proportion from Stockton who travel to a safegraph destination: ‘StocktonDest_proportion_recorded’ and ‘nonStocktonDest_proportion_recorded’. The first vector mentioned recorded the proportion of Stockton residents traveling to a destination, for destinations within Stockton. The second vector mentioned recorded the proportion of Stockton residents traveling to a destination, for destinations outside of Stockton. This code is implemented as follows:
+
+```{r eval=FALSE}
+# Creating two vectors that allow for inputs of the proportion of origins to a destination being
+# from Stockton.
+# The first vector is used for destinations within Stockton.
+# The second vector is used for destinations outside of Stockton.
+# A counterDest scalar was created to count the number of previous destinations that have been used from the previous month's analysis.
+
+StocktonDest_proportion_recorded <- data.frame( matrix( ncol = 2, NA ) )
+nonStocktonDest_proportion_recorded <- data.frame( matrix( ncol = 2, NA ) )
+
+colnames(StocktonDest_proportion_recorded) <-
+c("locations", "StocktonDest_proportion_recorded")
+
+colnames(nonStocktonDest_proportion_recorded) <-
+c("locations", "nonStocktonDest_proportion_recorded")
+```
+
+#### Sub-Section B: Monthly VMT Analysis
+
+The VMT calculations were performed on a monthly basis. Thus, a for loop is constructed that loops through the VMT analysis 12 times, once for each month. The reasoning for doing this is that the “m_patterns_new” data frames (constructed from the “m_patterns” data frames) were created for each month of the year. The following includes the format of the for loop:
+
+```{r eval=FALSE}
+r(counterMonth in 1:12){
+
+  [Code for the VMT analysis, here.]
+
+}
+```
+
+#### Sub-Section C: Uploading filtered ‘m_patterns’ Safegraph Data
+
+This step in the process uploads the filtered ‘m_patterns” safegraph data for each month of analysis. This data more specifically includes the following three data frames: “m_patterns_new”, “m_origin_matrix_sf”, and “m_dest_matrix_sf”. The “m_patterns_new” data frame is not used in the analysis. The “m_origin_matrix_sf” and the “m_dest_matrix_sf” data frames are eventually used for the VMT calculations. The following includes the code to load the three data frames mentioned:
+
+```{r eval=FALSE}
+# Loading the m_patterns_new data. This includes "m_origin_matrix_sf", "m_dest_matrix_sf"
+# and "m_patterns_new".
+# This is done for each of the 12 months of the year.
+
+patterns_text <- patterns_choice(counterMonth)
+filename <- paste("S:/CCF/m_patterns_new/",
+	       substr(patterns_text, 45, 57),
+	       "_new.RData",
+	       sep = "")
+load(filename)
+```
+
+#### Sub-Section D: Construction of Monthly VMT Data Structures
+
+There are additional data frames created for the VMT analysis, but need to be reset or appended for every month. This includes “m_dest_matrix_sf”, “dest_amenities_matrix”, “dest_num”, “start_counter”, “end_counter”, “locations_of_consideration”, “withinStockton_rownum”, “withinStocktonBuffer_rownum”, “m_hps”, and “pop_bg_stockton”.
+
+The “m_dest_matrix_sf” data frame is appended to 38 additional columns. 36 of those columns are for VMT analysis. The other two columns are used to check whether the destinations are within Stockton or within its 1-mile buffer. The “dest_amenities_matrix” is subsequently created to intake the unique destination names used within the analysis. The “dest_num” feature intakes the number of rows within the “dest_amenities_matrix”. This is implemented through the following code:
+
+
+```{r eval=FALSE}
+# Editing the "m_dest_matrix_sf" data frame. This involves adding adding additional columns,
+# changing the lat/long to be numeric and using new column names.
+
+m_dest_matrix_sf <- cbind( m_dest_matrix_sf,
+			         data.frame(matrix( NA, ncol = (months_considerations + 2) ) ) )
+m_dest_matrix_sf$longitude <- as.numeric( m_dest_matrix_sf$longitude )
+m_dest_matrix_sf$latitude <- as.numeric( m_dest_matrix_sf$latitude )
+colnames(m_dest_matrix_sf)[12:49] <- dest_col_names
+  
+# Creating a vector of the unique destination names and a scalar value of the amount of
+# destinations.
+
+dest_amenities_matrix <- data.frame( unique( m_origin_matrix_sf$full_address ) )
+colnames(dest_amenities_matrix) <- "name_address"
+dest_num <- nrow(dest_amenities_matrix)
+```
+
+A “start_counter” feature is then constructed to measure the number of rows within the locations of consideration vector. The “locations_of_consideration” vector is then row-binded (with ‘rbind’) with the “m_dest_matrix_sf” data frame. Last, an “end_counter” feature is constructed to count the final row in the new “locations_of_consideration” data frame. The purpose of the “start_counter” and “end_counter” features is to analyze the new “m_dest_matrix_sf” data frame for the month being analyzed. This is implemented through the following code:
+
+```{r eval=FALSE}
+# Adding these locations of interest to a holding variable. Moreover, to make sure the analysis
+# is done on a monthly basis, I calculate which rows are those are the start and end of each
+# month as done with the "start_counter" and "end_counter" variables.
+  
+start_counter <- nrow(locations_of_consideration)
+
+locations_of_consideration <- rbind(locations_of_consideration,
+		st_sf( st_as_sf( m_dest_matrix_sf[!is.na(m_dest_matrix_sf$longitude), ],
+coords = c("longitude", "latitude"), crs = 4326) ) )
+
+end_counter <- nrow( locations_of_consideration )
+```
+
+Next, the “m_dest_matrix_sf” data frame section of the “locations_of_consideration” data frame is tested to see whether the destinations being analyzed are (1) within Stockton and (2) within the 1-mile buffer of Stockton. This is done by applying the st_intersects() function in the “withinStockton_rownum” and the “withinStocktonBuffer_rownum” vectors, respectively. Last, within the “locations_of_consideration” data frame, the “withinStockton_rownum” and “withinStocktonBuffer_rownum” vectors are applied within. If the destination is within Stockton or its 1-mile buffer, ‘TRUE’ is applied. Otherwise, ‘FALSE’ is applied. This is implemented through the following code:
+
+```{r eval=FALSE}
+# Creation of the column values that disclose whether a destination is within Stockton and/or its
+# 1-mile buffer.
+    
+withinStockton_rownum <- st_intersects(stockton_boundary_influence, locations_of_consideration[(start_counter + 1):end_counter, "geometry"], sparce = TRUE)[[1]] 
+withinStocktonBuffer_rownum <- st_intersects(stockton_boundary_influence_milebuffer, locations_of_consideration[(start_counter + 1):end_counter, "geometry"], sparce = TRUE)[[1]]
+  
+locations_of_consideration[(start_counter + 1):end_counter, ]
+[withinStockton_rownum, "within_Stockton"] <- TRUE
+
+locations_of_consideration[(start_counter + 1):end_counter, ]
+[is.na(locations_of_consideration[(start_counter + 1):end_counter, ]$within_Stockton), "within_Stockton"] <- FALSE
+  
+locations_of_consideration[(start_counter + 1):end_counter, ]
+[withinStocktonBuffer_rownum, "within_StocktonBuffer"] <- TRUE
+
+locations_of_consideration[(start_counter + 1):end_counter, ]
+[is.na(locations_of_consideration[(start_counter + 1):end_counter, ]$within_StocktonBuffer), "within_StocktonBuffer"] <- FALSE
+```
+
+Last, the “home_panel_summary” and “pop_bg_stockton” functions are used to upload the number of devices residing in (“m_hps”) and the population of (“pop_bg_stockton”) each of Stockton’s block groups, respectively. This is implemented through the following code:
+
+```{r eval=FALSE}
+# m_hps from "home_panel_summary" and finding the census population for each block group
+# going to amenities in Stockton.
+
+m_hps <- home_panel_summary(counterMonth)
+pop_bg_stockton <- pop_blockgroup_stockton(m_hps)
+```
+
+#### Sub-Section E: Monthly VMT Calculations for Recorded and Non-Recorded Drivers
+
+This analysis consists of a separate, nested for loop for the analysis of VMTs. For this analysis, VMTs are calculated for the following three cases:
+
+1.	Recorded VMTs at Recorded Destinations: This includes the calculation of VMTs for every recorded Stockton origin to a recorded destination.
+
+2.	Non-Recorded VMTs at Recorded Destinations: This includes the calculation of VMTs for every non-recorded Stockton origin to a recorded destination.
+
+3.	Non-Recorded VMTs at Non-Recorded Destinations: This includes the calculation of VMTs for every Stockton origin to a non-recorded destination. Various times for the destinations being analyzed either did not have any Stockton origins or any origins at all associated with them. These were the destinations included in this category.
+
+For the first and second cases, a for loop is constructed that analyzed the VMTs based on destination. The “m_patterns” data is arranged by destination, where the origins are embedded in a character string. Hence, the only way to analyze VMT is by destination.
+
+For each loop, a particular destination is being analyzed for VMTs. For that destination, origin and destination vectors are constructed (“origin_matrix” and “dest_vector”). The median distance associated with this destination is subsequently stored into “distance_origin” and “distance_dest”. The proportion of the origins from Stockton are then calculated within “proportion_Stockton”. This is performed as follows:
+
+```{r eval=FALSE}
+# For each destination, I'm creating a list of the origins and a vector with the destination. These
+# data structures have visit and visitor count information.
+    
+origin_matrix <- m_origin_matrix_sf[
+		  m_origin_matrix_sf$full_address ==
+		  dest_amenities_matrix[counterVMT, "name_address"], ]
+dest_vector <- m_dest_matrix_sf[
+		m_dest_matrix_sf$full_address ==
+		dest_amenities_matrix[counterVMT, "name_address"], ]
+
+# These vectors take in the origin and destination distance information
+# for the origin(s) and the destination.
+# In the case in which we use the median distance, these values will be the same.
+# In the case in which we use OSRM routing, these values will be different.
+    
+distance_origin <- as.numeric(origin_matrix$distance_from_home)
+		      * factor_twoWayTrip
+		      * conv_MeterToMile
+		      * NHTS_MeanMedConv
+		      * NHTS_LinkedTripsConv
+		      * NHTS_carpoolVehicleFilter 
+
+distance_dest <- as.numeric(dest_vector$distance_from_home)
+		    * factor_twoWayTrip
+    * conv_MeterToMile
+	    * NHTS_MeanMedConv
+	    * NHTS_LinkedTripsConv
+	    * NHTS_carpoolVehicleFilter
+
+# This vector computes the proportion of the origins coming from Stockton
+# that go to the safegraph place destination being analyzed.
+    
+proportion_Stockton <-
+sum(origin_matrix[!is.na(origin_matrix$origin_population), "visit_count"]) /
+sum(origin_matrix[, "visit_count"])
+```
+
+Next, the distance to each block group from the recorded origins was recorded as a vector. Subsequently, the values in this vector were summed. This summed value was subtracted from the product of the mean distance from that destination to all origins and the total raw visit counts accounted for which goes to the destination being analyzed. This value is then multiplied by the proportion of the origins from Stockton. This code is performed as follows:
+
+```{r eval=FALSE}
+# The following code computes the distances being driven by the origins recorded ("recorded")
+# and those that have not been recorded ("non-recorded").
+    
+distance_bg_recorded <- data.frame( as.numeric(dest_vector$raw_visit_counts) /
+			      as.numeric(dest_vector$raw_visitor_counts) *
+			      origin_matrix$unique_visitor_count *
+			      distance_origin )
+
+distance_bg_recorded_sum <- sum( distance_bg_recorded )
+
+distance_bg_nonrecorded <- ( distance_dest
+				  * as.numeric(dest_vector$raw_visit_counts)
+				  - sum(distance_bg_recorded) )
+				 * proportion_Stockton
+```
+
+These recorded and non-recorded distance values are subsequently used for the calculation of the recorded (case #1) and non-recorded VMTs (case #2). For the VMTs calculated for the recorded block groups (case #1), their associated median distance is multiplied by the population of their origin block group and divided by the number of devices being assessed in their origin block group. This figure is then added to the “VMT_Origin_recorded” data frame for each respective block group being analyzed. If the block group is within the Stockton boundary of influence, it is included within the “VMT_Origin_recorded” data frame. If it is not within the Stockton boundary of influence, it is discluded. This is implemented in the following code:
+
+```{r eval=FALSE}
+# The following code computes the "recorded" VMTs from the "distance_bg_recorded" feature
+# previously calculated. 
+    
+VMT_Origin_recorded_unique_dest <- distance_bg_recorded
+					 * as.numeric(origin_matrix$origin_population) /
+					 as.numeric(origin_matrix$number_devices_residing)
+
+VMT_Origin_recorded[c(origin_matrix$origin), (1 + counterMonth)] <- VMT_Origin_recorded[c(origin_matrix$origin), (1 + counterMonth)] + VMT_Origin_recorded_unique_dest
+
+VMT_Origin_recorded <- na.omit(VMT_Origin_recorded)
+```
+
+For the VMTs calculated for the non-recorded block groups (case #2), first the subset of origin block groups are chosen that are not included in any of the origin-destination pairs for the current destination being analyzed (“subset_non_recorded”). The VMTs associated with the non-recorded origins are then calculated as the “distance_bg_nonrecorded” feature divided by the number of non-recorded Stockton block groups multiplied by the population of each of these Stockton block groups divided by the number of devices being assessed in these Stockton origin block groups. These VMTs are then uniformly distributed across all of these non-recorded Stockton origin block groups. This is implemented in the following code:
+
+```{r eval=FALSE}
+# The following code computes the "non-recorded" VMTs from the "distance_bg_nonrecorded"
+# feature previously calculated.
+    
+subset_non_recorded <- subset( VMT_Origin_nonrecorded[, c(1, (1 + counterMonth))], !(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin) )
+
+VMT_Origin_nonrecorded_unique_dest
+<- ( matrix(nrow = nrow(subset_non_recorded), ncol = 1,
+distance_bg_nonrecorded / nrow(subset_non_recorded))
+* as.numeric( pop_bg_stockton[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), "origin_population"][[1]] )
+/ as.numeric( pop_bg_stockton[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), "number_devices_residing"][[1]] ) )
+
+VMT_Origin_nonrecorded[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), (1 + counterMonth)] <-
+(VMT_Origin_nonrecorded[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin), (1 + counterMonth)]
++ VMT_Origin_nonrecorded_unique_dest)
+```
+
+The next sub-set of code analyzes whether the destination being analyzed is within or not within Stockton. The purpose of this is to understand whether to assign the “proportion_Stockton” value to the “StocktonDest_proportion_recorded” vector or the “nonStocktonDest_proportion_recorded” vector. First, the destination of interest is obtained from the “location_of_consideration” data frame. The “location_of_consideration” data frame is filtered by the month of analysis and (within that month of analysis) the destination of interest is chosen and whether or not it is within the Stockton boundary of influence is obtained as a ‘TRUE’ or ‘FALSE’ feature. This ‘TRUE’/‘FALSE’ feature is inserted into the “withinStockton_conditional” feature. In the case where a feature is not returned, the “withinStockton_conditional” feature is given ‘FALSE’ value. If the “withinStockton_conditional” value is ‘TRUE’, the “proportion_Stockton” value is assigned to the “StocktonDest_proportion_recorded” vector. Otherwise, the “proportion_Stockton” value is assigned to the “nonStocktonDest_proportion_recorded” vector. This is implemented with the following code:
+
+```{r eval=FALSE}
+# This code takes the proportion of those coming from Stockton and inputs that value into one of
+# two vectors.
+# The proportion of those coming from Stockton will be inserted into the first vector if the destination
+# is within Stockton.
+# The proportion of those coming from Stockton will be inserted into the second vector if the
+# destination is outside of Stockton.
+    
+withinStockton_conditional <- locations_of_consideration[(start_counter + 1):end_counter, ]
+[locations_of_consideration[(start_counter + 1):end_counter, ]$full_address == dest_vector$full_address, ]$within_Stockton
+
+if(length(withinStockton_conditional) == 0){withinStockton_conditional = FALSE}
+    
+if(withinStockton_conditional == TRUE){
+      
+      StocktonDest_proportion_recorded <- rbind(StocktonDest_proportion_recorded,
+					      c(dest_vector$full_address, proportion_Stockton))
+
+      nonStocktonDest_proportion_recorded <- rbind(nonStocktonDest_proportion_recorded,
+						c(NA, NA))
+}
+
+else{
+
+      nonStocktonDest_proportion_recorded <- rbind(nonStocktonDest_proportion_recorded,
+						c(dest_vector$full_address, proportion_Stockton) )
+
+      StocktonDest_proportion_recorded <- rbind(StocktonDest_proportion_recorded, c(NA, NA))
+
+}
+```
+
+These vectors currently hold the “proportion_Stockton” value, but it is not currently used. These values are to be used when assigning VMTs for the “Non-Recorded VMTs at Non-Recorded Destinations” case. This will be elaborated on in Sub-Section G.
+
+#### Sub-Section F: OSRM Isochrone Analysis for VMT Allocation to Non-Recorded Destinations
+
+The OSRM Isochrone analysis is being performed for the VMT allocation to non-recorded destinations. The idea is to understand the distance of each of Stockton’s origin to each of the “safegraphplaces” destinations being analyzed. The implementation of this process is still being developed, but documentation is available which speaks to the current development of this analysis (as provided, here).
+
+This analysis is important to use for criteria 2 of the monthly VMT calculation: “Non-Recorded VMTs at Recorded Destinations”. When calculating the VMTs of the recorded origins, the VMTs of the non-recorded origins are calculated as well. However, the allocation of the VMTs is currently performed with a uniform allocation to all of Stockton’s block groups. This analysis will provide for the allocation of VMTs to the origins based on the distance to the destination being analyzed.
+
+#### Sub-Section G: VMT Calculation for Destinations of Interest
+
+This analysis calculates the VMTs for the “Non-Recorded VMTs at Non-Recorded Destinations” category (case 3). The premise of this analysis is to understand which of the safegraphplaces destinations are unaccounted for in the VMT analysis and within the 1-mile Stockton buffer. The VMTs are then calculated based on the “distance_from_home” and “raw_visit_counts” features. The total VMT value is then calculated and these unaccounted for VMTs are uniformly distributed across all of Stockton’s block groups.
+
+First, two conditionals are created to understand if (1) any destinations in the month of interest have not been assigned any VMTs and (2) if this destination is within the Stockton 1-mile buffer zone. This creates two vectors with ‘TRUE’ and ‘FALSE’ conditionals for all destinations of interest within the current month. This is implemented with the following code:
+
+```{r eval=FALSE}
+# The following code first computes two conditionals to understand if there is a destination that has
+# not been allocated VMTs to. This analysis is done on a monthly basis.
+# The first conditional checks to see whether any of the destinations have had VMTs allocated to
+# them. If not, TRUE. Otherwise, FALSE. 
+# The second conditional checks to see whether the destinations are within 1 mile of the Stockton
+# buffer zone. If so, TRUE. Otherwise, FALSE.
+  
+VMT_unique_dest_conditional_1 <-
+is.na(locations_of_consideration[(start_counter + 1):end_counter, ]
+[locations_of_consideration[(start_counter + 1):end_counter, (21 + counterMonth)], 
+(21 + counterMonth)])[, 1]
+
+VMT_unique_dest_conditional_2 <-
+(locations_of_consideration[(start_counter + 1):end_counter, ]$within_StocktonBuffer == TRUE)
+```
+
+Subsequently, the number of rows are computed in which the two conditionals hold true. This is used later for the final VMT calculation.
+
+```{r eval=FALSE}
+# The following code computes the number of rows in which the following two conditionals hold true
+# (TRUE).
+    
+otherdest_rows <- nrow(locations_of_consideration[(start_counter + 1):end_counter, ]
+[VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, (21 + counterMonth)])
+```
+
+Next, the VMTs are estimated for each destination that holds both conditionals ‘TRUE’. The VMTs are estimated as the product of the “distance_from_home”, “raw_visit_counts”, “factor_twoWayTrip”, “conv_MeterToMile”, “NHTS_MeanMedConv”, “NHTS_LinkedTripsConv”, and “NHTS_carpoolVehicleFilter” features. This estimation may change once this analysis is complete. This is implemented with the following code:
+
+```{r eval=FALSE}
+# The following code uses the "distance_from_home" and "raw_visit_counts" values for each of the
+# rows in which the conditionals are true in order to estimate the VMTs associated with the locations
+# with no allocated VMTs.
+    
+locations_of_consideration[(start_counter + 1):end_counter, ]
+[VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, (33 + counterMonth)] <- 
+as.numeric(locations_of_consideration[(start_counter + 1):end_counter, ]
+[VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, ]$distance_from_home)
+* as.numeric(locations_of_consideration[(start_counter + 1):end_counter, ]
+[VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, ]$raw_visit_counts)
+* factor_twoWayTrip
+* conv_MeterToMile
+* NHTS_MeanMedConv
+* NHTS_LinkedTripsConv
+* NHTS_carpoolVehicleFilter
+  
+##########
+# I would not call the above complete. Based on this analysis, I am assuming that the ratio of the
+# origin population to the number of devices residing is 1:1.
+# This is however not the case. I would recommend implementing code such as the following:
+# 
+# * as.numeric( pop_bg_stockton[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin),
+# "origin_population"][[1]] )
+# / as.numeric( pop_bg_stockton[!(VMT_Origin_nonrecorded$origin %in% origin_matrix$origin),
+# "number_devices_residing"][[1]] )
+# 
+# This would make it so that the ratio mentioned previously would not be 1:1.
+##########
+```
+
+For all of the previous destinations in which both conditional values hold ‘TRUE’, the VMTs calculated are obtained and the mean value is calculated (“VMT_unique_dest_avg”). This allows for an estimation of the VMTs for all of Stockton’s block groups for this case (case 3) as “VMT_unique_dest_avg” multiplied by the number of destinations unaccounted for and within the Stockton 1-mile buffer (“otherdest_rows”) divided by the number of Stockton’s block groups within the boundary of influence (205 in total). This allows for a uniform distribution of all of VMTs (for case 3) across all of Stockton’s block groups. This is implemented with the following code:
+
+```{r eval=FALSE}
+# I then take these same values that were stored in the previous column, I find the mean and 
+# evenly distribute these values across all of Stockton's origins.
+  
+VMT_unique_dest_avg <- (locations_of_consideration[(start_counter + 1):end_counter, ]
+[VMT_unique_dest_conditional_1 & VMT_unique_dest_conditional_2, (33 + counterMonth)])
+
+VMT_unique_dest_avg <- mean(VMT_unique_dest_avg[[1]], na.rm = TRUE)
+
+VMT_Origin_otherdest_nonrecorded[, (1 + counterMonth)] <-
+VMT_unique_dest_avg * otherdest_rows / nrow(pop_bg_stockton)
+```
+
+Finally, once this analysis is finished, the “m_origin_matrix_sf”, “m_dest_matrix_sf”, and “m_patterns_new” data frames are removed for the current month to allow for analysis of the next month. This is implemented with the following code:
+
+```{r eval=FALSE}
+# At the end of each loop, I delete the m_patterns_new data. This includes "m_origin_matrix_sf",
+# "m_dest_matrix_sf" and "m_patterns_new".
+# This is done so that the next month's data can be loaded in a clean manner.
+  
+rm(m_origin_matrix_sf, m_dest_matrix_sf, m_patterns_new)
+```
+
+#### Sub-Section H: Aggregation of VMTs by block group origins and Safegraph Destinations
+
+Last, the VMTs for all block groups are summed across all months in the year. First, this is done for the “VMT_sum_recorded”, “VMT_sum_nonrecorded”, and “VMT_sum_otherdest_nonrecorded” data frames. Then, the VMTs by block group are summed across all three of the aforementioned data frames. Last, the total VMTs are normalized by the block group population for each block. This is implemented with the following code:
+
+```{r eval=FALSE}
+# Operations for VMT mapping of Stockton Block Groups
+
+pop_bg_stockton_geospatialVMT <- pop_bg_stockton
+pop_bg_stockton_geospatialVMT$number_devices_residing <- NULL
+VMT_colnames <- c("VMTs_m_1",
+		         "VMTs_m_2",
+		          "VMTs_m_3",
+          "VMTs_m_4",
+          "VMTs_m_5",
+          "VMTs_m_6",
+                  	          "VMTs_m_7",
+          "VMTs_m_8",
+          "VMTs_m_9",
+          "VMTs_m_10",
+          "VMTs_m_11",
+          "VMTs_m_12")
+
+VMT_sum_recorded <- rowSums(VMT_Origin_recorded[, VMT_colnames])
+VMT_sum_nonrecorded <- rowSums(VMT_Origin_nonrecorded[, VMT_colnames])
+VMT_sum_otherdest_nonrecorded <-
+rowSums(VMT_Origin_otherdest_nonrecorded[, VMT_colnames])
+VMT_sum_all <- 
+VMT_sum_recorded + VMT_sum_nonrecorded + VMT_sum_otherdest_nonrecorded
+
+VMT_all <- cbind(pop_bg_stockton_geospatialVMT,
+    VMT_sum_recorded,
+    VMT_sum_nonrecorded,
+    VMT_sum_otherdest_nonrecorded,
+    VMT_sum_all)
+
+VMT_all$VMT_norm <-
+( VMT_all$VMT_sum_all / as.numeric( as.character( VMT_all$origin_population ) ) )
+```
+
+Last, the VMT_all file (as the final results of this analysis) is saved externally. This is implemented with the following code:
+
+```{r eval=FALSE}
+save(VMT_all, file = "C:/Users/Derek/Desktop/VMT_all.RData")
+```
+
+#### Sub-Section I: Mapping of VMTs through R’s ‘sf’ package
+
+To augment the analysis, the total VMTs calculated across all block groups were presented as a map and saved as a .html. This map has each of Stockton’s 205 block groups color-coded This is implemented with the following code:
+
+```{r eval=FALSE}
+VMT_all_mapview <- mapview(VMT_all, zcol = c("VMT_sum_all", "VMT_norm"), legend = TRUE)
+
+mapshot(VMT_all_mapview, url = "S:/CCF/dashboard/Stockton_Safegraph_VMT.html")
+# mapshot(VMT_all_mapview, url = "S:/CCF/dashboard/Stockton_Safegraph_VMT.html")
+```
+
+In addition to mapping the VMTs per block group, code has been developed to start mapping the VMTs per destination. Currently, the VMTs have been summarized for all destinations across all months. This is implemented with the following code:
+
+```{r eval=FALSE}
+location_VMT <- 
+  locations_of_consideration %>%
+  group_by(full_address) %>%
+    dplyr::summarize(
+     location_name = first(location_name),
+     VMT_recorded = sum(VMTs_recorded_m_1,
+                        		    VMTs_recorded_m_2,
+                        		    VMTs_recorded_m_3,
+                        		    VMTs_recorded_m_4,
+                        		    VMTs_recorded_m_5,
+                        		    VMTs_recorded_m_6,
+                        		    VMTs_recorded_m_7,
+                        		    VMTs_recorded_m_8,
+                        		    VMTs_recorded_m_9,
+                        		    VMTs_recorded_m_10,
+                        		    VMTs_recorded_m_11,
+                        		    VMTs_recorded_m_12,
+                        		    na.rm = TRUE),
+     VMT_nonrecorded = sum(VMTs_nonrecorded_m_1,
+                           		    VMTs_nonrecorded_m_2,
+                           		    VMTs_nonrecorded_m_3,
+                           		    VMTs_nonrecorded_m_4,
+                         		      VMTs_nonrecorded_m_5,
+                           		    VMTs_nonrecorded_m_6,
+                           		    VMTs_nonrecorded_m_7,
+                           		    VMTs_nonrecorded_m_8,
+                           		    VMTs_nonrecorded_m_9,
+                           		    VMTs_nonrecorded_m_10,
+                           		    VMTs_nonrecorded_m_11,
+                           		    VMTs_nonrecorded_m_12,
+                           		    na.rm = TRUE),
+     VMT_nonrecorded_otherdest = sum(VMTs_nonrecorded_otherdest_m_1,
+                                    		    	  VMTs_nonrecorded_otherdest_m_2,
+                                     		  VMTs_nonrecorded_otherdest_m_3,
+                                     		  VMTs_nonrecorded_otherdest_m_4,
+                                     		  VMTs_nonrecorded_otherdest_m_5,
+                                    		   	  VMTs_nonrecorded_otherdest_m_6,
+                                     		  VMTs_nonrecorded_otherdest_m_7,
+                                     		  VMTs_nonrecorded_otherdest_m_8,
+                                     		  VMTs_nonrecorded_otherdest_m_9,
+                                     		  VMTs_nonrecorded_otherdest_m_10,
+                                     		  VMTs_nonrecorded_otherdest_m_11,
+                                     		  VMTs_nonrecorded_otherdest_m_12,
+                                     		  na.rm = TRUE)
+)
+```
+
+The idea is to create a geo-spatial “bubble” diagram where the bubble size signifies the total VMT count, but no code has been developed for this task, yet.
+
+### Section #11: Future Next Steps & Trajectory
+
+The only section that needs future work is that of Section 10: Monthly VMT Calculation. The three changes needed to be made include that of changing the block groups used in the analysis, finding the error made when distributing the VMT to amentities, and . More specifically, the following sub-sections need to be enhanced and finished:
+
+●	Changing the block groups used in the analysis
+
+●	Error made when distributing the VMT to amentities
+
+●	Changing the population count to include that of group "B23025" in the census
+
+### Appendix A: Further Elaboration of the months_patterns_new.R file
+
+As previously elaborated upon, the months_patterns_new.R file was created to filter the “month_patterns_join” data frame in a manner that all origins are extracted and their total visit counts and unique visit counts are presented in separate data cells. Only “safegraphplaces” destinations with any block groups within Stockton’s boundary of influence were output into the new “m_patterns_new” data frame. 
+
+This file first involves creating a new “m_patterns_new” data frame to later store filtered “month_patterns_join” data. The “month_patterns_join” data frame is then cleansed for further analysis.
+
+```{r eval=FALSE}
+# Looping through the data to disaggregate the census blocks from the monthly patterns .csv files.
+
+month_patterns_new <- function(month_patterns_join, pop_blockgroup_stockton){
+  
+  m_patterns_new <- data.frame(stringsAsFactors = FALSE)
+  
+  month_patterns_join <- unique(dplyr::select(month_patterns_join, c("location_name",
+			   "name_address", "distance_from_home", "raw_visit_counts",
+			   "raw_visitor_counts", "visit_home_cbgs", "visitor_home_cbgs")))
+
+  month_patterns_join$safegraph_place_id <- NA
+  month_patterns_join$longitude <- NA
+  month_patterns_join$latitude <- NA
+
+  month_patterns_join <- dplyr::select(month_patterns_join, c("safegraph_place_id",
+				 "location_name", "name_address", "longitude", "latitude",
+                                                  "distance_from_home", "raw_visit_counts", "raw_visitor_counts",
+				 "visit_home_cbgs", "visitor_home_cbgs"))
+```
+
+Subsequently, each row of data in the “month_patterns_join” data frame is analyzed. For each row, the “visit_home_cbgs” and the “visitor_home_cbgs” features are deconstructed from strings into multiple sub-strings for each origin being represented within each safegraph destination.
+
+```{r eval=FALSE}
+  # This first for loop breaks up all of the origin block groups from one string to individual strings.
+  
+  for(counter1 in 1:nrow(month_patterns_join)){
+    
+    string_visit <- month_patterns_join$visit_home_cbgs[counter1]
+    string_visit <- substring(string_visit, 3)
+    string_visit <- substr(string_visit,1,nchar(string_visit)-1)
+    string_visit <- strsplit(string_visit, split = ",\"")[[1]]
+    
+    string_visitor <- month_patterns_join$visitor_home_cbgs[counter1]
+    string_visitor <- substring(string_visitor, 3)
+    string_visitor <- substr(string_visitor,1,nchar(string_visitor)-1)
+    string_visitor <- strsplit(string_visitor, split = ",\"")[[1]]
+```
+
+Two matrices are initialized, which are called “matrix_visit” and “matrix_visitor”. These matrices have two columns, where the first column represents the origin being analyzed and the second column represents the number of total visits or the unique visitor count, for the “matrix_visit” or “matrix_visitor” features, respectively. The “m_patterns_holder” matrix is subsequently initialized to bind all origins that are stored in the “month_patterns_join” data frame.
+
+```{r eval=FALSE}
+    matrix_visit <- data.frame(matrix(data = NA, nrow = length(string_visit), ncol = 2))
+    colnames(matrix_visit) <- c("block_id", "visit_count")
+    
+    matrix_visitor <- data.frame(matrix(data = NA, nrow = length(string_visitor), ncol = 2))
+    colnames(matrix_visitor) <- c("block_id", "unique_visitor_count")
+    
+    m_patterns_holder <- data.frame(stringsAsFactors = FALSE)
+
+```
+
+Next, if the number of sub-strings is greater than 0, these substrings are inserted into the “matrix_visit” and “matrix_visitor” matrices. 
+
+```{r eval=FALSE}
+    if(nrow(matrix_visit) > 0){
+      
+      ### This second for loop breaks up each individual block group string
+      ### into the block group and either the visit or visitor count.
+
+      for(counter2 in 1:nrow(matrix_visit)){
+        
+        matrix_visit[counter2, 1] <- as.numeric(substr(string_visit[counter2], 1, 12))
+        matrix_visit[counter2, 2] <- as.numeric(substr(string_visit[counter2], 15, 30))
+        
+        matrix_visitor[counter2, 1] <- as.numeric(substr(string_visitor[counter2], 1, 12))
+        matrix_visitor[counter2, 2] <- as.numeric(substr(string_visitor[counter2], 15, 30))
+```
+
+The following code uses the geo-coder (“geocodeSL”) in the case that one wants to associate longitude and latitude coordinates with a “safegraphplaces” destination. This part of the code should however be included in the following “if” statement: 
+
+        “if( any(bgs_origin %in% pop_blockgroup_stockton$origin) ){}”
+
+This is the most efficient way of using the geocoder in this file.
+
+```{r eval=FALSE}
+        ### Some of the Safegraph lines of code have destinations without geocodes.
+        ### These lines of code check if the destination being considered has a lat-lon geocode.
+        ### If these lines of code do not have a lat-lon code, then the following geocodes them in.
+
+        # if(is.na(month_patterns_join[counter1, "longitude"])){
+        #   
+        #   resdf <- geocodeSL(month_patterns_join[counter1, "name_address"])
+        #   month_patterns_join[counter1, "longitude"] <- resdf["lon"]
+        #   month_patterns_join[counter1, "latitude"] <- resdf["lat"]
+        #   
+        # }
+        
+        amenity <- month_patterns_join[counter1, 1:6]
+        
+        m_patterns_holder <- rbind(m_patterns_holder, amenity)
+        
+      }
+      
+    }
+    
+    ### This if-statement checks to see if any of the block groups being analyzed are within 
+    ### the Stockton boundary. If so, these block groups into the m_patterns_new matrix.
+    ### Otherwise, don't take these block groups into consideration.
+```
+
+Last, for each row in the “month_patterns_join” data frame, it is checked if at least one of the block group origins is within the Stockton boundary of influence. If so, all of the block groups, the number of visits, and the unique number of visitors are stored within the “m_patterns_new” data frame.
+
+```{r eval=FALSE}
+    bgs_origin <- paste("0", as.character(matrix_visit$block_id), sep = "")
+    
+    if( any(bgs_origin %in% pop_blockgroup_stockton$origin) ){
+      matrix_m <- left_join(matrix_visit, matrix_visitor, by = "block_id")
+      matrix_m_tot <- cbind(m_patterns_holder, matrix_m)
+      m_patterns_new <- rbind(m_patterns_new, matrix_m_tot)    
+    }
+    
+  }
+
+```
+
+Once all rows within the “month_patterns_join” data frame are analyzed and the filtered data is stored within the “m_patterns_new” data frame, “m_patterns_new” is returned. 
+
+```{r eval=FALSE}
+  return(m_patterns_new)
+
+}
+```
+
+## 2.6.1  Block Group-level Analysis
+
+```{r}
+# mapview()
+```
+
+## 2.6.2  Amenity-level Analysis
+
+```{r}
+# mapview()
+```

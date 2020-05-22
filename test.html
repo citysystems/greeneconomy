@@ -1,0 +1,2902 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Stockton Green Economy Report</title>
+  <meta name="description" content="Stockton Green Economy Report" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Stockton Green Economy Report" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Stockton Green Economy Report" />
+  
+  
+  
+
+<meta name="author" content="City Systems" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+
+<link rel="next" href="appendix-b-case-study-matrix.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+<script>
+/* ========================================================================
+ * Bootstrap: transition.js v3.3.7
+ * http://getbootstrap.com/javascript/#transitions
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
+  // ============================================================
+
+  function transitionEnd() {
+    var el = document.createElement('bootstrap')
+
+    var transEndEventNames = {
+      WebkitTransition : 'webkitTransitionEnd',
+      MozTransition    : 'transitionend',
+      OTransition      : 'oTransitionEnd otransitionend',
+      transition       : 'transitionend'
+    }
+
+    for (var name in transEndEventNames) {
+      if (el.style[name] !== undefined) {
+        return { end: transEndEventNames[name] }
+      }
+    }
+
+    return false // explicit for ie8 (  ._.)
+  }
+
+  // http://blog.alexmaccaw.com/css-transitions
+  $.fn.emulateTransitionEnd = function (duration) {
+    var called = false
+    var $el = this
+    $(this).one('bsTransitionEnd', function () { called = true })
+    var callback = function () { if (!called) $($el).trigger($.support.transition.end) }
+    setTimeout(callback, duration)
+    return this
+  }
+
+  $(function () {
+    $.support.transition = transitionEnd()
+
+    if (!$.support.transition) return
+
+    $.event.special.bsTransitionEnd = {
+      bindType: $.support.transition.end,
+      delegateType: $.support.transition.end,
+      handle: function (e) {
+        if ($(e.target).is(this)) return e.handleObj.handler.apply(this, arguments)
+      }
+    }
+  })
+
+}(jQuery);
+</script>
+<script>
+/* ========================================================================
+ * Bootstrap: collapse.js v3.3.7
+ * http://getbootstrap.com/javascript/#collapse
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+/* jshint latedef: false */
+
++function ($) {
+  'use strict';
+
+  // COLLAPSE PUBLIC CLASS DEFINITION
+  // ================================
+
+  var Collapse = function (element, options) {
+    this.$element      = $(element)
+    this.options       = $.extend({}, Collapse.DEFAULTS, options)
+    this.$trigger      = $('[data-toggle="collapse"][href="#' + element.id + '"],' +
+                           '[data-toggle="collapse"][data-target="#' + element.id + '"]')
+    this.transitioning = null
+
+    if (this.options.parent) {
+      this.$parent = this.getParent()
+    } else {
+      this.addAriaAndCollapsedClass(this.$element, this.$trigger)
+    }
+
+    if (this.options.toggle) this.toggle()
+  }
+
+  Collapse.VERSION  = '3.3.7'
+
+  Collapse.TRANSITION_DURATION = 350
+
+  Collapse.DEFAULTS = {
+    toggle: true
+  }
+
+  Collapse.prototype.dimension = function () {
+    var hasWidth = this.$element.hasClass('width')
+    return hasWidth ? 'width' : 'height'
+  }
+
+  Collapse.prototype.show = function () {
+    if (this.transitioning || this.$element.hasClass('in')) return
+
+    var activesData
+    var actives = this.$parent && this.$parent.children('.panel').children('.in, .collapsing')
+
+    if (actives && actives.length) {
+      activesData = actives.data('bs.collapse')
+      if (activesData && activesData.transitioning) return
+    }
+
+    var startEvent = $.Event('show.bs.collapse')
+    this.$element.trigger(startEvent)
+    if (startEvent.isDefaultPrevented()) return
+
+    if (actives && actives.length) {
+      Plugin.call(actives, 'hide')
+      activesData || actives.data('bs.collapse', null)
+    }
+
+    var dimension = this.dimension()
+
+    this.$element
+      .removeClass('collapse')
+      .addClass('collapsing')[dimension](0)
+      .attr('aria-expanded', true)
+
+    this.$trigger
+      .removeClass('collapsed')
+      .attr('aria-expanded', true)
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.$element
+        .removeClass('collapsing')
+        .addClass('collapse in')[dimension]('')
+      this.transitioning = 0
+      this.$element
+        .trigger('shown.bs.collapse')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    var scrollSize = $.camelCase(['scroll', dimension].join('-'))
+
+    this.$element
+      .one('bsTransitionEnd', $.proxy(complete, this))
+      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)[dimension](this.$element[0][scrollSize])
+  }
+
+  Collapse.prototype.hide = function () {
+    if (this.transitioning || !this.$element.hasClass('in')) return
+
+    var startEvent = $.Event('hide.bs.collapse')
+    this.$element.trigger(startEvent)
+    if (startEvent.isDefaultPrevented()) return
+
+    var dimension = this.dimension()
+
+    this.$element[dimension](this.$element[dimension]())[0].offsetHeight
+
+    this.$element
+      .addClass('collapsing')
+      .removeClass('collapse in')
+      .attr('aria-expanded', false)
+
+    this.$trigger
+      .addClass('collapsed')
+      .attr('aria-expanded', false)
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.transitioning = 0
+      this.$element
+        .removeClass('collapsing')
+        .addClass('collapse')
+        .trigger('hidden.bs.collapse')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    this.$element
+      [dimension](0)
+      .one('bsTransitionEnd', $.proxy(complete, this))
+      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)
+  }
+
+  Collapse.prototype.toggle = function () {
+    this[this.$element.hasClass('in') ? 'hide' : 'show']()
+  }
+
+  Collapse.prototype.getParent = function () {
+    return $(this.options.parent)
+      .find('[data-toggle="collapse"][data-parent="' + this.options.parent + '"]')
+      .each($.proxy(function (i, element) {
+        var $element = $(element)
+        this.addAriaAndCollapsedClass(getTargetFromTrigger($element), $element)
+      }, this))
+      .end()
+  }
+
+  Collapse.prototype.addAriaAndCollapsedClass = function ($element, $trigger) {
+    var isOpen = $element.hasClass('in')
+
+    $element.attr('aria-expanded', isOpen)
+    $trigger
+      .toggleClass('collapsed', !isOpen)
+      .attr('aria-expanded', isOpen)
+  }
+
+  function getTargetFromTrigger($trigger) {
+    var href
+    var target = $trigger.attr('data-target')
+      || (href = $trigger.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '') // strip for ie7
+
+    return $(target)
+  }
+
+
+  // COLLAPSE PLUGIN DEFINITION
+  // ==========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.collapse')
+      var options = $.extend({}, Collapse.DEFAULTS, $this.data(), typeof option == 'object' && option)
+
+      if (!data && options.toggle && /show|hide/.test(option)) options.toggle = false
+      if (!data) $this.data('bs.collapse', (data = new Collapse(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.collapse
+
+  $.fn.collapse             = Plugin
+  $.fn.collapse.Constructor = Collapse
+
+
+  // COLLAPSE NO CONFLICT
+  // ====================
+
+  $.fn.collapse.noConflict = function () {
+    $.fn.collapse = old
+    return this
+  }
+
+
+  // COLLAPSE DATA-API
+  // =================
+
+  $(document).on('click.bs.collapse.data-api', '[data-toggle="collapse"]', function (e) {
+    var $this   = $(this)
+
+    if (!$this.attr('data-target')) e.preventDefault()
+
+    var $target = getTargetFromTrigger($this)
+    var data    = $target.data('bs.collapse')
+    var option  = data ? 'toggle' : $this.data()
+
+    Plugin.call($target, option)
+  })
+
+}(jQuery);
+</script>
+<script>
+window.initializeCodeFolding = function(show) {
+
+  // handlers for show-all and hide all
+  $("#rmd-show-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('show');
+    });
+  });
+  $("#rmd-hide-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('hide');
+    });
+  });
+
+  // index for unique code element ids
+  var currentIndex = 1;
+
+  // select all R code blocks
+  var rCodeBlocks = $('pre.sourceCode, pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.js');
+  rCodeBlocks.each(function() {
+
+    // create a collapsable div to wrap the code in
+    var div = $('<div class="collapse r-code-collapse"></div>');
+    if (show)
+      div.addClass('in');
+    var id = 'rcode-643E0F36' + currentIndex++;
+    div.attr('id', id);
+    $(this).before(div);
+    $(this).detach().appendTo(div);
+
+    // add a show code button right above
+    var showCodeText = $('<span>' + (show ? 'Hide' : 'Code') + '</span>');
+    var showCodeButton = $('<button type="button" class="btn btn-default btn-xs code-folding-btn pull-right"></button>');
+    showCodeButton.append(showCodeText);
+    showCodeButton
+        .attr('data-toggle', 'collapse')
+        .attr('data-target', '#' + id)
+        .attr('aria-expanded', show)
+        .attr('aria-controls', id);
+
+    var buttonRow = $('<div class="row"></div>');
+    var buttonCol = $('<div class="col-md-12"></div>');
+
+    buttonCol.append(showCodeButton);
+    buttonRow.append(buttonCol);
+
+    div.before(buttonRow);
+
+    // update state of button on show/hide
+    div.on('hidden.bs.collapse', function () {
+      showCodeText.text('Code');
+    });
+    div.on('show.bs.collapse', function () {
+      showCodeText.text('Hide');
+    });
+  });
+
+}
+</script>
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+.row { display: flex; }
+.collapse { display: none; }
+.in { display:block }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "hide");
+});
+</script>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="test.html"><a href="test.html"><i class="fa fa-check"></i><b>1</b> Test</a><ul>
+<li class="chapter" data-level="1.1" data-path="test.html"><a href="test.html#building-utilization"><i class="fa fa-check"></i><b>1.1</b> Building Utilization</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="test.html"><a href="test.html#revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning"><i class="fa fa-check"></i><b>1.1.1</b> Revise zoning codes in medium to large cities to facilitate upzoning</a></li>
+<li class="chapter" data-level="1.1.2" data-path="test.html"><a href="test.html#eliminate-minimum-parking"><i class="fa fa-check"></i><b>1.1.2</b> Eliminate minimum parking</a></li>
+<li class="chapter" data-level="1.1.3" data-path="test.html"><a href="test.html#encourage-accessory-dwelling-units"><i class="fa fa-check"></i><b>1.1.3</b> Encourage accessory dwelling units</a></li>
+<li class="chapter" data-level="1.1.4" data-path="test.html"><a href="test.html#encourage-micro-units"><i class="fa fa-check"></i><b>1.1.4</b> Encourage micro-units</a></li>
+<li class="chapter" data-level="1.1.5" data-path="test.html"><a href="test.html#provide-a-density-bonus-for-affordable-housing"><i class="fa fa-check"></i><b>1.1.5</b> Provide a density bonus for affordable housing</a></li>
+<li class="chapter" data-level="1.1.6" data-path="test.html"><a href="test.html#develop-a-shared-equity-program-for-high-density-housing"><i class="fa fa-check"></i><b>1.1.6</b> Develop a shared equity program for high-density housing</a></li>
+<li class="chapter" data-level="1.1.7" data-path="test.html"><a href="test.html#match-homeowners-with-vacant-spaces-with-individuals-looking-for-affordable-housing"><i class="fa fa-check"></i><b>1.1.7</b> Match homeowners with vacant spaces with individuals looking for affordable housing</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="test.html"><a href="test.html#building-energy"><i class="fa fa-check"></i><b>1.2</b> Building Energy</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="test.html"><a href="test.html#promote-solar-development-in-opportunity-zones"><i class="fa fa-check"></i><b>1.2.1</b> Promote solar development in Opportunity Zones</a></li>
+<li class="chapter" data-level="1.2.2" data-path="test.html"><a href="test.html#promote-a-solar-renewable-energy-certificate-program"><i class="fa fa-check"></i><b>1.2.2</b> Promote a Solar Renewable Energy Certificate program</a></li>
+<li class="chapter" data-level="1.2.3" data-path="test.html"><a href="test.html#set-energy-savings-standards-on-all-public-buildings-and-provide-financial-and-technical-assistance-for-commercial-private-sector-energy-savings"><i class="fa fa-check"></i><b>1.2.3</b> Set energy savings standards on all public buildings and provide financial and technical assistance for commercial private sector energy savings</a></li>
+<li class="chapter" data-level="1.2.4" data-path="test.html"><a href="test.html#create-a-fund-to-implement-energy-savings-projects"><i class="fa fa-check"></i><b>1.2.4</b> Create a fund to implement energy savings projects</a></li>
+<li class="chapter" data-level="1.2.5" data-path="test.html"><a href="test.html#enable-property-assessed-clean-energy-pace-financing"><i class="fa fa-check"></i><b>1.2.5</b> Enable property-assessed clean energy (PACE) financing</a></li>
+<li class="chapter" data-level="1.2.6" data-path="test.html"><a href="test.html#provide-consumer-oriented-programs-to-incentivize-energy-efficiency-retrofits-and-appliance-improvements"><i class="fa fa-check"></i><b>1.2.6</b> Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements</a></li>
+<li class="chapter" data-level="1.2.7" data-path="test.html"><a href="test.html#provide-incentives-for-households-to-install-solar-generation-and-storage-particularly-for-vulnerable-customers"><i class="fa fa-check"></i><b>1.2.7</b> Provide incentives for households to install solar generation and storage, particularly for vulnerable customers</a></li>
+<li class="chapter" data-level="1.2.8" data-path="test.html"><a href="test.html#implement-reach-codes-which-go-beyond-state-minimum-requirements-for-energy-use-in-building-design-and-construction"><i class="fa fa-check"></i><b>1.2.8</b> Implement “reach” codes which go beyond state minimum requirements for energy use in building design and construction</a></li>
+<li class="chapter" data-level="1.2.9" data-path="test.html"><a href="test.html#use-waste-to-produce-electricity"><i class="fa fa-check"></i><b>1.2.9</b> Use waste to produce electricity</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="test.html"><a href="test.html#employment-growth"><i class="fa fa-check"></i><b>1.3</b> Employment Growth</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="test.html"><a href="test.html#provide-training-and-coaching-for-low-income-workers-rather-than-unemployed-workers"><i class="fa fa-check"></i><b>1.3.1</b> Provide training and coaching for low-income workers, rather than unemployed workers</a></li>
+<li class="chapter" data-level="1.3.2" data-path="test.html"><a href="test.html#provide-green-oriented-job-training-and-education-pathways"><i class="fa fa-check"></i><b>1.3.2</b> Provide green-oriented job training and education pathways</a></li>
+<li class="chapter" data-level="1.3.3" data-path="test.html"><a href="test.html#create-a-scholarship-fund-for-students-wishing-to-pursue-eco-conscious-careers"><i class="fa fa-check"></i><b>1.3.3</b> Create a scholarship fund for students wishing to pursue eco-conscious careers</a></li>
+<li class="chapter" data-level="1.3.4" data-path="test.html"><a href="test.html#offer-continued-training-and-support-post-employment"><i class="fa fa-check"></i><b>1.3.4</b> Offer continued training and support post-employment</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="test.html"><a href="test.html#local-jobs"><i class="fa fa-check"></i><b>1.4</b> Local Jobs</a><ul>
+<li class="chapter" data-level="1.4.1" data-path="test.html"><a href="test.html#offer-job-creation-tax-credit"><i class="fa fa-check"></i><b>1.4.1</b> Offer job creation tax credit</a></li>
+<li class="chapter" data-level="1.4.2" data-path="test.html"><a href="test.html#encourage-mortgage-refinancing"><i class="fa fa-check"></i><b>1.4.2</b> Encourage mortgage refinancing</a></li>
+<li class="chapter" data-level="1.4.3" data-path="test.html"><a href="test.html#develop-public-employment-program"><i class="fa fa-check"></i><b>1.4.3</b> Develop public employment program</a></li>
+<li class="chapter" data-level="1.4.4" data-path="test.html"><a href="test.html#provide-tax-credits-to-investors-in-advanced-industries"><i class="fa fa-check"></i><b>1.4.4</b> Provide tax credits to investors in advanced industries</a></li>
+<li class="chapter" data-level="1.4.5" data-path="test.html"><a href="test.html#provide-tax-credits-to-investors-in-community-development-corporations"><i class="fa fa-check"></i><b>1.4.5</b> Provide tax credits to investors in community development corporations</a></li>
+<li class="chapter" data-level="1.4.6" data-path="test.html"><a href="test.html#pursue-public-private-partnerships-for-commercial-development"><i class="fa fa-check"></i><b>1.4.6</b> Pursue public-private partnerships for commercial development</a></li>
+<li class="chapter" data-level="1.4.7" data-path="test.html"><a href="test.html#fund-economic-development-using-tax-base-sharing"><i class="fa fa-check"></i><b>1.4.7</b> Fund economic development using tax-base sharing</a></li>
+<li class="chapter" data-level="1.4.8" data-path="test.html"><a href="test.html#pay-remote-workers-to-move-to-new-location"><i class="fa fa-check"></i><b>1.4.8</b> Pay remote workers to move to new location</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="test.html"><a href="test.html#vehicle-miles-traveled"><i class="fa fa-check"></i><b>1.5</b> Vehicle Miles Traveled</a><ul>
+<li class="chapter" data-level="1.5.1" data-path="test.html"><a href="test.html#create-local-transportation-demand-management-ordinances"><i class="fa fa-check"></i><b>1.5.1</b> Create local transportation demand management ordinances</a></li>
+<li class="chapter" data-level="1.5.2" data-path="test.html"><a href="test.html#use-brt-corridors-to-reduce-travel-times-on-public-transit"><i class="fa fa-check"></i><b>1.5.2</b> Use BRT corridors to reduce travel times on public transit</a></li>
+<li class="chapter" data-level="1.5.3" data-path="test.html"><a href="test.html#redesign-bus-network-to-prioritize-ridership-over-coverage"><i class="fa fa-check"></i><b>1.5.3</b> Redesign bus network to prioritize ridership over coverage</a></li>
+<li class="chapter" data-level="1.5.4" data-path="test.html"><a href="test.html#promote-the-use-of-e-scooters-and-dockless-bicycles-to-reduce-reliance-on-private-cars"><i class="fa fa-check"></i><b>1.5.4</b> Promote the use of e-scooters and dockless bicycles to reduce reliance on private cars</a></li>
+<li class="chapter" data-level="1.5.5" data-path="test.html"><a href="test.html#rezone-areas-around-transit-stations-and-commercial-corridors-to-allow-for-high-density-residential-development"><i class="fa fa-check"></i><b>1.5.5</b> Rezone areas around transit stations and commercial corridors to allow for high-density residential development</a></li>
+<li class="chapter" data-level="1.5.6" data-path="test.html"><a href="test.html#offset-negative-externalities-of-traffic-through-tolls"><i class="fa fa-check"></i><b>1.5.6</b> Offset negative externalities of traffic through tolls</a></li>
+<li class="chapter" data-level="1.5.7" data-path="test.html"><a href="test.html#charge-for-parking"><i class="fa fa-check"></i><b>1.5.7</b> Charge for parking</a></li>
+<li class="chapter" data-level="1.5.8" data-path="test.html"><a href="test.html#give-carpoolers-priority-parking-at-transit-stops"><i class="fa fa-check"></i><b>1.5.8</b> Give carpoolers priority parking at transit stops</a></li>
+<li class="chapter" data-level="1.5.9" data-path="test.html"><a href="test.html#ban-personal-vehicles-from-certain-areas"><i class="fa fa-check"></i><b>1.5.9</b> Ban personal vehicles from certain areas</a></li>
+<li class="chapter" data-level="1.5.10" data-path="test.html"><a href="test.html#encourage-carsharing-strategies"><i class="fa fa-check"></i><b>1.5.10</b> Encourage carsharing strategies</a></li>
+<li class="chapter" data-level="1.5.11" data-path="test.html"><a href="test.html#provide-free-public-transit"><i class="fa fa-check"></i><b>1.5.11</b> Provide free public transit</a></li>
+<li class="chapter" data-level="1.5.12" data-path="test.html"><a href="test.html#subsidize-first-milelast-mile-transportation-services"><i class="fa fa-check"></i><b>1.5.12</b> Subsidize first-mile/last-mile transportation services</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="test.html"><a href="test.html#vehicle-emissions"><i class="fa fa-check"></i><b>1.6</b> Vehicle Emissions</a><ul>
+<li class="chapter" data-level="1.6.1" data-path="test.html"><a href="test.html#provide-grants-for-pollutant-remediation-and-reduction-initiatives"><i class="fa fa-check"></i><b>1.6.1</b> Provide grants for pollutant remediation and reduction initiatives</a></li>
+<li class="chapter" data-level="1.6.2" data-path="test.html"><a href="test.html#provide-commercial-rebates-for-commercial-building-owners-to-install-ev-charging-stations"><i class="fa fa-check"></i><b>1.6.2</b> Provide commercial rebates for commercial building owners to install EV charging stations</a></li>
+<li class="chapter" data-level="1.6.3" data-path="test.html"><a href="test.html#provide-grants-to-income-eligible-residents-for-the-replacement-of-high-emission-cars-with-low-emission-cars"><i class="fa fa-check"></i><b>1.6.3</b> Provide grants to income eligible residents for the replacement of high-emission cars with low-emission cars</a></li>
+<li class="chapter" data-level="1.6.4" data-path="test.html"><a href="test.html#engage-automobile-manufacturers-as-stakeholders-in-the-ev-market"><i class="fa fa-check"></i><b>1.6.4</b> Engage automobile manufacturers as stakeholders in the EV market</a></li>
+<li class="chapter" data-level="1.6.5" data-path="test.html"><a href="test.html#reduce-vehicle-speed-limits"><i class="fa fa-check"></i><b>1.6.5</b> Reduce vehicle speed limits</a></li>
+</ul></li>
+<li class="chapter" data-level="1.7" data-path="test.html"><a href="test.html#resilience"><i class="fa fa-check"></i><b>1.7</b> Resilience</a><ul>
+<li class="chapter" data-level="1.7.1" data-path="test.html"><a href="test.html#promote-cool-surfaces-to-reduce-heat-island-effect"><i class="fa fa-check"></i><b>1.7.1</b> Promote cool surfaces to reduce heat island effect</a></li>
+<li class="chapter" data-level="1.7.2" data-path="test.html"><a href="test.html#promote-permeable-pavement-to-increase-groundwater-absorption"><i class="fa fa-check"></i><b>1.7.2</b> Promote permeable pavement to increase groundwater absorption</a></li>
+<li class="chapter" data-level="1.7.3" data-path="test.html"><a href="test.html#reclaim-urban-streams-and-rivers-to-increase-groundwater-absorption-and-filtration"><i class="fa fa-check"></i><b>1.7.3</b> Reclaim urban streams and rivers to increase groundwater absorption and filtration</a></li>
+<li class="chapter" data-level="1.7.4" data-path="test.html"><a href="test.html#use-green-infrastructure-to-improve-stormwater-management"><i class="fa fa-check"></i><b>1.7.4</b> Use green infrastructure to improve stormwater management</a></li>
+<li class="chapter" data-level="1.7.5" data-path="test.html"><a href="test.html#promote-urban-gardens-as-a-substitute-for-displaced-ecosystem-services"><i class="fa fa-check"></i><b>1.7.5</b> Promote urban gardens as a substitute for displaced ecosystem services</a></li>
+<li class="chapter" data-level="1.7.6" data-path="test.html"><a href="test.html#offer-rebates-for-flood-mitigation-projects"><i class="fa fa-check"></i><b>1.7.6</b> Offer rebates for flood mitigation projects</a></li>
+</ul></li>
+<li class="chapter" data-level="1.8" data-path="test.html"><a href="test.html#appendix-a-index-of-case-studies-by-place"><i class="fa fa-check"></i><b>1.8</b> Appendix A: Index of Case Studies by Place</a><ul>
+<li class="chapter" data-level="1.8.1" data-path="test.html"><a href="test.html#strategy-building-electrification"><i class="fa fa-check"></i><b>1.8.1</b> Strategy: Building Electrification</a></li>
+<li class="chapter" data-level="1.8.2" data-path="test.html"><a href="test.html#strategy-solar-installations"><i class="fa fa-check"></i><b>1.8.2</b> Strategy: Solar Installations</a></li>
+<li class="chapter" data-level="1.8.3" data-path="test.html"><a href="test.html#case-study-direct-connect-in-pinellas-county-fl"><i class="fa fa-check"></i><b>1.8.3</b> Case Study: Direct Connect in Pinellas County, FL</a></li>
+<li class="chapter" data-level="1.8.4" data-path="test.html"><a href="test.html#strategy-public-transit"><i class="fa fa-check"></i><b>1.8.4</b> Strategy: Public Transit</a></li>
+<li class="chapter" data-level="1.8.5" data-path="test.html"><a href="test.html#strategy-demand-response"><i class="fa fa-check"></i><b>1.8.5</b> Strategy: Demand Response</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="appendix-b-case-study-matrix.html"><a href="appendix-b-case-study-matrix.html"><i class="fa fa-check"></i><b>2</b> Appendix B: Case Study Matrix</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Stockton Green Economy Report</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="header">
+<h1 class="title">Stockton Green Economy Report</h1>
+<p class="author"><em>City Systems</em></p>
+<p class="date"><em>Last Updated: February 2020</em></p>
+</div>
+<div id="test" class="section level1">
+<h1><span class="header-section-number">1</span> Test</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;images/dos-pinos.png&quot;</span>)</code></pre></div>
+<p><img src="images/dos-pinos.png" width="250" /> <br>Dos Pinos Housing Cooperative in Davis, CA. Source: <a href="https://ncbaclusa.coop/blog/this-california-housing-co-ops-ownership-model-could-create-affordable-housing-nationwide/">NBCA</a></p>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Davis, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Shared equity housing is a model used by nonprofit housing associations and municipalities targeting first-time buyers, those with bad loan or credit history, and those who can’t afford downpayments. Typically, a nonprofit or government entity provides a subsidy to lower the cost of purchase through shared appreciation loans, which are second mortgages provided by a public agency that buyers repay in full at the time of resale along with a percentage of home value appreciation. These funds are reinvested to make home ownership more affordable to another low-income buyer.<br><br><img src="images/shared-equity.png" width="1164" /><br>Source: <a href="https://fred.stlouisfed.org/">FRED</a></td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.urban.org/research/publication/shared-equity-homeownership-evaluation-case-study-dos-pinos-housing-cooperative">Urban Insitute</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">The Davis cooperative is independently run. In San Francisco, the Mayor’s Office BMR program subsidizes homes at about $250,000 below their appraised value. According to the <a href="https://www.urban.org/research/publication/sharing-equity-future-generations-evaluation-long-term-affordable-homeownership-programs-usa">Urban Institute</a>, homes that were passed between shared equity owners remained affordable over time, delinquency and foreclosure rates were low, and families who sold their homes were able to use the proceeds to purchase market-rate homes.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Stockton’s Economic Devleopment Department or the Housing Authority of San Joaquin County could initiate such a program.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.urban.org/research/publication/shared-equity-homeownership-evaluation-case-study-san-francisco-citywide-inclusionary-affordable-housing-program">San Francisco Citywide Inclusionary Affordable Housing Program</a></td>
+</tr>
+</tbody>
+</table>
+<div id="building-utilization" class="section level2">
+<h2><span class="header-section-number">1.1</span> Building Utilization</h2>
+<p>Building Utilization refers to the amount of building space used per person throughout their daily activities. Specific types of building energy uses like heating and cooling are proportional to space use, and strategies to reduce the amount of space required per person, whether at home or at work, that do not sacrifice comfort can be effective ways to reduce emissions. However, the more profound impact of space efficiency is the densification of all urban activities, which may have an even greater emissions impact by reducing travel distances, as well as many potential social co-benefits.</p>
+<div id="revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning" class="section level3">
+<h3><span class="header-section-number">1.1.1</span> Revise zoning codes in medium to large cities to facilitate upzoning</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Oregon</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">HB 2001 legalizes the development of duplexes on residential land currently zoned for single-family housing in all communities of 10,000 or more. It also allows for the construction of three- to four-unit homes on single family-zoned land in cities of 25,000 or more.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://olis.leg.state.or.us/liz/2019R1/Downloads/MeasureDocument/HB2001/B-Engrossed">Oregon Legislative Assembly</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Besides legislative work, No implementation costs. Fiscally, <a href="https://www.oregon.gov/OHA/PH/ABOUT/Documents/indicators/rentburden.pdf">50% of Oregon households</a> are rent burdened while <a href="https://nlihc.org/sites/default/files/SHP_OR.pdf">23%</a> of renter households are extremely low income. These individuals will likely see the biggest impact. However, the law applies to cities of over 10,000. As of the 2010 Census, 2,208,732 Oregonians, which constitute 57.65% of the state’s population, live in such communities.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">According to tax assessor records, over 65,000 parcels have detached single-family residences. It is not yet clear what the impact of upzoning change is on actual development in other cities over multiple years, but these parcels could be potential candidates for suburban infill development.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://minneapolis2040.com/">Minneapolis 2040</a><br><a href="https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=201920200SB50">California SB50 (did not pass)</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="eliminate-minimum-parking" class="section level3">
+<h3><span class="header-section-number">1.1.2</span> Eliminate minimum parking</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Buffalo, NY</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Developers are no longer required to build a certain number of parking spaces for commercial or residential projects, regardless of whether or not there are mass transit options nearby or if the tenants even need them.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="http://www.oneregionforward.org/plan/the-buffalo-green-code-draft-land-use-plan/">Buffalo Green Code Land Use Plan</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Besides legislative work, no implementation costs. 28% of land area in Buffalo’s city center is devoted to parking but only 63% of parking spaces are occupied on an average weekday.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">According to <a href="http://qcode.us/codes/stockton/view.php?topic=16-3-16_64-16_64_040&amp;frames=on">Stockton’s zoning ordinance</a>, large shopping centers must build 1 parking space per 250 square feet of retail space. <a href="https://stocktoncitylimits.com/2013/12/31/why-are-stocktons-parking-lots-so-big-and-empty/">Anecdotal evidence</a> suggests that this is too much space, even during peak hours. Similarly inefficient standards include that colleges and universities must have 1 parking space per classroom plus 0.75 spaces per student.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://minneapolis2040.com/">Minneapolis 2040</a><br><a href="https://usa.streetsblog.org/2018/12/17/san-francisco-eliminates-parking-minimums/">San Francisco, CA</a><br><a href="https://usa.streetsblog.org/2017/12/13/hartford-eliminates-parking-minimums-citywide/">Hartford, CT</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="encourage-accessory-dwelling-units" class="section level3">
+<h3><span class="header-section-number">1.1.3</span> Encourage accessory dwelling units</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">California</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">The 2019 California state legislative cycle passed progressive accessory dwelling unit (ADU) laws that, among other changes, supercede local to allow ADUs to be built on every single family parcel. Counties and cities in the Bay Area are in the process of updating their local ADU ordinances as well as offering many proactive resources to encourage ADU development and streamline the permitting process.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://secondunitcentersmc.org">San Mateo County, CA</a><br><a href="https://napasonomaadu.org">Napa and Sonoma County, CA</a><br><a href="https://www.sanjoseca.gov/business/development-services-permit-center/accessory-dwelling-units-adus">San Jose, CA</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Besides legislative work, no implementation costs. Aggregating single unit detached and attached, California has over 8,400,000 units.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">See Chapter 4.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.seattle.gov/Documents/Departments/Council/MAIN_ADU_FEIS_2018.pdf">Seattle, WA</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="encourage-micro-units" class="section level3">
+<h3><span class="header-section-number">1.1.4</span> Encourage micro-units</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">San Francisco, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">In 2011, SFHAC worked with District 8 Supervisor Scott Wiener to pass legislation that allows for the construction of micro-units, also known as “efficiency dwelling units.” The legislation allows for units as small as 220 square feet comprised of 150 square feet of living space, plus a bathroom and kitchen.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://sfplanning.org/sites/default/files/documents/legis/code-summaries/120996_Cap_on_Efficiency_Dwelling_Units.pdf">San Francisco Planning</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Besides legislative work, no implementation costs. Assuming this will be in San Francisco and one will pay 30% of their income on the unit at the suggested price of $1,400, this could impact 69.5% of San Francisco households.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Assuming the same development costs and that one will pay 30% of their income on the unit, then this could impact 48.68% of Stockton households. Assuming the same development costs and that one will not save 20% of their income (as recommended) but instead spends it on housing e.g. 50% of their income goes towards housing, then this could impact 62.3% of Stockton households.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www1.nyc.gov/site/hpd/about/projects-detail.page?project=ShareNYC">ShareNYC</a><br><a href="https://guidelines.vancouver.ca/D015.pdf">Vancouver, Canada</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="provide-a-density-bonus-for-affordable-housing" class="section level3">
+<h3><span class="header-section-number">1.1.5</span> Provide a density bonus for affordable housing</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">San Francisco, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">The 100% Affordable Housing Bonus Program, passed in 2016, provides a 30-foot height bonus for housing developments that completely consist of affordable housing for low- or very low-income households.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://sfplanning.org/home-sf">HOME-SF</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Besides legislative work, no implementation costs. A poorly designed program can disincentivize development overall. Technically affordable housing is for those with the median income or below. For San Francisco, this would then apply to over 440,000 individuals.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">There are currently over 150,000 individuals living below the median income in Stockton.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://arlingtonva.s3.dualstack.us-east-1.amazonaws.com/wp-content/uploads/sites/38/2016/09/ACZOSection36.pdf">Arlington, VA Affordable Housing Density Bonus Program</a> (Section H-7)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="develop-a-shared-equity-program-for-high-density-housing" class="section level3">
+<h3><span class="header-section-number">1.1.6</span> Develop a shared equity program for high-density housing</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Davis, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Shared equity housing is a model used by nonprofit housing associations and municipalities targeting first-time buyers, those with bad loan or credit history, and those who can’t afford downpayments. Typically, a nonprofit or government entity provides a subsidy to lower the cost of purchase through shared appreciation loans, which are second mortgages provided by a public agency that buyers repay in full at the time of resale along with a percentage of home value appreciation. These funds are reinvested to make home ownership more affordable to another low-income buyer.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.urban.org/research/publication/shared-equity-homeownership-evaluation-case-study-dos-pinos-housing-cooperative">Urban Insitute</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">The Davis cooperative is independently run. In San Francisco, the Mayor’s Office BMR program subsidizes homes at about $250,000 below their appraised value. According to the <a href="https://www.urban.org/research/publication/sharing-equity-future-generations-evaluation-long-term-affordable-homeownership-programs-usa">Urban Institute</a>, homes that were passed between shared equity owners remained affordable over time, delinquency and foreclosure rates were low, and families who sold their homes were able to use the proceeds to purchase market-rate homes.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Stockton’s Economic Devleopment Department or the Housing Authority of San Joaquin County could initiate such a program.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.urban.org/research/publication/shared-equity-homeownership-evaluation-case-study-san-francisco-citywide-inclusionary-affordable-housing-program">San Francisco Citywide Inclusionary Affordable Housing Program</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="match-homeowners-with-vacant-spaces-with-individuals-looking-for-affordable-housing" class="section level3">
+<h3><span class="header-section-number">1.1.7</span> Match homeowners with vacant spaces with individuals looking for affordable housing</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">San Mateo County, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">The San Mateo Home Sharing Program is funded by the Department of Housing. The program matches providers with seekers and must live in San Mateo County. They accept housing vouchers through the program. Most rents range from $600 to $1500. Some individuals participating in the program also participate in household chores as a way to pay their rent.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://housing.smcgov.org/sites/housing.smcgov.org/files/FAQS%20HomeSharing%202.2019.pdf">HIP Housing</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">The program is run by nonprofit HIP Housing. The average length of stay is 3 years. Since the program’s inception in 1979, 65,000 individuals have participated.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">A similar nonprofit could organize in Stockton.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.catholiccharitiesscc.org/house-sharing">Santa Clara County Housing Sharing Program, operated by Catholic Charities</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="building-energy" class="section level2">
+<h2><span class="header-section-number">1.2</span> Building Energy</h2>
+<p>This domain covers all strategies that reduce the amount of energy use in buildings, which tend to be concentrated in heating or cooling loads but also include lighting and other plug loads. This domain also includes localized power generation and storage, as well as electrification strategies that switch gas use to electricity use where the electricity grid has fewer emissions.</p>
+<div id="promote-solar-development-in-opportunity-zones" class="section level3">
+<h3><span class="header-section-number">1.2.1</span> Promote solar development in Opportunity Zones</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Washington, DC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Use the tax benefits in Opportunity Zones to promote lower cost of capital and opportunities. This allows businesses to absorb tax benefits from Opportunity Zones, as well as those from financing solar projects.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://groundswell.org/o-zones-for-clean-energy/">O-Zones for Clean Energy</a><br><a href="https://www.forbes.com/sites/jamesellsmoor/2019/07/02/opportunity-zones-drive-development-of-us-renewable-energy/#692c32975609">Opportunity Zones Can Drive Development of U.S. Renewable Energy</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Nationally, Opportunity Zone credits will cost <a href="https://www.cbpp.org/research/federal-tax/potential-flaws-of-opportunity-zones-loom-as-do-risks-of-large-scale-tax">$1.6 billion</a> in lost tax revenue. <a href="https://eig.org/opportunityzones/facts-and-figures">31.5 million people</a> live in Opportunity Zones.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Opportunity Zones exist within Stockton.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="http://www.charthouseenergy.com/default.asp?iId=HILHG">Chart House Energy Opportunity Fund, Muskegon, MI</a><br><a href="https://www.norfolksolar.org/programs">Norfolk Solar Qualified Opportunity Fund</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="promote-a-solar-renewable-energy-certificate-program" class="section level3">
+<h3><span class="header-section-number">1.2.2</span> Promote a Solar Renewable Energy Certificate program</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Washington, DC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Solar Renewable Energy Certificates (SREC) show that a certain amount of electricity was produced using solar. SRECs can be sold back to utilities so they can meet sustainability requirements that are set by each state. This system is contingent on state-level sustainability requirements.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.solarunitedneighbors.org/learn-the-issues/solar-incentives/solar-renewable-energy-credits-srecs/">Solar United Neighbors</a><br><a href="https://programs.dsireusa.org/system/program/detail/5686">Database of State Incentives for Renewables &amp; Efficiency</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Depends on the energy market, but SRECs can go for as high as $440 in Washington, DC or as low as $7.50 in Ohio.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">System exists in California.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.gosolarcalifornia.ca.gov/csi/rebates.php">California Solar Initiative Rebates</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="set-energy-savings-standards-on-all-public-buildings-and-provide-financial-and-technical-assistance-for-commercial-private-sector-energy-savings" class="section level3">
+<h3><span class="header-section-number">1.2.3</span> Set energy savings standards on all public buildings and provide financial and technical assistance for commercial private sector energy savings</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Milwaukee, WI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Using a five-pronged strategy, the City of Milwaukee has: (1) Established efficiency targets (20% reduction over a decade in participating buildings); (2) Offered incentives and financing through leveraging private capital to supply upfront funding for improvements and collects payments through a voluntary municipal special charge; (3) Set a 20% reduction target in government buildings; (4) Provides training to support building owner and occupant actions; and (5) Provided technical services to identify energy efficient equipment and train workforce to support building operations.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://city.milwaukee.gov/bbc">Better Buildings Challenge</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left"><a href="https://city.milwaukee.gov/bbc/History">Originally a $750,000 grant</a>, the <a href="https://city.milwaukee.gov/bbc">program</a> has since affected 133 buildings, totaling 14,660,008 square feet, and led to $2,418,061 in annual savings.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">See Chapter 4.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.sanjoseca.gov/your-government/departments-offices/environmental-services/climate-smart-san-jos/energy-and-water-building-performance-ordinance">San Jose, CA Energy and Water Building Performance Ordinance</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="create-a-fund-to-implement-energy-savings-projects" class="section level3">
+<h3><span class="header-section-number">1.2.4</span> Create a fund to implement energy savings projects</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Boston, MA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">In 2018, the City of Boston plans to launched Renew Boston Trust, which aims to use a market-based, self-funding model to increase energy efficiency investments and climate resiliency in its commercial and municipal buildings, nonprofit institutions, and multi-family properties.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.boston.gov/environment-and-energy/renew-boston-trust">Renew Boston Trust</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Phase Two involves more than $40 million of energy conservation measures. Results are TBD.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Stockton’s Department of Public Works could develop a similar initiative.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.nyceec.com/">New York City Energy Efficiency Corporation</a><br><a href="https://www.london.gov.uk/what-we-do/funding/european-regional-development-fund/london-green-fund">London Green Fund</a><br><a href="https://sustainableaustraliafund.com.au/">Sustainable Melbourne Fund</a><br><a href="https://taf.ca/">The Atmospheric Fund, Toronto</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="enable-property-assessed-clean-energy-pace-financing" class="section level3">
+<h3><span class="header-section-number">1.2.5</span> Enable property-assessed clean energy (PACE) financing</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Hartford, CT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">A private company in Hartford operating a mixed-use housing and retail space privately financed a $1 million energy renovation project and paid back the loan through property tax reassessment. Greenworks Lending provided the upfront capital for rooftop solar, fuel cell energy storage, and installation of microgrid. The loan was repaid as a line item assessment of the property tax bill.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://betterbuildingsinitiative.energy.gov/implementation-models/commercial-pace-financing-microgrid-mixed-use-building">Better Buildings Initiative</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">$1 million; In Year 1, $316,927 savings</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Stockton has <a href="http://www.stocktonca.gov/government/departments/econDev/eDevBusRes.html">multiple existing PACE programs</a>.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://sfenvironment.org/article/financing/greenfinancesf-commercial-pace-program">GreenFinanceSF</a><br><a href="http://pace.lacounty.gov/">Los Angeles County PACE</a><br><a href="http://setthepacestlouis.com/">Set the PACE St. Louis</a><br><a href="https://www.chicagopace.org/">Chicago PACE</a><br><a href="https://arlington-pace.us/">Arlington C-PACE</a><br><a href="https://city.milwaukee.gov/bbc/services/PACE-Financing">Milwaukee PACE</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="provide-consumer-oriented-programs-to-incentivize-energy-efficiency-retrofits-and-appliance-improvements" class="section level3">
+<h3><span class="header-section-number">1.2.6</span> Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Los Angeles County, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">The Los Angeles Department of Water &amp; Power runs multiple energy efficiency programs in three broad categories. Mass market programs generally serve residential customers and encourage them to upgrade to energy efficient appliances, with a few exceptions. Commercial, industrial, and institutional (CII) programs generally serve large nonresidential customers and range in scope from simple lighting upgrades to entire building overhauls. Lastly, cross-cutting programs serve a wide variety of customer types and employ broad strategies for achieving energy savings (e.g., planting street trees, informing updates to building codes, customer outreach, etc.).</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://innovation.luskin.ucla.edu/wp-content/uploads/2019/03/Economic_Benefits_of_Energy_Efficiency_Programs.pdf">Economic Benefits of Energy Efficiency Programs: A Case Study of Investments by the Los Angeles Department of Water &amp; Power</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left"><a href="https://docs.google.com/spreadsheets/d/1qkdGbvYQW0-jtMELTW88zN5dObpmVcHQqJuyeIpI2Kg/edit?usp=sharing">See table</a>.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">See Chapter 4.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://savings.austinenergy.com/rebates/residential/offerings/home-improvements/weatherization/">Austin Energy</a><br><a href="https://www.birminghamal.gov/2018/08/03/everything-you-need-to-know-about-the-100-homes-100-days-program/">100 Homes, 100 Days, Birmingham, AL</a><br><a href="http://www.seattle.gov/light/assistance/assistance.asp">HomeWise, Seattle, WA</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="provide-incentives-for-households-to-install-solar-generation-and-storage-particularly-for-vulnerable-customers" class="section level3">
+<h3><span class="header-section-number">1.2.7</span> Provide incentives for households to install solar generation and storage, particularly for vulnerable customers</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">California</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Recent increases in wildfires and grid outages has meant that large swathes of California are at greater risk of losing power. As a result, the California Public Utilities Commission has launched the Self-Generation Incentive Program, which provides funding for low-income, medically vulnerable, and other select groups who live in Tier 2 and 3 “High Fire Threat Districts.”</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.greentechmedia.com/articles/read/california-finalizes-plan-shifting-key-energy-storage-incentive-toward-blac">Green Tech Media</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">$613 million over four years. As of 2016, 2,178 projects have been completed representing 450 MW of capacity.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Unlikely given fire zone parameters, but incentives are still possible.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.gosolarcalifornia.ca.gov/consumers/taxcredits.php">Go Solar California</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="implement-reach-codes-which-go-beyond-state-minimum-requirements-for-energy-use-in-building-design-and-construction" class="section level3">
+<h3><span class="header-section-number">1.2.8</span> Implement “reach” codes which go beyond state minimum requirements for energy use in building design and construction</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">San Jose, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">San Jose’s reach code aims to make zero-emission electric buildings the default for San Jose. This would include low emission heating, additional charging infrastructure for electric vehicles, and photovoltaic cells on roofs.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.nrdc.org/experts/pierre-delforge/san-joses-proposed-building-reach-code-explained">National Resource Defense Council</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">By [LEED standards]<a href="http://www.greenspacebuildings.com/wp-content/uploads/2011/05/Kats-Green-Buildings-Cost.pdf" class="uri">http://www.greenspacebuildings.com/wp-content/uploads/2011/05/Kats-Green-Buildings-Cost.pdf</a>) (See Figure 3 in PDF), the cost is ten times less than the benefits.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Contingent upon content of codes</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://cityofpaloalto.org/gov/depts/ds/green_building/2019_energy_reach_code_study.asp">Palo Alto, CA</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="use-waste-to-produce-electricity" class="section level3">
+<h3><span class="header-section-number">1.2.9</span> Use waste to produce electricity</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Hayward, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Biogas uses methane and carbon dioxide and converts it into clean gas that can be piped straight into residential facilities for use. The facility involved in the treatment process is powered through the gas and excess electricity from the process is used at other City facilities.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.hayward-ca.gov/your-government/departments/utilities-environmental-services/co-generation-power">City of Hayward</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Depends on the scale of the project but by one estimate, the cost is about $4,500 per kilowatt generated for plants that generate more than 50 kilowatts. <a href="https://docs.google.com/spreadsheets/d/1fbfF7dC3xmJS6ZKPj3uAPPrH1lImfe8tbPda5vs0Dog/edit#gid=0">See table</a>.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Large agricultural industry proximal to Stockton could provide a steady supply of fuel.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.glendaleca.gov/government/departments/glendale-water-and-power/biogas-renewable-generation-project">Glendale, CA</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="employment-growth" class="section level2">
+<h2><span class="header-section-number">1.3</span> Employment Growth</h2>
+<p>This domain covers strategies with the outcome of increasing the employment rate for the resident population, such as job training. While this strategy domain generally is not restricted to “green” strategies and can include employment strategies that provide broad economic benefits to Stockton, this report ultimately will focus on “green jobs” in particular. In addition, any strategies that increase employment opportunity and employment wages can increase the purchasing power of households, enabling them to invest in many of the other GHG reduction strategies considered in this report.</p>
+<div id="provide-training-and-coaching-for-low-income-workers-rather-than-unemployed-workers" class="section level3">
+<h3><span class="header-section-number">1.3.1</span> Provide training and coaching for low-income workers, rather than unemployed workers</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Dayton, OH</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">The Workforce Advancement and Support Center (WASC) offered participating workers intensive employment retention and advancement services, including career coaching and access to skills training. It also offered them easier access to work support, in an effort to increase their incomes in the short run and help stabilize their employment. The program was found to be most effective in cities with the lowest baseline of work support.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.mdrc.org/sites/default/files/full_627.pdf">Strategies to Help Low-Wage Workers Advance</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Based on a <a href="http://www.nyc.gov/html/sbs/downloads/pdf/presentation_wasc.pdf">New York City program</a>, start-up costs of $615,000 plus three years of $1.85 million each. <a href="https://www.mdrc.org/sites/default/files/full_627.pdf">Bridgeport and Dayton</a> experienced 16% increased participation in education and training. Dayton experienced 8% increase in earnings by Year 3.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Stockton’s Economic Development Department could operate a similar program.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left">San Diego, CA<br>Bridgeport, CT</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="provide-green-oriented-job-training-and-education-pathways" class="section level3">
+<h3><span class="header-section-number">1.3.2</span> Provide green-oriented job training and education pathways</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Richmond, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">The construction component of <a href="http://www.ci.richmond.ca.us/1243/RichmondBUILD">Richmond BUILD’s</a> main track is a pre-apprenticeship program. About 25% of the program’s placements have been into formal building trades apprenticeship programs. Furthermore, after the completion of the 15-week training program, Richmond BUILD partners with employers to provide on-the-job training, funding half of graduates’ wages for a probationary period of 12 weeks.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://ellabakercenter.org/sites/default/files/downloads/making-green-work.pdf">Making Green Work</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Richmond BUILD spends between $5,000 and $6,000 per student and yielded a 90% job placement rate (average starting wage rate at $15/hr). 30% of participants have a history with the legal system, and there are 35 available seats in each class.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">See Chapter 4.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="http://www.cdtech.org/">CDTech Green Corps, Los Angeles, CA</a><br><a href="https://www.eastlaskillscenter.org/">East Los Angeles Skills Center</a><br><a href="http://www.lattc.edu/">Los Angeles Trade-Technical College</a><br><a href="https://www.cypressmandela.org/">Oakland Green Jobs Corps</a><br><a href="http://www.jobtrainworks.org/">JobTrain, Menlo Park, CA</a><br><a href="https://sites.google.com/site/greenjobsboston/home">Green Jobs Boston</a><br><a href="https://www.nycservice.org/organizations/936">Win-Win, New York City, NY</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="create-a-scholarship-fund-for-students-wishing-to-pursue-eco-conscious-careers" class="section level3">
+<h3><span class="header-section-number">1.3.3</span> Create a scholarship fund for students wishing to pursue eco-conscious careers</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Chicago, IL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Created in partnership with the Walsh-Fluor Design-Build team (WFDBT), the contractor for CTA’s historic $2.1 billion Red and Purple Modernization (RPM) Phase One Project, the new scholarship program will provide $250,000 to aid CPS students who plan to pursue Science, Technology, Engineering and Math (STEM) four-year degrees at a university or college.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.transitchicago.com/rpm/workforce-opportunities/">Chicago Transit Authority</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Scholarship donated by private sector.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">San Joaquin Delta Community College does not require that you have a GED or High School diploma to attend. However, if you do not have a GED/High School Diploma, you are not eligible for federally funded student aid. Tuition is $46.00 per unit, which may represent a barrier for some students. If a fund were created that did not require GED/High School Diploma eligibility for financial aid and was targeted towards those pursuing environmentally-oriented careers, then it would incentivize more to pursue those careers.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="http://www.kwea.net/scholarships.html">Kansas Water Environment Association</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="offer-continued-training-and-support-post-employment" class="section level3">
+<h3><span class="header-section-number">1.3.4</span> Offer continued training and support post-employment</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">New York City, NY</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">WorkAdvance is a sector-based workforce development model that continues training and support post-employment. The developers of the program focused on sectors with strong demand for entry-level and middle-skill employees and relatively short training time. For this program, they focused on transportation &amp; manufacturing, IT, environmental remediation, and healthcare. The program itself has five components including: (1) Intensive screening of program applicants for motivation and readiness; (2) Sector appropriate pre-employment and career readiness, including orientation to the sector and career advancement coaching; (3) Sector-specific occupational skills training aligned with employer needs and leading to certifications that are in demand in the regional labor market; (4) Sector-specific job development and placement services based on strong relationships with employers; and (5) Post-employment retention and advancement services, including ongoing contact, coaching, skills training, and rapid reemployment help if needed.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.mdrc.org/sites/default/files/WorkAdvance_2016_PolicyBrief.pdf">MRDC Policy Brief</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left"><a href="https://docs.google.com/spreadsheets/d/1a3yOtNb3r3SD4LnSfBDs70Mre4OpmGM53iFZc9dxMkc/edit#gid=0">See table</a>.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">According to the 2013-2017 ACS, the number of Stockton residents that are high school graduates and possess a GED or have less than a high school education is over 75,000.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.towardsemployment.org/">Towards Employment, Cleveland, OH</a><br><a href="http://www.madisonstrategies.org/">Madison Strategies Group, Tulsa, OK</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="local-jobs" class="section level2">
+<h2><span class="header-section-number">1.4</span> Local Jobs</h2>
+<p>This domain includes strategies with the outcome of increasing the number of jobs based in Stockton. This is distinct from the previous section because local job creation may be attracting companies and workers who aren’t necessarily Stockton residents, so as to increase the jobs to employed residents ratio.</p>
+<div id="offer-job-creation-tax-credit" class="section level3">
+<h3><span class="header-section-number">1.4.1</span> Offer job creation tax credit</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Philadelphia, PA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Philadelphia’s Job Creation Tax Credit rewards businesses that increase the number of jobs available in the City. A business firm can apply this credit to its Business Income and Receipts Tax (BIRT) liability if it either creates 25 new jobs or increases its number of employees by at least 20% within five years of the designated start date. Program participants must commit to maintaining business operations in the City of Philadelphia for five years. The credit amount for jobs created is 2% of annual wages paid for each new job or $5,000 per new job created, whichever is higher, subject to the maximum amount specified in the commitment agreement.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.phila.gov/services/payments-assistance-taxes/tax-credits/job-creation-tax-credit/">City of Philadelphia</a><br><a href="https://www.ncsl.org/research/financial-services-and-commerce/job-creation-tax-credits.aspx#California">NCSL</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Cost depends on the size of tax credit expansion. <a href="https://digitalcommons.ilr.cornell.edu/cgi/viewcontent.cgi?article=1356&amp;context=cahrswp">Estimates</a> suggest that the tax credit creates between 0.13 and 0.3 new jobs at participating firms, primarily for workers 25 and younger. Many of these workers, however, would have been hired without the credit. It is likely that as firm size grows, economies of scale will allow job creation to increase exponentially as the marginal cost of adding an additional employee decreases.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">In California, taxpayers with 20 or fewer employees at the end of the preceding taxable year may qualify for a nonrefundable new jobs credit against the personal income tax and corporation franchise and income taxes for each new qualified employee that is hired. It is equal to $3,000 for each net increase in qualified full-time employees from the previous taxable year. It is only applicable to firms with 20 or fewer employees (see Sec. 23623, California Rev. &amp; Tax. Code). There have been several proposals for implementing a similar system with local corporate taxes. As of 2018, the <a href="https://www.labormarketinfo.edd.ca.gov/LMID/Size_of_Business_Data.html">Stockton-Lodi MSA</a> has 2132 business with other 20 employees, 159,052 employees in those businesses, and payrolls equal to $1,830,930,000.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.columbus.gov/development/economic-development/Business-Attraction---Expansion/">Columbus, OH</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="encourage-mortgage-refinancing" class="section level3">
+<h3><span class="header-section-number">1.4.2</span> Encourage mortgage refinancing</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">San Francisco, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Mortgage refinancing encourages consumers to take out a new loan to take advantage of lower interest rates. This creates a wealth effect whereby they develop greater disposable income. From a Keynesian perspective, this leads to more consumer spending in the local economy. The corollary to this is that growth in aggregate demand leads to job growth, or at least stability. HUD has a class on First-Time Homebuyer Education and Counseling.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="http://economics.mit.edu/files/15731">Regional Heterogeneity and the Refinancing Channel of Monetary Policy</a><br><a href="https://voxeu.org/article/low-interest-rates-can-boost-households-consumption">Low Interest Rates Boost Household Consumption</a><br><a href="https://sfmohcd.org/refinancing">San Francisco Mayor’s Office of Housing and Community Development</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">N/A</td>
+</tr>
+<tr class="even">
+<td align="left">Impact Factor</td>
+<td align="left"><a href="https://docs.google.com/document/d/1OCGHkK8pjBE9zpFcQugDnIXFsLAYPNk7v2rsQ-A_Nj8/edit">See results</a> for a HUD first-time home buyer program.</td>
+</tr>
+<tr class="odd">
+<td align="left">Scalable Potential</td>
+<td align="left">According to <a href="https://www.zillow.com/stockton-ca/home-values/">Zillow</a>, 1.1% of Stockton homes are delinquent on their mortgages while 6.6% of homes have negative equity.</td>
+</tr>
+<tr class="even">
+<td align="left">Similar</td>
+<td align="left"><a href="https://dublin.ca.gov/470/Refinancing">Dublin, CA</a><br><a href="https://www.chicago.gov/city/en/depts/doh/provdrs/homeowners/svcs/refinancing-of-affordable-units.html">Chicago Department of Housing</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="develop-public-employment-program" class="section level3">
+<h3><span class="header-section-number">1.4.3</span> Develop public employment program</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">San Francisco, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">A public employment program places unemployed, willing-to-work, workers in in-demand jobs across the community. In post-Keynesian thought, the job creation element of a public employment program is two-fold. On one hand, you are giving participants a job. On the other hand, their increase in discretionary income leads to greater aggregate spending and by extension, an increase demand for employment in sectors where money is being spent. Additionally, due to macroeconomic overemployment, it is important to target such a program to those who experience structural unemployment, not frictional.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.sfhsa.org/services/jobs-money/jobsnow">JobsNOW!, San Francisco Human Services Agency</a><br><a href="https://www.nber.org/papers/w23838.pdf">General Equilibrium Effects of (Improving) Public Employment Programs: Experimental Evidence</a><br><a href="https://www.brookings.edu/wp-content/uploads/2018/12/JobGuarantee_FP_web_20190206.pdf">Labor Market Considerations for a National Job Guarantee</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left"><a href="https://docs.google.com/spreadsheets/d/1wRfHpgLv4xkIYSVeNFy-1X3LqU5UAzVUOMWzD9nOe30/edit">See table</a>. Assuming that there wouldn’t be a resulting increase in labor force participation (unlikely), this could impact about 18,000 individuals. Keep in mind that this would mean exceeding full employment.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">According to CAP data, the ratio of children under 5 to available childcare slots in Stockton is 6.5. This would necessitate growth in the childcare industry. The Old Age Dependency ratio is 20.3, suggesting that the demand for healthcare services will rise in Stockton, even though there is a statewide shortage of healthcare workers. Most theorized public employment programs, particularly those that occur on a federal level, do mention the importance of building/rebuilding infrastructure.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.brightmarkenergy.com/recycleforce">RecycleForce, Indianapolis</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="provide-tax-credits-to-investors-in-advanced-industries" class="section level3">
+<h3><span class="header-section-number">1.4.4</span> Provide tax credits to investors in advanced industries</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Nebraska</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">By making these credits refundable, the State of Nebraska Angel Investment Tax Credit has effectively subsidized the angel investment. If a qualified investor makes a qualified investment of $100,000 in a Nebraska start-up company, and receives Nebraska’s 40% angel investment credit, that investor would receive $40,000 in cash (in reduced taxes or direct payment) from the state.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://nebraskalegislature.gov/FloorDocs/105/PDF/Agencies/Economic_Development__Department_of/161_20171114-090352.pdf">Tax Credit Program Report</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Between 2011 and 2016,<br>Investments: $54,884,750<br>Investments (#): 614<br>Investment (mean): $89,389<br>Credits: $19,156,848<br>Credits: 614<br>Credits (mean): $31,200<br>Note certain businesses received multiple credits. Of the 50 businesses that responded to the follow-up survey, 35 reported that they created new jobs, 12 reported they did not, and 3 did not respond. The average number of new jobs created was 11.5.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Stockton has over 15,000 businesses with 19 employees or fewer, that employ a total of 55,000 individuals. They are broken down by industry as seen <a href="https://docs.google.com/spreadsheets/d/15RHLcStF8-YZpp1lp8KHChaGXvK9weAGsgg8MktYK8Q/edit#gid=2038112866">here</a>.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://choosecolorado.com/doing-business/incentives-financing/advanced-industry-investment-tax-credit/">Colorado Advanced Industry Investment Tax Credit</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="provide-tax-credits-to-investors-in-community-development-corporations" class="section level3">
+<h3><span class="header-section-number">1.4.5</span> Provide tax credits to investors in community development corporations</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Pennsylvania</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">The program is broken down into four other subparts: The Neighborhood Partnership Program, Special Priorities Program, Charitable Food Program and the Enterprise Zone Tax Credit. Neighborhood organizations must apply to the program by documenting that they have the capacity to complete the proposed project, confirm their collaborations, demonstrate the need for the project and provide required documentation. Eligible projects must serve distressed areas or support neighborhood conservation in a number of focus areas within community development. Any businesses in the state are then eligible to donate to an eligible project and receive up to a 55% tax credit.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://dced.pa.gov/programs/neighborhood-assistance-program-nap/">Neighborhood Assistance Program</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Thirty-six million in tax credits is budgeted each year for Neighborhood Assistance Program. According to <a href="http://cedamichigan.org/2019/05/community-investment-tax-credit-programs-catalysts-for-locally-driven-solutions/">this article</a>, in the Lawrenceville neighborhood of Pittsburgh, NAP helped facilitate 36 new neighborhood businesses in two years, development of 120 new housing units worth $30 million, development of 45,000 square feet of commercial space worth $9 million, and an average $2,900 in real estate tax revenue on previously vacant parcels.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">The <a href="https://rsscoalition.org/">Reinvent South Stockton Coalition</a> is an example of a local CDC that can be supported by such a program.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://macdc.org/how-it-works">Massachusetts Community Investment Tax Credit</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="pursue-public-private-partnerships-for-commercial-development" class="section level3">
+<h3><span class="header-section-number">1.4.6</span> Pursue public-private partnerships for commercial development</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Georgia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Georgia partnered with Kia to develop a manufacturing plant that suited the needs of the company. No appropriate size plot existed so, Georgia purchased multiple adjacent plots near deepwater ports and leased them to Kia at a low sum. Quick Start, Georgia’s innovative workforce training and development program, developed a specific program just for the needs of Kia.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.georgia.org/sites/default/files/wp-uploads/2014/08/Kia_Case_Study_Final.pdf">Georgia’s Successful Partnership with Kia Serves as Model for Efficiency and Job Growth</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">$9,000,000-$15,000,000 in Job Tax Credits; $80,700,000 in Department of Transportation capital projects; Direct creation of 3000+ jobs</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Stockton brownfields could be valuable opportunities for large capital projects or commercial development, combining private investment and public facilitation of brownfield remediation.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.epa.gov/G3/prince-georges-county-maryland-clean-water-partnership">Prince George’s County Maryland Clean Water Partnership</a><br><a href="https://www.mbaydevelopment.com/mission-bay-new">Mission Bay, San Francisco</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="fund-economic-development-using-tax-base-sharing" class="section level3">
+<h3><span class="header-section-number">1.4.7</span> Fund economic development using tax-base sharing</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Montgomery County, OH</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">The Economic Development and Government Equity Program (ED/GE) serves as a tool to make the County more competitive and enhance cooperation among local jurisdictions. The ED/GE program consists of two parts. The “ED” side consists of grant funding generated by sales tax revenue. The “GE” side is a tax-based sharing formula that calculates disbursements based on income and property tax valuations.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.bizjournals.com/dayton/news/2019/02/11/how-montgomery-countyed-ge-funding-drives-economic.html">How Montgomery County ED/GE funding drives economic development</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">$1.8 million in funding over 10 economic development projects in 2018. Since its <a href="https://www.mcohio.org/news_detail_T6_R154.php">inception</a> in 1992, the program has assisted in the creation of 24,000 private sector jobs and retained over 30,000 private sector jobs through $2.8 billion in leveraged investment. Impact estimated at 900 new jobs throughout the County.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">A <a href="https://socialinnovation.usc.edu/wp-content/uploads/2017/09/Orfield-Tax-Base-Sharing-Final.pdf">USC study</a> simulating a tax-based sharing program in the Los Angeles region assumed that 40 percent of the growth in local sales tax bases from each local area in the metropolitan area between 2003 and 2013 was allocated to a regional pool. The pool was then distributed back to localities based on their shares of the region’s population. Local sales tax base disparities are so dramatic that even this relatively benign distribution formula would result in increases in the local tax bases of communities serving fully 72 percent of the region’s population.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://ilsr.org/rule/tax-base-sharing/2301-2/">Twin Cities Fiscal Disparities Program</a><br><a href="https://ilsr.org/rule/tax-base-sharing/2302-2/">Sacramento AB 680</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="pay-remote-workers-to-move-to-new-location" class="section level3">
+<h3><span class="header-section-number">1.4.8</span> Pay remote workers to move to new location</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Vermont</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">This program offers up to $10,000 a year that can be spent on office supplies, coworking space, relocation, and housing for remote workers to move to Vermont. It also comes with various in-kind benefits.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.thinkvermont.com/remote-worker-grant-program-2019/">Think Vermont</a><br><a href="https://www.vermontvacation.com/staytostay">Stay to Stay</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Between January 1 and September 15, 2019, ACCD awarded $320,834 to 84 new Vermont remote workers. Grants ranged from $400 to $5,000; the average grant awarded was $3,819. As of September 15, 2019, the grant application was downloaded 4,201 times. Grantees brought with them an additional 134 family members (including 44 children), for a total of 218 new Vermonters. The top fields of employment represented by grantees were information technology (31%), management (13%), writing and editing (8%), finance and sales (both tied at 6%), and marketing (5%). Other fields represented included insurance, education, project management, and law. Vermont co-working space memberships were purchased by fourteen grantees and six additional grantees indicated they are considering doing so. <a href="https://accd.vermont.gov/sites/accdnew/files/documents/DED/Remoteworker/2019RemoteWorkerReport.pdf">Read more here</a>.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Stockton’s Economic Development Department could develop a similar program to attract remote workers from the Bay Area. Proximity to Silicon Valley may facilitate the networking effects that draw people to the region. Solutions have included <a href="https://www.nber.org/papers/w25913">investments</a> targeting issues that are unique to Stockton e.g. healthcare access, educational outcomes. There are additional local investments for immigrants on H1B visas.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://montanafreepress.org/2019/03/08/kansas-and-vermont-pay-college-grads-to-move-to-small-towns-montana-could-follow-suit/">Montana House Bill 405</a><br><a href="https://www.kansascommerce.gov/wp-content/uploads/2018/12/ROZ-program-guidelines-FY19_201810080934581436.pdf">Kansas Rural Opportunity Zone Program</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="vehicle-miles-traveled" class="section level2">
+<h2><span class="header-section-number">1.5</span> Vehicle Miles Traveled</h2>
+<p>This domain includes transportation-oriented strategies that lead to fewer vehicle miles traveled, such as public transit improvements, transportation demand management, and carpooling incentives. Electrification of vehicles is considered as a separate domain. Land use strategies that reduce sprawl are also part of this domain.</p>
+<div id="create-local-transportation-demand-management-ordinances" class="section level3">
+<h3><span class="header-section-number">1.5.1</span> Create local transportation demand management ordinances</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Pasadena, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Transportation Demand Management can include a variety of ordinances designed to reduce traffic congestion, increase safety and mobility, and conserve energy and reducing greenhouse gases. The Pasadena TDM focuses on encouraging alternative modes of transportation, such as transit, vanpools, carpools, and bicycles, as well as encouraging alternative work hours to reduce typical peak period demands upon the roadway network. The Trip Reduction Ordinance requires preferential parking spaces for carpool vehicles, providing employees with commuter-matching services and trip reduction information, and providing bicycle parking facilities and/or other non-auto enhancements.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.metro.net/projects/tod-toolkit/tdm-ordinance/">LA Metro</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Besides legislative work, no implementation costs. In 2014, 40 projects were subject to the City of Cambridge’s Parking and TDM Ordinance Large Project TDM Plans. Of those, 35 projects, or 88 percent completed monitoring reports. Of the 35 projects, 30 projects exceeded non-drive-alone mode split commitments. <a href="https://default.sfplanning.org/transportation/tdm/TDM_Technical_Justification_update2018.pdf">Read more here</a> (Table 3-3).</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Because Stockton has a low jobs to employed residents ratio, TDM is a less impactful strategy without the support of big employers of Stockton residents outside of the city.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.cityofberkeley.info/Public_Works/Transportation/Downtown_Berkeley_Parking_and_Transportation_Demand_Management_Report.aspx">Downtown Berkeley Parking and Transportation Demand Management</a><br><a href="https://sfplanning.org/transportation-demand-management-program">SF Planning</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="use-brt-corridors-to-reduce-travel-times-on-public-transit" class="section level3">
+<h3><span class="header-section-number">1.5.2</span> Use BRT corridors to reduce travel times on public transit</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">San Francisco, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Bus rapid transit is a system that allocates designated lanes to buses and light rail, in order to make for faster travel on bus. Additionally, off-board fare collection is key to reduce delay caused by passengers waiting to pay on board.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.sfcta.org/projects/van-ness-improvement-project">San Francisco Van Ness Improvement Project</a><br><a href="https://www.itdp.org/library/standards-and-guides/the-bus-rapid-transit-standard/what-is-brt/">Institute for Transportation &amp; Development Policy</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left"><a href="http://sanjoaquinrtd.com/wp-content/uploads/2019/02/SRTP-2018-Update_FINAL.pdf">RTD has planned</a> for about $30 million of BRT service expansion between 2019-2026. When fully deployed, RTD’s BRT routes will create a high-frequency network covering the major arterials of the County, connecting them with central Stockton. RTD projects almost 3.7 million annual trips on the BRT network by FY 25. By attracting new riders, RTD’s BRT network can eliminate over one million tons of carbon emissions.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">BRT service is currently planned for a range of corridors throughout the City of Stockton, with potential service extension to Lodi via BRT Express. RTD will implement BRT Express service over time as funding becomes available and as demand grows due to new development. Therefore, BRT design may differ by corridor but should follow a set of requirements to ensure system characteristics remain consistent. Figure below from RTD 2018 Short Range Transit Plan.<br><br><img src="images/brt.png" width="629" /></td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://docs.google.com/spreadsheets/d/1JixMHuX0ArT3MDNrJgYliGE77TqYZe5bGwms8D6oblE/edit#gid=0">Bogota TransMilenio, Mexico City Metrobus, Johannesburg BRT</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="redesign-bus-network-to-prioritize-ridership-over-coverage" class="section level3">
+<h3><span class="header-section-number">1.5.3</span> Redesign bus network to prioritize ridership over coverage</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Houston, TX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">After an extensive community engagement process, the METRO Board of Directors directed the System Reimagining team to design a network where 80% of resources are aimed at maximum ridership and 20% of resources are used for coverage (compared to about 50%-50% today). The result is a simpler, easier to understand network that better aligns with the Houston of today. At all times, the plan strives to keep service to as many existing riders as possible.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.ridemetro.org/Pages/Reimagining-FAQs.aspx">Houston METRO Transit Systems Reimagining Project</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">The draft plan presented here is a no-growth network plan, which means it is designed to use existing METRO operating funds. The plan reallocates existing service rather than imagining new resources. That’s why the plan doesn’t always offer as much service as METRO or its customers would like. Nearly all (94%) current riders will be able to access service at the same stop they do now. The vast majority of current riders (72% up from 49.5% on weekdays and 25% on weekends) will be on or near frequent service that is useful for travel to more places than they can reach easily now. Even if you are already on a frequent line, the plan makes it much easier to transfer to other lines to get to more places. 99.5% of existing riders will have local bus service within 1/4 mile. The small percentage that will be farther from service either live or travelc in areas where the pattern of development and the street network make it impossible to run transit efficiently, and as a result they could only be served at a very high cost per rider. About 0.6% of existing riders will have flexible service rather than fixed route service. This service will provide hourly pickups and dropoffs within its defined zone and to reach a point where you can connet to fixed route service. Riders can call ahead to reserve a ride on the service or meet the bus at a designated location and time. Some fixed routes will still run in these zones, but the flexible service will fill in the gaps for those who might find it difficult to walk to a bus stop.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">San Joaquin RTD is still recovering from budget cuts, but can consider a bus network redesign that is budget-neutral and maximizes ridership.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.indygo.net/projects/">IndyGo</a><br><a href="https://capmetro.org/connections2025/">Austin Capital Metro Connections 2025</a><br><a href="https://www.cota.com/initiatives/tsr/">Central Ohio Transit Authority</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="promote-the-use-of-e-scooters-and-dockless-bicycles-to-reduce-reliance-on-private-cars" class="section level3">
+<h3><span class="header-section-number">1.5.4</span> Promote the use of e-scooters and dockless bicycles to reduce reliance on private cars</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">San Francisco, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Shared scooters and bikes, which can be used in dedicated bike lanes, have already become a major source of transportation in large metropolitan areas. Bird had 10 million rides in its first 12 months alone, while Lime users took 34 million trips in its first year. Additionally, they are more conducive to the short trips made by most commuters.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www2.deloitte.com/us/en/insights/focus/future-of-mobility/micro-mobility-is-the-future-of-urban-transportation.html">Deloitte Insights</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Costs average at $100 per scooter. Impact <a href="https://www.vox.com/2018/8/27/17676670/electric-scooter-rental-bird-lime-skip-spin-cities">depends</a> on where the city gets its energy from e.g. coal, natural gas, or renewable. The majority of scooter trips are less than 2 miles, which may mean that they are not a substitute for ride apps. They do, however, serve to reduce traffic congestion as 60% of car trips fell within the micromobility range of <a href="https://www.forbes.com/sites/adeyemiajao/2019/02/01/everything-you-want-to-know-about-scooters-and-micro-mobility/">0-5 miles</a>.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Stockton’s urban core may not yet experience the congestion issues that create an opportunity for micromobility.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://pittsburghpa.gov/press-releases/press-releases.html?id=3152">Pittsburgh Mobility Collective</a><br><a href="https://www.cityoftacoma.org/cms/one.aspx?pageId=158101">Tacoma, WA</a><br><a href="https://ddot.dc.gov/page/micromobility-district">Washington, DC</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="rezone-areas-around-transit-stations-and-commercial-corridors-to-allow-for-high-density-residential-development" class="section level3">
+<h3><span class="header-section-number">1.5.5</span> Rezone areas around transit stations and commercial corridors to allow for high-density residential development</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Tyson, VA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">This plan increased the permissible floor area ratio from 2.0 to 5.0 while also providing incentives to reserve 20% of new residential units for affordable and workforce housing (residents earning between 50% and 120% of area median income). City officials hope that this will also help to facilitate the use of public transit due to close proximity to stations.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.fairfaxcounty.gov/tysons/tysons-comprehensive-plan-land-use-transit-oriented-development">Tyson Comprehensive Land Use Plan</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Besides legislative work, no implementation costs. Planned to attract 80,000 new residents and 200,000 jobs.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Stockton recently updated its General Plan, Envision Stockton 2040, but the next cycle is likely to begin in 2021.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://minneapolis2040.com/">Minneapolis 2040</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="offset-negative-externalities-of-traffic-through-tolls" class="section level3">
+<h3><span class="header-section-number">1.5.6</span> Offset negative externalities of traffic through tolls</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">New York City, NY</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">New York placed tolls in two locations that are typically congested. 80% of the funds from tolling will go to capital projects while 20% goes towards the public transit system. Drivers can only be tolled once per day. Additionally, toll exemptions are made for emergency vehicles, drivers with disabilities, and those who make under $60,000 per year. The goal of the program is to reduce congestion by encouraging the use of carpooling and public transit.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.nytimes.com/2019/04/24/nyregion/what-is-congestion-pricing.html">NY Times</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Mayor Bloomberg’s <a href="https://web.archive.org/web/20080305132512/http://www.transalt.org/campaigns/congestion">2008 proposal</a>, based on an $8 charge for entering Manhattan south of 86th Street, place dannual revenue from the charge at roughly $400 million in the first year and up to $900 million by 2030. When a congestion charge is implemented, a small but significant number of motorists alter the time of their commute to avoid the charge, or adopt a more efficient means of transportation such as walking, bicycling or mass transit. This relatively small decrease in traffic leads to an enormous reduction in delays and congestion. Mayor Bloomberg’s proposal anticipated a 6.5% reduction in the number of vehicles entering Manhattan south of 86th Street, and an even more dramatic during peak hours when an 11% traffic reduction would result in a 20-40% reduction in time loss to traffic delays.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Because Stockton is not currently a concentrated job center, congestion on local roads is not a significant issue.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.seattle.gov/Documents/Departments/SDOT/About/SeattleCongestionPricingStudy_SummaryReport_20190520.pdf">Seattle Department of Transportation</a><br><a href="https://docs.google.com/spreadsheets/d/1wfzrP3pYT7yDMCnIthztelqYMdhkURePtL_N114HtIw/edit#gid=0">Stockholm, Sweden</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="charge-for-parking" class="section level3">
+<h3><span class="header-section-number">1.5.7</span> Charge for parking</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">New York City, NY</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Cities that charge for parking have realized an increase in the use of public transit for commuting (r-squared of .83) and a reduction in commuting alone. This is made more effective when they eliminate zoning requirements about parking and change the cost of parking over the day. In New York, sensors have allowed the tracking of parking spaces, bringing vehicles directly to open parking spaces, rather than having them drive around looking for a spot.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://usa.streetsblog.org/2016/10/24/what-the-price-of-parking-shows-us-about-cities/">What the Price of Parking Shows Us About Cities</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Over the course of the SFpark pilot project, the SFMTA lowered the average hourly rate at meters by 11 cents from $2.69 to $2.58 and average hourly rates at SFpark garages by 42 cents from $3.45 to $3.03. The amount of time that spots achieved the target parking occupancy (60 to 80 percent) increased by 31 percent in pilot areas, compared to a 6 percent increase in control areas. <a href="http://sfpark.org/wp-content/uploads/2014/06/SFpark_Eval_Summary_2014.pdf">Read more here</a>.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Because Stockton is not currently a concentrated job center, parking congestion is not a significant issue. However, demand-response parking pricing can be explored in Downtown.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="http://sfpark.org/">SFpark</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="give-carpoolers-priority-parking-at-transit-stops" class="section level3">
+<h3><span class="header-section-number">1.5.8</span> Give carpoolers priority parking at transit stops</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">King County, WA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">At all light rail stations, commuters who drive together are able to park for free at Sound Transit priority parking. Drivers must arrive with at least two other riders to be eligible and half the spaces at each parking location are dedicated to carpoolers.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.thenewstribune.com/news/local/traffic/article101595332.html">Carpoolers will get edge for Sound Transit parking – for a price</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">5 Year Budget, including permitting, towing, and administration of program with outside vendor, costs $3 million. No evaluation results could be found.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Contingent upon RTD use. Carpooling incentives can be targeted towards commuters to transit-accessible destinations.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://transportation.stanford.edu/rideshare/learn-about-carpooling/start-a-carpool">Stanford Commute Club</a><br><a href="https://www.portlandoregon.gov/TRANSPORTATION/article/725534">Portland Carpool Program</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="ban-personal-vehicles-from-certain-areas" class="section level3">
+<h3><span class="header-section-number">1.5.9</span> Ban personal vehicles from certain areas</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Madrid, Spain</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Madrid 360 has made 472 hectares of the city center off-limits to traffic, except for local residents and public transit. Non-residents with appropriate labels may enter to leave their vehicle in a public parking lot, and exceptions are made for people with reduced mobility, ambulances, taxis, private-hire cars, and delivery vans. Electric vehicles will also be allowed into the city center.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://elpais.com/elpais/2018/11/30/inenglish/1543565577_207058.html">Madrid takes historic step to becoming a car-free city center</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Pedestrian space has increased by nearly 22,000 square meters. It has cut traffic by 32 percent in some areas. Those who violated the ban were fined $100.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Anecdotally, many of the cities that have implemented car bans seem to have greater pedestrian traffic and less sprawl/more centralized downtown. Stockton does not yet have a vibrant pedestrian downtown core that would merit this strategy.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.sfmta.com/projects/better-market-street-project">Better Market Street SF</a><br><a href="https://www.independent.co.uk/travel/news-and-advice/paris-car-free-sundays-city-centre-france-pedestrian-a8566991.html">Paris, France</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="encourage-carsharing-strategies" class="section level3">
+<h3><span class="header-section-number">1.5.10</span> Encourage carsharing strategies</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">San Francisco Bay Area, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">On June 13, 2018 the Metropolitan Transportation Commission (MTC, the Bay Area’s transportation planning, financing, and coordinating agency) allocated $1.2 million under the Climate Initiatives Program to implement the strategies recommended in the attached report; “Bay Area Carsharing Implementation Strategy”, completed in Spring 2018. The Carsharing Implementation Strategy documents were outlined in a report to MTC’s Board which reviews the development and current state of carsharing in the Bay Area, explores regional challenges and opportunities as they apply to various carsharing business models (round-trip, one-way, and peer-to-peer), presents findings from interviews and workshops with stakeholders in the region, and provides specific strategies to support the expansion of carsharing. The Carsharing Strategy is intended to identify opportunities to grow carsharing membership and usage in the Bay Area as a method of reducing single-occupancy vehicle trips and vehicles miles traveled, with the overall goal of reducing greenhouse gases.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://learn.sharedusemobilitycenter.org/wp-content/uploads/MTC-carsharing_report_vfinal_06.21.18.pdf">Bay Area Carsharing Implementation Strategy</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">This plan will be integrated with relevant local transit authorities e.g. BART, Caltrain, Muni, et cetera. As such, payment kiosks will be located at respective centers. See Table 1 in MTC report.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Stockton’s <a href="https://www.pacific.edu/Documents/school-business/BFC/NSJV%20Reg%20Assessment/NSJV%20Commuting%20Patterns%20v2.pdf">intra-county workforce</a> has declined from 92.4% in 1980 to 83.1% in 2010. This means that people are traveling longer to get to work, suggesting greater benefits to such a program.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.zipcar.com/press/releases/zipcar-launches-new-boston-fleethub-program">Boston Fleethub</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="provide-free-public-transit" class="section level3">
+<h3><span class="header-section-number">1.5.11</span> Provide free public transit</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Kansas City, MO</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Kansas City, Missouri, will be the first major US city to offer free bus service to residents by 2020. City Council members in a metropolis of about 490,000 people, voted unanimously in early December 2019. The council still needs to decide how the system will be funded and where that money will come from in the budget.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.vox.com/the-goods/2019/12/17/21026425/kansas-city-free-bus-system">Vox</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">The Kansas City Council already expects to spend about $8 to $9 million to cover for the lost fares, as mentioned, but the city already loses $1.5 million collecting fares every year, according to Mayor Lucas. The impact on ridership is yet to be determined.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Free transit could be feasible in Stockton given the relatively low transit ridership numbers for RTD compared to high-density cities. It’s unclear how the loss in revenues would affect service quality and ridership. In Dunkirk, France, a similar program was implemented with the following results: Passengers were up 50-85%, depending on the route, and average trip length dropped by 10%.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.bbc.com/worklife/article/20190128-the-cost-of-luxembourgs-free-public-transport-plan">Luxembourg</a><br><a href="https://www.economist.com/europe/2019/05/09/free-public-transport-in-estonia">Estonia</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="subsidize-first-milelast-mile-transportation-services" class="section level3">
+<h3><span class="header-section-number">1.5.12</span> Subsidize first-mile/last-mile transportation services</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Centennial, CO</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">The First and Last Mile Pilot (FLMP) was a public-private partnership between the City of Centennial, CH2M, the Denver South Transportation Management Association (DSTMA), Southeast Public Improvement Metropolitan District (SPIMD), Lyft, Via Mobility Services (Via), and Xerox (Conduent). Beginning August 17th, residents were able to request a free Lyft Line (carpooling) ride to and from the Dry Creek LRT station. The Go Denver app powered by Xerox integrated scheduling and payment systems for both transit and Lyft, thus allowing users to select the FLMP options including “Light Rail + Lyft Line.”</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://learn.sharedusemobilitycenter.org/wp-content/uploads/Go-Centennial-Final-Report_for-web.pdf">Shared Use Mobility Center</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">The FLMP program had a budget of $400,000 and temporarily replaced the City’s Call-n-Ride system. Read more in the report.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">A similar service in Stockton could subsidize trips to the Amtrak station or dowtown bus station.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://learn.sharedusemobilitycenter.org/casestudy/metrolink-pilot-by-capmetro-in-partnership-with-rideaustin/">RideAustin</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="vehicle-emissions" class="section level2">
+<h2><span class="header-section-number">1.6</span> Vehicle Emissions</h2>
+<p>This domain focuses on strategies that reduce the emissions of combustion engine vehicles or increase the share of electric vehicles on the road.</p>
+<div id="provide-grants-for-pollutant-remediation-and-reduction-initiatives" class="section level3">
+<h3><span class="header-section-number">1.6.1</span> Provide grants for pollutant remediation and reduction initiatives</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Ventura County, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">The Carl Moyer Memorial Air Quality Standards Attainment Program, which is jointly run by CARB and the VCAPCB, provides grants for the following projects: Repower commercial fishing boats with lower emission engines; Repower farm equipment with lower emission engines; Replace emergency vehicles with lower emission engines; Replace heavy duty diesel trucks with lower emission engines; New, conversion of existing, or expansion of battery charging/alternative fueling stations.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="http://www.vcapcd.org/grant_programs.htm#Clean_Air_Fund_">Ventura County Air Pollution Control District</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Since its inception, over $42 million was granted to businesses in Ventura County. In 2017, $4.5 million was allocated; in 2018, $2.5 million was allocated;iIn 2019, $6 million was allocated.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">The case study was funded by CARB, so the primary pathway is through CARB and the local air pollution district. Most funding is allocated to commercial uses.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.baaqmd.gov/funding-and-incentives/public-agencies/county-program-manager-fund">Transportation Fund for Clean Air County Program Manager Fund, BAAQMD</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="provide-commercial-rebates-for-commercial-building-owners-to-install-ev-charging-stations" class="section level3">
+<h3><span class="header-section-number">1.6.2</span> Provide commercial rebates for commercial building owners to install EV charging stations</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Los Angeles, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">The Los Angeles Department of Water and Power (LADWP) provides rebates to commercial customers toward the purchase of a Level 2 electric vehicle charging station. Commercial customers who purchase and install EV charging stations for employee and public use can receive up to $5,000 for each charger, with up to $750 in additional rebate funds per extra charge port. Eligible customers may qualify for up to 40 rebate rewards depending on the number of parking spaces at the installation site. EV charging stations must be installed within the LADWP service area. Rebates are available on a first-come, first-served basis through June 30, 2021, or until funds are exhausted.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.ladwp.com/ladwp/faces/ladwp/commercial/c-savemoney/c-sm-rebatesandprograms/c-sm-rp-commevstation?_adf.ctrl-state=ydg1eawf9_17&amp;_afrLoop=246802491623816">LADWP</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left"><a href="https://www.ladwp.com/cs/idcplg?IdcService=GET_FILE&amp;dDocName=OPLADWPCCB701489&amp;RevisionSelectionMethod=LatestReleased">See recent dashboard report</a>. As for February 2020, $31 million for Level 2 charging stations, with over 350 applications paid, pending, or reserved.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Many parking structures in Stockton may be good candidates for incentivizing EV charging station installation.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.cityofrc.us/sites/default/files/2019-08/ENG-RCMU-Commercial-EV-Rebate-Application_2019.pdf">Rancho Cucamonga Municipal Utility</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="provide-grants-to-income-eligible-residents-for-the-replacement-of-high-emission-cars-with-low-emission-cars" class="section level3">
+<h3><span class="header-section-number">1.6.3</span> Provide grants to income eligible residents for the replacement of high-emission cars with low-emission cars</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">San Francisco Bay Area, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">The Bay Area Air Quality Management District’s (BAAQMD) Clean Cars for All program offers grants up to $9,500 to income-eligible residents to replace a vehicle eligible for retirement with a PEV or HEV. Eligible vehicles for replacement should have a model year 15 years or older than the current year. Recipients may buy or lease a new or used PEV or HEV. Grants vary depending on the household income and vehicle technology. Vehicles that are replaced must be turned in at an authorized dismantler. Individuals that purchase an all-electric vehicle are eligible to receive up to $2,000 for the purchase and installation of a Level 2 electric vehicle supply equipment.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.baaqmd.gov/funding-and-incentives/residents/clean-cars-for-all">BAAQMD</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">From 2015-2019, $112 million was allocated to Clean Cars 4 All from CARB ($10 million of which was from Volkswagen settlement funds). Of this, San Joaquin Valley APCD has expended about $9 million of $41 million to replace 1,450 vehicles (about 15 percent battery electric, 35 percent plug-in hybrid, 50 percent hybrid). <a href="https://ww2.arb.ca.gov/sites/default/files/2019-09/fy1920fundingplan.pdf">Read more here</a> and through <a href="https://www.valleyair.org/drivecleaninthesanjoaquin/replace/">Drive Clean in the San Joaquin</a>.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Further grant opportunities are expected through the program in the coming years. Stockton could target underserved communities in future grant applications.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://ww5.cityofpasadena.net/water-and-power/residentialevrebate/">City of Pasadena</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="engage-automobile-manufacturers-as-stakeholders-in-the-ev-market" class="section level3">
+<h3><span class="header-section-number">1.6.4</span> Engage automobile manufacturers as stakeholders in the EV market</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Arizona</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Arizona requires car dealers to make information about alternative fuel vehicles and Arizona-based incentives for purchasing or leasing alternative fuel vehicles available to the public. The state also created an Electric Vehicles Arizona stakeholder group to bring together auto dealers and other interested parties so that they better understand the opportunities and barriers that electric vehicles face in the state.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://carnegieendowment.org/files/electric_vehicles.pdf">Carnegie Endowment Report</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">No implementation costs. <a href="https://evadoption.com/ev-market-share/ev-market-share-state/">Between 2017 and 2018</a>, AZ EV sales increased from 2,976 (0.90% of market share) to 7,086 (1.84% of market share).</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">According to the California <a href="https://cleanvehiclerebate.org/eng/rebate-statistics">Clean Vehicle Rebate Project</a>, San Joaquin County customers have received about 3,000 rebates, compared to 366,000 state-wide, leaving a lot of growth potential compared to other counties.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.chicago.gov/city/en/depts/cdot/supp_info/chicago_area_cleancities.html">Chicago Area Clean Cities</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="reduce-vehicle-speed-limits" class="section level3">
+<h3><span class="header-section-number">1.6.5</span> Reduce vehicle speed limits</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Arizona</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Introducing lower speed limits on motorways cuts fuel consumption and pollutant emissions. The exact impact is contingent upon vehicle type, driving patterns, frequency of speeding, congestion, and traffic diversion.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.eea.europa.eu/themes/transport/speed-limits-fuel-consumption-and/speed-limits">European Environment Agency</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Pollution: Depending on <a href="https://www.eea.europa.eu/themes/transport/speed-limits-fuel-consumption-and/speed-limits">driving behavior</a>, it is possible to expect anything from 2-18% reductions in GHGs.<br>Public Health: In an 83-city <a href="https://ehjournal.biomedcentral.com/articles/10.1186/1476-069X-9-65">study</a>, PM2.5-related mortality reduction is worth $31 billion (2007 dollars).<br>Fatalities and Injuries: 2200 crashes, 18 fatalities, and 1200 injuries reduced in Massachusetts.<br>Economic Benefits: Massachusetts predicted to save $210 million (30mph to 25mph reduction).</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">According to the California <a href="https://cleanvehiclerebate.org/eng/rebate-statistics">Clean Vehicle Rebate Project</a>, San Joaquin County customers have received about 3,000 rebates, compared to 366,000 state-wide, leaving a lot of growth potential compared to other counties.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www1.nyc.gov/html/dot/html/motorist/slowzones.shtml">NYC Neighborhood Slow Zones</a><br><a href="http://visionzerophl.com/get-involved">Philadelphia Neighborhood Slow Zones</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="resilience" class="section level2">
+<h2><span class="header-section-number">1.7</span> Resilience</h2>
+<div id="promote-cool-surfaces-to-reduce-heat-island-effect" class="section level3">
+<h3><span class="header-section-number">1.7.1</span> Promote cool surfaces to reduce heat island effect</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Arizona</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Rather than using dark pavements, which attract 80-95% of sunlight, solar reflective “cool” pavements have increased reflectance. They typically use a reflective or clear binder, or a reflective surface coating.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://heatisland.lbl.gov/coolscience/cool-pavements">Berkeley Lab</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">CoolSeal costs between $0.30 to $0.40 per square foot. Albedo increases lead to a reduction of outdoor air temperatures by 0.2 to 0.9 degrees Fahrenheit. In California cities with a lot of air conditioning, the savings of air conditioning energy due to lowered air temperature is up to 1 kWh ($0.60) per year per sq.m. of pavement modified. The avoided CO2 is valued at less than a penny a year per sq.m. Lower surface air temperature reduces ground level ozone.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Downtown Stockton could benefit from a set of public and private initiatives to retrofit existing commercial roofs and ground surfaces.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="http://www.whiteroofproject.org/">White Roof Project, NYC</a><br><a href="https://energy-seal.com/wp-content/uploads/crrp_smud_cool_roof_rebate_program.pdf">SMUD Cool Roof Rebate</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="promote-permeable-pavement-to-increase-groundwater-absorption" class="section level3">
+<h3><span class="header-section-number">1.7.2</span> Promote permeable pavement to increase groundwater absorption</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Greenville County, SC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Permeable pavement is a form of pavement that is highly porous pavement that allows rainwater to pass through it and into the ground. In addition to reducing surface runoff, it can trap suspended solids, thereby filtering stormwater. This also reduces peak discharge rates, meaning that flooding is more controlled. It is, however, most appropriate for sidewalks/pedestrian areas and low-speed driving areas.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.usgs.gov/science/evaluating-potential-benefits-permeable-pavement-quantity-and-quality-stormwater-runoff?qt-science_center_objects=0#qt-science_center_objects">USGS</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">$4.00-$6.00 per square foot. <a href="https://docs.google.com/document/d/1qV1ki5JeARdA-i3a_4ICYKz0fER5NR8QOo5Aq3TBiTQ/edit">Read more here</a>.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Stockton could identify low-lying areas that frequently flood and prioritize permeable pavement as part of regularly scheduled maintenance.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.sfbetterstreets.org/find-project-types/greening-and-stormwater-management/stormwater-overview/permeable-paving/">SF Permeable Sidewalks</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="reclaim-urban-streams-and-rivers-to-increase-groundwater-absorption-and-filtration" class="section level3">
+<h3><span class="header-section-number">1.7.3</span> Reclaim urban streams and rivers to increase groundwater absorption and filtration</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Greenville County, SC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Reclaiming urban streams and rivers helps to restore the watercycle back to its natural processes. This helps to restore groundwater recharge, as well as natural water filtration processes. From an environmental perspective, it restores sensitive natural habitats.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://static1.squarespace.com/static/561dcdc6e4b039470e9afc00/t/5e4581cf81c87071297f8e61/1581613539633/ReedyRiver_FactSheet_0220-0.pdf">Earth Economics</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left"><a href="https://www.prp.cses.vt.edu/Reports_04/Mitigation_04.pdf">$28 to $129 per foot</a>. Benefits: reduction in sediment removal ($2.76 per ton to manually remove); <a href="https://www.researchgate.net/publication/265969625_Effect_of_public_green_space_on_residential_property_values_in_Belfast_metropolitan_area">green space</a> increases property values by up to 49% as properties change hands; <a href="https://www.hydroreform.org/sites/default/files/Hurd_Economic_Benefits_2009_0.pdf">contingent valuation</a> varies from $10.83 to $270.40 per capita.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">There are a number of waterways through Stockton that could be opportunities for proactive reclamation, given that FEMA and U.S. Army Corps guidelines do not yet fully factor in the science on climate change impacts on precipitation patterns.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.hydroreform.org/sites/default/files/Hurd_Economic_Benefits_2009_0.pdf">Guadalupe River, San Jose</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="use-green-infrastructure-to-improve-stormwater-management" class="section level3">
+<h3><span class="header-section-number">1.7.4</span> Use green infrastructure to improve stormwater management</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">San Francisco, CA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Green Infrastructure is a method of reducing stormwater and pollution burden from stormwater systems. It does this through the creation of micro urban watersheds that have the potential to decrease erosion, improve air quality, increase land value, and reduce urban heat effects (thereby also reducing cooling loads).</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://sfwater.org/modules/showdocument.aspx?documentid=13249">SFWater</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Contingent upon site. <a href="https://docs.google.com/spreadsheets/d/1Z1Q1j1GJpgI8-M9XGKHMgTds0wqyB-twr-RLR7xX-JU/edit#gid=414331495">See table</a>.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">There are several key risks to Stockton’s water quality, most of which are tied to Stockton historic and present manufacturing activities. The Sharpe Army Depot and McCormick &amp; Baxter Creosoting Company are both listed on the Environmental Protection Agencies National Priorities List, indicating they are a high priority superfund site. The EPA has identified additional sites of concern including Stockton Iron Works, Colberg Boat Works, Norge Cleaning Village, and Brea Agricultural Services. Two additonal sites, Stockton Naval Communications Station and the General Services Administration, are both located at the Naval Supply Center at Rough and Ready Island. As a result of these sites, as well as agricultural run-off and other sources, Stockton has elevated levels of Arsenic that are, on average, 4.5 times higher than recommended levels. <a href="https://docs.google.com/document/d/1O8eMspahozBkoB3-uIw3Azvwyv6xEJvca1XV76TwgFY/edit">Read more</a>.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://static1.squarespace.com/static/561dcdc6e4b039470e9afc00/t/5d435f106f6e7a0001f5b304/1564696351697/HuntsPoint_EarthEconomics_062719-1.pdf">Hunts Point, NY</a><br><a href="https://www.urbanraindesign.com/ne-siskiyou">NE Siskiyou Green Street, Portland, OR</a><br><a href="https://www.owp.csus.edu/research/papers/papers/PP061.pdf">Caltrans</a><br><a href="https://www.wetlandsolutionsinc.com/download/TreatmentWetlands/Tres_Rios_Biomonitoring_Aug%202004.pdf">Tres Rios Demonstration Constructed Wetlands, Phoenix</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="promote-urban-gardens-as-a-substitute-for-displaced-ecosystem-services" class="section level3">
+<h3><span class="header-section-number">1.7.5</span> Promote urban gardens as a substitute for displaced ecosystem services</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">Philadelphia, PA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">As a result of their greying environment, cities often suffer from greater fluctuations in weather conditions, poor water infiltration, improper nutrient cycling, and lack of vegetative cover. These lead to reduced water quality and flooding, heat islands, and lack of ecological diversity. Using vacant lots, which reduce property values, residents of Philadelphia have developed urban gardens as a means of food production, increase property values, and provide educational opportunities on sustainability.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.inquirer.com/science/climate/urban-farm-agriculture-philadelphia-plan-garden-plots-20190320.html">Philadelphia Inquirer</a><br><a href="https://repository.upenn.edu/cgi/viewcontent.cgi?article=1044&amp;context=mes_capstones">University of Pennsylvania</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">Soil remediation costs between $5-40 per ton. Central Valley water costs between $15-40 per acre-foot. Philadelphia is estimated to have about 40,000 structureless vacant parcels amounting to 1,840 acres of unused land. These vacant parcels reduced property values by an average of 6.5%, leading to $3.6 billion in property tax loss. Households with an adult that participates in a community garden program are more likely to eat fruits and vegetables. Compared to vacant lots, agricultural lots realized far lower rates of soil erosion.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Local nonprofits like <a href="http://puentesca.org/">PUENTES</a> already are in a position to expand their operations to develop more urban gardens in Stockton, contingent on land and water costs.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="http://detroitagriculture.net/">Detroit Garden Resource Program</a><br><a href="https://city.milwaukee.gov/homegrownmilwaukee.com#.XlXwGmhKiUk">HOME GR/OWN Milwaukee</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="offer-rebates-for-flood-mitigation-projects" class="section level3">
+<h3><span class="header-section-number">1.7.6</span> Offer rebates for flood mitigation projects</h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="left">South Holland, IL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Details</td>
+<td align="left">Due to flooding from a local river, South Holland, IL offers up to $2500 per project per property. Approved projects include measures to prevent water from entering a home, including adding downspouts and floodwalls, sewer backup projects, such as installing overhead sewers, and removal of connections from stormwater sewers. In 2016, the program was further extended to cover up to $5,000 in costs if residents install systems to prevent sewer backups.</td>
+</tr>
+<tr class="even">
+<td align="left">Links</td>
+<td align="left"><a href="https://www.pewtrusts.org/-/media/assets/2019/11/illinois_village_offers_rebates_brief_final.pdf">Pew Charitable Trusts</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Implementation Costs &amp; Impact Factor</td>
+<td align="left">As of February 2019 (started in 1990), $800,000 in rebates; 1,172 households have participated.</td>
+</tr>
+<tr class="even">
+<td align="left">Scalable Potential</td>
+<td align="left">Historical data on snowpack flooding has shown that 3 feet of flooding in Stockton could impact as many as 12,000 acres of land, with 20,000 housing units. Factoring in sea level rise projections, <a href="http://ssrf.climatecentral.org.s3-website-us-east-1.amazonaws.com/Buffer2/states/CA/downloads/pdf_reports/Town/CA_Stockton-report.pdf">Climate Central</a> estimates a 34 percent multi-year risk of at least one flood exceeding 3 feet from 2016 to 2030, a 93 percent risk by from 2016 to midcentury, and a 100 percent risk by 2100. Under the National Resaerch Council’s high-end projections, these chances increase to 50, 100, and 100 percent, respectively, and they compute a 100 percent risk of at least one flood exceeding 6 feet by the end of the century.</td>
+</tr>
+<tr class="odd">
+<td align="left">Similar</td>
+<td align="left"><a href="https://www.pewtrusts.org/en/research-and-analysis/issue-briefs/2019/11/wisconsin-grant-program-helps-people-relocate-from-flood-prone-areas">Wisconsin Department of Natural Resources</a><br><a href="https://www.pewtrusts.org/en/research-and-analysis/issue-briefs/2019/11/arkansas-tax-credit-rewards-landowners-for-conserving-wetlands">Arkansas Private Wetland and Riparian Zone Creation and Restoration Incentives Act</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="appendix-a-index-of-case-studies-by-place" class="section level2">
+<h2><span class="header-section-number">1.8</span> Appendix A: Index of Case Studies by Place</h2>
+<p><strong>Arizona</strong></p>
+<ul>
+<li><a href="test.html#engage-automobile-manufacturers-as-stakeholders-in-the-ev-market">Engage automobile manufacturers as stakeholders in the EV market</a></li>
+</ul>
+<p><strong>Arlington, VA</strong></p>
+<ul>
+<li><a href="test.html#provide-a-density-bonus-for-affordable-housing">Provide a density bonus for affordable housing</a></li>
+<li><a href="test.html#enable-property-assessed-clean-energy-pace-financing">Enable property-assessed clean energy (PACE) financing</a></li>
+</ul>
+<p><strong>Austin, TX</strong></p>
+<ul>
+<li><a href="test.html#provide-consumer-oriented-programs-to-incentivize-energy-efficiency-retrofits-and-appliance-improvements">Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements</a></li>
+<li>Partner with transportation network companies (TNCs) to offer first/last mile discount programs for transit riders</li>
+</ul>
+<p><strong>Birmingham, AL</strong> - <a href="test.html#provide-consumer-oriented-programs-to-incentivize-energy-efficiency-retrofits-and-appliance-improvements">Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements</a></p>
+<p><strong>Boston, MA</strong></p>
+<ul>
+<li><a href="test.html#create-a-fund-to-implement-energy-savings-projects">Create a fund to implement energy savings projects</a></li>
+<li><a href="test.html#provide-green-oriented-job-training-and-education-pathways">Provide green-oriented job training and education pathways</a></li>
+</ul>
+<p><strong>Bridgeport, CT</strong></p>
+<ul>
+<li><a href="test.html#provide-training-and-coaching-for-low-income-workers-rather-than-unemployed-workers">Provide training and coaching for low-income workers, rather than unemployed workers</a></li>
+</ul>
+<p><strong>Buffalo, NY</strong></p>
+<ul>
+<li><a href="test.html#eliminate-minimum-parking">Eliminate minimum parking</a></li>
+</ul>
+<p><strong>California</strong></p>
+<ul>
+<li><a href="test.html#encourage-accessory-dwelling-units">Encourage accessory dwelling units</a></li>
+<li><a href="test.html#revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning">Revise zoning codes in medium to large cities to facilitate upzoning</a></li>
+<li><a href="test.html#promote-a-solar-renewable-energy-certificate-program">Promote a Solar Renewable Energy Certificate program</a></li>
+<li><a href="test.html#provide-incentives-for-households-to-install-solar-generation-and-storage-particularly-for-vulnerable-customers">Provide incentives for households to install solar generation and storage, particularly for vulnerable customers</a></li>
+</ul>
+<p><strong>Chicago, IL</strong></p>
+<ul>
+<li><a href="test.html#enable-property-assessed-clean-energy-pace-financing">Enable property-assessed clean energy (PACE) financing</a></li>
+<li><a href="test.html#create-a-scholarship-fund-for-students-wishing-to-pursue-eco-conscious-careers">Create a scholarship fund for students wishing to pursue eco-conscious careers</a></li>
+<li><a href="test.html#encourage-mortgage-refinancing">Encourage mortgage refinancing</a></li>
+</ul>
+<p><strong>Cleveland, OH</strong></p>
+<ul>
+<li><a href="test.html#offer-continued-training-and-support-post-employment">Offer continued training and support post-employment</a></li>
+</ul>
+<p><strong>Colorado</strong></p>
+<ul>
+<li><a href="test.html#provide-tax-credits-to-investors-in-advanced-industries">Provide tax credits to investors in advanced industries</a></li>
+</ul>
+<p><strong>Columbus, OH</strong></p>
+<ul>
+<li><a href="test.html#offer-job-creation-tax-credit">Offer job creation tax credit</a></li>
+</ul>
+<p><strong>Davis, CA</strong></p>
+<ul>
+<li><a href="test.html#develop-a-shared-equity-program-for-high-density-housing">Develop a shared equity program for high-density housing</a></li>
+</ul>
+<p><strong>Dayton, OH</strong></p>
+<ul>
+<li><a href="test.html#provide-training-and-coaching-for-low-income-workers-rather-than-unemployed-workers">Provide training and coaching for low-income workers, rather than unemployed workers</a></li>
+</ul>
+<p><strong>Dublin, CA</strong></p>
+<ul>
+<li><a href="test.html#encourage-mortgage-refinancing">Encourage mortgage refinancing</a></li>
+</ul>
+<p><strong>Glendale, CA</strong></p>
+<ul>
+<li><a href="test.html#use-waste-to-produce-electricity">Use waste to produce electricity</a></li>
+</ul>
+<p><strong>Hartford, CT</strong></p>
+<ul>
+<li><a href="test.html#eliminate-minimum-parking">Eliminate minimum parking</a></li>
+<li><a href="test.html#enable-property-assessed-clean-energy-pace-financing">Enable property-assessed clean energy (PACE) financing</a></li>
+</ul>
+<p><strong>Hayward, CA</strong></p>
+<ul>
+<li><a href="test.html#use-waste-to-produce-electricity">Use waste to produce electricity</a></li>
+</ul>
+<p><strong>Indianapolis, IN</strong></p>
+<ul>
+<li><a href="test.html#develop-public-employment-program">Develop public employment program</a></li>
+</ul>
+<p><strong>Kansas</strong></p>
+<ul>
+<li><a href="test.html#create-a-scholarship-fund-for-students-wishing-to-pursue-eco-conscious-careers">Create a scholarship fund for students wishing to pursue eco-conscious careers</a></li>
+</ul>
+<p><strong>London, UK</strong></p>
+<ul>
+<li><a href="test.html#create-a-fund-to-implement-energy-savings-projects">Create a fund to implement energy savings projects</a></li>
+</ul>
+<p><strong>Los Angeles County, CA</strong></p>
+<ul>
+<li><a href="test.html#enable-property-assessed-clean-energy-pace-financing">Enable property-assessed clean energy (PACE) financing</a></li>
+<li><a href="test.html#provide-consumer-oriented-programs-to-incentivize-energy-efficiency-retrofits-and-appliance-improvements">Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements</a></li>
+<li><a href="test.html#provide-green-oriented-job-training-and-education-pathways">Provide green-oriented job training and education pathways</a></li>
+</ul>
+<p><strong>Oakland, CA</strong></p>
+<ul>
+<li><a href="test.html#provide-green-oriented-job-training-and-education-pathways">Provide green-oriented job training and education pathways</a></li>
+</ul>
+<p><strong>Oregon</strong></p>
+<ul>
+<li><a href="test.html#revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning">Revise zoning codes in medium to large cities to facilitate upzoning</a></li>
+</ul>
+<p><strong>Melbourne, Australia</strong></p>
+<ul>
+<li><a href="test.html#create-a-fund-to-implement-energy-savings-projects">Create a fund to implement energy savings projects</a></li>
+</ul>
+<p><strong>Menlo Park, CA</strong></p>
+<ul>
+<li><a href="test.html#provide-green-oriented-job-training-and-education-pathways">Provide green-oriented job training and education pathways</a></li>
+</ul>
+<p><strong>Milwaukee, WI</strong></p>
+<ul>
+<li><a href="test.html#set-energy-savings-standards-on-all-public-buildings-and-provide-financial-and-technical-assistance-for-commercial-private-sector-energy-savings">Set energy savings standards on all public buildings and provide financial and technical assistance for commercial private sector energy savings</a></li>
+<li><a href="test.html#enable-property-assessed-clean-energy-pace-financing">Enable property-assessed clean energy (PACE) financing</a></li>
+</ul>
+<p><strong>Minneapolis, MN</strong></p>
+<ul>
+<li><a href="test.html#revise-zoning-codes-in-medium-to-large-cities-to-facilitate-upzoning">Revise zoning codes in medium to large cities to facilitate upzoning</a></li>
+<li><a href="test.html#eliminate-minimum-parking">Eliminate minimum parking</a></li>
+</ul>
+<p><strong>Muskegon, MI</strong></p>
+<ul>
+<li><a href="test.html#promote-solar-development-in-opportunity-zones">Promote solar development in Opportunity Zones</a></li>
+</ul>
+<p><strong>Nebraska</strong></p>
+<ul>
+<li><a href="test.html#provide-tax-credits-to-investors-in-advanced-industries">Provide tax credits to investors in advanced industries</a></li>
+</ul>
+<p><strong>New York City, NY</strong></p>
+<ul>
+<li><a href="test.html#encourage-micro-units">Encourage micro-units</a></li>
+<li><a href="test.html#create-a-fund-to-implement-energy-savings-projects">Create a fund to implement energy savings projects</a></li>
+<li><a href="test.html#provide-green-oriented-job-training-and-education-pathways">Provide green-oriented job training and education pathways</a></li>
+<li><a href="test.html#offer-continued-training-and-support-post-employment">Offer continued training and support post-employment</a></li>
+</ul>
+<p><strong>Norfolk, VA</strong></p>
+<ul>
+<li><a href="test.html#promote-solar-development-in-opportunity-zones">Promote solar development in Opportunity Zones</a></li>
+</ul>
+<p><strong>Palo Alto, CA</strong></p>
+<ul>
+<li><a href="test.html#implement-reach-codes-which-go-beyond-state-minimum-requirements-for-energy-use-in-building-design-and-construction">Implement “reach” codes which go beyond state minimum requirements for energy use in building design and construction</a></li>
+</ul>
+<p><strong>Philadelphia, PA</strong></p>
+<ul>
+<li><a href="test.html#offer-job-creation-tax-credit">Offer job creation tax credit</a></li>
+</ul>
+<p><strong>Richmond, CA</strong></p>
+<ul>
+<li><a href="test.html#provide-green-oriented-job-training-and-education-pathways">Provide green-oriented job training and education pathways</a></li>
+</ul>
+<p><strong>San Diego, CA</strong></p>
+<ul>
+<li><a href="test.html#provide-training-and-coaching-for-low-income-workers-rather-than-unemployed-workers">Provide training and coaching for low-income workers, rather than unemployed workers</a></li>
+</ul>
+<p><strong>San Francisco, CA</strong></p>
+<ul>
+<li><a href="test.html#eliminate-minimum-parking">Eliminate minimum parking</a></li>
+<li><a href="test.html#encourage-micro-units">Encourage micro-units</a></li>
+<li><a href="test.html#provide-a-density-bonus-for-affordable-housing">Provide a density bonus for affordable housing</a></li>
+<li><a href="test.html#develop-a-shared-equity-program-for-high-density-housing">Develop a shared equity program for high-density housing</a></li>
+<li><a href="test.html#enable-property-assessed-clean-energy-pace-financing">Enable property-assessed clean energy (PACE) financing</a></li>
+<li><a href="test.html#encourage-mortgage-refinancing">Encourage mortgage refinancing</a></li>
+<li><a href="test.html#develop-public-employment-program">Develop public employment program</a></li>
+</ul>
+<p><strong>San Jose, CA</strong></p>
+<ul>
+<li><a href="test.html#set-energy-savings-standards-on-all-public-buildings-and-provide-financial-and-technical-assistance-for-commercial-private-sector-energy-savings">Set energy savings standards on all public buildings and provide financial and technical assistance for commercial private sector energy savings</a></li>
+<li><a href="test.html#implement-reach-codes-which-go-beyond-state-minimum-requirements-for-energy-use-in-building-design-and-construction">Implement “reach” codes which go beyond state minimum requirements for energy use in building design and construction</a></li>
+</ul>
+<p><strong>San Mateo County, CA</strong></p>
+<ul>
+<li><a href="test.html#match-homeowners-with-vacant-spaces-with-individuals-looking-for-affordable-housing">Match homeowners with vacant spaces with individuals looking for affordable housing</a></li>
+</ul>
+<p><strong>Santa Clara County, CA</strong></p>
+<ul>
+<li><a href="test.html#match-homeowners-with-vacant-spaces-with-individuals-looking-for-affordable-housing">Match homeowners with vacant spaces with individuals looking for affordable housing</a></li>
+</ul>
+<p><strong>Seattle, WA</strong></p>
+<ul>
+<li><a href="test.html#encourage-accessory-dwelling-units">Encourage accessory dwelling units</a></li>
+<li><a href="test.html#provide-consumer-oriented-programs-to-incentivize-energy-efficiency-retrofits-and-appliance-improvements">Provide consumer-oriented programs to incentivize energy efficiency retrofits and appliance improvements</a></li>
+</ul>
+<p><strong>St. Louis, MO</strong></p>
+<ul>
+<li><a href="test.html#enable-property-assessed-clean-energy-pace-financing">Enable property-assessed clean energy (PACE) financing</a></li>
+</ul>
+<p><strong>Toronto, Canada</strong></p>
+<ul>
+<li><a href="test.html#create-a-fund-to-implement-energy-savings-projects">Create a fund to implement energy savings projects</a></li>
+</ul>
+<p><strong>Tulsa, OK</strong></p>
+<ul>
+<li><a href="test.html#offer-continued-training-and-support-post-employment">Offer continued training and support post-employment</a></li>
+</ul>
+<p><strong>Vancouver, Canada</strong></p>
+<ul>
+<li><a href="test.html#encourage-micro-units">Encourage micro-units</a></li>
+</ul>
+<p><strong>Washington, DC</strong></p>
+<ul>
+<li><a href="test.html#promote-solar-development-in-opportunity-zones">Promote solar development in Opportunity Zones</a></li>
+<li><a href="test.html#promote-a-solar-renewable-energy-certificate-program">Promote a Solar Renewable Energy Certificate program</a></li>
+</ul>
+<div id="strategy-building-electrification" class="section level3">
+<h3><span class="header-section-number">1.8.1</span> Strategy: Building Electrification</h3>
+<p><a href="https://innovation.luskin.ucla.edu/wp-content/uploads/2019/03/Economic_Benefits_of_Energy_Efficiency_Programs.pdf">Economic Benefits of Energy Efficiency Programs: A Case Study of Investments by the Los Angeles Department of Water &amp; Power</a> by the UCLA Luskin Center estimates the economic benefits of LADWP’s energy efficiency programs through the metrics of number of jobs, value added (e.g. income for workers, profits for businesses, and taxes for local government), and labor income.</p>
+<p>The report notes that for every dollar invested by LADWP ($123M for FY 2016-17: - $0.53 in energy cost savings for customers per year (for the lifetime of the measure). Much of these energy cost savings then get reinvested back in the local economy. - $0.43 co-invested by local businesses and households (total $53M for FY 2016-17) through financial inventive programs which require participants to provide matching funds for their energy efficient purchase or upgrade. - $1.36 value added (labor income, profits, and taxes) - For every $1M dollars of LADWP investment, 13.5 FTE job-years in LA County are supported (1658 total).</p>
+<p>One of the limitations of the study is described as follows: “… the ultimate merit of each program should not be solely evaluated in terms of jobs or wealth generation. When making investment decisions, utilities must consider a number of factors, including statuary compliance, grid reliability, costs for ratepayers, greenhouse gas (GHG) emissions reductions, and associated improvements in air quality. Programs that have a low employment or value added multiplier may perform better according to other co-benefits, such as reducing pollution and improving associated environmental health outcomes. Broader analysis of the many co-benefits associated with energy efficiency programs is another worthy task for future research.”</p>
+<p>Along these lines, we were particularly interested evaluating these programs in terms of net economic cost for GHGs saved, or $/tCO2e, similar to <a href="https://www.sanjoseca.gov/your-government/environment/climate-smart-san-jos">Climate Smart San Jose</a>. In the Luskin report, estimates of energy savings were only given as a 1-yr amount from FY 2016-17 in kWh. It is unclear in each example what combination of electricity and gas savings this entails, and no indication is given of the likely duration of these energy savings, which would be dependent on many factors including the lifetime of the appliance/product. The economic figures, such as the numbers presented above, also come with many model limitations which are described in the report, but appear to be interpretable as the net present value of all total impacts to be realized at some point in the future. Given these interpretations, we estimated net economic cost as investment (by LADWP and co-investors) minus value added to economy and net present value of energy savings. The lifetime of the measure was generally assumed to be 10 years, with the exception of the Refigerator Turn-In &amp; Recycle program which was assumed to be 2.5 years (the amount of time a homeowner may keep using an old fridge instead of retiring it). A 3% real discount rate was applied in the NPV calculations. Total tCO2e reduction was estimated by assuming the annual kWh savings could be realized in PG&amp;E’s territory from 2020 onward for the lifetime of the measure, factoring in the emissions factors used in this report.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># luskin &lt;- </span>
+<span class="co">#   read_csv(&quot;C:/Users/derek/Google Drive/City Systems/Stockton Green Economy/luskin.csv&quot;) %&gt;% </span>
+<span class="co">#   mutate(</span>
+<span class="co">#     npv = </span>
+<span class="co">#       map2(energysavings, lifetime, function(x, y){</span>
+<span class="co">#         ifelse(</span>
+<span class="co">#           is.na(x) | is.na(y),</span>
+<span class="co">#           return(0),</span>
+<span class="co">#           return(as.numeric(NPV(x, rep(x,y), 1:y, 0.03, plot = FALSE)))</span>
+<span class="co">#         )</span>
+<span class="co">#       }) %&gt;% unlist(),</span>
+<span class="co">#     netcost =</span>
+<span class="co">#       funding+coinvestment-npv-valueadded,</span>
+<span class="co">#     costperkwh =</span>
+<span class="co">#       netcost/(kwh*(lifetime+1)),</span>
+<span class="co">#     tco2e = </span>
+<span class="co">#       map2(kwh, lifetime, function(x, y){</span>
+<span class="co">#         ifelse(</span>
+<span class="co">#           is.na(x) | is.na(y),</span>
+<span class="co">#           return(0),</span>
+<span class="co">#           return(sum(rep(x,y+1)*((25:(25-y))*7.5/1000*0.000453592)))</span>
+<span class="co">#         )</span>
+<span class="co">#       }) %&gt;% unlist(),</span>
+<span class="co">#     costpertco2e = </span>
+<span class="co">#       netcost/tco2e</span>
+<span class="co">#   )</span>
+<span class="co"># </span>
+<span class="co"># luskin_table &lt;-</span>
+<span class="co">#   luskin %&gt;% </span>
+<span class="co">#   filter(!is.na(costperkwh)) %&gt;% </span>
+<span class="co">#   arrange(costpertco2e) %&gt;% </span>
+<span class="co">#   transmute(</span>
+<span class="co">#     Program = program,</span>
+<span class="co">#     `Intervention Type` = type,</span>
+<span class="co">#     `Original LADWP Investment` = paste0(&quot;$&quot;,prettyNum(round(funding,-3),big.mark=&quot;,&quot;)),</span>
+<span class="co">#     `Net Lifetime Cost` = </span>
+<span class="co">#       ifelse(</span>
+<span class="co">#         netcost&lt;0,</span>
+<span class="co">#         paste0(&quot;-$&quot;,prettyNum(round(-netcost,-3),big.mark=&quot;,&quot;)),</span>
+<span class="co">#         paste0(&quot;$&quot;,prettyNum(round(netcost,-3),big.mark=&quot;,&quot;))</span>
+<span class="co">#       ),</span>
+<span class="co">#     `Lifetime tCO2e Reduction` = prettyNum(round(tco2e,-2),big.mark=&quot;,&quot;),</span>
+<span class="co">#     `$/tCO2e` = </span>
+<span class="co">#       ifelse(</span>
+<span class="co">#         netcost&lt;0,</span>
+<span class="co">#         paste0(&quot;-$&quot;,prettyNum(round(-costpertco2e,-2),big.mark=&quot;,&quot;)),</span>
+<span class="co">#         paste0(&quot;$&quot;,prettyNum(round(costpertco2e,-2),big.mark=&quot;,&quot;))</span>
+<span class="co">#       )</span>
+<span class="co">#   )</span>
+<span class="co"># </span>
+<span class="co"># kable(</span>
+<span class="co">#   luskin_table,</span>
+<span class="co">#   booktabs = TRUE,</span>
+<span class="co">#   caption = &#39;Analysis of net cost per tCO2e saved over lifetime of LADWP energy efficiency programs. Data, Luskin 2019.&#39;</span>
+<span class="co"># ) %&gt;% </span>
+<span class="co">#   kable_styling() %&gt;% </span>
+<span class="co">#   scroll_box(width = &quot;100%&quot;)</span></code></pre></div>
+<p><span class="math inline">\(~\)</span></p>
+<p>Almost all the programs studied in the Luskin report have a negative net cost per tCO2e, meaning they provide a net economic benefit (note that this is not profit solely recuperated to the original investors, but distributed throughout the economy). Programs should ultimately be evaluated based on the feasibility of the original government investment, the $/tCO2e, and the total tCO2e reduction that can be achieved through the measure.</p>
+</div>
+<div id="strategy-solar-installations" class="section level3">
+<h3><span class="header-section-number">1.8.2</span> Strategy: Solar Installations</h3>
+<p>According to <a href="https://www.drawdown.org/solutions/electricity-generation/rooftop-solar">Project Drawdown</a>, Rooftop Solar is the 10th most impactful carbon reduction strategy globally.</p>
+<p>PG&amp;E has a minimum energy bill requirement, so a 90% solar offset is ideal.</p>
+</div>
+<div id="case-study-direct-connect-in-pinellas-county-fl" class="section level3">
+<h3><span class="header-section-number">1.8.3</span> Case Study: Direct Connect in Pinellas County, FL</h3>
+<p>The Pinellas Suncoast Transit Authority (PSTA), in Pinellas County, FL, was the first transit agency in the US to sign a service provision agreement with a transportation network company (TNC) to offer joint first/last-mile service subsidized by public dollars. PSTA’s “Direct Connect” pilot allows riders to get to and from bus stops in a taxi, wheelchair-accessible vehicle (WAV), or Uber TNC vehicle at a subsidized rate. From August 2017 to March 2018, Uber trips taken via the service (beginning or ending within 800 feet of eight pilot transit stops) were subsidized on average from $7.64 to $2.64 per ride. The Shared Use Mobility Center conducted a <a href="https://learn.sharedusemobilitycenter.org/wp-content/uploads/SUMC_CaseStudy_Final3_06.21.19-1.pdf">program evaluation</a> in 2019 and outlined key lessons learned, including:</p>
+<ul>
+<li>The importance of leadersihp within the transit agency, and the strong coordination of key staff members in charge of the project.</li>
+<li>Heavy investment in public outreach about the program.</li>
+<li>A common contract for multiple potential TNCs to compete within the program.</li>
+<li>Negotiating greater data sharing from the TNC and direct investment in other forms of program data, such as user surveys.</li>
+<li>Identifying clear performance goals to monitor over the project.</li>
+<li>Refining the financial model and preparing for greater subsidy costs as TNC business models evolve.</li>
+</ul>
+</div>
+<div id="strategy-public-transit" class="section level3">
+<h3><span class="header-section-number">1.8.4</span> Strategy: Public Transit</h3>
+<p>In 2019, San Joaquin Regional Transit District released its <a href="http://sanjoaquinrtd.com/wp-content/uploads/2019/02/SRTP-2018-Update_FINAL.pdf">Short Range Transit Plan</a> for 18/19-27/28. Generally, RTD suffered service reductions after the financial recession but is expecting to be able to regain ground and expand service during this next phase. There are currently 128 active vehicles and 203 employees. Proposed Bus Rapid Transit (BRT) lines throughout Stockton include CO2 reduction projections. For new service, the capital cost of a new vehicle is about $1M, and capital infrastructure costs are about $500K per stop, and annual operating costs are $600-800M per vehicle.</p>
+<p>In June of 2018, RTD formed a partnership with PG&amp;E to conduct an electric vehicle pilot to support RTD’s long-term electric transportation needs with chargers and infrastructure improvements. This pilot will be a test case for PG&amp;E’s new FleetReady program, which supports electric charging for customers with medium-duty, heavy-duty, and off-road fleets. For this new pilot, PG&amp;E will test how smart charging and battery storage can lower operating costs and maximize efficiencies. As RTD transitions to an electric fleet, it will need to purchase electric station infrastructure for the RTC.</p>
+<p>RTD has also piloted a variety of mobility management services which act as alternatives to fixed-line service, and expects to expand these, including:</p>
+<ul>
+<li>RTD Go! On July 10, 2017, RTD Go-in partnership with Uber and Journey Via Gurney (JVG)-replaced the former General Public Dial-A-Ride service that operated countywide with a primary focus in rural areas. RTD Go provides public transit connectivity to residents of rural areas of the county where traditional bus service is not practical. This program extends service hours beyond fixed-route hours and offers an innovative mobility option to the public. By partnering with transportation network company Uber, RTD Go provides on-demand transportation that is subsidized 50%, up to $5 per trip. For customers with physical disabilities or other limitations, RTD Go partnered with accessible service provider, JVG, to provide transportation at a $10 flat fare per trip.</li>
+<li>When designing Commuter routes, RTD evaluates the origins and destinations using data from SJCOG’s Dibs (formerly Commute Connection) program and current and potential employers. There are emerging needs for the creation of corridor service with multiple trips between Stockton, Lodi, and downtown Sacramento-initially with weekday service, expanding to a seven-days-a-week operation. Additionally, with weekend service to Dublin/Pleasanton BART Station, there is a need to expand the Commuter route to provide better connectivity to Manteca, Escalon, and Ripon.</li>
+</ul>
+<p>Local public transit improvements will be modeled as reductions on local amenity VMT, while specific proposed commuter routes will be modeled as reductions on commute VMT.</p>
+</div>
+<div id="strategy-demand-response" class="section level3">
+<h3><span class="header-section-number">1.8.5</span> Strategy: Demand Response</h3>
+<p>DR load reductions are of short duration and are made either the day before or the day of a DR program event. In contrast to energy efficiency and traditional time-of-use measures, DR represents the “need of the hour”- the critical period when businesses can mitigate adverse pricing or power system conditions. For instance, DR is most likely to be requested for a few hours between 12 P.M. and 6 P.M., on a hot summer afternoon, when electric demand is generally highest. The figure below illustrates the performance for an example facility participating in a DR event during the period between 2 P.M. and 6 P.M.</p>
+<p>Company-led initiatives: PG&amp;E documented pilots with <a href="https://www.pge.com/includes/docs/pdfs/mybusiness/energysavingsrebates/demandresponse/cs/HealthCare_CommunityMedicalCenters_DR_CaseStudy.pdf">Community Medical Centers</a> in 2006. The centers identified these measures for the summer’s first DR event:</p>
+<ul>
+<li>Raise chiller temperature 5 degrees F</li>
+<li>Shut down the redundant chiller water loop</li>
+<li>Shut off redundant water pumps</li>
+<li>Shut down some visitor elevators</li>
+<li>Use EMS systems to turn off 50% of non-essential lights</li>
+<li>Shut off booster pumps for outdoor watering</li>
+<li>Shut off one boiler in order to turn off associated fans</li>
+<li>Turn off cooking equipment and serve cold food (sandwiches and salads) in the Visitor Cafeteria</li>
+</ul>
+<p>The largest hospital, whose typical summer peak demand is between 4578 kW and 4664 kW, dropped more than 500 kW over two to six hour periods on three event days.</p>
+<p>A private company, <a href="https://www.ohmconnect.com/how-it-works/impact">OhmConnect</a>, allows individual residential customers to also participate in DR. Stockton could explore cleantech competition in this space or supplementary programs for existing services, such as a focus on introducing more “smart appliances” into the market that can more easily participate in DR. The greatest impact is likely in targeting specific large employers for customized DR programs and rewarding/recognizing them for program outcomes, thereby positioning the local economy as a champion and leader in active energy emissions reduction.</p>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+<a href="appendix-b-case-study-matrix.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "none",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "fixed"
+},
+"search": false,
+"info": false
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
