@@ -566,7 +566,7 @@ stockton_tracts_full <-
 # 
 # mapshot(map,url="map-bgs.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-bgs.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-bgs.html")
 ```
 
 $~$
@@ -1656,7 +1656,7 @@ The following maps help to visualize the specific distribution of Stockton resid
 # 
 # mapshot(map,url="map-stockton-lodes-w-top-counties-youth.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-lodes-w-top-counties-youth.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-stockton-lodes-w-top-counties-youth.html")
 ```
 
 $~$
@@ -1669,7 +1669,7 @@ $~$
 # 
 # mapshot(map,url="map-stockton-lodes-w-top-counties-lowinc.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-lodes-w-top-counties-lowinc.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-stockton-lodes-w-top-counties-lowinc.html")
 ```
 
 $~$
@@ -1681,7 +1681,7 @@ $~$
 # 
 # mapshot(map,url="map-stockton-lodes-w-top-counties-highinc.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-lodes-w-top-counties-highinc.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-stockton-lodes-w-top-counties-highinc.html")
 ```
 
 $~$
@@ -1693,7 +1693,7 @@ $~$
 # 
 # mapshot(map,url="map-stockton-lodes-w-top-counties-goods.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-lodes-w-top-counties-goods.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-stockton-lodes-w-top-counties-goods.html")
 ```
 
 $~$
@@ -1705,7 +1705,7 @@ $~$
 # 
 # mapshot(map,url="map-stockton-lodes-w-top-counties-trade.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-lodes-w-top-counties-trade.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-stockton-lodes-w-top-counties-trade.html")
 ```
 
 $~$
@@ -1717,7 +1717,7 @@ $~$
 # 
 # mapshot(map,url="map-stockton-lodes-w-top-counties-services.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-lodes-w-top-counties-services.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-stockton-lodes-w-top-counties-services.html")
 ```
 
 $~$
@@ -2024,7 +2024,7 @@ stockton_lodes_w_construction_high <-
 # 
 # mapshot(map,url="map-stockton-lodes-w-construction-high.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-lodes-w-construction-high.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-stockton-lodes-w-construction-high.html")
 ```
 
 $~$
@@ -2048,7 +2048,7 @@ stockton_lodes_w_scientific_high <-
 # 
 # mapshot(map,url="map-stockton-lodes-w-scientific-high.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-lodes-w-scientific-high.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-stockton-lodes-w-scientific-high.html")
 ```
 
 $~$
@@ -2741,7 +2741,7 @@ stockton_jobs_map <-
 # 
 # mapshot(map,url="map-stockton-jobs-map.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-jobs-map.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-stockton-jobs-map.html")
 ```
 
 $~$
@@ -2762,7 +2762,7 @@ stockton_commute_avg <-
 # 
 # mapshot(map,url="map-stockton-commute-avg.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-stockton-commute-avg.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-stockton-commute-avg.html")
 ```
 
 $~$
@@ -3366,7 +3366,7 @@ amenity_VMT <- amenity_VMT[,c("total VMT", "location name", "business type", "st
 # 
 # mapshot(map, url = "map-amenity-vmt-location.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-amenity-vmt-location.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-amenity-vmt-location.html")
 ```
 
 $~$
@@ -3449,7 +3449,7 @@ The following map shows the same data aggregated back to Stockton blockgroups, a
 # 
 # mapshot(map, url = "map-amenity-vmt-bg.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-amenity-vmt-bg.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-amenity-vmt-bg.html")
 ```
 
 $~$
@@ -3582,7 +3582,7 @@ According to the table above, 59% percent of Stockton residents work in San Joaq
 # 
 # mapshot(map,url="map-ghg-map-2.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-ghg-map-2.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-ghg-map-2.html")
 ```
 
 $~$
@@ -3814,7 +3814,7 @@ zcta_stockton <- zcta[stockton_boundary_influence,] %>%
 # 
 # mapshot(map, url = "map-zcta.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-zcta.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-zcta.html")
 ```
 
 $~$
@@ -4565,7 +4565,7 @@ bg_bldg_norm_r <-
 # 
 # mapshot(map, url = "map-residential-density.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-residential-density.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-residential-density.html")
 ```
 
 $~$
@@ -4616,7 +4616,7 @@ bg_bldg_norm_c <-
 # 
 # mapshot(map, url = "map-commercial-density.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-commercial-density.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-commercial-density.html")
 ```
 
 $~$
@@ -4673,7 +4673,7 @@ zcta_bldg_stockton_joined <-
 # 
 # mapshot(map, url = "map-res-customer.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-res-customer.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-res-customer.html")
 ```
 
 $~$
@@ -4683,7 +4683,7 @@ $~$
 # 
 # mapshot(map, url = "map-comm-customer.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-comm-customer.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-comm-customer.html")
 ```
 
 $~$
@@ -6493,7 +6493,7 @@ test_parcels <- normal_residential_parcels_yards[test_block_group,]
 # 
 # mapshot(map, url = "map-adu-example.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-adu-example.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-adu-example.html")
 ```
 
 $~$
@@ -6619,7 +6619,7 @@ downtownstation_stops <-
 # 
 # mapshot(map, url = "map-accessible-adus.html")
 
-knitr::include_url("https://city.systems/stockton-greeneconomy/map-accessible-adus.html")
+knitr::include_url("https://citysystems.github.io/stockton-greeneconomy/map-accessible-adus.html")
 ```
 
 $~$
